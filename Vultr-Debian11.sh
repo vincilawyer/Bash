@@ -160,6 +160,52 @@ function install_warp {
     fi
 }
 
+# 定义欢迎语函数
+function welcome {
+    echo "欢迎进入Vinci服务器管理系统"
+    echo "以下为功能菜单："
+    echo "1. 修改SSH登录端口和登录密码"
+    echo "2. 申请Let's Encrypt SSL证书"
+    echo "3. 安装 Nginx"
+    echo "4. 安装 Warp"
+    echo "5. 退出"
+}
 
+# 定义选择功能序号函数
+function select_option {
+    read -p "请输入功能序号：" option
+    echo "您选择的是功能序号：$option"
+}
+
+# 主函数
+function main {
+    welcome
+    select_option
+
+    case $option in
+        1)
+            change_ssh_port_password
+            ;;
+        2)
+            apply_ssl_certificate
+            ;;
+        3)
+            install_nginx
+            ;;
+        4)
+            install_warp
+            ;;
+        5)
+            exit 0
+            ;;
+        *)
+            echo -e "${RED}输入的功能序号不正确，请重新输入${NC}"
+            main
+            ;;
+    esac
+}
+
+# 调用主函数
+main
 
 
