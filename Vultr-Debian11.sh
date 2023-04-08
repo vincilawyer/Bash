@@ -109,6 +109,7 @@ function apply_ssl_certificate {
   # 证书自动续约
     echo "0 0 1 */2 * service nginx stop; certbot renew; service nginx start;" | crontab
     if [ $? -eq 0 ]; then
+        echo "${GREEN}未成功启动证书自动续约${NC}"
     else
         echo "${GREEN}已启动证书自动续约${NC}"
     fi
