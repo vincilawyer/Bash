@@ -15,7 +15,7 @@ else
         echo "当前版本号$current_Version，最新版本号为$Version"    
         if [[ "${current_Version}" == "${Version}" ]]; then
            echo "当前已是最新版本(V$Version)，无需更新！"
-           sleep 1
+           sleep 0.5
         else
            wget --no-cache https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh -O /usr/local/bin/vinci
            chmod +x /usr/local/bin/vinci
