@@ -12,7 +12,7 @@ NC='\033[0m'
 
                                                                            # 定义欢迎语函数
 function welcome {
-    echo "欢迎进入Vinci服务器管理系统，版本V0.62"
+    echo "欢迎进入Vinci服务器管理系统，版本V0.63"
     echo "以下为功能菜单："
     echo "1. 修改SSH登录端口和登录密码"
     echo "2. 申请SSL证书"
@@ -82,7 +82,12 @@ function change_login_password {
 }
                                                                            # 判断SSL证书是否存在
 function check_ssl_certificate {
-     echo "哈哈"
+    domain_name= $1
+    if [[ $domain_name != "www."* ]]; the
+         domain_name="www.${domain_name}"
+    if
+    echo 哈哈$domain_name
+     
     search_result=$(find /etc/letsencrypt/live/ -name fullchain.pem -print0 | xargs -0 grep -l "$1" 2>/dev/null)
     if [[ -z "$search_result" ]];then
       return 0
@@ -146,8 +151,7 @@ function apply_ssl_certificate {
     certbot certonly --standalone --agree-tos -n -d www.$domain_name -d $domain_name -m $email
     
   # 判断申请结果
-  echo $domain_name
-  echo "$domain_name"
+  echo www."$domain_name"
  result=`check_ssl_certificate "$domain_name"`
  echo $result 
     if check_ssl_certificate "$domain_name";then
@@ -359,7 +363,7 @@ function select_option {
 
 function daiji {
     while true; do
-    sleep 30
+    sleep 58
     echo 
     done  
 }
