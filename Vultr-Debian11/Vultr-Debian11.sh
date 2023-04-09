@@ -433,8 +433,8 @@ main_menu=(
                                    5)set_nginx_config;;
                                    6)nano /etc/nginx/conf.d/default.conf;;
                                    7)apply_ssl_certificate;;
-                                   8);;
- 
+                                   8)systemctl stop nginx;;
+                                   9)echo "没开发呢！";;
                               esac
                               wait;;
                           1)break;;
@@ -470,9 +470,8 @@ main_menu=(
                                    3);;
                                    4);;
                                    5)nano /usr/local/etc/v2ray/config.json;;
-                                   6);;
-                                   7);;
-                                   8);;
+                                   6)systemctl stop v2ray;;
+                                   7)echo "没开发呢！";;
                               esac
                               wait;;
                           1)break;;
@@ -502,11 +501,7 @@ main_menu=(
                                case $sub_option in
                                    2)install_warp;;
                                    3);;
-                                   4);;
-                                   5);;
-                                   6);;
-                                   7);;
-                                   8);;
+                                   4)echo "没开发呢！";;
                               esac
                               wait;;
                           1)break;;
