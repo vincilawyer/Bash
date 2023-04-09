@@ -384,7 +384,7 @@ main_menu=(
                    change_login_password;;
                 5) restart_processes;;
                 6) check_processes;;
-                7) current_Version=force bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh);;
+                7) current_Version="force" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh);;
                 8) standby;;
             esac
             wait;;
@@ -396,94 +396,14 @@ main_menu=(
                case $option in
                   #一级菜单2选项
                   2) 
-                    Nginx_menu=(
-                    "1、安装Nginx"
-                    "2、从github下载更新配置文件"
-                    "3、从github下载更新网页文件"
-                    "4、修改配置"
-                    "6、申请SSL证书"
-                    "7、停止运行"
-                    "8、卸载"
-                    "9、返回上一级"
-                    "10、退出"   
-                    )
-                    echo "${Nginx_menu[@]}"
-                     read -p "请选择操作: " sub_option
-                        case $sub_option in
-                           1 | 2 | 3 | 4 | 5 | 6 | 7 | 8）
-                               case $sub_option in
-                                   1);;
-                                   2);;
-                                   3);;
-                                   4);;
-                                   5);;
-                                   6);;
-                                   7);;
-                                   8);;
-                              esac
-                              wait;;
-                          9)break;;
-                          10)exit 0;;
-                          *) echo -e "${RED}输入不正确，请重新输入${NC}";;
-                        esac;;
+                    ;;
+                    
                   #一级菜单3选项
                   3) 
-                     V2ray_menu=(
-                     "1、安装V2ray"
-                     "2、从github下载更新配置文件"
-                     "3、修改配置"
-                     "4、停止运行"
-                     "5、卸载"
-                     "6、返回上一级"
-                     "7、退出" 
-                     )
-                     echo "${V2ray_men[@]}"
-                     read -p "请选择操作: " sub_option
-                        case $sub_option in
-                           1 | 2 | 3 | 4 | 5 | 6 | 7 | 8）
-                               case $sub_option in
-                                   1);;
-                                   2);;
-                                   3);;
-                                   4);;
-                                   5);;
-                                   6);;
-                                   7);;
-                                   8);;
-                              esac
-                              wait;;
-                          9)break;;
-                          10)exit 0;;
-                          *) echo -e "${RED}输入不正确，请重新输入${NC}";;
-                        esac;; 
+                    ;;
                   #一级菜单4选项
-                  4) 
-                     Warp_menu=(
-                     "1、安装Warp"
-                     "2、停止运行"
-                     "3、卸载"
-                     "4、返回上一级"
-                     "5、退出"
-                     )
-                     echo "${Warp_menu[@]}"
-                     read -p "请选择操作: " sub_option
-                        case $sub_option in
-                           1 | 2 | 3 | 4 | 5 | 6 | 7 | 8）
-                               case $sub_option in
-                                   1);;
-                                   2);;
-                                   3);;
-                                   4);;
-                                   5);;
-                                   6);;
-                                   7);;
-                                   8);;
-                              esac
-                              wait;;
-                          9)break;;
-                          10)exit 0;;
-                          *) echo -e "${RED}输入不正确，请重新输入${NC}";;
-                        esac;;
+                  4)  
+                    ;;
               esac
            done;;
        #一级菜单9选项    
