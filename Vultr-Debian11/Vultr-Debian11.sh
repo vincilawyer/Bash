@@ -332,9 +332,7 @@ function restart_processes() {
 
                                                                            # 更新脚本函数
 function update {
-    echo -e "${GREEN}脚本更新中...${NC}"
-    bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
-    vinci
+    current_Vesion=$Vesion bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
 }
 
 
