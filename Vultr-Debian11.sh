@@ -74,15 +74,15 @@ function apply_ssl_certificate {
 
   # 停止nginx运行
   sudo systemctl stop nginx
-  echo "${GREEN}已停止nginx运行${NC}"
+  echo -e "${GREEN}已停止nginx运行${NC}"
 
   #关闭防火墙
   ufw disable 
-  echo "${GREEN}已关闭防火墙${NC}"
+  echo -e "${GREEN}已关闭防火墙${NC}"
 
   # 输入域名
     while true; do
-        read -p "请输入申请SSL证书域名（不加www.）: " domain_name
+        read -p "$(echo -e ${YELLOW}"请输入申请SSL证书域名（不加www.）: ${NC}")" domain_name
         if [[ -z $domain_name ]]; then
           echo -e "${GREEN}未输入域名，退出申请操作${NC}"
           return
@@ -95,7 +95,7 @@ function apply_ssl_certificate {
     done
   # 输入邮箱
     while true; do
-        read -p "请输入申请SSL证书邮箱: " email
+        read -p "$(echo -e ${YELLOW}"请输入申请SSL证书邮箱: ${NC}")" email
         if [[ -z $email || ! $email =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]]; then
             echo -e "${RED}输入格式不正确，请重新输入${NC}"
         else
@@ -109,9 +109,9 @@ function apply_ssl_certificate {
   # 证书自动续约
     echo "0 0 1 */2 * service nginx stop; certbot renew; service nginx start;" | crontab
     if [ $? -eq 0 ]; then
-        echo "${GREEN}未成功启动证书自动续约${NC}"
+        echo -e "${GREEN}未成功启动证书自动续约${NC}"
     else
-        echo "${GREEN}已启动证书自动续约${NC}"
+        echo -e "${GREEN}已启动证书自动续约${NC}"
     fi
 }
 
@@ -161,6 +161,14 @@ function install_warp {
     fi
 }
 
+# 更新脚本函数
+function update {
+    wget https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11.sh -O /usr/local/bin/vinci
+    chmod +x /usr/local/bin/vinci
+    echo -e "${GREEN}脚本已更新${NC}"
+    vinci
+}
+
 # 定义欢迎语函数
 function welcome {
     echo "欢迎进入Vinci服务器管理系统"
@@ -169,7 +177,7 @@ function welcome {
     echo "2. 申请Let's Encrypt SSL证书"
     echo "3. 安装 Nginx"
     echo "4. 安装 Warp"
-    echo "5. 退出"
+    echo "5. 更新脚本"
 }
 
 # 定义选择功能序号函数
@@ -177,6 +185,8 @@ function select_option {
     read -p "请输入功能序号：" option
     echo "您选择的是功能序号：$option"
 }
+
+
 
 # 主函数
 function main {
@@ -197,7 +207,7 @@ function main {
             install_warp
             ;;
         5)
-            exit 0
+            update
             ;;
         *)
             echo -e "${RED}输入的功能序号不正确，请重新输入${NC}"
