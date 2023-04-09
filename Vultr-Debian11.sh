@@ -173,7 +173,7 @@ function install_nginx {
     fi
 }
 
-# 安装Warp的函数
+# 安装Warp并启动Warp的函数
 function install_warp {
     if [ -e "/usr/bin/cloudflared" ]; then
         echo -e "${GREEN}Warp已安装，无需重复安装，当前代理IP地址为：${NC}"
@@ -222,7 +222,7 @@ function welcome {
     echo "1. 修改SSH登录端口和登录密码"
     echo "2. 申请SSL证书"
     echo "3. 安装 Nginx"
-    echo "4. 安装 Warp"
+    echo "4. 安装 Warp并启动"
     echo "5. 安装 V2ray"
     echo "6. 更新脚本"
 }
