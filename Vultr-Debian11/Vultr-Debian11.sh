@@ -410,9 +410,10 @@ main_menu=(
                     "3、从github下载更新配置文件"
                     "4、从github下载更新网页文件"
                     "5、修改配置"
-                    "6、申请SSL证书"
-                    "7、停止运行"
-                    "8、卸载"
+                    "6、查看配置文件"
+                    "7、申请SSL证书"
+                    "8、停止运行"
+                    "9、卸载"
                     "0、退出"   
                     )
                     for menu in "${Nginx_menu[@]}"
@@ -424,14 +425,14 @@ main_menu=(
                         fi
                     clear
                     case $sub_option in
-                           2 | 3 | 4 | 5 | 6 | 7 | 8)
+                           2 | 3 | 4 | 5 | 6 | 7 | 8 | )
                                case $sub_option in
                                    2)install_nginx;;
                                    3)download_nginx_config;;
                                    4);;
                                    5)set_nginx_config;;
-                                   6)apply_ssl_certificate;;
-                                   7);;
+                                   6)nano /etc/nginx/conf.d/default.conf;;
+                                   7)apply_ssl_certificate;;
                                    8);;
  
                               esac
@@ -448,8 +449,9 @@ main_menu=(
                      "2、安装V2ray"
                      "3、从github下载更新配置文件"
                      "4、修改配置"
-                     "5、停止运行"
-                     "6、卸载"
+                     "5、查看配置文件"
+                     "6、停止运行"
+                     "7、卸载"
                      "0、退出" 
                      )
                     for menu in "${V2ray_menu[@]}"
@@ -467,7 +469,7 @@ main_menu=(
                                    2)install_v2ray;;
                                    3);;
                                    4);;
-                                   5);;
+                                   5)nano /usr/local/etc/v2ray/config.json;;
                                    6);;
                                    7);;
                                    8);;
