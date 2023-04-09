@@ -11,7 +11,7 @@ else
        echo "强制更新已完成！"
     else
         Version=$(curl -s https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh | grep 'Version=' | cut -d'=' -f2)
-        echo "当前版本号$current_Version，最新版本号为$Version"
+        echo "1当前版本号$current_Version，最新版本号为$Version"
         str1=$(echo $current_Version)
         str2=$(echo $Version)
         
