@@ -16,7 +16,7 @@ function change_ssh_port {
     #询问SSH端口
   while true; do
     current_ssh_port=$(grep -i "port" /etc/ssh/sshd_config | awk '{print $2}')
-    echo -e "${YELLOW}当前的SSH端口为：$current_ssh_port${NC}"
+    echo -e "${BLUE}当前的SSH端口为：$current_ssh_port${NC}"
     read -p "$(echo -e ${YELLOW}"请设置新SSH端口（0-65535，空则跳过）：${NC}")" ssh_port
     if [[ -z $ssh_port ]]; then
         echo -e "${RED}跳过SSH端口设置${NC}"
