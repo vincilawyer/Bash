@@ -158,7 +158,7 @@ function apply_ssl_certificate {
             echo -e "${GREEN}已启动证书自动续约${NC}"
         fi
     else
-        echo "SSL证书申请失败！"
+        echo -e "${RED}SSL证书申请失败！${NC}"
     fi
     
  
