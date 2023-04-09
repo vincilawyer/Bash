@@ -2,6 +2,7 @@
 #版本号,不得为空
 Version=0.7
 #更新脚本
+echo "正在查询更新..."
 current_Version=$Version bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
 
 #定义彩色字体
@@ -376,22 +377,24 @@ main_menu=(
     echo "${main_menu[@]}"
     read -p "请选择操作: " option
     case $option in
+    #一级菜单15678选项
         1 | 5 | 6 | 7 | 8)
             case $option in
                 1) change_ssh_port
                    change_login_password;;
                 5) restart_processes;;
                 6) check_processes;;
-                7) update;;
+                7) current_Version=force bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh);;
                 8) standby;;
             esac
             wait;;
+     #一级菜单234选项
        2 | 3 | 4)
             while true; do
                clear
-               submenu_title=${main_menu[$(($option - 1))]}
-               echo "====== $submenu_title ======"
+               echo "====== ${main_menu[$(($option - 1))]} ======"
                case $option in
+                  #一级菜单2选项
                   2) 
                     Nginx_menu=(
                     "1、安装Nginx"
@@ -422,7 +425,8 @@ main_menu=(
                           9)break;;
                           10)exit 0;;
                           *) echo -e "${RED}输入不正确，请重新输入${NC}";;
-                        esac
+                        esac;;
+                  #一级菜单3选项
                   3) 
                      V2ray_menu=(
                      "1、安装V2ray"
@@ -451,7 +455,8 @@ main_menu=(
                           9)break;;
                           10)exit 0;;
                           *) echo -e "${RED}输入不正确，请重新输入${NC}";;
-                        esac      
+                        esac;; 
+                  #一级菜单4选项
                   4) 
                      Warp_menu=(
                      "1、安装Warp"
@@ -478,10 +483,12 @@ main_menu=(
                           9)break;;
                           10)exit 0;;
                           *) echo -e "${RED}输入不正确，请重新输入${NC}";;
-                        esac
+                        esac;;
               esac
-           done
+           done;;
+       #一级菜单9选项    
        9) exit 0;;    
+       #一级菜单其他选项  
        *) echo -e "${RED}输入不正确，请重新输入${NC}";;
      esac
   done
@@ -490,5 +497,5 @@ main_menu=(
 
                                                                            # 调用主函数
 main
-exit $?
+
 
