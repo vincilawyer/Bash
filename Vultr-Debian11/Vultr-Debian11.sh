@@ -1,6 +1,8 @@
 #!/bin/bash
 #版本号
 Vesion=0.7
+#更新脚本
+current_Vesion=$Vesion bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -328,14 +330,6 @@ function check_processes() {
 function restart_processes() {
   systemctl restart v2ray nginx warp-svc ufw
 }
-
-
-                                                                           # 更新脚本函数
-function update {
-    current_Vesion=$Vesion bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
-}
-
-
 
                                                                            # 定义选择功能序号函数
 function select_option {
