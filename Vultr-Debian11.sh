@@ -179,7 +179,7 @@ function update {
 
 # 定义欢迎语函数
 function welcome {
-    echo "欢迎进入Vinci服务器管理系统"
+    echo "欢迎进入Vinci服务器管理系统，版本V0.1"
     echo "以下为功能菜单："
     echo "1. 修改SSH登录端口和登录密码"
     echo "2. 申请Let's Encrypt SSL证书"
