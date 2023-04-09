@@ -322,9 +322,8 @@ function check_processes() {
 
                                                                            # 更新脚本函数
 function update {
-    wget https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11.sh -O /usr/local/bin/vinci
-    chmod +x /usr/local/bin/vinci
-    echo -e "${GREEN}脚本已更新${NC}"
+    echo -e "${GREEN}脚本更新中...${NC}"
+    bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
     vinci
 }
 
