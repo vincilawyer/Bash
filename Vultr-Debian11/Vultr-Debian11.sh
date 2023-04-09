@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1
+Version=0.95
 #更新脚本
 echo "正在查询更新..."
 current_Version=$Version bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
@@ -379,8 +379,10 @@ main_menu=(
     do
     echo "$menu"
     done
-    
-    read -p "请选择操作: " option
+
+    if ! read -t 60 -p "请选择操作: " option; then
+    standby
+    fi
     clear
     case $option in
     #一级菜单15678选项
@@ -417,11 +419,12 @@ main_menu=(
                     do
                       echo "$menu"
                     done
-                    read -p "请选择操作: " sub_option
+                        if ! read -t 60 -p "请选择操作: " sub_option; then
+                          standby
+                        fi
                     clear
                   
                     ;;
-                    
                   #一级菜单3选项
                   3) 
                     ;;
