@@ -12,7 +12,7 @@ NC='\033[0m'
 
                                                                            # 定义欢迎语函数
 function welcome {
-    echo "欢迎进入Vinci服务器管理系统，版本V0.65"
+    echo "欢迎进入Vinci服务器管理系统，版本V0.66"
     echo "以下为功能菜单："
     echo "1. 修改SSH登录端口和登录密码"
     echo "2. 申请SSL证书"
@@ -83,10 +83,12 @@ function change_login_password {
                                                                            # 判断SSL证书是否存在
 function check_ssl_certificate {
     domain_name=$1
+    echo $domain_name
     if [[ $domain_name != "www."* ]]; then
          domain_name="www.${domain_name}"
     fi
-    
+     echo $domain_name
+     
     search_result=$(find /etc/letsencrypt/live/ -name fullchain.pem -print0 | xargs -0 grep -l "$1" 2>/dev/null)
     if [[ -z "$search_result" ]]; then
       return 0
