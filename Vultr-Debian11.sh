@@ -43,7 +43,6 @@ function change_ssh_port {
     ufw status 
   fi
 }
-
 # 修改登录密码的函数
 function change_login_password {
     # 询问账户密码
@@ -62,12 +61,12 @@ function change_login_password {
     # 修改账户密码
   if [[ -n $ssh_password ]]; then
     chpasswd_output=$(echo "root:$ssh_password" | chpasswd 2>&1)
-    if echo "$chpasswd_output" >&2 | grep -q "password unchanged"; then
-       echo -e "${GREEN}SSH登录密码修改失败：${NC}"
+     if echo "$chpasswd_output" | grep -q "BAD PASSWORD" >/dev/null 2>&1; then
+       echo -e "${GREEN}SSH登录密码修改失败,错误原因：${NC}"
        echo "$chpasswd_output" >&2
-    else
-       echo -e "${GREEN}SSH登录密码已修改${NC}"
-    fi
+     else
+       echo -e "${GREEN}SSH登录密码已修改成功！${NC}"
+     fi
   fi
 }
 
@@ -98,11 +97,15 @@ function apply_ssl_certificate {
     done
     
   # 更新包列表
+  echo -e "${GREEN}正在更新包列表${NC}"
   sudo apt update
+  echo -e "${GREEN}包列表更新完成${NC}"
   
   # 停止nginx运行
-  sudo systemctl stop nginx
-  echo -e "${GREEN}为了防止80端口被占用，已停止nginx运行${NC}"
+  if [ -x "$(command -v nginx)" ]; then
+     systemctl stop nginx
+     echo -e "${GREEN}为了防止80端口被占用，已停止nginx运行${NC}"
+  fi  
   
   #关闭防火墙
   ufw disable 
@@ -110,15 +113,15 @@ function apply_ssl_certificate {
 
   # 检查并安装Certbot
   if [ -x "$(command -v certbot)" ]; then
-    echo -e "${GREEN}本机已安装Certbot，无需重复安装${NC}"
+    echo -e "${GREEN}本机已安装Certbot，无需重复安装，即将申请SSL证书...${NC}"
   else
     echo -e "${YELLOW}正在安装Certbot...${NC}"
     apt install certbot python3-certbot-nginx -y
-    echo -e "${YELLOW}Certbot安装完成${NC}"
+    echo -e "${YELLOW}Certbot安装完成，即将申请SSL证书...${NC}"
   fi
   
   # 申请证书
-    sudo certbot certonly --standalone --agree-tos -n -d www.$domain_name -d $domain_name -m $email
+    certbot certonly --standalone --agree-tos -n -d www.$domain_name -d $domain_name -m $email
     search_result=$(find /etc/letsencrypt/live/ -name fullchain.pem -print0 | xargs -0 grep -l "$domain_name" 2>/dev/null)
     if [[ -z "$search_result" ]];then
       echo "SSL证书申请失败！"
@@ -134,28 +137,39 @@ function apply_ssl_certificate {
     fi
     
   # 重启nginx和防火墙
-  ufw enable --force && systemctl start nginx
-  echo -e "${GREEN}已恢复防火墙及nginx运行${NC}"  
+  if [ -x "$(command -v nginx)" ]; then
+     systemctl start nginx
+     echo -e "${GREEN}已恢复nginx运行${NC}"  
+  fi  
+  ufw --force enable
+  echo -e "${GREEN}已恢复防火墙运行${NC}"  
 }
 
 # 安装V2Ray的函数
 function install_v2ray {
-    if [ -e "/usr/local/bin/v2ray" ]; then
+    if [ -x "$(command -v v2ray)" ]; then
         echo -e "${GREEN}V2Ray已安装，无需重复安装${NC}"
     else
         bash <(curl -L https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh)
-        echo -e "${GREEN}V2Ray安装完成${NC}"
+        if bash <(curl -L https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh) 2>&1 | tee /tmp/install_log | grep -q "is installed"; then
+            echo "V2Ray安装成功！"
+        else
+            echo "V2Ray 安装失败！以下是安装过程的全部信息："
+            cat /tmp/install_log
+        fi
     fi
 }
 
 # 安装Nginx的函数
 function install_nginx {
-    if [ -e "/etc/nginx" ]; then
-        echo -e "${GREEN}Nginx 已安装，无需重复安装${NC}"
+    if [ -x "$(command -v nginx)" ]; then
+        echo -e "${GREEN}nginx已经安装，版本号为 $(nginx -v 2>&1)，无需重复安装${NC}"
     else
+        echo -e "${GREEN}正在更新包列表${NC}"
         apt-get update
+        echo -e "${GREEN}包列表更新完成${NC}"
         apt-get install nginx -y
-        echo -e "${GREEN}Nginx 安装完成${NC}"
+        echo -e "${GREEN}Nginx 安装完成，版本号为 $(nginx -v 2>&1)。${NC}"
     fi
 }
 
@@ -165,20 +179,28 @@ function install_warp {
         echo -e "${GREEN}Warp已安装，无需重复安装，当前代理IP地址为：${NC}"
         curl ifconfig.me --proxy socks5://127.0.0.1:40000        
     else
-        #先安装WARP仓库GPG 密钥：
+        #先安装WARP仓库GPG密钥：
+        echo -e "${GREEN}正在安装WARP仓库GPG 密钥${NC}"
         curl https://pkg.cloudflareclient.com/pubkey.gpg | sudo gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
         #添加WARP源：
+        echo -e "${GREEN}正在添加WARP源${NC}"
         echo "deb [arch=amd64 signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/cloudflare-client.list
         #更新源
+        echo -e "${GREEN}正在更新包列表${NC}"
         sudo apt update
         #安装Warp
-        apt install cloudflare-warp
+        echo -e "${GREEN}开始安装Warp${NC}"
+        apt install cloudflare-warp -y
         #注册WARP：
+        echo -e "${GREEN}注册WARP中，请输入y予以确认${NC}"
         warp-cli register
         #设置为代理模式（一定要先设置）：
+        echo -e "${GREEN}设置代理模式${NC}"
         warp-cli set-mode proxy
         #连接WARP：
+        echo -e "${GREEN}连接WARP${NC}"
         warp-cli connect
+        sleep 2
         #查询代理后的IP地址：
         echo -e "${GREEN}Warp 安装完成，代理IP地址为：${NC}"
         curl ifconfig.me --proxy socks5://127.0.0.1:40000
