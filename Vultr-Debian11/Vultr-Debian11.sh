@@ -188,8 +188,7 @@ function install_nginx {
                                                                            # 从github下载更新Nginx配置文件、待测试
 function download_nginx_config {
     wget https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf -O /etc/nginx/conf.d/default.conf
-    echo -e "${GREEN}下载成功，配置文件验证结果：${NC}"
-    nginx -t
+    echo -e "${GREEN}下载成功${NC}"
 }
 
                                                                            # 设置Nginx配置、待测试
@@ -204,11 +203,10 @@ function set_nginx_config{
         elif [[ $domain_name =~ ^[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$ ]]; then
             if [[ $domain_name != "www."* ]]; then
                 domain_name="www.${domain_name}"
-                if check_ssl_certificate "$domain_name"=0;then
+                if check_ssl_certificate "$domain_name"=0; then
                      echo -e "${RED}请注意，该域名的SSL证书尚不存在，请及时申请！${NC}"
                 fi
                 sed -i "s/server_name[[:space:]]\+www\.[[:alnum:]\.\-]*;/server_name $DOMAIN;    ### 填写域名，注意这里的域名带www/" /etc/nginx/conf.d/default.conf
-               
                 echo -e "${GREEN}网站域名设置成功${NC}"
             fi
             break
@@ -251,12 +249,8 @@ function set_nginx_config{
     read -p "$(echo -e ${YELLOW}"请填写v2rayPath密钥：${NC}")" Path
     if [[ -z $Path ]]; then
         echo -e "${RED}取消v2rayPath密钥设置${NC}"
-    fi
-
-    
+    fi   
 }
-
-
 
                                                                           # 安装Warp并启动Warp的函数（需补充关闭warp、更换ip）
 function install_warp {
