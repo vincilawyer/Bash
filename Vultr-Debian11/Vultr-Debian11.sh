@@ -19,7 +19,8 @@ function welcome {
     echo "3. 安装 Nginx"
     echo "4. 安装 Warp并启动"
     echo "5. 安装 V2ray"
-    echo "6. 更新脚本"
+    echo "6. 待机"
+    echo "7. 更新脚本"
 }
 
                                                                             #修改SSH端口的函数
@@ -356,7 +357,12 @@ function select_option {
     echo "您选择的是功能序号：$option"
 }
 
-
+function daiji {
+    while true; do
+    sleep 30
+    echo 
+    done  
+}
 
                                                                            # 主函数
 function main {
@@ -379,8 +385,11 @@ function main {
             ;;
         5)
             install_v2ray
-            ;;    
+            ;;  
         6)
+            daiji
+            ;;            
+        7)
             update
             ;;
         *)
