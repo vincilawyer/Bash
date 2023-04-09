@@ -192,7 +192,7 @@ function download_nginx_config {
 }
 
                                                                            # 设置Nginx配置、待测试
-function set_nginx_config{
+function set_nginx_config {
      # 输入域名
     while true; do
         read -p "$(echo -e ${YELLOW}"请输入网站域名（不加www.）: ${NC}")" domain_name
