@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=0.92
+Version=0.93
 #更新脚本
 echo "正在查询更新..."
 current_Version=$Version bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
@@ -340,8 +340,9 @@ function select_option {
 
 function standby {
     while true; do
-    sleep 58
-    echo 
+    clear
+    sleep 55
+    echo "待机中"
     done  
 }      
                                                                           # 定义等待函数
@@ -389,9 +390,7 @@ main_menu=(
                    change_login_password;;
                 5) restart_processes;;
                 6) check_processes;;
-                #current_Version="force" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh);;
-                7) 
-                   ;;
+                7) current_Version="force" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh);;
                 8) standby;;
             esac
             wait;;
