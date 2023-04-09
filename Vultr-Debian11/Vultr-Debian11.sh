@@ -380,6 +380,7 @@ Nginx_menu=(
     "7、停止运行"
     "8、卸载"
     "9、返回上一级"
+    "10、退出"   
 )
 V2ray_menu=(
     "1、安装V2ray"
@@ -388,12 +389,14 @@ V2ray_menu=(
     "4、停止运行"
     "5、卸载"
     "6、返回上一级"
+    "7、退出" 
 )
 Warp_menu=(
     "1、安装Warp"
     "2、停止运行"
     "3、卸载"
     "4、返回上一级"
+    "5、退出"
 )
 
 
@@ -407,27 +410,47 @@ function main {
     read -p "请选择操作: " option
     
     case $option in
-        1 | 5 | 6 | 7 | 8 |9)
+        1 | 5 | 6 | 7 | 8)
             case $option in
-                1)change_ssh_port
-                  change_login_password
-                  wait;;
-                5) restart_processes
-                   wait;;
-                6) check_processes
-                   wait;;
+                1) change_ssh_port
+                   change_login_password;;
+                5) restart_processes;;
+                6) check_processes;;
                 7) update;;
-                8) standby
-                   wait;;
-                8) exit 0;;
+                8) standby;;
             esac
-       ;;
+            wait;;
        2 | 3 | 4)
-       
-  
-       *) echo -e "${RED}输入不正确，请重新输入${NC}"
-     
-     
+            while true; do
+               clear
+               submenu_title=${main_menu[$(($option - 1))]}
+               echo "====== $submenu_title ======"
+               case $option in
+                  2) echo "${Nginx_menu[@]}"
+                     read -p "请选择操作: " sub_option
+                        case sub_$option in
+                        1)
+                        2)
+                        3)
+                        4)
+                        5)
+                        6)
+                        7)
+                        8)
+                        9)
+                        10)exit 0;;
+                        *) echo -e "${RED}输入不正确，请重新输入${NC}";;
+                        esac
+                  3) echo "${V2ray_men[@]}"
+                     read -p "请选择操作: " sub_option
+
+                  4) echo "${Warp_menu[@]}"
+                     read -p "请选择操作: " sub_option
+
+              esac
+           done
+       9) exit 0;;    
+       *) echo -e "${RED}输入不正确，请重新输入${NC}";;
      esac
   done
     
