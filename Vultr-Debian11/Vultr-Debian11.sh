@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=0.93
+Version=1
 #更新脚本
 echo "正在查询更新..."
 current_Version=$Version bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
@@ -402,6 +402,24 @@ main_menu=(
                case $option in
                   #一级菜单2选项
                   2) 
+                    Nginx_menu=(
+                    "1、安装Nginx"
+                    "2、从github下载更新配置文件"
+                    "3、从github下载更新网页文件"
+                    "4、修改配置"
+                    "6、申请SSL证书"
+                    "7、停止运行"
+                    "8、卸载"
+                    "9、返回上一级"
+                    "10、退出"   
+                    )
+                    for menu in "${Nginx_menu[@]}"
+                    do
+                      echo "$menu"
+                    done
+                    read -p "请选择操作: " sub_option
+                    clear
+                  
                     ;;
                     
                   #一级菜单3选项
