@@ -348,7 +348,7 @@ function standby {
 }      
                                                                           # 定义等待函数
 function wait {
-   echo "请按下任意键回到菜单"
+   echo "请按下任意键返回管理系统"
    read -n 1 -s input
 }
 
