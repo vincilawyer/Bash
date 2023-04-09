@@ -12,7 +12,7 @@ NC='\033[0m'
 
                                                                            # 定义欢迎语函数
 function welcome {
-    echo "欢迎进入Vinci服务器管理系统，版本V0.67"
+    echo "欢迎进入Vinci服务器管理系统，版本V0.68"
     echo "以下为功能菜单："
     echo "1. 修改SSH登录端口和登录密码"
     echo "2. 申请SSL证书"
@@ -90,10 +90,8 @@ function check_ssl_certificate {
      
     search_result=$(find /etc/letsencrypt/live/ -name fullchain.pem -print0 | xargs -0 grep -l "$domain_name" 2>/dev/null)
     if [[ -z "$search_result" ]]; then
-    echo 12
       return 0
     else
-    echo 13
       return 1
     fi
 }
@@ -150,7 +148,7 @@ function apply_ssl_certificate {
     certbot certonly --standalone --agree-tos -n -d www.$domain_name -d $domain_name -m $email
     
   # 判断申请结果
-    if check_ssl_certificate "$domain_name"; then
+    if [[ $(check_ssl_certificate "$domain_name") -eq 1 ]]; then
         echo -e "${GREEN}SSL证书申请已完成！${NC}"
         # 证书自动续约
         echo "0 0 1 */2 * service nginx stop; certbot renew; service nginx start;" | crontab
