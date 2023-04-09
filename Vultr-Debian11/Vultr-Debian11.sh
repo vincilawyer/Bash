@@ -153,14 +153,6 @@ function check_ssl_certificate {
     fi
 }
 
-    search_result=$(find /etc/letsencrypt/live/ -name fullchain.pem -print0 | xargs -0 grep -l "$1" 2>/dev/null)
-    if [[ -z "$search_result" ]];then
-        return 0
-    else
-        return 1
-    fi
-}
-
                                                                            # 安装V2Ray的函数（配置上传、设置配置、更新等）
 function install_v2ray {
     if [ -x "$(command -v v2ray)" ]; then
