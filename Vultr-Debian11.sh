@@ -32,17 +32,12 @@ function change_ssh_port {
 
     # 修改SSH端口
   if [[ -n $ssh_port ]]; then
-    ufw delete allow $(grep -i "port" /etc/ssh/sshd_config | awk '{print $2}')  # 删除原SSH端口的规则
+    ufw delete allow $(grep -i "port" /etc/ssh/sshd_config | awk '{print $2}')/tcp
+    echo -e "${GREEN}已从防火墙规则中删除原SSH端口号：$ssh_port/tcp${NC}"
     sed -E -i "s/^(#\s*)?Port\s+.*/Port $ssh_port/" /etc/ssh/sshd_config
-
-    sudo service ssh restart
-
-echo -e "${GREEN}SSH端口已修改，新的端口号为 $ssh_port, 删除原SSH端口，并添加新的SSH端口$ssh_port${NC}"
-sudo 
-sudo ufw allow $ssh_port  # 打开新SSH端口的规则
-
+    sudo ufw allow $ssh_port/tcp
+     echo -e "${GREEN}SSH端口已修改为$ssh_port,并已添加进防火墙规则中。${NC}"
     systemctl restart sshd
-    echo -e "${GREEN}SSH端口已修改为$ssh_port${NC}"
   fi
 }
 
