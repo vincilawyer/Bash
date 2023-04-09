@@ -39,6 +39,8 @@ function change_ssh_port {
     ufw delete allow $current_ssh_port/tcp
     echo -e "${GREEN}已从防火墙规则中删除原SSH端口号：$current_ssh_port${NC}"
     systemctl restart sshd
+    echo -e "${GREEN}当前防火墙运行规则及状态为："
+    ufw status 
   fi
 }
 
@@ -151,7 +153,8 @@ function install_nginx {
 # 安装Warp的函数
 function install_warp {
     if [ -e "/usr/bin/cloudflared" ]; then
-        echo -e "${GREEN}Warp 已安装，无需重复安装${NC}"
+        echo -e "${GREEN}Warp已安装，无需重复安装，当前代理IP地址为：${NC}"
+        curl ifconfig.me --proxy socks5://127.0.0.1:40000        
     else
         #先安装WARP仓库GPG 密钥：
         curl https://pkg.cloudflareclient.com/pubkey.gpg | sudo gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
