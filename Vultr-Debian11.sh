@@ -15,8 +15,8 @@ NC='\033[0m'
 function change_ssh_port {
     #询问SSH端口
   while true; do
-    current_ssh_port=$(grep -i "port" /etc/ssh/sshd_config | awk '{print $2}')
-     echo -e $current_ssh_port
+    current_ssh_port=$(grep -i "port" /etc/ssh/sshd_config | awk '{print $2}' | head -1)
+    echo -e $current_ssh_port
     echo -e "${BLUE}当前的SSH端口为：$current_ssh_port${NC}"
     read -p "$(echo -e ${YELLOW}"请设置新SSH端口（0-65535，空则跳过）：${NC}")" ssh_port
     if [[ -z $ssh_port ]]; then
