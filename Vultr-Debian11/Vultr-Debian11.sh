@@ -73,8 +73,10 @@ function check_ssl_certificate {
     search_result=$(find /etc/letsencrypt/live/ -name fullchain.pem -print0 | xargs -0 grep -l "$1" 2>/dev/null)
     if [[ -z "$search_result" ]];then
       return 0
+      echo 0
     else
       return 1
+            echo 1
     fi
 }
 
@@ -129,19 +131,22 @@ function apply_ssl_certificate {
   
   # 申请证书
     certbot certonly --standalone --agree-tos -n -d www.$domain_name -d $domain_name -m $email
+    
+  # 判断申请结果
     if check_ssl_certificate "$domain_name";then
-      echo -e "${GREEN}SSL证书申请已完成！${NC}"
+        echo -e "${GREEN}SSL证书申请已完成！${NC}"
+        # 证书自动续约
+        echo "0 0 1 */2 * service nginx stop; certbot renew; service nginx start;" | crontab
+        if [ $? -eq 0 ]; then
+            echo -e "${GREEN}未成功启动证书自动续约${NC}"
+        else
+            echo -e "${GREEN}已启动证书自动续约${NC}"
+        fi
     else
-      echo "SSL证书申请失败！"
+        echo "SSL证书申请失败！"
     fi
     
-  # 证书自动续约
-    echo "0 0 1 */2 * service nginx stop; certbot renew; service nginx start;" | crontab
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}未成功启动证书自动续约${NC}"
-    else
-        echo -e "${GREEN}已启动证书自动续约${NC}"
-    fi
+ 
     
   # 重启nginx和防火墙
   if [ -x "$(command -v nginx)" ]; then
