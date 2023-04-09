@@ -15,8 +15,11 @@ NC='\033[0m'
 function change_ssh_port {
     #询问SSH端口
   while true; do
-    read -p "$(echo -e ${YELLOW}"请设置SSH端口（0-65535，空则跳过）：${NC}")" ssh_port
+    current_ssh_port=$(grep -i "port" /etc/ssh/sshd_config | awk '{print $2}')
+    echo -e "${YELLOW}当前的SSH端口为：$current_ssh_port${NC}"
+    read -p "$(echo -e ${YELLOW}"请设置新SSH端口（0-65535，空则跳过）：${NC}")" ssh_port
     if [[ -z $ssh_port ]]; then
+        echo -e "${RED}跳过SSH端口设置${NC}"
         break
     elif ! [[ $ssh_port =~ ^[0-9]+$ ]]; then
         echo -e "${RED}输入内容不正常，请重新输入${NC}"
@@ -29,9 +32,17 @@ function change_ssh_port {
 
     # 修改SSH端口
   if [[ -n $ssh_port ]]; then
-    sed -i "s/#Port 22/Port $ssh_port/" /etc/ssh/sshd_config
+    ufw delete allow $(grep -i "port" /etc/ssh/sshd_config | awk '{print $2}')  # 删除原SSH端口的规则
+    sed -E -i "s/^(#\s*)?Port\s+.*/Port $ssh_port/" /etc/ssh/sshd_config
+
+    sudo service ssh restart
+
+echo -e "${GREEN}SSH端口已修改，新的端口号为 $ssh_port, 删除原SSH端口，并添加新的SSH端口$ssh_port${NC}"
+sudo 
+sudo ufw allow $ssh_port  # 打开新SSH端口的规则
+
     systemctl restart sshd
-    echo -e "${GREEN}SSH端口已修改为$ssh_port，请务必修改防火墙规则！${NC}"
+    echo -e "${GREEN}SSH端口已修改为$ssh_port${NC}"
   fi
 }
 
@@ -41,6 +52,7 @@ function change_login_password {
   while true; do
     read -p "$(echo -e ${YELLOW}"请设置SSH登录密码（至少8位数字）：${NC}")" ssh_password
     if [[ -z $ssh_password ]]; then
+    echo -e "${RED}跳过登录密码设置${NC}"
         break
     elif (( ${#ssh_password} < 8 )); then
         echo -e "${RED}密码长度应至少为8位，请重新输入${NC}"
@@ -62,6 +74,14 @@ function apply_ssl_certificate {
 
   # 更新包列表
   sudo apt update
+  
+  # 停止nginx运行
+  sudo systemctl stop nginx
+  echo -e "${GREEN}为了防止80端口被占用，已停止nginx运行${NC}"
+  
+  #关闭防火墙
+  ufw disable 
+  echo -e "${GREEN}为了防止证书申请失败，已关闭防火墙${NC}"
 
   # 检查并安装Certbot
   if [ -x "$(command -v certbot)" ]; then
@@ -71,14 +91,6 @@ function apply_ssl_certificate {
     apt install certbot python3-certbot-nginx
     echo -e "${YELLOW}Certbot安装完成${NC}"
   fi
-
-  # 停止nginx运行
-  sudo systemctl stop nginx
-  echo -e "${GREEN}已停止nginx运行${NC}"
-
-  #关闭防火墙
-  ufw disable 
-  echo -e "${GREEN}已关闭防火墙${NC}"
 
   # 输入域名
     while true; do
@@ -195,7 +207,7 @@ function main {
 
     case $option in
         1)
-            change_ssh_port_password
+            change_ssh_port
             ;;
         2)
             apply_ssl_certificate
