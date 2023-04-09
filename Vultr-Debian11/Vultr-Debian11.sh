@@ -359,7 +359,20 @@ function wait {
    read -n 1 -s input
 }
 
-# 定义一级菜单选项
+
+
+
+
+
+
+                                                                           # 主函数
+function main {
+  while true; do
+    clear
+    welcome
+    echo "====== 请选择需要操作的内容 ======"
+    
+    # 定义一级菜单选项
 main_menu=(
     "1、修改SSH登录端口和登录密码"
     "2、Nginx服务"
@@ -371,44 +384,8 @@ main_menu=(
     "8、待机"
     "9、退出"
 )
-Nginx_menu=(
-    "1、安装Nginx"
-    "2、从github下载更新配置文件"
-    "3、从github下载更新网页文件"
-    "4、修改配置"
-    "6、申请SSL证书"
-    "7、停止运行"
-    "8、卸载"
-    "9、返回上一级"
-    "10、退出"   
-)
-V2ray_menu=(
-    "1、安装V2ray"
-    "2、从github下载更新配置文件"
-    "3、修改配置"
-    "4、停止运行"
-    "5、卸载"
-    "6、返回上一级"
-    "7、退出" 
-)
-Warp_menu=(
-    "1、安装Warp"
-    "2、停止运行"
-    "3、卸载"
-    "4、返回上一级"
-    "5、退出"
-)
-
-
-                                                                           # 主函数
-function main {
-  while true; do
-    clear
-    welcome
-    echo "====== 请选择需要操作的内容 ======"
     echo "${main_menu[@]}"
     read -p "请选择操作: " option
-    
     case $option in
         1 | 5 | 6 | 7 | 8)
             case $option in
@@ -426,27 +403,93 @@ function main {
                submenu_title=${main_menu[$(($option - 1))]}
                echo "====== $submenu_title ======"
                case $option in
-                  2) echo "${Nginx_menu[@]}"
+                  2) 
+                    Nginx_menu=(
+                    "1、安装Nginx"
+                    "2、从github下载更新配置文件"
+                    "3、从github下载更新网页文件"
+                    "4、修改配置"
+                    "6、申请SSL证书"
+                    "7、停止运行"
+                    "8、卸载"
+                    "9、返回上一级"
+                    "10、退出"   
+                    )
+                    echo "${Nginx_menu[@]}"
                      read -p "请选择操作: " sub_option
                         case sub_$option in
-                        1)
-                        2)
-                        3)
-                        4)
-                        5)
-                        6)
-                        7)
-                        8)
-                        9)
-                        10)exit 0;;
-                        *) echo -e "${RED}输入不正确，请重新输入${NC}";;
+                           1 | 2 | 3 | 4 | 5 | 6 | 7 | 8）
+                               case sub_$option in
+                                   1);;
+                                   2);;
+                                   3);;
+                                   4);;
+                                   5);;
+                                   6);;
+                                   7);;
+                                   8);;
+                              esac
+                              wait;;
+                          9)break;;
+                          10)exit 0;;
+                          *) echo -e "${RED}输入不正确，请重新输入${NC}";;
                         esac
-                  3) echo "${V2ray_men[@]}"
+                  3) 
+                     V2ray_menu=(
+                     "1、安装V2ray"
+                     "2、从github下载更新配置文件"
+                     "3、修改配置"
+                     "4、停止运行"
+                     "5、卸载"
+                     "6、返回上一级"
+                     "7、退出" 
+                     )
+                     echo "${V2ray_men[@]}"
                      read -p "请选择操作: " sub_option
-
-                  4) echo "${Warp_menu[@]}"
+                        case sub_$option in
+                           1 | 2 | 3 | 4 | 5 | 6 | 7 | 8）
+                               case sub_$option in
+                                   1);;
+                                   2);;
+                                   3);;
+                                   4);;
+                                   5);;
+                                   6);;
+                                   7);;
+                                   8);;
+                              esac
+                              wait;;
+                          9)break;;
+                          10)exit 0;;
+                          *) echo -e "${RED}输入不正确，请重新输入${NC}";;
+                        esac      
+                  4) 
+                     Warp_menu=(
+                     "1、安装Warp"
+                     "2、停止运行"
+                     "3、卸载"
+                     "4、返回上一级"
+                     "5、退出"
+                     )
+                     echo "${Warp_menu[@]}"
                      read -p "请选择操作: " sub_option
-
+                        case sub_$option in
+                           1 | 2 | 3 | 4 | 5 | 6 | 7 | 8）
+                               case sub_$option in
+                                   1);;
+                                   2);;
+                                   3);;
+                                   4);;
+                                   5);;
+                                   6);;
+                                   7);;
+                                   8);;
+                              esac
+                              wait;;
+                          9)break;;
+                          10)exit 0;;
+                          *) echo -e "${RED}输入不正确，请重新输入${NC}";;
+                        esac
               esac
            done
        9) exit 0;;    
