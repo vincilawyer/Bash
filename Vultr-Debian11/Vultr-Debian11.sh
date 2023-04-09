@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=0.95
+Version=0.96
 #更新脚本
 echo "正在查询更新..."
 current_Version=$Version bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
@@ -423,14 +423,96 @@ main_menu=(
                           standby
                         fi
                     clear
-                  
-                    ;;
+                    case $sub_option in
+                          1 | 2 | 3 | 4 | 5 | 6 | 7 | 8)
+                               case $sub_option in
+                                   1);;
+                                   2);;
+                                   3);;
+                                   4);;
+                                   5);;
+                                   6);;
+                                   7);;
+                                   8);;
+                              esac
+                              wait;;
+                          9)break;;
+                          10)exit 0;;
+                          *) echo -e "${RED}输入不正确，请重新输入${NC}";;
+                    esac;;
+                        
                   #一级菜单3选项
                   3) 
-                    ;;
+                     V2ray_menu=(
+                     "1、安装V2ray"
+                     "2、从github下载更新配置文件"
+                     "3、修改配置"
+                     "4、停止运行"
+                     "5、卸载"
+                     "6、返回上一级"
+                     "7、退出" 
+                     )
+                    for menu in "${V2ray_menu[@]}"
+                    do
+                      echo "$menu"
+                    done
+                    
+                    if ! read -t 60 -p "请选择操作: " sub_option; then
+                          standby
+                    fi
+                     clear
+                        case $sub_option in
+                           1 | 2 | 3 | 4 | 5 | 6 | 7 | 8)
+                               case $sub_option in
+                                   1);;
+                                   2);;
+                                   3);;
+                                   4);;
+                                   5);;
+                                   6);;
+                                   7);;
+                                   8);;
+                              esac
+                              wait;;
+                          9)break;;
+                          10)exit 0;;
+                          *) echo -e "${RED}输入不正确，请重新输入${NC}";;
+                        esac;; 
                   #一级菜单4选项
-                  4)  
-                    ;;
+                  4) 
+                     Warp_menu=(
+                     "1、安装Warp"
+                     "2、停止运行"
+                     "3、卸载"
+                     "4、返回上一级"
+                     "5、退出"
+                     )
+                    for menu in "${Warp_menu[@]}"
+                    do
+                      echo "$menu"
+                    done
+                    
+                    if ! read -t 60 -p "请选择操作: " sub_option; then
+                          standby
+                    fi
+                     clear
+                        case $sub_option in
+                           1 | 2 | 3 | 4 | 5 | 6 | 7 | 8）
+                               case $sub_option in
+                                   1);;
+                                   2);;
+                                   3);;
+                                   4);;
+                                   5);;
+                                   6);;
+                                   7);;
+                                   8);;
+                              esac
+                              wait;;
+                          9)break;;
+                          10)exit 0;;
+                          *) echo -e "${RED}输入不正确，请重新输入${NC}";;
+                        esac;;
               esac
            done;;
        #一级菜单9选项    
