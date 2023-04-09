@@ -12,7 +12,7 @@ NC='\033[0m'
 
                                                                            # 定义欢迎语函数
 function welcome {
-    echo "欢迎进入Vinci服务器管理系统，版本V0.68"
+    echo "欢迎进入Vinci服务器管理系统，版本V0.69"
     echo "以下为功能菜单："
     echo "1. 修改SSH登录端口和登录密码"
     echo "2. 申请SSL证书"
@@ -278,8 +278,7 @@ function install_warp {
     if [ -e "/usr/bin/cloudflared" ]; then
         echo -e "${GREEN}Warp已安装，无需重复安装，当前代理IP地址为：${NC}"
         curl ifconfig.me --proxy socks5://127.0.0.1:40000        
-    el
-    
+    else
         #先安装WARP仓库GPG密钥：
         echo -e "${GREEN}正在安装WARP仓库GPG 密钥${NC}"
         curl https://pkg.cloudflareclient.com/pubkey.gpg | sudo gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
