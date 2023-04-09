@@ -389,7 +389,9 @@ main_menu=(
                    change_login_password;;
                 5) restart_processes;;
                 6) check_processes;;
-                7) current_Version="force" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh);;
+                #current_Version="force" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh);;
+                7) 
+                   ;;
                 8) standby;;
             esac
             wait;;
