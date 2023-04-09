@@ -501,5 +501,5 @@ main_menu=(
 
                                                                            # 调用主函数
 main
-
+if [ $? -ne 0 ]; then echo "哈"; fi
 
