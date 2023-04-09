@@ -61,11 +61,13 @@ function change_login_password {
 
     # 修改账户密码
   if [[ -n $ssh_password ]]; then
-     if echo "root:$ssh_password" | chpasswd 2>&1 | grep -q "password unchanged"; then
+    chpasswd_output=$(echo "root:$ssh_password" | chpasswd 2>&1)
+    if echo "$chpasswd_output" | grep -q "password unchanged"; then
        echo -e "${GREEN}SSH登录密码修改失败${NC}"
-     else
+    else
        echo -e "${GREEN}SSH登录密码已修改${NC}"
-     fi
+       echo "$chpasswd_output" >&2
+    fi
   fi
 }
 
