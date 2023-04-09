@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=0.9
+Version=0.91
 #更新脚本
 echo "正在查询更新..."
 current_Version=$Version bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
