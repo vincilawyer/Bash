@@ -148,10 +148,7 @@ function apply_ssl_certificate {
     certbot certonly --standalone --agree-tos -n -d www.$domain_name -d $domain_name -m $email
     
   # 判断申请结果
-  echo www."$domain_name"
- result=`check_ssl_certificate "$domain_name"`
- echo $result 
-    if check_ssl_certificate "$domain_name";then
+    if check_ssl_certificate "$domain_name"; then
         echo -e "${GREEN}SSL证书申请已完成！${NC}"
         # 证书自动续约
         echo "0 0 1 */2 * service nginx stop; certbot renew; service nginx start;" | crontab
@@ -168,11 +165,12 @@ function apply_ssl_certificate {
     
   # 重启nginx和防火墙
   if [ -x "$(command -v nginx)" ]; then
+     echo -e "${GREEN}正常恢复nginx运行${NC}"  
      systemctl start nginx
-     echo -e "${GREEN}已恢复nginx运行${NC}"  
   fi  
+  echo -e "${GREEN}正在恢复防火墙运行${NC}"  
   ufw --force enable
-  echo -e "${GREEN}已恢复防火墙运行${NC}"  
+
 }
 
 
