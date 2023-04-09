@@ -217,7 +217,7 @@ function set_nginx_config{
 
     # 提示输入文件路径
     while true; do
-        read -p "请输入网页文件路径（默认为/var/www/html）：" path
+        read -p "12请输入网页文件路径（默认为/var/www/html）：" path
         if [ -z "$path" ]; then
             echo -e "${GREEN}取消路径设置${NC}"
             break
