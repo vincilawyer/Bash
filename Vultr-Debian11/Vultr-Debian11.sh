@@ -185,7 +185,7 @@ function install_v2ray {
                                                                            # 安装Nginx的函数（设置配置、更新、上传网页等）
 function install_nginx {
     if [ -x "$(command -v nginx)" ]; then
-        echo -e "${GREEN}nginx已经安装，版本号为 $(nginx -v 2>&1)，无需重复安装${NC}"
+        echo -e "${GREEN}Nginx已经安装，版本号为 $(nginx -v 2>&1)，无需重复安装${NC}"
     else
         echo -e "${GREEN}正在更新包列表${NC}"
         apt-get update
