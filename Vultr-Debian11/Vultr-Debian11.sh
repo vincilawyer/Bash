@@ -172,8 +172,19 @@ function install_nginx {
         echo -e "${GREEN}Nginx 安装完成，版本号为 $(nginx -v 2>&1)。${NC}"
         echo -e "${GREEN}正在启动防火墙，并放开80、443端口 $(nginx -v 2>&1)。${NC}"
         ufw enable && ufw allow http && ufw allow https 
+        echo -e "${GREEN}从github下载Nginx配置文件${NC}"
+        download_nginx_config
     fi
 }
+
+# 从github下载更新Nginx配置文件
+function download_nginx_config {
+    wget https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf -O /etc/nginx/conf.d/default.conf
+    echo -e "${GREEN}下载成功，配置文件验证结果：${NC}"
+    nginx -t
+}
+
+
                                                                                     #需补充关闭warp
 # 安装Warp并启动Warp的函数
 function install_warp {
