@@ -370,7 +370,7 @@ main_menu=(
     "4、Warp服务"
     "5、重启Nginx、V2ray、Warp、UFW"
     "6、查看NVWU运行状态"
-    "7、更新脚本"
+    "7、强制更新脚本"
     "8、待机"
     "9、退出"
 )
@@ -380,6 +380,7 @@ main_menu=(
     done
     
     read -p "请选择操作: " option
+    clear
     case $option in
     #一级菜单15678选项
         1 | 5 | 6 | 7 | 8)
