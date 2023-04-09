@@ -83,16 +83,17 @@ function change_login_password {
                                                                            # 判断SSL证书是否存在
 function check_ssl_certificate {
     domain_name=$1
-    echo "$domain_name"
+
     if [[ $domain_name != "www."* ]]; then
          domain_name="www.${domain_name}"
     fi
-    echo "$domain_name"
      
     search_result=$(find /etc/letsencrypt/live/ -name fullchain.pem -print0 | xargs -0 grep -l "$1" 2>/dev/null)
     if [[ -z "$search_result" ]]; then
+    echo 12
       return 0
     else
+    echo 13
       return 1
     fi
 }
