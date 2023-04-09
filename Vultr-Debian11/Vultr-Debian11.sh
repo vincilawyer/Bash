@@ -1,4 +1,6 @@
 #!/bin/bash
+#版本号
+Vesion=0.7
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -10,10 +12,6 @@ CYAN='\033[0;36m'
 WHITE='\033[0;37m'
 NC='\033[0m'
 
-                                                                           # 定义欢迎语函数
-function welcome {
-    echo "欢迎进入Vinci服务器管理系统，版本V0.7"
-}
 
                                                                             #修改SSH端口的函数
 function change_ssh_port {
@@ -369,9 +367,8 @@ function wait {
 function main {
   while true; do
     clear
-    welcome
+    echo "欢迎进入Vinci服务器管理系统(版本V$Vesion)"
     echo "====== 请选择需要操作的内容 ======"
-    
     # 定义一级菜单选项
 main_menu=(
     "1、修改SSH登录端口和登录密码"
