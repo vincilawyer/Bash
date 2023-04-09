@@ -11,7 +11,7 @@ WHITE='\033[0;37m'
 NC='\033[0m'
 
 
-#修改SSH端口的函数
+                                                                            #修改SSH端口的函数
 function change_ssh_port {
     #询问SSH端口
   while true; do
@@ -43,7 +43,7 @@ function change_ssh_port {
     ufw status 
   fi
 }
-# 修改登录密码的函数
+                                                                           # 修改登录密码的函数
 function change_login_password {
     # 询问账户密码
   while true; do
@@ -71,7 +71,7 @@ function change_login_password {
 }
 
 
-# 申请SSL证书的函数
+                                                                           # 申请SSL证书的函数
 function apply_ssl_certificate {
   # 输入域名
     while true; do
@@ -145,7 +145,7 @@ function apply_ssl_certificate {
   echo -e "${GREEN}已恢复防火墙运行${NC}"  
 }
 
-# 安装V2Ray的函数
+                                                                           # 安装V2Ray的函数
 function install_v2ray {
     if [ -x "$(command -v v2ray)" ]; then
         echo -e "${GREEN}V2Ray已安装，无需重复安装${NC}"
@@ -160,7 +160,7 @@ function install_v2ray {
     fi
 }
 
-# 安装Nginx的函数
+                                                                           # 安装Nginx的函数
 function install_nginx {
     if [ -x "$(command -v nginx)" ]; then
         echo -e "${GREEN}nginx已经安装，版本号为 $(nginx -v 2>&1)，无需重复安装${NC}"
@@ -177,7 +177,7 @@ function install_nginx {
     fi
 }
 
-# 从github下载更新Nginx配置文件
+                                                                           # 从github下载更新Nginx配置文件
 function download_nginx_config {
     wget https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf -O /etc/nginx/conf.d/default.conf
     echo -e "${GREEN}下载成功，配置文件验证结果：${NC}"
@@ -185,8 +185,7 @@ function download_nginx_config {
 }
 
 
-                                                                                    #需补充关闭warp
-# 安装Warp并启动Warp的函数
+                                                                           # 安装Warp并启动Warp的函数（需补充关闭warp）
 function install_warp {
     if [ -e "/usr/bin/cloudflared" ]; then
         echo -e "${GREEN}Warp已安装，无需重复安装，当前代理IP地址为：${NC}"
@@ -220,7 +219,7 @@ function install_warp {
     fi
 }
 
- #开启BBR加速
+                                                                            #开启BBR加速的函数
 function enable_bbr() {
     if grep -q "net.core.default_qdisc = fq" /etc/sysctl.conf && grep -q "net.ipv4.tcp_congestion_control = bbr" /etc/sysctl.conf; then    
       if sysctl net.ipv4.tcp_congestion_control | grep -q "bbr"; then
@@ -242,18 +241,18 @@ function enable_bbr() {
     fi
 }
 
-#查看 v2ray、nginx、warp、ufw运行状态
+                                                                           #查看 v2ray、nginx、warp、ufw运行状态
 function check_processes() {
   systemctl status -l v2ray nginx warp-svc ufw
 }
 
-#重启v2ray、nginx、warp、ufw
+                                                                           #重启v2ray、nginx、warp、ufw
 function check_processes() {
   systemctl restart v2ray nginx warp-svc ufw
 }
 
 
-# 更新脚本函数
+                                                                           # 更新脚本函数
 function update {
     wget https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11.sh -O /usr/local/bin/vinci
     chmod +x /usr/local/bin/vinci
@@ -261,7 +260,7 @@ function update {
     vinci
 }
 
-# 定义欢迎语函数
+                                                                           # 定义欢迎语函数
 function welcome {
     echo "欢迎进入Vinci服务器管理系统，版本V0.2"
     echo "以下为功能菜单："
@@ -273,7 +272,7 @@ function welcome {
     echo "6. 更新脚本"
 }
 
-# 定义选择功能序号函数
+                                                                           # 定义选择功能序号函数
 function select_option {
     read -p "请输入功能序号：" option
     echo "您选择的是功能序号：$option"
@@ -281,7 +280,7 @@ function select_option {
 
 
 
-# 主函数
+                                                                           # 主函数
 function main {
     welcome
     select_option
@@ -313,7 +312,7 @@ function main {
     esac
 }
 
-# 调用主函数
+                                                                           # 调用主函数
 main
 
 
