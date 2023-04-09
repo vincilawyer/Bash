@@ -68,7 +68,15 @@ function change_login_password {
      fi
   fi
 }
-
+                                                                           # 判断SSL证书是否存在
+function check_ssl_certificate {
+    search_result=$(find /etc/letsencrypt/live/ -name fullchain.pem -print0 | xargs -0 grep -l "$1" 2>/dev/null)
+    if [[ -z "$search_result" ]];then
+      return 0
+    else
+      return 1
+    fi
+}
 
                                                                            # 申请SSL证书的函数（待测试）
 function apply_ssl_certificate {
@@ -95,10 +103,6 @@ function apply_ssl_certificate {
         fi
     done
     
-  # 更新包列表
-  echo -e "${GREEN}正在更新包列表${NC}"
-  sudo apt update
-  echo -e "${GREEN}包列表更新完成${NC}"
   
   # 停止nginx运行
   if [ -x "$(command -v nginx)" ]; then
@@ -114,6 +118,10 @@ function apply_ssl_certificate {
   if [ -x "$(command -v certbot)" ]; then
     echo -e "${GREEN}本机已安装Certbot，无需重复安装，即将申请SSL证书...${NC}"
   else
+   # 更新包列表
+    echo -e "${GREEN}正在更新包列表${NC}"
+    sudo apt update
+    echo -e "${GREEN}包列表更新完成${NC}"
     echo -e "${YELLOW}正在安装Certbot...${NC}"
     apt install certbot python3-certbot-nginx -y
     echo -e "${YELLOW}Certbot安装完成，即将申请SSL证书...${NC}"
@@ -143,15 +151,7 @@ function apply_ssl_certificate {
   ufw --force enable
   echo -e "${GREEN}已恢复防火墙运行${NC}"  
 }
-                                                                           # 判断SSL证书是否存在
-function check_ssl_certificate {
-    search_result=$(find /etc/letsencrypt/live/ -name fullchain.pem -print0 | xargs -0 grep -l "$1" 2>/dev/null)
-    if [[ -z "$search_result" ]];then
-      return 0
-    else
-      return 1
-    fi
-}
+
 
                                                                            # 安装V2Ray的函数（配置上传、设置配置、更新等）
 function install_v2ray {
@@ -330,7 +330,7 @@ function update {
 
                                                                            # 定义欢迎语函数
 function welcome {
-    echo "欢迎进入Vinci服务器管理系统，版本V0.2"
+    echo "欢迎进入Vinci服务器管理系统，版本V0.4"
     echo "以下为功能菜单："
     echo "1. 修改SSH登录端口和登录密码"
     echo "2. 申请SSL证书"
