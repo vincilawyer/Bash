@@ -231,6 +231,16 @@ function enable_bbr() {
     fi
 }
 
+#查看 v2ray、nginx、warp、ufw运行状态
+function check_processes() {
+  systemctl status -l v2ray nginx warp-svc ufw
+}
+
+#重启v2ray、nginx、warp、ufw
+function check_processes() {
+  systemctl restart v2ray nginx warp-svc ufw
+}
+
 
 # 更新脚本函数
 function update {
