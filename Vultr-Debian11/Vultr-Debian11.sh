@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=0.96
+Version=0.97
 #更新脚本
 echo "正在查询更新..."
 current_Version=$Version bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
@@ -405,15 +405,15 @@ main_menu=(
                   #一级菜单2选项
                   2) 
                     Nginx_menu=(
-                    "1、安装Nginx"
-                    "2、从github下载更新配置文件"
-                    "3、从github下载更新网页文件"
-                    "4、修改配置"
+                    "1、返回上一级"
+                    "2、安装Nginx"
+                    "3、从github下载更新配置文件"
+                    "4、从github下载更新网页文件"
+                    "5、修改配置"
                     "6、申请SSL证书"
                     "7、停止运行"
                     "8、卸载"
-                    "9、返回上一级"
-                    "10、退出"   
+                    "0、退出"   
                     )
                     for menu in "${Nginx_menu[@]}"
                     do
@@ -424,33 +424,33 @@ main_menu=(
                         fi
                     clear
                     case $sub_option in
-                          1 | 2 | 3 | 4 | 5 | 6 | 7 | 8)
+                           2 | 3 | 4 | 5 | 6 | 7 | 8)
                                case $sub_option in
-                                   1);;
-                                   2);;
-                                   3);;
+                                   2)install_nginx;;
+                                   3)download_nginx_config;;
                                    4);;
-                                   5);;
-                                   6);;
+                                   5)set_nginx_config;;
+                                   6)apply_ssl_certificate;;
                                    7);;
                                    8);;
+ 
                               esac
                               wait;;
-                          9)break;;
-                          10)exit 0;;
+                          1)break;;
+                          0)exit 0;;
                           *) echo -e "${RED}输入不正确，请重新输入${NC}";;
                     esac;;
                         
                   #一级菜单3选项
                   3) 
                      V2ray_menu=(
-                     "1、安装V2ray"
-                     "2、从github下载更新配置文件"
-                     "3、修改配置"
-                     "4、停止运行"
-                     "5、卸载"
-                     "6、返回上一级"
-                     "7、退出" 
+                     "1、返回上一级"
+                     "2、安装V2ray"
+                     "3、从github下载更新配置文件"
+                     "4、修改配置"
+                     "5、停止运行"
+                     "6、卸载"
+                     "0、退出" 
                      )
                     for menu in "${V2ray_menu[@]}"
                     do
@@ -462,10 +462,9 @@ main_menu=(
                     fi
                      clear
                         case $sub_option in
-                           1 | 2 | 3 | 4 | 5 | 6 | 7 | 8)
+                            2 | 3 | 4 | 5 | 6 | 7 | 8)
                                case $sub_option in
-                                   1);;
-                                   2);;
+                                   2)install_v2ray;;
                                    3);;
                                    4);;
                                    5);;
@@ -474,18 +473,18 @@ main_menu=(
                                    8);;
                               esac
                               wait;;
-                          9)break;;
-                          10)exit 0;;
+                          1)break;;
+                          0)exit 0;;
                           *) echo -e "${RED}输入不正确，请重新输入${NC}";;
                         esac;; 
                   #一级菜单4选项
                   4) 
                      Warp_menu=(
-                     "1、安装Warp"
-                     "2、停止运行"
-                     "3、卸载"
-                     "4、返回上一级"
-                     "5、退出"
+                     "1、返回上一级"
+                     "2、安装Warp"
+                     "3、停止运行"
+                     "4、卸载"
+                     "0、退出"
                      )
                     for menu in "${Warp_menu[@]}"
                     do
@@ -497,10 +496,9 @@ main_menu=(
                     fi
                      clear
                         case $sub_option in
-                           1 | 2 | 3 | 4 | 5 | 6 | 7 | 8）
+                           2 | 3 | 4 | 5 | 6 | 7 | 8）
                                case $sub_option in
-                                   1);;
-                                   2);;
+                                   2)install_warp;;
                                    3);;
                                    4);;
                                    5);;
@@ -509,8 +507,8 @@ main_menu=(
                                    8);;
                               esac
                               wait;;
-                          9)break;;
-                          10)exit 0;;
+                          1)break;;
+                          0)exit 0;;
                           *) echo -e "${RED}输入不正确，请重新输入${NC}";;
                         esac;;
               esac
