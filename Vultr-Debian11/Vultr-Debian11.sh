@@ -70,7 +70,7 @@ function change_login_password {
 }
 
 
-                                                                           # 申请SSL证书的函数
+                                                                           # 申请SSL证书的函数（待测试）
 function apply_ssl_certificate {
   # 输入域名
     while true; do
@@ -121,12 +121,12 @@ function apply_ssl_certificate {
   
   # 申请证书
     certbot certonly --standalone --agree-tos -n -d www.$domain_name -d $domain_name -m $email
-    search_result=$(find /etc/letsencrypt/live/ -name fullchain.pem -print0 | xargs -0 grep -l "$domain_name" 2>/dev/null)
-    if [[ -z "$search_result" ]];then
-      echo "SSL证书申请失败！"
-    else
+    if check_ssl_certificate "$domain_name";then
       echo -e "${GREEN}SSL证书申请已完成！${NC}"
+    else
+      echo "SSL证书申请失败！"
     fi
+    
   # 证书自动续约
     echo "0 0 1 */2 * service nginx stop; certbot renew; service nginx start;" | crontab
     if [ $? -eq 0 ]; then
@@ -143,7 +143,15 @@ function apply_ssl_certificate {
   ufw --force enable
   echo -e "${GREEN}已恢复防火墙运行${NC}"  
 }
-
+                                                                           # 判断SSL证书是否存在
+function check_ssl_certificate{
+    search_result=$(find /etc/letsencrypt/live/ -name fullchain.pem -print0 | xargs -0 grep -l "$1" 2>/dev/null)
+    if [[ -z "$search_result" ]];then
+      return 0
+    else
+      return 1
+    fi
+}
                                                                            # 安装V2Ray的函数（配置上传、设置配置、更新等）
 function install_v2ray {
     if [ -x "$(command -v v2ray)" ]; then
@@ -176,14 +184,14 @@ function install_nginx {
     fi
 }
 
-                                                                           # 从github下载更新Nginx配置文件
+                                                                           # 从github下载更新Nginx配置文件、待测试
 function download_nginx_config {
     wget https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf -O /etc/nginx/conf.d/default.conf
     echo -e "${GREEN}下载成功，配置文件验证结果：${NC}"
     nginx -t
 }
 
-                                                                           # 设置Nginx配置
+                                                                           # 设置Nginx配置、待测试
 function set_nginx_config{
      # 输入域名
     while true; do
@@ -191,9 +199,16 @@ function set_nginx_config{
         if [[ -z $domain_name ]]; then
           echo -e "${GREEN}取消域名设置${NC}"
           break
+          # 域名输入正确
         elif [[ $domain_name =~ ^[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$ ]]; then
             if [[ $domain_name != "www."* ]]; then
                 domain_name="www.${domain_name}"
+                if check_ssl_certificate "$domain_name"=0;then
+                     echo -e "${RED}请注意，该域名的SSL证书尚不存在，请及时申请！${NC}"
+                fi
+                sed -i "s/server_name[[:space:]]\+www\.[[:alnum:]\.\-]*;/server_name $DOMAIN;    ### 填写域名，注意这里的域名带www/" /etc/nginx/conf.d/default.conf
+               
+                echo -e "${GREEN}网站域名设置成功${NC}"
             fi
             break
         else
@@ -247,7 +262,8 @@ function install_warp {
     if [ -e "/usr/bin/cloudflared" ]; then
         echo -e "${GREEN}Warp已安装，无需重复安装，当前代理IP地址为：${NC}"
         curl ifconfig.me --proxy socks5://127.0.0.1:40000        
-    else
+    el
+    
         #先安装WARP仓库GPG密钥：
         echo -e "${GREEN}正在安装WARP仓库GPG 密钥${NC}"
         curl https://pkg.cloudflareclient.com/pubkey.gpg | sudo gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
