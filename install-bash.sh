@@ -15,7 +15,7 @@ else
         str1=$(echo $current_Version)
         str2=$(echo $Version)
         
-        if [ "$str1" == "$str2" ]; then
+        if [[ "$str1" -eq "$str2" ]]; then
            echo "当前已是最新版本，无需更新！当前版本为V$Version"
         else
            wget --no-cache https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh -O /usr/local/bin/vinci
