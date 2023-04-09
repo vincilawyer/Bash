@@ -12,13 +12,10 @@ else
     else
         Version=$(curl -s https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh | grep 'Version=' | cut -d'=' -f2)
         echo "当前版本号$current_Version，最新版本号为$Version"
+        str1=$(echo $current_Version)
+        str2=$(echo $Version)
         
-                #临时代码
-        current_Version=$(echo "${current_Version}" | tr -d '[A-Za-z]')
-        Version=$(echo "${Version}" | tr -d '[A-Za-z]')
-        echo "当前版本号$current_Version，最新版本号为$Version"
-        
-        if [ "${current_Version}" == "${Version}" ]; then
+        if [ "$str1" == "$str2" ]; then
            echo "当前已是最新版本，无需更新！当前版本为V$Version"
         else
            wget --no-cache https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh -O /usr/local/bin/vinci
