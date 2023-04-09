@@ -16,16 +16,15 @@ function change_ssh_port {
     #询问SSH端口
   while true; do
     current_ssh_port=$(grep -i "port" /etc/ssh/sshd_config | awk '{print $2}' | head -1)
-    echo -e $current_ssh_port
     echo -e "${YELLOW}当前的SSH端口为：$current_ssh_port${NC}"
     read -p "$(echo -e ${YELLOW}"请设置新SSH端口（0-65535，空则跳过）：${NC}")" ssh_port
     if [[ -z $ssh_port ]]; then
-        echo -e "${RED}跳过SSH端口设置${NC}"
+        echo -e "${RED}取消SSH端口设置${NC}"
         break
     elif ! [[ $ssh_port =~ ^[0-9]+$ ]]; then
-        echo -e "${RED}输入内容不正常，请重新输入${NC}"
+        echo -e "${RED}端口值输入错误，请重新输入${NC}"
     elif (( $ssh_port < 0 || $ssh_port > 65535 )); then
-        echo -e "${RED}输入内容不正常，请重新输入${NC}"
+        echo -e "${RED}端口值输入错误，请重新输入${NC}"
     else
         break
     fi
@@ -49,7 +48,7 @@ function change_login_password {
   while true; do
     read -p "$(echo -e ${YELLOW}"请设置SSH登录密码（至少8位数字）：${NC}")" ssh_password
     if [[ -z $ssh_password ]]; then
-    echo -e "${RED}跳过登录密码设置${NC}"
+    echo -e "${RED}取消登录密码设置${NC}"
         break
     elif (( ${#ssh_password} < 8 )); then
         echo -e "${RED}密码长度应至少为8位，请重新输入${NC}"
@@ -184,8 +183,66 @@ function download_nginx_config {
     nginx -t
 }
 
+                                                                           # 设置Nginx配置
+function set_nginx_config{
+     # 输入域名
+    while true; do
+        read -p "$(echo -e ${YELLOW}"请输入网站域名（不加www.）: ${NC}")" domain_name
+        if [[ -z $domain_name ]]; then
+          echo -e "${GREEN}取消域名设置${NC}"
+          break
+        elif [[ $domain_name =~ ^[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$ ]]; then
+            if [[ $domain_name != "www."* ]]; then
+                domain_name="www.${domain_name}"
+            fi
+            break
+        else
+            echo -e "${RED}输入格式不正确，请重新输入${NC}"
+        fi
+    done
 
-                                                                          # 安装Warp并启动Warp的函数（需补充关闭warp）
+    # 提示输入文件路径
+    while true; do
+        read -p "请输入网页文件路径（默认为/var/www/html）：" path
+        if [ -z "$path" ]; then
+            echo -e "${GREEN}取消路径设置${NC}"
+            break
+        elif [ ! -e "$path" ]; then
+            echo "文件夹不存在，请重新输入"
+        else
+            break
+        fi
+    done
+    
+    echo "以下是为V2ray提供伪装的配置参数"
+    
+    #输入v2ray监听端口
+     while true; do
+    read -p "$(echo -e ${YELLOW}"请填写v2ray监听端口（0-65535，空则跳过）：${NC}")" ssh_port
+    if [[ -z $ssh_port ]]; then
+        echo -e "${RED}取消v2ray监听端口设置${NC}"
+        break
+    elif ! [[ $ssh_port =~ ^[0-9]+$ ]]; then
+        echo -e "${RED}端口值输入错误，请重新输入${NC}"
+    elif (( $ssh_port < 0 || $ssh_port > 65535 )); then
+        echo -e "${RED}端口值输入错误，请重新输入${NC}"
+    else
+        break
+    fi
+    done
+    
+    #输入path密钥
+    read -p "$(echo -e ${YELLOW}"请填写v2rayPath密钥：${NC}")" Path
+    if [[ -z $Path ]]; then
+        echo -e "${RED}取消v2rayPath密钥设置${NC}"
+    fi
+
+    
+}
+
+
+
+                                                                          # 安装Warp并启动Warp的函数（需补充关闭warp、更换ip）
 function install_warp {
     if [ -e "/usr/bin/cloudflared" ]; then
         echo -e "${GREEN}Warp已安装，无需重复安装，当前代理IP地址为：${NC}"
