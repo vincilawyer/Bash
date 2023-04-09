@@ -12,7 +12,7 @@ NC='\033[0m'
 
                                                                            # 定义欢迎语函数
 function welcome {
-    echo "欢迎进入Vinci服务器管理系统，版本V0.6"
+    echo "欢迎进入Vinci服务器管理系统，版本V0.61"
     echo "以下为功能菜单："
     echo "1. 修改SSH登录端口和登录密码"
     echo "2. 申请SSL证书"
@@ -145,6 +145,10 @@ function apply_ssl_certificate {
     certbot certonly --standalone --agree-tos -n -d www.$domain_name -d $domain_name -m $email
     
   # 判断申请结果
+  echo $domain_name
+  echo "$domain_name"
+ result=`check_ssl_certificate "$domain_name"`
+ echo $result 
     if check_ssl_certificate "$domain_name";then
         echo -e "${GREEN}SSL证书申请已完成！${NC}"
         # 证书自动续约
