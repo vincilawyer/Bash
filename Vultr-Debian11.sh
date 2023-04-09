@@ -170,6 +170,8 @@ function install_nginx {
         echo -e "${GREEN}包列表更新完成${NC}"
         apt-get install nginx -y
         echo -e "${GREEN}Nginx 安装完成，版本号为 $(nginx -v 2>&1)。${NC}"
+        echo -e "${GREEN}正在启动防火墙，并放开80、443端口 $(nginx -v 2>&1)。${NC}"
+        ufw enable && ufw allow http && ufw allow https 
     fi
 }
 
@@ -206,6 +208,29 @@ function install_warp {
         curl ifconfig.me --proxy socks5://127.0.0.1:40000
     fi
 }
+
+ #开启BBR加速
+function enable_bbr() {
+    if grep -q "net.core.default_qdisc = fq" /etc/sysctl.conf && grep -q "net.ipv4.tcp_congestion_control = bbr" /etc/sysctl.conf; then    
+      if sysctl net.ipv4.tcp_congestion_control | grep -q "bbr"; then
+        echo "已开启BBR加速，无需再次开启"
+      else
+        echo "未开启，请重试..."
+        sysctl -p
+      fi
+    else
+      echo "正在开启..."
+      bash -c 'echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf'
+      bash -c 'echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf'
+      sysctl -p
+      if sysctl net.ipv4.tcp_congestion_control | grep -q "bbr"; then
+         echo "已成功开启BBR加速！"
+      else
+         echo "未成功开启，请重试..."
+      fi
+    fi
+}
+
 
 # 更新脚本函数
 function update {
