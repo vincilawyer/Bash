@@ -67,27 +67,6 @@ function change_login_password {
 
 # 申请SSL证书的函数
 function apply_ssl_certificate {
-
-  # 更新包列表
-  sudo apt update
-  
-  # 停止nginx运行
-  sudo systemctl stop nginx
-  echo -e "${GREEN}为了防止80端口被占用，已停止nginx运行${NC}"
-  
-  #关闭防火墙
-  ufw disable 
-  echo -e "${GREEN}为了防止证书申请失败，已关闭防火墙${NC}"
-
-  # 检查并安装Certbot
-  if [ -x "$(command -v certbot)" ]; then
-    echo -e "${GREEN}本机已安装Certbot，无需重复安装${NC}"
-  else
-    echo -e "${YELLOW}正在安装Certbot...${NC}"
-    apt install certbot python3-certbot-nginx
-    echo -e "${YELLOW}Certbot安装完成${NC}"
-  fi
-
   # 输入域名
     while true; do
         read -p "$(echo -e ${YELLOW}"请输入申请SSL证书域名（不加www.）: ${NC}")" domain_name
@@ -110,6 +89,27 @@ function apply_ssl_certificate {
             break
         fi
     done
+    
+  # 更新包列表
+  sudo apt update
+  
+  # 停止nginx运行
+  sudo systemctl stop nginx
+  echo -e "${GREEN}为了防止80端口被占用，已停止nginx运行${NC}"
+  
+  #关闭防火墙
+  ufw disable 
+  echo -e "${GREEN}为了防止证书申请失败，已关闭防火墙${NC}"
+
+  # 检查并安装Certbot
+  if [ -x "$(command -v certbot)" ]; then
+    echo -e "${GREEN}本机已安装Certbot，无需重复安装${NC}"
+  else
+    echo -e "${YELLOW}正在安装Certbot...${NC}"
+    apt install certbot python3-certbot-nginx
+    echo -e "${YELLOW}Certbot安装完成${NC}"
+  fi
+  
   # 申请证书
     sudo certbot certonly --standalone --agree-tos -n -d www.$domain_name -d $domain_name -m $email
     echo -e "${GREEN}SSL证书申请已完成，证书文件为：${NC}"
@@ -121,6 +121,10 @@ function apply_ssl_certificate {
     else
         echo -e "${GREEN}已启动证书自动续约${NC}"
     fi
+    
+  # 重启nginx和防火墙
+  ufw enable && systemctl start nginx
+  echo -e "${GREEN}已恢复防火墙及nginx运行${NC}"  
 }
 
 # 安装V2Ray的函数
