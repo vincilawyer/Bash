@@ -17,7 +17,7 @@ function change_ssh_port {
   while true; do
     current_ssh_port=$(grep -i "port" /etc/ssh/sshd_config | awk '{print $2}' | head -1)
     echo -e $current_ssh_port
-    echo -e "${BLUE}当前的SSH端口为：$current_ssh_port${NC}"
+    echo -e "${YELLOW}当前的SSH端口为：$current_ssh_port${NC}"
     read -p "$(echo -e ${YELLOW}"请设置新SSH端口（0-65535，空则跳过）：${NC}")" ssh_port
     if [[ -z $ssh_port ]]; then
         echo -e "${RED}跳过SSH端口设置${NC}"
@@ -61,7 +61,9 @@ function change_login_password {
 
     # 修改账户密码
   if [[ -n $ssh_password ]]; then
-    echo "root:$ssh_password" | chpasswd
+  if echo "root:$ssh_password" | chpasswd 2>&1 | grep -q "password unchanged"; then
+    echo "SSH登录密码修改失败"
+  else
     echo -e "${GREEN}SSH登录密码已修改${NC}"
   fi
 }
