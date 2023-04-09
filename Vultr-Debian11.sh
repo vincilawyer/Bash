@@ -62,11 +62,11 @@ function change_login_password {
     # 修改账户密码
   if [[ -n $ssh_password ]]; then
     chpasswd_output=$(echo "root:$ssh_password" | chpasswd 2>&1)
-    if echo "$chpasswd_output" | grep -q "password unchanged"; then
-       echo -e "${GREEN}SSH登录密码修改失败${NC}"
+    if echo "$chpasswd_output" >&2 | grep -q "password unchanged"; then
+       echo -e "${GREEN}SSH登录密码修改失败：${NC}"
+       echo "$chpasswd_output" >&2
     else
        echo -e "${GREEN}SSH登录密码已修改${NC}"
-       echo "$chpasswd_output" >&2
     fi
   fi
 }
@@ -195,7 +195,7 @@ function update {
 
 # 定义欢迎语函数
 function welcome {
-    echo "欢迎进入Vinci服务器管理系统，版本V0.1"
+    echo "欢迎进入Vinci服务器管理系统，版本V0.2"
     echo "以下为功能菜单："
     echo "1. 修改SSH登录端口和登录密码"
     echo "2. 申请SSL证书"
