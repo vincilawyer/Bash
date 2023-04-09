@@ -201,8 +201,9 @@ function install_nginx {
 
                                                                            # 从github下载更新Nginx配置文件、待测试
 function download_nginx_config {
+    echo -e "${GREEN}正在载入：${NC}"
     wget https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf -O /etc/nginx/conf.d/default.conf
-    echo -e "${GREEN}下载成功${NC}"
+     echo -e "${GREEN}载入完毕${NC}"
 }
 
                                                                            # 设置Nginx配置、待测试
@@ -341,7 +342,7 @@ function select_option {
 function standby {
     while true; do
     echo "待机中"  
-    sleep 55
+    sleep 70
     clear
     done  
 }      
