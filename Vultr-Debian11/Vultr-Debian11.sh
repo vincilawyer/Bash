@@ -340,9 +340,9 @@ function select_option {
 
 function standby {
     while true; do
-    clear
+    echo "待机中"  
     sleep 55
-    echo "待机中"
+    clear
     done  
 }      
                                                                           # 定义等待函数
