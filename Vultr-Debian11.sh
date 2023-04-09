@@ -174,7 +174,7 @@ function install_nginx {
         ufw enable && ufw allow http && ufw allow https 
     fi
 }
-
+                                                                                    #需补充关闭warp
 # 安装Warp并启动Warp的函数
 function install_warp {
     if [ -e "/usr/bin/cloudflared" ]; then
