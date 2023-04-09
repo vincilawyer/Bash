@@ -16,7 +16,7 @@ function change_ssh_port {
     #询问SSH端口
   while true; do
     current_ssh_port=$(grep -i "port" /etc/ssh/sshd_config | awk '{print $2}')
-    echo -e "${BLUE}当前的SSH端口为：$current_ssh_port${NC}"
+    echo -e "${BLUE}当前的SSH端口为：$current_ssh_port${NC}\n"
     read -p "$(echo -e ${YELLOW}"请设置新SSH端口（0-65535，空则跳过）：${NC}")" ssh_port
     if [[ -z $ssh_port ]]; then
         echo -e "${RED}跳过SSH端口设置${NC}"
@@ -32,11 +32,11 @@ function change_ssh_port {
 
     # 修改SSH端口
   if [[ -n $ssh_port ]]; then
-    ufw delete allow $(grep -i "port" /etc/ssh/sshd_config | awk '{print $2}')/tcp
-    echo -e "${GREEN}已从防火墙规则中删除原SSH端口号：$ssh_port/tcp${NC}"
     sed -E -i "s/^(#\s*)?Port\s+.*/Port $ssh_port/" /etc/ssh/sshd_config
-    sudo ufw allow $ssh_port/tcp
-     echo -e "${GREEN}SSH端口已修改为$ssh_port,并已添加进防火墙规则中。${NC}"
+    ufw allow $ssh_port/tcp
+    echo -e "${GREEN}SSH端口已修改为$ssh_port,并已添加进防火墙规则中。${NC}"
+    ufw delete allow $current_ssh_port/tcp
+    echo -e "${GREEN}已从防火墙规则中删除原SSH端口号：$current_ssh_port${NC}"
     systemctl restart sshd
   fi
 }
