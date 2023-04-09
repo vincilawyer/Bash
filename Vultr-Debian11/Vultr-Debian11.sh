@@ -145,7 +145,7 @@ function apply_ssl_certificate {
   echo -e "${GREEN}已恢复防火墙运行${NC}"  
 }
 
-                                                                           # 安装V2Ray的函数
+                                                                           # 安装V2Ray的函数（配置上传、设置配置、更新等）
 function install_v2ray {
     if [ -x "$(command -v v2ray)" ]; then
         echo -e "${GREEN}V2Ray已安装，无需重复安装${NC}"
@@ -160,7 +160,7 @@ function install_v2ray {
     fi
 }
 
-                                                                           # 安装Nginx的函数
+                                                                           # 安装Nginx的函数（设置配置、更新、上传网页等）
 function install_nginx {
     if [ -x "$(command -v nginx)" ]; then
         echo -e "${GREEN}nginx已经安装，版本号为 $(nginx -v 2>&1)，无需重复安装${NC}"
@@ -185,7 +185,7 @@ function download_nginx_config {
 }
 
 
-                                                                           # 安装Warp并启动Warp的函数（需补充关闭warp）
+                                                                          # 安装Warp并启动Warp的函数（需补充关闭warp）
 function install_warp {
     if [ -e "/usr/bin/cloudflared" ]; then
         echo -e "${GREEN}Warp已安装，无需重复安装，当前代理IP地址为：${NC}"
@@ -241,7 +241,7 @@ function enable_bbr() {
     fi
 }
 
-                                                                           #查看 v2ray、nginx、warp、ufw运行状态
+                                                                          #查看 v2ray、nginx、warp、ufw运行状态
 function check_processes() {
   systemctl status -l v2ray nginx warp-svc ufw
 }
