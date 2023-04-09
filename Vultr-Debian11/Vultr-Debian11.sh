@@ -13,14 +13,6 @@ NC='\033[0m'
                                                                            # 定义欢迎语函数
 function welcome {
     echo "欢迎进入Vinci服务器管理系统，版本V0.69"
-    echo "以下为功能菜单："
-    echo "1. 修改SSH登录端口和登录密码"
-    echo "2. 申请SSL证书"
-    echo "3. 安装 Nginx"
-    echo "4. 安装 Warp并启动"
-    echo "5. 安装 V2ray"
-    echo "6. 待机"
-    echo "7. 更新脚本"
 }
 
                                                                             #修改SSH端口的函数
@@ -335,7 +327,7 @@ function check_processes() {
 }
 
                                                                            #重启v2ray、nginx、warp、ufw
-function check_processes() {
+function restart_processes() {
   systemctl restart v2ray nginx warp-svc ufw
 }
 
@@ -355,46 +347,90 @@ function select_option {
     echo "您选择的是功能序号：$option"
 }
 
-function daiji {
+function standby {
     while true; do
     sleep 58
     echo 
     done  
+}      
+                                                                          # 定义等待函数
+function wait {
+   echo "请按下任意键回到菜单"
+   read -n 1 -s input
 }
+
+# 定义一级菜单选项
+main_menu=(
+    "1、修改SSH登录端口和登录密码"
+    "2、Nginx服务"
+    "3、V2ray服务"
+    "4、Warp服务"
+    "5、重启Nginx、V2ray、Warp、UFW"
+    "6、查看NVWU运行状态"
+    "7、更新脚本"
+    "8、待机"
+    "9、退出"
+)
+Nginx_menu=(
+    "1、安装Nginx"
+    "2、从github下载更新配置文件"
+    "3、从github下载更新网页文件"
+    "4、修改配置"
+    "6、申请SSL证书"
+    "7、停止运行"
+    "8、卸载"
+    "9、返回上一级"
+)
+V2ray_menu=(
+    "1、安装V2ray"
+    "2、从github下载更新配置文件"
+    "3、修改配置"
+    "4、停止运行"
+    "5、卸载"
+    "6、返回上一级"
+)
+Warp_menu=(
+    "1、安装Warp"
+    "2、停止运行"
+    "3、卸载"
+    "4、返回上一级"
+)
+
 
                                                                            # 主函数
 function main {
+  while true; do
+    clear
     welcome
-    select_option
-
+    echo "====== 请选择需要操作的内容 ======"
+    echo "${main_menu[@]}"
+    read -p "请选择操作: " option
+    
     case $option in
-        1)
-            change_ssh_port
-            change_login_password
-            ;;
-        2)
-            apply_ssl_certificate
-            ;;
-        3)
-            install_nginx
-            ;;
-        4)
-            install_warp
-            ;;
-        5)
-            install_v2ray
-            ;;  
-        6)
-            daiji
-            ;;            
-        7)
-            update
-            ;;
-        *)
-            echo -e "${RED}输入的功能序号不正确，请重新输入${NC}"
-            main
-            ;;
-    esac
+        1 | 5 | 6 | 7 | 8 |9)
+            case $option in
+                1)change_ssh_port
+                  change_login_password
+                  wait;;
+                5) restart_processes
+                   wait;;
+                6) check_processes
+                   wait;;
+                7) update;;
+                8) standby
+                   wait;;
+                8) exit 0;;
+            esac
+       ;;
+       2 | 3 | 4)
+       
+  
+       *) echo -e "${RED}输入不正确，请重新输入${NC}"
+     
+     
+     esac
+  done
+    
 }
 
                                                                            # 调用主函数
