@@ -409,7 +409,7 @@ main_menu=(
                     )
                     echo "${Nginx_menu[@]}"
                      read -p "请选择操作: " sub_option
-                        case sub_$option in
+                        case $sub_option in
                            1 | 2 | 3 | 4 | 5 | 6 | 7 | 8）
                                case $sub_option in
                                    1);;
