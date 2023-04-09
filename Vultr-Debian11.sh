@@ -39,7 +39,7 @@ function change_ssh_port {
     ufw delete allow $current_ssh_port/tcp
     echo -e "${GREEN}已从防火墙规则中删除原SSH端口号：$current_ssh_port${NC}"
     systemctl restart sshd
-    echo -e "${GREEN}当前防火墙运行规则及状态为："
+    echo -e "${GREEN}当前防火墙运行规则及状态为：${NC}"
     ufw status 
   fi
 }
@@ -75,11 +75,11 @@ function apply_ssl_certificate {
         if [[ -z $domain_name ]]; then
           echo -e "${GREEN}未输入域名，退出申请操作${NC}"
           return
-        elif [[ $domain_name =~ ^[0-9]+(\.[0-9]+){3}$ || ! $domain_name =~ ^[a-zA-Z0-9][a-zA-Z0-9.-]{1,61}[a-zA-Z0-9]$ ]]; then
-            echo -e "${RED}输入格式不正确，请重新输入${NC}"
-        else
+        elif [[ $domain_name =~ ^[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$ ]]; then
             domain_name=${domain_name#www.}
             break
+        else
+            echo -e "${RED}输入格式不正确，请重新输入${NC}"
         fi
     done
   # 输入邮箱
@@ -108,14 +108,18 @@ function apply_ssl_certificate {
     echo -e "${GREEN}本机已安装Certbot，无需重复安装${NC}"
   else
     echo -e "${YELLOW}正在安装Certbot...${NC}"
-    apt install certbot python3-certbot-nginx
+    apt install certbot python3-certbot-nginx -y
     echo -e "${YELLOW}Certbot安装完成${NC}"
   fi
   
   # 申请证书
     sudo certbot certonly --standalone --agree-tos -n -d www.$domain_name -d $domain_name -m $email
-    echo -e "${GREEN}SSL证书申请已完成，证书文件为：${NC}"
-    find /etc/letsencrypt/live/ -name fullchain.pem
+    search_result=$(find /etc/letsencrypt/live/ -name fullchain.pem -print0 | xargs -0 grep -l "$domain_name" 2>/dev/null)
+    if [[ -z "$search_result" ]];then
+      echo "SSL证书申请失败！"
+    else
+      echo -e "${GREEN}SSL证书申请已完成！${NC}"
+    fi
   # 证书自动续约
     echo "0 0 1 */2 * service nginx stop; certbot renew; service nginx start;" | crontab
     if [ $? -eq 0 ]; then
@@ -125,7 +129,7 @@ function apply_ssl_certificate {
     fi
     
   # 重启nginx和防火墙
-  ufw enable && systemctl start nginx
+  ufw enable --force && systemctl start nginx
   echo -e "${GREEN}已恢复防火墙及nginx运行${NC}"  
 }
 
@@ -189,10 +193,11 @@ function welcome {
     echo "欢迎进入Vinci服务器管理系统，版本V0.1"
     echo "以下为功能菜单："
     echo "1. 修改SSH登录端口和登录密码"
-    echo "2. 申请Let's Encrypt SSL证书"
+    echo "2. 申请SSL证书"
     echo "3. 安装 Nginx"
     echo "4. 安装 Warp"
-    echo "5. 更新脚本"
+    echo "5. 安装 V2ray"
+    echo "6. 更新脚本"
 }
 
 # 定义选择功能序号函数
@@ -211,6 +216,7 @@ function main {
     case $option in
         1)
             change_ssh_port
+            change_login_password
             ;;
         2)
             apply_ssl_certificate
@@ -222,6 +228,10 @@ function main {
             install_warp
             ;;
         5)
+            install_v2ray
+            ;;
+               
+        6)
             update
             ;;
         *)
