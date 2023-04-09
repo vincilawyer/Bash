@@ -89,7 +89,7 @@ function check_ssl_certificate {
     echo 哈哈$domain_name
      
     search_result=$(find /etc/letsencrypt/live/ -name fullchain.pem -print0 | xargs -0 grep -l "$1" 2>/dev/null)
-    if [[ -z "$search_result" ]];then
+    if [[ -z "$search_result" ]]; then
       return 0
  echo "哈哈哈哈"
     else
