@@ -358,7 +358,7 @@ function select_option {
 
 function standby {
     while true; do
-        echo "待机中..."
+        echo "待机中...输入任意键返回系统"
         read -t 59 -n 1 input
         # 如果用户输入不为空，则退出待机
         if [ ! -z $input ]; then
