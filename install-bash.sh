@@ -16,7 +16,6 @@ function download {
 
 function execute {
     sleep 3
-    clear
     vinci
     #如新版本存在错误，则重新更新
     if  [ ! $? == 0 ]; then
@@ -31,7 +30,8 @@ function execute {
           #强制更新
           wget --no-cache https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh -O /usr/local/bin/vinci
           chmod +x /usr/local/bin/vinci
-          clear
+          echo "重新更新完成，正在尝试再次启动！"
+          sleep 3
           vinci
           #如新版本没有错误，则执行新版本
           if  [ $? == 0 ]; then
@@ -43,6 +43,7 @@ function execute {
 }
 
 function main {
+clear
 
 #下载脚本请求
 if [[ -z $current_Version ]]; then
