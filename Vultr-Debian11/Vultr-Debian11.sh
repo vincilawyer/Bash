@@ -440,7 +440,7 @@ function Option {
   exit 0
   fi
   echo
-  echo  $option)
+  echo  $option、
 }
 
 # 定义菜单选项
