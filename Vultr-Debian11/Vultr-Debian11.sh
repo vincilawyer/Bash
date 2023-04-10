@@ -15,7 +15,7 @@ NC='\033[0m'
 
 #其他参数
 Standby=50  #刷新等待时长
-option      #选择
+option=""      #选择
 
                                                                           #更新函数
 function update {
@@ -408,7 +408,7 @@ EOF
     echo "$menu"
   done
   echo
-  echo -"  请按序号选择操作: "
+  echo -n "  请按序号选择操作: "
   while ! $(read -t $Standby option); do
   :
   done
