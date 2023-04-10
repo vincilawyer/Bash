@@ -436,7 +436,7 @@ function Option {
   done
   option=$input 
   clear
-  if [ $option == 0 ]; then
+  if [ $option==0 ]; then
   exit 0
   fi
   echo
