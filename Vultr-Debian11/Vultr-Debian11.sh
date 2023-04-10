@@ -144,7 +144,7 @@ function apply_ssl_certificate {
     echo -e "${GREEN}包列表更新完成${NC}"
     echo -e "${GREEN}正在安装Certbot...${NC}"
     apt install certbot python3-certbot-nginx -y
-    echo -e "${GREENCertbot安装完成，即将申请SSL证书...${NC}"
+    echo -e "${GREEN}Certbot安装完成，即将申请SSL证书...${NC}"
   fi
   
   # 申请证书
@@ -396,14 +396,14 @@ main_menu=(
     "7、强制更新脚本"
     "8、待机"
     "0、退出"
-)
+ )
     for menu in "${main_menu[@]}"
     do
     echo "$menu"
     done
 
     if ! read -t 60 -p "请选择操作: " option; then
-    standby
+     standby
     fi
     clear
     case $option in
