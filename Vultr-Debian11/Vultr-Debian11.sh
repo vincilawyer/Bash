@@ -12,6 +12,7 @@ WHITE='\033[0;37m'
 NC='\033[0m'
                                                                           #更新函数
 function update {
+clear
 current_Version="$1" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
 #如果成功更新
 if [ $? == 1 ]; then
