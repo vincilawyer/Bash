@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.21
+Version=1.22
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -463,6 +463,7 @@ EOF
 function main {
   while true; do
     Page "请选择以下操作选项" "${main_menu[@]}"
+    echo $option
     case $option in
     #一级菜单1567选项
         1 | 5 | 6 | 7)
