@@ -420,7 +420,7 @@ EOF
 }
                                                                           # 选择内容函数
 function Option {
-  Page
+  Page $1
   #展示选项
   for menu in "${@:2}"
   do
