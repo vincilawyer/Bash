@@ -426,7 +426,7 @@ EOF
   done
   option=$input
   clear
-   echo "1、选择：$input & 传递 $option"
+  echo "1、选择：$input & 传递 $option"
   echo
 }
 
