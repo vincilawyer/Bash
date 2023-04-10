@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.09
+Version=1.1
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -16,11 +16,12 @@ NC='\033[0m'
 function update {
 clear
 current_Version="$1" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
-echo "错误："$?"."
+no=$?
+echo "错误："$no"."
 #如果成功更新
-if [ $? == 1 ]; then
+if [ $no == 1 ]; then
   exit 
-elif [ $? == 0 ]; then
+elif [ $no == 0 ]; then
 :
 else
   echo "更新检查错误，请检查更新源或网络！"
