@@ -42,7 +42,7 @@ function execute {
               fi
            done
         else
-          echo "放弃重新更新"
+          echo "已放弃重新更新！"
         fi
      fi
      exit 1
