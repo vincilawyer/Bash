@@ -19,7 +19,7 @@ echo "正在检查版本更新..."
 current_Version="$1" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
 if [ $? == 1 ]; then
 vinci && exit
-if
+fi
 } 
 
                                                                           #执行启动前更新检查
