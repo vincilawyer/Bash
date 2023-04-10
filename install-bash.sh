@@ -3,7 +3,7 @@
 function countdown {
     local from=$1
     while [ $from -ge 0 ]; do
-        echo -ne "\r$froms \r"
+        echo -ne "\r${from}s \r"
         sleep 1
         ((from--))
     done
