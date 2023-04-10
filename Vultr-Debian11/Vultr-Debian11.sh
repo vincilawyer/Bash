@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.36
+Version=1.37
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -435,12 +435,12 @@ function Option {
      echo -ne "\b"
   done
   option=$input 
-  clear
+    echo  q$option
+  #clear
   if [ $option==0 ]; then
   exit 0
   fi
   echo
-  echo  $option、
 }
 
 # 定义菜单选项
