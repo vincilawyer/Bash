@@ -384,7 +384,7 @@ EOF
 )
 
   echo
-  echo -e "${BLUE}${art}${NC}"
+  echo -e "${RED}${art}${NC}"
   echo
   echo
   echo "                   欢迎进入Vinci服务器管理系统(版本V$Version)"
@@ -419,7 +419,7 @@ function main {
     echo "$menu"
     done
 
-    if ! read -t $Standby -p "请选择操作: " option; then
+    if ! read -t $Standby -p "  请按序号选择操作: " option; then
        continue
     fi
     clear
@@ -446,7 +446,7 @@ function main {
                     Nginx_menu=(
                     "  1、返回上一级"
                     "  2、安装Nginx"
-                    "    3、从github下载更新配置文件"
+                    "  3、从github下载更新配置文件"
                     "  4、从github下载更新网页文件"
                     "  5、修改Nginx配置"
                     "  6、查看Nginx配置文件"
@@ -459,9 +459,10 @@ function main {
                     do
                       echo "$menu"
                     done
-                        if ! read -t $Standby -p "请选择操作: " sub_option; then
-                          continue
-                        fi
+                    echo
+                    if ! read -t $Standby -p "  请按序号选择操作: " sub_option; then
+                        continue
+                    fi
                     clear
                     case $sub_option in
                            2 | 3 | 4 | 5 | 6 | 7 | 8)
@@ -503,7 +504,7 @@ function main {
                       echo "$menu"
                     done
                     
-                    if ! read -t $Standby -p "请选择操作: " sub_option; then
+                    if ! read -t $Standby -p "  请按序号选择操作: " sub_option; then
                         continue
                     fi
                      clear
@@ -541,7 +542,7 @@ function main {
                       echo "$menu"
                     done
                     
-                    if ! read -t $Standby -p "请选择操作: " sub_option; then
+                    if ! read -t $Standby -p "  请按序号选择操作: " sub_option; then
                          continue
                     fi
                      clear
