@@ -10,15 +10,21 @@ BLUE='\033[0;34m'
 PURPLE='\033[0;35m'
 CYAN='\033[0;36m'
 WHITE='\033[0;37m'
+BLACK="\033[40m"
 NC='\033[0m'
                                                                           #更新函数
 function update {
 clear
-current_Version="$1" bash <(curl -s -L https://ra.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
+current_Version="$1" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
 echo "错误："$?"."
 #如果成功更新
 if [ $? == 1 ]; then
   exit 
+elif [ $? == 0 ]; then
+  
+else
+  echo "更新检查错误，请检查更新源或网络！"
+  sleep 5
 fi
 } 
 
@@ -373,6 +379,21 @@ function wait {
    read -n 1 -s input
 }
 
+function welcome {
+art=$(cat << "EOF"
+ 
+  __     __                         _   _           ____                   
+  \ \   /"/u          ___          | \ |"|       U /"___|         ___      
+    \ \ / //          |_"_|        <|  \| |>      \| | u          |_"_|     
+    /\ V /_,-.         | |         U| |\  |u       | |/__          | |      
+   U  \_/-(_/        U/| |\u        |_| \_|         \____|       U/| |\u    
+     //           .-,_|___|_,-.     ||   \\,-.     _// \\     .-,_|___|_,-. 
+    (__)           \_)-' '-(_/      (_")  (_/     (__)(__)     \_)-' '-(_/  
+EOF
+)
+echo -e "${BLUE}${art}${NC}"
+echo
+}
 
 
 
@@ -383,6 +404,7 @@ function wait {
 function main {
   while true; do
     clear
+    welcome
     echo "欢迎进入Vinci服务器管理系统(版本V$Version)"
     echo "====== 请选择需要操作的内容 ======"
     # 定义一级菜单选项
