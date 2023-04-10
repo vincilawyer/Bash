@@ -31,10 +31,10 @@ function change_ssh_port {
     #询问SSH端口
   while true; do
     current_ssh_port=$(grep -i "port" /etc/ssh/sshd_config | awk '{print $2}' | head -1)
-    echo -e "${YELLOW}当前的SSH端口为：$current_ssh_port${NC}"
-    read -p "$(echo -e ${YELLOW}"请设置新SSH端口（0-65535，空则跳过）：${NC}")" ssh_port
+    echo -e "${GREEN}当前的SSH端口为：$current_ssh_port${NC}"
+    read -p "$(echo -e ${BLUE}"请设置新SSH端口（0-65535，空则跳过）：${NC}")" ssh_port
     if [[ -z $ssh_port ]]; then
-        echo -e "${RED}取消SSH端口设置${NC}"
+        echo -e "${RED}已取消SSH端口设置${NC}"
         break
     elif ! [[ $ssh_port =~ ^[0-9]+$ ]]; then
         echo -e "${RED}端口值输入错误，请重新输入${NC}"
@@ -61,9 +61,9 @@ function change_ssh_port {
 function change_login_password {
     # 询问账户密码
   while true; do
-    read -p "$(echo -e ${YELLOW}"请设置SSH登录密码（至少8位数字）：${NC}")" ssh_password
+    read -p "$(echo -e ${BLUE}"请设置SSH登录密码（至少8位数字）：${NC}")" ssh_password
     if [[ -z $ssh_password ]]; then
-    echo -e "${RED}取消登录密码设置${NC}"
+    echo -e "${RED}已取消登录密码设置${NC}"
         break
     elif (( ${#ssh_password} < 8 )); then
         echo -e "${RED}密码长度应至少为8位，请重新输入${NC}"
@@ -76,7 +76,7 @@ function change_login_password {
   if [[ -n $ssh_password ]]; then
     chpasswd_output=$(echo "root:$ssh_password" | chpasswd 2>&1)
      if echo "$chpasswd_output" | grep -q "BAD PASSWORD" >/dev/null 2>&1; then
-       echo -e "${GREEN}SSH登录密码修改失败,错误原因：${NC}"
+       echo -e "${RED}SSH登录密码修改失败,错误原因：${NC}"
        echo "$chpasswd_output" >&2
      else
        echo -e "${GREEN}SSH登录密码已修改成功！${NC}"
@@ -102,9 +102,9 @@ function check_ssl_certificate {
 function apply_ssl_certificate {
   # 输入域名
     while true; do
-        read -p "$(echo -e ${YELLOW}"请输入申请SSL证书域名（不加www.）: ${NC}")" domain_name
+        read -p "$(echo -e ${BLUE}"请输入申请SSL证书域名（不加www.）: ${NC}")" domain_name
         if [[ -z $domain_name ]]; then
-          echo -e "${GREEN}未输入域名，退出申请操作${NC}"
+          echo -e "${RED}未输入域名，退出申请操作${NC}"
           return
         elif [[ $domain_name =~ ^[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$ ]]; then
             domain_name=${domain_name#www.}
@@ -115,7 +115,7 @@ function apply_ssl_certificate {
     done
   # 输入邮箱
     while true; do
-        read -p "$(echo -e ${YELLOW}"请输入申请SSL证书邮箱: ${NC}")" email
+        read -p "$(echo -e ${BLUE}"请输入申请SSL证书邮箱: ${NC}")" email
         if [[ -z $email || ! $email =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]]; then
             echo -e "${RED}输入格式不正确，请重新输入${NC}"
         else
@@ -142,9 +142,9 @@ function apply_ssl_certificate {
     echo -e "${GREEN}正在更新包列表${NC}"
     sudo apt update
     echo -e "${GREEN}包列表更新完成${NC}"
-    echo -e "${YELLOW}正在安装Certbot...${NC}"
+    echo -e "${GREEN}正在安装Certbot...${NC}"
     apt install certbot python3-certbot-nginx -y
-    echo -e "${YELLOW}Certbot安装完成，即将申请SSL证书...${NC}"
+    echo -e "${GREENCertbot安装完成，即将申请SSL证书...${NC}"
   fi
   
   # 申请证书
