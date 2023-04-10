@@ -21,7 +21,7 @@ echo "错误："$?"."
 if [ $? == 1 ]; then
   exit 
 elif [ $? == 0 ]; then
-  
+:
 else
   echo "更新检查错误，请检查更新源或网络！"
   sleep 5
