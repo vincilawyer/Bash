@@ -15,7 +15,6 @@ NC='\033[0m'
 
 #其他参数
 Standby=50  #刷新等待时长
-option=""      #选择
 
                                                                           #倒计时
 function countdown {
@@ -394,7 +393,7 @@ function wait {
    read -n 1 -s input
 }
 
-function Page {
+function Option {
 clear
 art=$(cat << "EOF"
   __     __                         _   _           ____                   
@@ -421,11 +420,18 @@ EOF
   done
   echo
   echo -n "  请按序号选择操作: "
-  while ! $(read -t $Standby option); do
-  :
+  while $(read -t $Standby input); do
+     # 定义正则表达式，只接受数字
+     regex='^[0-9]+$'
+
+     # 如果用户输入的是数字，就将其输出
+     if [[ $input =~ $regex ]]; then
+       return $regex
+     else
+       return999
+     fi
   done
   clear
-  echo "第一$option"
   echo
 }
 
@@ -475,8 +481,7 @@ EOF
                                                                            # 主函数
 function main {
   while true; do
-    Page "请选择以下操作选项" "${main_menu[@]}"
-    echo "第二$option"
+    option=$(Option "请选择以下操作选项" "${main_menu[@]}")
     case $option in
     #一级菜单1567选项
         1 | 5 | 6 | 7)
@@ -494,7 +499,7 @@ function main {
                case $option in
                
                  #一级菜单2选项
-                 2) Page ${main_menu[$(($option - 1))]} "${Nginx_menu[@]}"
+                 2) option=$(Option ${main_menu[$(($option - 1))]} "${Nginx_menu[@]}")
                     case $option in
                            2 | 3 | 4 | 5 | 6 | 7 | 8)
                                case $option in
@@ -514,7 +519,7 @@ function main {
                     esac;;
                         
                   #一级菜单3选项
-                  3)Page ${main_menu[$(($option - 1))]} "${V2ray_menu[@]}" 
+                  3)option=$(Option ${main_menu[$(($option - 1))]} "${V2ray_menu[@]}" )
                         case $option in
                             2 | 3 | 4 | 5 | 6 | 7 | 8)
                                case $option in
@@ -532,7 +537,7 @@ function main {
                         esac;; 
                         
                   #一级菜单4选项
-                  4) Page ${main_menu[$(($option - 1))]} "${V2ray_menu[@]}" 
+                  4) option=$(Option ${main_menu[$(($option - 1))]} "${V2ray_menu[@]}" )
                         case $option in
                            2 | 3 | 4 | 5 | 6 | 7 | 8)
                                case $option in
