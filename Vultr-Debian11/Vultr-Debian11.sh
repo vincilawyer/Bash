@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.31
+Version=1.32
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -14,7 +14,7 @@ BLACK="\033[40m"
 NC='\033[0m'
 
 #其他参数
-Standby=15  #刷新等待时长
+Standby=50  #刷新等待时长
 option=0    #选项
                                                                         #倒计时
 function countdown {
