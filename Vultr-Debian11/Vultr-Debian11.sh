@@ -17,6 +17,9 @@ NC='\033[0m'
 function update {
 echo "正在检查版本更新..."
 current_Version="$1" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
+if [ $? == 1 ]; then
+vinci && exit
+if
 } 
 
                                                                           #执行启动前更新检查
@@ -404,13 +407,14 @@ main_menu=(
     fi
     clear
     case $option in
-    #一级菜单15678选项
-        1 | 5 | 6)
+    #一级菜单1567选项
+        1 | 5 | 6 | 7)
             case $option in
                 1) change_ssh_port
                    change_login_password;;
                 5) restart_processes;;
                 6) check_processes;;
+                7) update "force";;
             esac
             wait;;
      #一级菜单234选项
@@ -537,8 +541,6 @@ main_menu=(
                         esac;;
               esac
            done;;
-       #一级菜单7选项：强制更新  
-       7) update "force";;
        #一级菜单8选项：待机 
        8) standby;;    
        #一级菜单0选项：退出
