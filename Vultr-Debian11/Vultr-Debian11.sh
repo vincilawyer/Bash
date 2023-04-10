@@ -1,7 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
 Version=1.08
-
 #定义彩色字体
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -11,34 +10,12 @@ PURPLE='\033[0;35m'
 CYAN='\033[0;36m'
 WHITE='\033[0;37m'
 NC='\033[0m'
-
-
                                                                           #更新函数
 function update {
-echo "正在检查版本更新..."
 current_Version="$1" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
+#如果成功更新
 if [ $? == 1 ]; then
-  vinci
-  #判断新版本是否有错
-  if  [ ! $? == 0 ]; then
-     while true; do
-        echo "新版本存在错误，正在尝试重新更新！...输入任意键退出"
-        read -t 59 -n 1 input
-        # 如果用户输入不为空，则退出更新
-        if [ ! -z $input ]; then
-            break
-        fi
-        clear
-        #强制更新
-        current_Version="force" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
-        vinci
-        #判断新版本是否有错
-        if  [ $? == 0 ]; then
-        break
-        fi
-     done
-  fi
-  exit
+  exit 
 fi
 } 
 
