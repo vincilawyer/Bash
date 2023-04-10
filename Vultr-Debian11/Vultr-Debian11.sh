@@ -113,7 +113,7 @@ function apply_ssl_certificate {
             break
         else
             echo -e "${RED}输入格式不正确，请重新输入${NC}"
-        fi
+        f
     done
   # 输入邮箱
     while true; do
