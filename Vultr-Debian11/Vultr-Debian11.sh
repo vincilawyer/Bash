@@ -15,7 +15,7 @@ NC='\033[0m'
 
 #其他参数
 Standby=50  #刷新等待时长
-
+option      #选择
 
                                                                           #更新函数
 function update {
@@ -408,6 +408,12 @@ EOF
     echo "$menu"
   done
   echo
+  echo -"  请按序号选择操作: "
+  while ! $(read -t $Standby option); do
+  :
+  done
+  clear
+  echo
 }
 
 # 定义菜单选项
@@ -457,10 +463,6 @@ EOF
 function main {
   while true; do
     Page "请选择以下操作选项" "${main_menu[@]}"
-    if ! read -t $Standby -p "  请按序号选择操作: " option; then
-       continue
-    fi
-    clear
     case $option in
     #一级菜单1567选项
         1 | 5 | 6 | 7)
@@ -479,13 +481,9 @@ function main {
                
                  #一级菜单2选项
                  2) Page ${main_menu[$(($option - 1))]} "${Nginx_menu[@]}"
-                    if ! read -t $Standby -p "  请按序号选择操作: " sub_option; then
-                        continue
-                    fi
-                    clear
-                    case $sub_option in
+                    case $option in
                            2 | 3 | 4 | 5 | 6 | 7 | 8)
-                               case $sub_option in
+                               case $option in
                                    2)install_nginx;;
                                    3)download_nginx_config;;
                                    4);;
@@ -503,13 +501,9 @@ function main {
                         
                   #一级菜单3选项
                   3)Page ${main_menu[$(($option - 1))]} "${V2ray_menu[@]}" 
-                    if ! read -t $Standby -p "  请按序号选择操作: " sub_option; then
-                        continue
-                    fi
-                     clear
-                        case $sub_option in
+                        case $option in
                             2 | 3 | 4 | 5 | 6 | 7 | 8)
-                               case $sub_option in
+                               case $option in
                                    2)install_v2ray;;
                                    3);;
                                    4);;
@@ -525,13 +519,9 @@ function main {
                         
                   #一级菜单4选项
                   4) Page ${main_menu[$(($option - 1))]} "${V2ray_menu[@]}" 
-                    if ! read -t $Standby -p "  请按序号选择操作: " sub_option; then
-                         continue
-                    fi
-                     clear
-                        case $sub_option in
+                        case $option in
                            2 | 3 | 4 | 5 | 6 | 7 | 8)
-                               case $sub_option in
+                               case $option in
                                    2)install_warp;;
                                    3);;
                                    4)echo "没开发呢！";;
@@ -546,7 +536,8 @@ function main {
        #一级菜单0选项：退出
        0) exit 0;;    
        #一级菜单其他选项  
-       *) echo -e "${RED}输入不正确，请重新输入${NC}";;
+       *) echo -e "${RED}输入不正确，请重新输入${NC}"
+       sleep 2;;
      esac
   done
     
