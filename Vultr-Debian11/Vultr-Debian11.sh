@@ -1,9 +1,8 @@
 #!/bin/bash
 #版本号,不得为空
-Version=0.99
+Version=1.0
 #更新脚本
-echo "正在查询更新..."
-current_Version=$Version bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
+upadte $Version bash
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -298,6 +297,7 @@ function install_warp {
         #查询代理后的IP地址：
         echo -e "${GREEN}Warp 安装完成，代理IP地址为：${NC}"
         curl ifconfig.me --proxy socks5://127.0.0.1:40000
+        echo
     fi
 }
 
@@ -338,6 +338,12 @@ function select_option {
     read -p "请输入功能序号：" option
     echo "您选择的是功能序号：$option"
 }
+
+                                                                           #更新函数
+function update {
+echo "正在检查版本更新..."
+current_Version="$1" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
+} 
 
 function standby {
     while true; do
@@ -393,7 +399,7 @@ main_menu=(
                    change_login_password;;
                 5) restart_processes;;
                 6) check_processes;;
-                7) current_Version="force" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh);;
+                7) update "force";;
                 8) standby;;
             esac
             wait;;
