@@ -389,7 +389,7 @@ main_menu=(
     "6、查看NVWU运行状态"
     "7、强制更新脚本"
     "8、待机"
-    "9、退出"
+    "0、退出"
 )
     for menu in "${main_menu[@]}"
     do
@@ -402,14 +402,12 @@ main_menu=(
     clear
     case $option in
     #一级菜单15678选项
-        1 | 5 | 6 | 7 | 8)
+        1 | 5 | 6)
             case $option in
                 1) change_ssh_port
                    change_login_password;;
                 5) restart_processes;;
                 6) check_processes;;
-                7) update "force";;
-                8) standby;;
             esac
             wait;;
      #一级菜单234选项
@@ -536,8 +534,12 @@ main_menu=(
                         esac;;
               esac
            done;;
-       #一级菜单9选项    
-       9) exit 0;;    
+       #一级菜单7选项：强制更新  
+       7) update "force";;
+       #一级菜单8选项：待机 
+       8) standby;;    
+       #一级菜单0选项：退出
+       0) exit 0;;    
        #一级菜单其他选项  
        *) echo -e "${RED}输入不正确，请重新输入${NC}";;
      esac
