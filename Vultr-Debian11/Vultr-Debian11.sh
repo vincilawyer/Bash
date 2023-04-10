@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.15
+Version=1.16
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -387,12 +387,13 @@ EOF
   echo -e "${BLUE}${art}${NC}"
   echo
   echo
-  echo "                 欢迎进入Vinci服务器管理系统(版本V$Version)"
+  echo "                   欢迎进入Vinci服务器管理系统(版本V$Version)"
   echo
-  echo "====================== 请选择以下操作选项 =============================="
+  echo "=========================== "$1" =============================="
+  echo 
 }
 
-
+请选择以下操作选项
 
 
 
@@ -401,17 +402,17 @@ EOF
 function main {
   while true; do
     clear
-    welcome
+    welcome "请选择以下操作选项"
     # 定义一级菜单选项
     main_menu=(
-    "1、修改SSH登录端口和登录密码"
-    "2、Nginx服务"
-    "3、V2ray服务"
-    "4、Warp服务"
-    "5、重启Nginx、V2ray、Warp、UFW"
-    "6、查看NVWU运行状态"
-    "7、强制更新脚本"
-    "0、退出"
+    "  1、修改SSH登录端口和登录密码"
+    "  2、Nginx服务"
+    "  3、V2ray服务"
+    "  4、Warp服务"
+    "  5、重启Nginx、V2ray、Warp、UFW"
+    "  6、查看NVWU运行状态"
+    "  7、强制更新脚本"
+    "  0、退出"
     )
     for menu in "${main_menu[@]}"
     do
@@ -437,21 +438,22 @@ function main {
        2 | 3 | 4)
             while true; do
                clear
-               echo "====== ${main_menu[$(($option - 1))]} ======"
+               welcome ${main_menu[$(($option - 1))]}
+               echo 
                case $option in
                   #一级菜单2选项
                   2) 
                     Nginx_menu=(
-                    "1、返回上一级"
-                    "2、安装Nginx"
-                    "3、从github下载更新配置文件"
-                    "4、从github下载更新网页文件"
-                    "5、修改Nginx配置"
-                    "6、查看Nginx配置文件"
-                    "7、申请SSL证书"
-                    "8、停止运行Nginx"
-                    "9、卸载"
-                    "0、退出"   
+                    "  1、返回上一级"
+                    "  2、安装Nginx"
+                    "    3、从github下载更新配置文件"
+                    "  4、从github下载更新网页文件"
+                    "  5、修改Nginx配置"
+                    "  6、查看Nginx配置文件"
+                    "  7、申请SSL证书"
+                    "  8、停止运行Nginx"
+                    "  9、卸载"
+                    "  0、退出"   
                     )
                     for menu in "${Nginx_menu[@]}"
                     do
@@ -487,14 +489,14 @@ function main {
                   #一级菜单3选项
                   3) 
                      V2ray_menu=(
-                     "1、返回上一级"
-                     "2、安装V2ray"
-                     "3、从github下载更新配置文件"
-                     "4、修改V2ray配置"
-                     "5、查看V2ray配置文件"
-                     "6、停止运行V2ray"
-                     "7、卸载"
-                     "0、退出" 
+                     "  1、返回上一级"
+                     "  2、安装V2ray"
+                     "  3、从github下载更新配置文件"
+                     "  4、修改V2ray配置"
+                     "  5、查看V2ray配置文件"
+                     "  6、停止运行V2ray"
+                     "  7、卸载"
+                     "  0、退出" 
                      )
                     for menu in "${V2ray_menu[@]}"
                     do
@@ -528,11 +530,11 @@ function main {
                   #一级菜单4选项
                   4) 
                      Warp_menu=(
-                     "1、返回上一级"
-                     "2、安装Warp"
-                     "3、停止运行"
-                     "4、卸载"
-                     "0、退出"
+                     "  1、返回上一级"
+                     "  2、安装Warp"
+                     "  3、停止运行"
+                     "  4、卸载"
+                     "  0、退出"
                      )
                     for menu in "${Warp_menu[@]}"
                     do
