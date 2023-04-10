@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.12
+Version=1.13
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -373,7 +373,6 @@ function wait {
 
 function welcome {
 art=$(cat << "EOF"
- 
   __     __                         _   _           ____                   
   \ \   /"/u          ___          | \ |"|       U /"___|         ___      
     \ \ / //          |_"_|        <|  \| |>      \| | u          |_"_|     
@@ -381,10 +380,15 @@ art=$(cat << "EOF"
    U  \_/-(_/        U/| |\u        |_| \_|         \____|       U/| |\u    
      //           .-,_|___|_,-.     ||   \\,-.     _// \\     .-,_|___|_,-. 
     (__)           \_)-' '-(_/      (_")  (_/     (__)(__)     \_)-' '-(_/  
-EOF
+EOF 
 )
+echo
 echo -e "${BLUE}${art}${NC}"
 echo
+echo
+echo "                 欢迎进入Vinci服务器管理系统(版本V$Version)"
+echo
+echo "====================== 请选择需要操作的内容 =============================="
 }
 
 
@@ -397,8 +401,6 @@ function main {
   while true; do
     clear
     welcome
-    echo "欢迎进入Vinci服务器管理系统(版本V$Version)"
-    echo "====== 请选择需要操作的内容 ======"
     # 定义一级菜单选项
     main_menu=(
     "1、修改SSH登录端口和登录密码"
