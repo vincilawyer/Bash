@@ -13,7 +13,8 @@ NC='\033[0m'
                                                                           #更新函数
 function update {
 clear
-current_Version="$1" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
+current_Version="$1" bash <(curl -s -L https://ra.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
+echo "错误："$?"."
 #如果成功更新
 if [ $? == 1 ]; then
   exit 
@@ -552,5 +553,4 @@ main_menu=(
 
                                                                            # 调用主函数
 main
-exit
 
