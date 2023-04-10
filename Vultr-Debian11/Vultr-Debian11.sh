@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.37
+Version=1.38
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -434,6 +434,7 @@ function Option {
      echo -n "."
      echo -ne "\b"
   done
+  echo  q$input
   option=$input 
     echo  q$option
   #clear
