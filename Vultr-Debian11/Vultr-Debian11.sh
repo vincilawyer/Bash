@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.01
+Version=1.02
 #更新脚本
 update $Version
 
@@ -331,6 +331,11 @@ function check_processes() {
                                                                            #重启v2ray、nginx、warp、ufw
 function restart_processes() {
   systemctl restart v2ray nginx warp-svc ufw
+  if [ $? -eq 0 ]; then
+   echo "已重启完成"
+  else
+   echo "发生错误，请检查以上错误内容。"
+  fi
 }
 
                                                                            # 定义选择功能序号函数
@@ -368,7 +373,7 @@ function wait {
 function main {
   while true; do
     clear
-    echo "欢迎进入Vinci服务器管理系统(版本V$Vesion)"
+    echo "欢迎进入Vinci服务器管理系统(版本V$Version)"
     echo "====== 请选择需要操作的内容 ======"
     # 定义一级菜单选项
 main_menu=(
@@ -416,10 +421,10 @@ main_menu=(
                     "2、安装Nginx"
                     "3、从github下载更新配置文件"
                     "4、从github下载更新网页文件"
-                    "5、修改配置"
-                    "6、查看配置文件"
+                    "5、修改Nginx配置"
+                    "6、查看Nginx配置文件"
                     "7、申请SSL证书"
-                    "8、停止运行"
+                    "8、停止运行Nginx"
                     "9、卸载"
                     "0、退出"   
                     )
@@ -440,7 +445,12 @@ main_menu=(
                                    5)set_nginx_config;;
                                    6)nano /etc/nginx/conf.d/default.conf;;
                                    7)apply_ssl_certificate;;
-                                   8)systemctl stop nginx;;
+                                   8)systemctl stop nginx
+                                     if [ $? -eq 0 ]; then
+                                        echo "已停止运行Nginx"
+                                     else
+                                        echo "发生错误，请检查以上错误内容。"
+                                     fi;;
                                    9)echo "没开发呢！";;
                               esac
                               wait;;
@@ -455,9 +465,9 @@ main_menu=(
                      "1、返回上一级"
                      "2、安装V2ray"
                      "3、从github下载更新配置文件"
-                     "4、修改配置"
-                     "5、查看配置文件"
-                     "6、停止运行"
+                     "4、修改V2ray配置"
+                     "5、查看V2ray配置文件"
+                     "6、停止运行V2ray"
                      "7、卸载"
                      "0、退出" 
                      )
@@ -477,7 +487,12 @@ main_menu=(
                                    3);;
                                    4);;
                                    5)nano /usr/local/etc/v2ray/config.json;;
-                                   6)systemctl stop v2ray;;
+                                   6)systemctl stop v2ray
+                                     if [ $? -eq 0 ]; then
+                                        echo "已停止运行V2ray"
+                                     else
+                                        echo "发生错误，请检查以上错误内容。"
+                                     fi;;
                                    7)echo "没开发呢！";;
                               esac
                               wait;;
