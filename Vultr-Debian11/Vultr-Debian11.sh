@@ -266,10 +266,10 @@ function set_nginx_config {
     # 提示输入文件路径
     while true; do
         read -p "请输入网页文件路径（默认为/var/www/html）：" path
-        if [ -z "$path" ]; then
+        if [[ -z "$path" ]]; then
             echo -e "${GREEN}取消路径设置${NC}"
             break
-        elif [ ! -e "$path" ]; then
+        elif [[ ! -e "$path" ]]; then
             echo "文件夹不存在，请重新输入"
         else
             break
@@ -295,7 +295,7 @@ function set_nginx_config {
     
     #输入path密钥
     read -p "$(echo -e ${YELLOW}"请填写v2rayPath密钥：${NC}")" Path
-    if [[ -z $Path ]]; then
+    if [[ -z "$Path" ]]; then
         echo -e "${RED}取消v2rayPath密钥设置${NC}"
     fi   
 }
@@ -426,7 +426,7 @@ function Option {
   echo
   echo -n "  请按序号选择操作: "
   #监听输入
-  while ! read -t $Standby input; do
+  while ! $(read -t $Standby input); do
      #发送空内容
      echo -n "."
      echo -ne "\b"
@@ -434,7 +434,7 @@ function Option {
   done
   option=$input 
   clear
-  if [ $option == 0 ];then
+  if [ $option == 0 ]; then
   exit 0
   fi
   echo
