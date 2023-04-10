@@ -41,7 +41,7 @@ function update {
     #如果更新失败
     else
       echo "更新检查错误，请检查网络！"
-      sleep 5
+      countdown 5
     fi
 } 
 
@@ -236,7 +236,7 @@ function install_nginx {
 function download_nginx_config {
     echo -e "${GREEN}正在载入：${NC}"
     wget https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf -O /etc/nginx/conf.d/default.conf
-     echo -e "${GREEN}载入完毕${NC}"
+    echo -e "${GREEN}载入完毕${NC}"
 }
 
                                                                            # 设置Nginx配置、待测试
@@ -371,7 +371,7 @@ function restart_processes() {
    echo "发生错误，请检查以上错误内容。"
   fi
 }
-                                                                              #停止运行
+                                                                              #停止运行程序
 function stop {
    systemctl stop $1
    if [ $? -eq 0 ]; then
@@ -382,9 +382,9 @@ function stop {
 }   
 
                                                                            # 定义选择功能序号函数
-function select_option {
-    read -p "请输入功能序号：" option
-    echo "您选择的是功能序号：$option"
+function error_option {
+       echo -e "${RED}输入不正确，请重新输入${NC}"
+       countdown 3;;
 }
 
                                                                           # 定义等待函数
@@ -511,7 +511,7 @@ function main {
                               wait;;
                           1)break;;
                           0)exit 0;;
-                          *) echo -e "${RED}输入不正确，请重新输入${NC}";;
+                          *)error_option;;
                     esac;;
                         
                   #一级菜单3选项
@@ -529,7 +529,7 @@ function main {
                               wait;;
                           1)break;;
                           0)exit 0;;
-                          *) echo -e "${RED}输入不正确，请重新输入${NC}";;
+                          *)error_option;;
                         esac;; 
                         
                   #一级菜单4选项
@@ -544,7 +544,7 @@ function main {
                               wait;;
                           1)break;;
                           0)exit 0;;
-                          *) echo -e "${RED}输入不正确，请重新输入${NC}";;
+                          *)error_option;;
                         esac;;
               esac
            done;;  
