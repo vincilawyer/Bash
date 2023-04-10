@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.41
+Version=1.42
 
 #定义彩色字体
 RED='\033[0;31m'
