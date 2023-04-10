@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.16
+Version=1.18
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -358,6 +358,15 @@ function restart_processes() {
    echo "发生错误，请检查以上错误内容。"
   fi
 }
+                                                                              #停止运行
+funtion stop {
+   systemctl stop $1
+   if [ $? -eq 0 ]; then
+         echo "已停止运行$1"
+   else
+        echo "发生错误，请检查以上错误内容。"
+   fi
+}   
 
                                                                            # 定义选择功能序号函数
 function select_option {
@@ -371,7 +380,8 @@ function wait {
    read -n 1 -s input
 }
 
-function welcome {
+function Page {
+clear
 art=$(cat << "EOF"
   __     __                         _   _           ____                   
   \ \   /"/u          ___          | \ |"|       U /"___|         ___      
@@ -391,19 +401,14 @@ EOF
   echo
   echo "=========================== "$1" =============================="
   echo 
+  for menu in "${@:2}"
+  do
+    echo "$menu"
+  done
+  echo
 }
 
-请选择以下操作选项
-
-
-
-
-                                                                           # 主函数
-function main {
-  while true; do
-    clear
-    welcome "请选择以下操作选项"
-    # 定义一级菜单选项
+# 定义菜单选项
     main_menu=(
     "  1、修改SSH登录端口和登录密码"
     "  2、Nginx服务"
@@ -414,11 +419,42 @@ function main {
     "  7、强制更新脚本"
     "  0、退出"
     )
-    for menu in "${main_menu[@]}"
-    do
-    echo "$menu"
-    done
+    
+    Nginx_menu=(
+    "  1、返回上一级"
+    "  2、安装Nginx"
+    "  3、从github下载更新配置文件"
+    "  4、从github下载更新网页文件"
+    "  5、修改Nginx配置"
+    "  6、查看Nginx配置文件"
+    "  7、申请SSL证书"
+    "  8、停止运行Nginx"
+    "  9、卸载"
+    "  0、退出"   
+    )
+    V2ray_menu=(
+    "  1、返回上一级"
+    "  2、安装V2ray"
+    "  3、从github下载更新配置文件"
+    "  4、修改V2ray配置"
+    "  5、查看V2ray配置文件"
+    "  6、停止运行V2ray"
+    "  7、卸载"
+    "  0、退出" 
+    )
+    Warp_menu=(
+    "  1、返回上一级"
+    "  2、安装Warp"
+    "  3、停止运行"
+    "  4、卸载"
+    "  0、退出"
+    )
 
+
+                                                                           # 主函数
+function main {
+  while true; do
+    Page "请选择以下操作选项" "${main_menu[@]}"
     if ! read -t $Standby -p "  请按序号选择操作: " option; then
        continue
     fi
@@ -437,29 +473,10 @@ function main {
      #一级菜单234选项
        2 | 3 | 4)
             while true; do
-               clear
-               welcome ${main_menu[$(($option - 1))]}
-               echo 
                case $option in
-                  #一级菜单2选项
-                  2) 
-                    Nginx_menu=(
-                    "  1、返回上一级"
-                    "  2、安装Nginx"
-                    "  3、从github下载更新配置文件"
-                    "  4、从github下载更新网页文件"
-                    "  5、修改Nginx配置"
-                    "  6、查看Nginx配置文件"
-                    "  7、申请SSL证书"
-                    "  8、停止运行Nginx"
-                    "  9、卸载"
-                    "  0、退出"   
-                    )
-                    for menu in "${Nginx_menu[@]}"
-                    do
-                      echo "$menu"
-                    done
-                    echo
+               
+                 #一级菜单2选项
+                 2) Page ${main_menu[$(($option - 1))]} "${Nginx_menu[@]}"
                     if ! read -t $Standby -p "  请按序号选择操作: " sub_option; then
                         continue
                     fi
@@ -473,12 +490,7 @@ function main {
                                    5)set_nginx_config;;
                                    6)nano /etc/nginx/conf.d/default.conf;;
                                    7)apply_ssl_certificate;;
-                                   8)systemctl stop nginx
-                                     if [ $? -eq 0 ]; then
-                                        echo "已停止运行Nginx"
-                                     else
-                                        echo "发生错误，请检查以上错误内容。"
-                                     fi;;
+                                   8)stop "nginx";;
                                    9)echo "没开发呢！";;
                               esac
                               wait;;
@@ -488,22 +500,7 @@ function main {
                     esac;;
                         
                   #一级菜单3选项
-                  3) 
-                     V2ray_menu=(
-                     "  1、返回上一级"
-                     "  2、安装V2ray"
-                     "  3、从github下载更新配置文件"
-                     "  4、修改V2ray配置"
-                     "  5、查看V2ray配置文件"
-                     "  6、停止运行V2ray"
-                     "  7、卸载"
-                     "  0、退出" 
-                     )
-                    for menu in "${V2ray_menu[@]}"
-                    do
-                      echo "$menu"
-                    done
-                    
+                  3)Page ${main_menu[$(($option - 1))]} "${V2ray_menu[@]}" 
                     if ! read -t $Standby -p "  请按序号选择操作: " sub_option; then
                         continue
                     fi
@@ -515,12 +512,7 @@ function main {
                                    3);;
                                    4);;
                                    5)nano /usr/local/etc/v2ray/config.json;;
-                                   6)systemctl stop v2ray
-                                     if [ $? -eq 0 ]; then
-                                        echo "已停止运行V2ray"
-                                     else
-                                        echo "发生错误，请检查以上错误内容。"
-                                     fi;;
+                                   6)stop "v2ray";;
                                    7)echo "没开发呢！";;
                               esac
                               wait;;
@@ -528,20 +520,9 @@ function main {
                           0)exit 0;;
                           *) echo -e "${RED}输入不正确，请重新输入${NC}";;
                         esac;; 
+                        
                   #一级菜单4选项
-                  4) 
-                     Warp_menu=(
-                     "  1、返回上一级"
-                     "  2、安装Warp"
-                     "  3、停止运行"
-                     "  4、卸载"
-                     "  0、退出"
-                     )
-                    for menu in "${Warp_menu[@]}"
-                    do
-                      echo "$menu"
-                    done
-                    
+                  4) Page ${main_menu[$(($option - 1))]} "${V2ray_menu[@]}" 
                     if ! read -t $Standby -p "  请按序号选择操作: " sub_option; then
                          continue
                     fi
