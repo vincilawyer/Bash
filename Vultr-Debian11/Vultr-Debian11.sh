@@ -12,6 +12,9 @@ CYAN='\033[0;36m'
 WHITE='\033[0;37m'
 BLACK="\033[40m"
 NC='\033[0m'
+
+#其他参数
+Standby=50  #刷新等待时长
                                                                           #更新函数
 function update {
 clear
@@ -362,18 +365,6 @@ function select_option {
     echo "您选择的是功能序号：$option"
 }
 
-
-function standby {
-    while true; do
-        echo "待机中...输入任意键返回系统"
-        read -t 55 -n 1 input
-        # 如果用户输入不为空，则退出待机
-        if [ ! -z $input ]; then
-            break
-        fi
-        clear
-    done  
-}      
                                                                           # 定义等待函数
 function wait {
    echo "请按下任意键返回管理系统"
@@ -424,7 +415,7 @@ function main {
     echo "$menu"
     done
 
-    if ! read -t 60 -p "请选择操作: " option; then
+    if ! read -t $Standby -p "请选择操作: " option; then
      break
     fi
     clear
@@ -463,7 +454,7 @@ function main {
                     do
                       echo "$menu"
                     done
-                        if ! read -t 60 -p "请选择操作: " sub_option; then
+                        if ! read -t $Standby -p "请选择操作: " sub_option; then
                           break
                         fi
                     clear
@@ -507,7 +498,7 @@ function main {
                       echo "$menu"
                     done
                     
-                    if ! read -t 60 -p "请选择操作: " sub_option; then
+                    if ! read -t $Standby -p "请选择操作: " sub_option; then
                           break
                     fi
                      clear
@@ -545,7 +536,7 @@ function main {
                       echo "$menu"
                     done
                     
-                    if ! read -t 60 -p "请选择操作: " sub_option; then
+                    if ! read -t $Standby -p "请选择操作: " sub_option; then
                           break
                     fi
                      clear
