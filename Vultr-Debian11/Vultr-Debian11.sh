@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.28
+Version=1.3
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -20,7 +20,7 @@ option=0    #选项
 function countdown {
     local from=$1
     while [ $from -ge 0 ]; do
-        echo -ne "\r$from s \r"
+        echo -ne "\r$froms \r"
         sleep 1
         ((from--))
     done
@@ -424,9 +424,11 @@ EOF
      #发送空包
      echo "" > /dev/null
   done
-  option=$input
+  option=$input 
   clear
-  echo "1、选择：$input & 传递 $option"
+  if [ $option == 0 ];then
+  exit 0
+  fi
   echo
 }
 
@@ -510,7 +512,6 @@ function main {
                               esac
                               wait;;
                           1)break;;
-                          0)exit 0;;
                           *)error_option;;
                     esac;;
                         
@@ -528,7 +529,6 @@ function main {
                               esac
                               wait;;
                           1)break;;
-                          0)exit 0;;
                           *)error_option;;
                         esac;; 
                         
@@ -543,16 +543,12 @@ function main {
                               esac
                               wait;;
                           1)break;;
-                          0)exit 0;;
                           *)error_option;;
                         esac;;
               esac
-           done;;  
-       #一级菜单0选项：退出
-       0) exit 0;;    
+           done;;    
        #一级菜单其他选项  
-       *) echo -e "${RED}输入不正确，请重新输入${NC}"
-          countdown 4;;
+       *) error_option;;
      esac
   done
     
