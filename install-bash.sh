@@ -10,7 +10,7 @@ function download {
       exit 0
     else
       echo "$1$Version$2"
-      execute
+      execute $Version
     fi
 }
 
@@ -30,7 +30,7 @@ function execute {
           #强制更新
           wget --no-cache https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh -O /usr/local/bin/vinci
           chmod +x /usr/local/bin/vinci
-          echo "重新更新完成，正在尝试再次启动！"
+          echo "重新更新完成，当前版本为V$1，正在尝试再次启动！"
           sleep 3
           vinci
           #如新版本没有错误，则执行新版本
