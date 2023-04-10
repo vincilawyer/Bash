@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.39
+Version=1.4
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -434,10 +434,8 @@ function Option {
      echo -n "."
      echo -ne "\b"
   done
-  echo  q$input
   option=$input 
-    echo  q$option
-  #clear
+  clear
   if [ $option==0 ]; then
   exit 0
   fi
@@ -490,9 +488,8 @@ function Option {
                                                                            # 主函数
 function main {
   while true; do
-      echo  $option.
     Option "请选择以下操作选项" "${main_menu[@]}"
-      echo  $option,
+      echo  $option
     case $option in
     #一级菜单1567选项
         1 | 5 | 6 | 7)
