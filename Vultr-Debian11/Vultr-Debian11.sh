@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.25
+Version=1.26
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -425,8 +425,8 @@ EOF
      echo "" > /dev/null
   done
   input=$option
-  echo "选择：$input & 传递 $option"
   clear
+   echo "1、选择：$input & 传递 $option"
   echo
 }
 
