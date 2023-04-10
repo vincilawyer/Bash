@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.1
+Version=1.11
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -409,7 +409,7 @@ function main {
     echo "欢迎进入Vinci服务器管理系统(版本V$Version)"
     echo "====== 请选择需要操作的内容 ======"
     # 定义一级菜单选项
-main_menu=(
+    main_menu=(
     "1、修改SSH登录端口和登录密码"
     "2、Nginx服务"
     "3、V2ray服务"
@@ -417,16 +417,15 @@ main_menu=(
     "5、重启Nginx、V2ray、Warp、UFW"
     "6、查看NVWU运行状态"
     "7、强制更新脚本"
-    "8、待机"
     "0、退出"
- )
+    )
     for menu in "${main_menu[@]}"
     do
     echo "$menu"
     done
 
     if ! read -t 60 -p "请选择操作: " option; then
-     standby
+     break
     fi
     clear
     case $option in
@@ -465,7 +464,7 @@ main_menu=(
                       echo "$menu"
                     done
                         if ! read -t 60 -p "请选择操作: " sub_option; then
-                          standby
+                          break
                         fi
                     clear
                     case $sub_option in
@@ -509,7 +508,7 @@ main_menu=(
                     done
                     
                     if ! read -t 60 -p "请选择操作: " sub_option; then
-                          standby
+                          break
                     fi
                      clear
                         case $sub_option in
@@ -547,7 +546,7 @@ main_menu=(
                     done
                     
                     if ! read -t 60 -p "请选择操作: " sub_option; then
-                          standby
+                          break
                     fi
                      clear
                         case $sub_option in
@@ -563,9 +562,7 @@ main_menu=(
                           *) echo -e "${RED}输入不正确，请重新输入${NC}";;
                         esac;;
               esac
-           done;;
-       #一级菜单8选项：待机 
-       8) standby;;    
+           done;;  
        #一级菜单0选项：退出
        0) exit 0;;    
        #一级菜单其他选项  
