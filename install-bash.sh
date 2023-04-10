@@ -17,29 +17,35 @@ function download {
 function execute {
     sleep 3
     vinci
-    #如新版本存在错误，则重新更新
+    #如新版本存在错误
     if  [ ! $? == 0 ]; then
-       while true; do
-          echo "新版本存在错误，正在尝试重新更新！...输入任意键退出"
-          #每隔59秒更新一次
-          read -t 59 -n 1 input
-          # 如果用户输入不为空，则退出更新
-          if [ ! -z $input ]; then
-              break
-          fi  
-          #强制更新
-          wget --no-cache https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh -O /usr/local/bin/vinci
-          chmod +x /usr/local/bin/vinci
-          echo "重新更新完成，当前版本为V$1，正在尝试再次启动！"
-          sleep 3
-          vinci
-          #如新版本没有错误，则执行新版本
-          if  [ $? == 0 ]; then
-             break
-          fi
-       done
-    fi
-    exit 1
+       #询问是否重新更新
+       read -n 1 -p "新版本存在错误，是否重新更新？(y/n):" input
+       if [ $input=="y" ]; then
+           while true; do
+              echo "新版本存在错误，正在尝试重新更新！...输入任意键退出"
+              #每隔59秒更新一次
+              read -t 59 -n 1 input
+              # 如果用户输入不为空，则退出更新
+              if [ ! -z $input ]; then
+                  break
+              fi  
+              #强制更新
+              wget --no-cache https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh -O /usr/local/bin/vinci
+              chmod +x /usr/local/bin/vinci
+              echo "重新更新完成，当前版本为V$1，正在尝试再次启动！"
+              sleep 3
+              vinci
+              #如新版本没有错误，则执行新版本
+              if  [ $? == 0 ]; then
+                 break
+              fi
+           done
+        else
+          echo "放弃重新更新"
+        fi
+     fi
+     exit 1
 }
 
 function main {
