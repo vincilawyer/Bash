@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.23
+Version=1.24
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -420,17 +420,20 @@ EOF
   done
   echo
   echo -n "  请按序号选择操作: "
-  while $(read -t $Standby input); do
-     # 定义正则表达式，只接受数字
-     regex='^[0-9]+$'
-
-     # 如果用户输入的是数字，就将其输出
-     if [[ $input =~ $regex ]]; then
-       return $regex
-     else
-       return999
-     fi
+  while ! $(read -t $Standby input); do
+     #发送空包
+     echo "" > /dev/null
   done
+       
+  # 定义正则表达式，只接受数字
+  regex='^[0-9]+$'
+
+  # 如果用户输入的是数字，就将其输出
+  if [[ $input =~ $regex ]]; then
+      return $input
+  else
+      return999
+  fi
   clear
   echo
 }
