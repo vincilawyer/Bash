@@ -17,11 +17,14 @@ NC='\033[0m'
 Standby=50  #刷新等待时长
 option=0    #选项
                                                                         #倒计时
+
 function countdown {
     local from=$1
     while [ $from -ge 0 ]; do
         echo -ne "\r${from}s \r"
-        sleep 1
+        if $(read -s -t 1 -n 1); then
+        break
+        fi
         ((from--))
     done
 }
