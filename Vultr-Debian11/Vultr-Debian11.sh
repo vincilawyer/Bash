@@ -437,6 +437,7 @@ function Option {
   option=$input 
   clear
   if [[ $option -eq 0 ]]; then
+      echo 12
       exit 0
   fi
   echo
