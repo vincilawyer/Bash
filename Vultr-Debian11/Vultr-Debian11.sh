@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.07
+Version=1.08
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -19,7 +19,25 @@ echo "正在检查版本更新..."
 current_Version="$1" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
 if [ $? == 1 ]; then
   vinci
-  echo  "错误内容为$?。"
+  #判断新版本是否有错
+  if  [ ! $? == 0 ]; then
+     while true; do
+        echo "新版本存在错误，正在尝试重新更新！...输入任意键退出"
+        read -t 59 -n 1 input
+        # 如果用户输入不为空，则退出更新
+        if [ ! -z $input ]; then
+            break
+        fi
+        clear
+        #强制更新
+        current_Version="force" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
+        vinci
+        #判断新版本是否有错
+        if  [ $? == 0 ]; then
+        break
+        fi
+     done
+  fi
   exit
 fi
 } 
