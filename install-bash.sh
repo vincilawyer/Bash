@@ -26,10 +26,20 @@ function execute {
            while true; do
               echo "新版本存在错误，正在尝试重新更新！...输入任意键退出"
               #每隔59秒更新一次
-              read -t 59 -n 1 input
-              # 如果用户输入不为空，则退出更新
+              for i in {1..59}
+              do
+                 #监听输入同时每秒输出一个方块
+                 read -t 1 -n 1 -p "$(printf "\e[42m \e[0m")" input
+                 
+                 #如果有输入则退出监听
+                 if [ ! -z $input ]; then
+                    break
+                 fi  
+              done
+              
+              #如果有输入则退出更新
               if [ ! -z $input ]; then
-                  break
+                   break
               fi  
               #强制更新
               wget --no-cache https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh -O /usr/local/bin/vinci
