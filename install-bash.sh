@@ -1,12 +1,21 @@
 #!/bin/bash
 
+function countdown {
+    local from=$1
+    while [ $from -ge 0 ]; do
+        echo -ne "\r$from s \r"
+        sleep 1
+        ((from--))
+    done
+}
+
 function download {
     wget --no-cache https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh -O /usr/local/bin/vinci
     chmod +x /usr/local/bin/vinci
     Version=$(cat /usr/local/bin/vinci | grep 'Version=' | head -1 | cut -d'=' -f2)
     if [[ -z $Version ]]; then
       echo "下载失败，请检查网络！"
-      sleep 3
+      countdown 3
       exit 0
     else
       echo "$1$Version$2"
@@ -15,7 +24,7 @@ function download {
 }
 
 function execute {
-    sleep 3
+    countdown 3
     vinci
     #如新版本存在错误
     if  [ ! $? == 0 ]; then
