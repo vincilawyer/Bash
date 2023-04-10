@@ -1,8 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.04
-#更新脚本
-update $Version
+Version=1.05
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -15,7 +13,17 @@ WHITE='\033[0;37m'
 NC='\033[0m'
 
 
-                                                                            #修改SSH端口的函数
+                                                                          #更新函数
+function update {
+echo "正在检查版本更新..."
+current_Version="$1" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
+} 
+
+                                                                          #执行启动前更新检查
+update $Version
+
+
+                                                                          #修改SSH端口的函数
 function change_ssh_port {
     #询问SSH端口
   while true; do
@@ -344,11 +352,6 @@ function select_option {
     echo "您选择的是功能序号：$option"
 }
 
-                                                                           #更新函数
-function update {
-echo "正在检查版本更新..."
-current_Version="$1" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
-} 
 
 function standby {
     while true; do
