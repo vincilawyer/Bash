@@ -2,7 +2,7 @@
 #版本号,不得为空
 Version=1.0
 #更新脚本
-upadte $Version bash
+update $Version
 
 #定义彩色字体
 RED='\033[0;31m'
