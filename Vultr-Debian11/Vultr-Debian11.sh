@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.03
+Version=1.04
 #更新脚本
 update $Version
 
