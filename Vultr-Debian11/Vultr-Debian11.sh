@@ -359,7 +359,7 @@ function restart_processes() {
   fi
 }
                                                                               #停止运行
-funtion stop {
+function stop {
    systemctl stop $1
    if [ $? -eq 0 ]; then
          echo "已停止运行$1"
