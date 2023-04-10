@@ -20,6 +20,7 @@ else
            echo "已更新至V$Version版本，即将进入管理系统！"
         fi
     fi
-    sleep 4
+    
 fi
     
+sleep 4
