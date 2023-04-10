@@ -435,7 +435,8 @@ function Option {
      echo -ne "\b"
   done
   option=$input 
-  clear
+echo $option
+  #clear
   if [ $option==0 ]; then
   exit 0
   fi
