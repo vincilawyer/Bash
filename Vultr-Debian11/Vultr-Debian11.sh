@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.26
+Version=1.27
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -420,11 +420,11 @@ EOF
   done
   echo
   echo -n "  请按序号选择操作: "
-  while ! $(read -t $Standby input); do
+  while ! read -t $Standby input; do
      #发送空包
      echo "" > /dev/null
   done
-  input=$option
+  option=$input
   clear
    echo "1、选择：$input & 传递 $option"
   echo
