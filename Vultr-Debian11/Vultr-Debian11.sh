@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.18
+Version=1.19
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -15,6 +15,8 @@ NC='\033[0m'
 
 #其他参数
 Standby=50  #刷新等待时长
+
+printf '\033[48;5;0m'
                                                                           #更新函数
 function update {
     clear && current_Version="$1" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
