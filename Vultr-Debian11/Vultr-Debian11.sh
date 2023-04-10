@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.02
+Version=1.03
 #更新脚本
 update $Version
 
@@ -352,9 +352,13 @@ current_Version="$1" bash <(curl -s -L https://raw.githubusercontent.com/vincila
 
 function standby {
     while true; do
-    echo "待机中"  
-    sleep 70
-    clear
+        echo "待机中"
+        clear
+        read -t 59 -n 1 input
+        # 如果用户输入不为空，则退出待机
+        if [ ! -z $input ]; then
+            break
+        fi
     done  
 }      
                                                                           # 定义等待函数
