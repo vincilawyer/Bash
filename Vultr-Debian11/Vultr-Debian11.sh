@@ -352,13 +352,13 @@ current_Version="$1" bash <(curl -s -L https://raw.githubusercontent.com/vincila
 
 function standby {
     while true; do
-        echo "待机中"
-        clear
+        echo "待机中..."
         read -t 59 -n 1 input
         # 如果用户输入不为空，则退出待机
         if [ ! -z $input ]; then
             break
         fi
+        clear
     done  
 }      
                                                                           # 定义等待函数
