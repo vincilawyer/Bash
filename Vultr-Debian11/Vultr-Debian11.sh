@@ -435,9 +435,8 @@ function Option {
      echo -ne "\b"
   done
   option=$input 
-echo $option
-  #clear
-  if [ $option==0 ]; then
+  clear
+  if [ $option ==0 ]; then
   exit 0
   fi
   echo
@@ -490,7 +489,6 @@ echo $option
 function main {
   while true; do
     Option "请选择以下操作选项" "${main_menu[@]}"
-      echo  $option
     case $option in
     #一级菜单1567选项
         1 | 5 | 6 | 7)
