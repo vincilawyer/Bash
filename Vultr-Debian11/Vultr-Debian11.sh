@@ -18,7 +18,9 @@ function update {
 echo "正在检查版本更新..."
 current_Version="$1" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
 if [ $? == 1 ]; then
-vinci && exit
+  vinci
+  echo  "错误内容为$?。"
+  exit
 fi
 } 
 
@@ -554,5 +556,5 @@ main_menu=(
 
                                                                            # 调用主函数
 main
-
+exit
 
