@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.38
+Version=1.39
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -429,7 +429,7 @@ function Option {
   echo
   echo -n "  请按序号选择操作: "
   #监听输入
-  while ! $(read -t $Standby input); do
+  while ! read -t $Standby input; do
      #发送空内容
      echo -n "."
      echo -ne "\b"
