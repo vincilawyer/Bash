@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.13
+Version=1.14
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -383,13 +383,13 @@ art=$(cat << "EOF"
 
 EOF 
 )
-echo
-echo -e "${BLUE}${art}${NC}"
-echo
-echo
-echo "                 欢迎进入Vinci服务器管理系统(版本V$Version)"
-echo
-echo "====================== 请选择需要操作的内容 =============================="
+  echo
+  echo -e "${BLUE}${art}${NC}"
+  echo
+  echo
+  echo "                 欢迎进入Vinci服务器管理系统(版本V$Version)"
+  echo
+  echo "====================== 请选择以下操作选项 =============================="
 }
 
 
