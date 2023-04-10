@@ -1,4 +1,7 @@
 #!/bin/bash
+
+function
+
 if [[ -z $current_Version ]]; then
     echo "正在下载Vultr-Debian11脚本"
     wget --no-cache https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh -O /usr/local/bin/vinci
@@ -9,7 +12,7 @@ if [[ -z $current_Version ]]; then
     else
       echo "管理系统V$Version已下载完成，即将进入系统！"
       sleep 3
-      vinci
+
     fi
 else
     #强制更新
@@ -50,3 +53,29 @@ else
     fi
 fi
     
+    
+    
+    
+    
+    
+          vinci
+       #判断版本是否有错
+      if  [ ! $? == 0 ]; then
+           while true; do
+              echo "管理系统存在错误，正在尝试重新更新！...输入任意键退出"
+        read -t 59 -n 1 input
+        # 如果用户输入不为空，则退出更新
+        if [ ! -z $input ]; then
+            break
+        fi
+        clear
+        #强制更新
+        current_Version="force" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
+        vinci
+        #判断新版本是否有错
+        if  [ $? == 0 ]; then
+        break
+        fi
+     done
+  fi
+  exit
