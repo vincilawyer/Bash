@@ -384,7 +384,7 @@ function stop {
                                                                            # 定义选择功能序号函数
 function error_option {
        echo -e "${RED}输入不正确，请重新输入${NC}"
-       countdown 3;;
+       countdown 3
 }
 
                                                                           # 定义等待函数
