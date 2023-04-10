@@ -487,7 +487,6 @@ function Option {
 function main {
   while true; do
     Option "请选择以下操作选项" "${main_menu[@]}"
-    echo "选择：$input & 传递 $option"
     case $option in
     #一级菜单1567选项
         1 | 5 | 6 | 7)
