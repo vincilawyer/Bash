@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.3
+Version=1.31
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -14,7 +14,7 @@ BLACK="\033[40m"
 NC='\033[0m'
 
 #其他参数
-Standby=50  #刷新等待时长
+Standby=15  #刷新等待时长
 option=0    #选项
                                                                         #倒计时
 function countdown {
@@ -392,8 +392,8 @@ function wait {
    echo "请按下任意键返回管理系统"
    read -n 1 -s input
 }
-
-function Option {
+                                                                          # 页面显示函数
+function Page {
 clear
 art=$(cat << "EOF"
   __     __                         _   _           ____                   
@@ -414,15 +414,23 @@ EOF
   echo
   echo "=========================== "$1" =============================="
   echo 
+}
+                                                                          # 选择内容函数
+function Option {
+  Page
+  #展示选项
   for menu in "${@:2}"
   do
     echo "$menu"
   done
   echo
   echo -n "  请按序号选择操作: "
+  #监听输入
   while ! read -t $Standby input; do
-     #发送空包
-     echo "" > /dev/null
+     #发送空内容
+     echo -n "."
+     echo -ne "\b"
+     echo 1
   done
   option=$input 
   clear
