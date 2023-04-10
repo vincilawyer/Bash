@@ -17,19 +17,19 @@ NC='\033[0m'
 Standby=50  #刷新等待时长
                                                                           #更新函数
 function update {
-clear
-current_Version="$1" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
-no=$?
-echo "错误："$no"."
-#如果成功更新
-if [ $no == 1 ]; then
-  exit 
-elif [ $no == 0 ]; then
-:
-else
-  echo "更新检查错误，请检查更新源或网络！"
-  sleep 5
-fi
+    clear && current_Version="$1" bash <(curl -s -L https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh)
+    no=$?
+    #如果成功更新
+    if [ $no == 1 ]; then
+      exit 
+    #如果无需更新  
+    elif [ $no == 0 ]; then
+    :
+    #如果更新失败
+    else
+      echo "更新检查错误，请检查网络！"
+      sleep 5
+    fi
 } 
 
 #执行启动前更新检查
