@@ -4,7 +4,9 @@ function countdown {
     local from=$1
     while [ $from -ge 0 ]; do
         echo -ne "\r${from}s \r"
-        sleep 1
+        if $(read -s -t 1 -n 1); then
+        break
+        fi
         ((from--))
     done
 }
