@@ -430,7 +430,6 @@ function Option {
      #发送空内容
      echo -n "."
      echo -ne "\b"
-     echo 1
   done
   option=$input 
   clear
