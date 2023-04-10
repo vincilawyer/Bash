@@ -24,7 +24,7 @@ if [ $? == 1 ]; then
 fi
 } 
 
-                                                                          #执行启动前更新检查
+#执行启动前更新检查
 update $Version
 
 
