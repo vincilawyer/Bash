@@ -21,6 +21,7 @@ function execute {
     if  [ ! $? == 0 ]; then
        #询问是否重新更新
        read -n 1 -p "新版本存在错误，是否重新更新？(y/n):" input
+       echo
        if [ $input=="y" ]; then
            while true; do
               echo "新版本存在错误，正在尝试重新更新！...输入任意键退出"
