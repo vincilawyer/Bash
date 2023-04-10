@@ -25,6 +25,7 @@ else
        else
            echo "管理系统V$Version强制更新已完成，即将重启管理系统！"
            sleep 2
+           clear
            exit 1
        fi
     #自动检查更新 
@@ -43,6 +44,7 @@ else
            chmod +x /usr/local/bin/vinci
            echo "已更新至V$Version版本，即将重启管理系统！"
            sleep 4
+           clear
            exit 1
         fi
     fi
