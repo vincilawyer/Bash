@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.11
+Version=1.12
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -416,7 +416,7 @@ function main {
     done
 
     if ! read -t $Standby -p "请选择操作: " option; then
-     break
+       continue
     fi
     clear
     case $option in
@@ -455,7 +455,7 @@ function main {
                       echo "$menu"
                     done
                         if ! read -t $Standby -p "请选择操作: " sub_option; then
-                          break
+                          continue
                         fi
                     clear
                     case $sub_option in
@@ -499,7 +499,7 @@ function main {
                     done
                     
                     if ! read -t $Standby -p "请选择操作: " sub_option; then
-                          break
+                        continue
                     fi
                      clear
                         case $sub_option in
@@ -537,7 +537,7 @@ function main {
                     done
                     
                     if ! read -t $Standby -p "请选择操作: " sub_option; then
-                          break
+                         continue
                     fi
                      clear
                         case $sub_option in
