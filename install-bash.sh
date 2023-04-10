@@ -35,7 +35,7 @@ else
         #无需更新
         if [[ "${current_Version}" == "${Version}" ]]; then
            echo "当前已是最新版本(V$Version)，无需更新！"
-           sleep 4
+           sleep 2
            exit 0
         #更新至最新版本
         else
