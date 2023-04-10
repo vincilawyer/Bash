@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.22
+Version=1.23
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -16,6 +16,18 @@ NC='\033[0m'
 #其他参数
 Standby=50  #刷新等待时长
 option=""      #选择
+
+                                                                          #倒计时
+function countdown {
+    local from=$1
+    while [ $from -ge 0 ]; do
+        echo -ne "\r$from s \r"
+        sleep 1
+        ((from--))
+    done
+}
+
+
 
                                                                           #更新函数
 function update {
@@ -413,6 +425,7 @@ EOF
   :
   done
   clear
+  echo "第一$option"
   echo
 }
 
@@ -463,7 +476,7 @@ EOF
 function main {
   while true; do
     Page "请选择以下操作选项" "${main_menu[@]}"
-    echo $option
+    echo "第二$option"
     case $option in
     #一级菜单1567选项
         1 | 5 | 6 | 7)
@@ -538,7 +551,7 @@ function main {
        0) exit 0;;    
        #一级菜单其他选项  
        *) echo -e "${RED}输入不正确，请重新输入${NC}"
-       sleep 2;;
+          countdown 4;;
      esac
   done
     
