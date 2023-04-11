@@ -251,7 +251,7 @@ function download_html {
     fi
     echo "正在下载网页zip压缩包..."
     
-   if wget https://github.com/vincilawyer/Bash/raw/main/nginx/html/"$input".zip -O /home; then
+   if wget https://github.com/vincilawyer/Bash/raw/main/nginx/html/"$input".zip -O /home/"$input".zip; then
        echo "压缩包下载完成，开始解压"
        unzip /home/"$input".zip -d .
        echo "开始覆盖原网页文件"
