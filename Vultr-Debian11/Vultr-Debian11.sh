@@ -254,7 +254,7 @@ function download_html {
        echo "压缩包下载完成，开始解压"
        unzip /home/"$input".zip -d /home
        echo "开始覆盖原网页文件"
-       rm -r /var/www/html/*
+       rm -r /var/www/html/*  >/dev/null
        mv /home/"$input"/* /var/www/html/
        echo "已更新网页文件！"
        rm -r /home/"$input".zip
@@ -489,7 +489,7 @@ function Option {
     "  5、修改Nginx配置"
     "  6、申请SSL证书"
     "  7、查看Nginx配置文件"
-    "  8、查看网页文件"
+    "  8、查看网页文件根目录"
     "  9、停止运行Nginx"
     "  10、卸载"
     "  0、退出"   
@@ -559,9 +559,7 @@ function main {
                                    5)set_nginx_config;;
                                    6)nano /etc/nginx/conf.d/default.conf;;
                                    7)apply_ssl_certificate;;
-                                   8)cd /var/www/html
-                                     ls /var/www/html
-                                     exit 0;;
+                                   8)ls /var/www/html;;
                                    9)stop "nginx";;
                                    10)echo "没开发呢！";;
                                esac
