@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#定义等待时间
+Standby=59
+
 function countdown {
     local from=$1
     while [ $from -ge 0 ]; do
@@ -31,13 +34,15 @@ function execute {
     #如新版本存在错误
     if  [ ! $? == 0 ]; then
        #询问是否重新更新
-       read -n 1 -p "新版本存在错误，是否重新更新？(y/n):" input
+       if ! read -t $Standby -p "新版本存在错误，是否重新更新？(y/n):" input; then
+       input=y
+       fi
        echo
-       if [ $input=="y" ]; then
+       if [ "$input"=="y" ]; then
            while true; do
               echo "新版本存在错误，正在尝试重新更新！...输入任意键退出"
               #每隔59秒更新一次
-              for i in {1..59}
+              for i in {1..$Standby}
               do
                  #监听输入同时每秒输出一个方块
                  read -t 1 -n 1 -p "$(printf "\e[42m \e[0m")" input
