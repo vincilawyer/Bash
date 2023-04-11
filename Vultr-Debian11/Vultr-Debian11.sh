@@ -588,8 +588,8 @@ function main {
                                    3)download_nginx_config;;
                                    4)download_html;;
                                    5)set_nginx_config;;
-                                   6)nano /etc/nginx/conf.d/default.conf;;
-                                   7)apply_ssl_certificate;;
+                                   6)apply_ssl_certificate;;
+                                   7)nano /etc/nginx/conf.d/default.conf;;
                                    8)ls /var/www/html;;
                                    9)stop "nginx";;
                                    10)echo "没开发呢！";;
