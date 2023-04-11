@@ -18,7 +18,6 @@ function download {
     wget https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh -O /usr/local/bin/vinci
     chmod +x /usr/local/bin/vinci
     Version=$(sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}' /usr/local/bin/vinci)
-    echo $Version
     if [[ -z $Version ]]; then
       echo "下载失败，请检查网络！"
       countdown 3
