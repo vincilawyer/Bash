@@ -273,7 +273,7 @@ function download_nginx_config {
 }
                                                                             # 从github下载网页文件
 function download_html {
-    echo "此操作将从github的vincilawyer/Bash/nginx/html目录下载入网页文件，并覆盖原网页文件！"
+    echo "此操作将从github的vincilawyer/Bash/nginx/html目录下载入网页文件，并覆盖原网页文件！(新网页格式需为html)"
     read -t $Standby  -p "请输入网页主题名称（例如Moon）：" input
     if [[ -z $input ]]; then 
         echo "已取消操作!"
