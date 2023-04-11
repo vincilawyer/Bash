@@ -258,6 +258,10 @@ function download_html {
        rm -r /var/www/html/*
        mv /home/"$input"/* /var/www/html/
        echo "已更新网页文件！"
+       rm -r 
+       echo "已清除压缩包！"
+       rm -r /home/"$input".zip
+       rm -r /home/"$input"
    else
        echo "下载失败，请检查文件名称或网络！"
    fi    
@@ -545,7 +549,7 @@ function main {
                                case $option in
                                    2)install_nginx;;
                                    3)download_nginx_config;;
-                                   4);;
+                                   4)download_html;;
                                    5)set_nginx_config;;
                                    6)nano /etc/nginx/conf.d/default.conf;;
                                    7)apply_ssl_certificate;;
