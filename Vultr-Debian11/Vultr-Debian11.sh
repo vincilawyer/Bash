@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.45
+Version=1.46
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -516,7 +516,7 @@ function main {
                case $get_option in
                
                  #一级菜单2选项
-                 2) Option ${main_menu[$(($option - 1))]} "${Nginx_menu[@]}"
+                 2) Option ${main_menu[$(($get_option - 1))]} "${Nginx_menu[@]}"
                     case $option in
                            2 | 3 | 4 | 5 | 6 | 7 | 8)
                                case $option in
@@ -535,7 +535,7 @@ function main {
                     esac;;
                         
                   #一级菜单3选项
-                  3)Option ${main_menu[$(($option - 1))]} "${V2ray_menu[@]}" 
+                  3)Option ${main_menu[$(($get_option))]} "${V2ray_menu[@]}" 
                         case $option in
                             2 | 3 | 4 | 5 | 6 | 7 | 8)
                                case $option in
@@ -552,7 +552,7 @@ function main {
                         esac;; 
                         
                   #一级菜单4选项
-                  4) Option ${main_menu[$(($option - 1))]} "${V2ray_menu[@]}" 
+                  4) Option ${main_menu[$(($get_option))]} "${V2ray_menu[@]}" 
                         case $option in
                            2 | 3 | 4 | 5 | 6 | 7 | 8)
                                case $option in
@@ -565,7 +565,7 @@ function main {
                           *)error_option;;
                         esac;;
                         
-                  7) Option ${main_menu[$(($option - 1))]} "${other_menu[@]}" 
+                  7) Option ${main_menu[$(($get_option - 1))]} "${other_menu[@]}" 
                         case $option in
                            2)
                                case $option in
