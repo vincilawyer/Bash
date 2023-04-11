@@ -15,7 +15,7 @@ function countdown {
 }
 
 function download {
-    wget --no-cache https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh -O /usr/local/bin/vinci
+    wget https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh -O /usr/local/bin/vinci
     chmod +x /usr/local/bin/vinci
     Version=$(cat /usr/local/bin/vinci | grep 'Version=' | head -1 | cut -d'=' -f2)
     if [[ -z $Version ]]; then
@@ -58,7 +58,7 @@ function execute {
                    break
               fi  
               #强制更新
-              wget --no-cache https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh -O /usr/local/bin/vinci
+              wget https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh -O /usr/local/bin/vinci
               chmod +x /usr/local/bin/vinci
               echo "重新更新完成，当前版本为V$1，正在尝试再次启动！"
               sleep 3
