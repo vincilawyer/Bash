@@ -54,7 +54,7 @@ update $Version
 function change_ssh_port {
     #询问SSH端口
   while true; do
-    current_ssh_port=$(grep -i "port" /etc/ssh/sshd_config | awk '{print $2}' | head -1)
+    current_ssh_port=$(grep -i "port" /etc/ssh/sshd_config | head -1 | awk '{print $2}')
     echo -e "${GREEN}当前的SSH端口为：$current_ssh_port${NC}"
     read -p "$(echo -e ${BLUE}"请设置新SSH端口（0-65535，空则跳过）：${NC}")" ssh_port
     if [[ -z $ssh_port ]]; then
@@ -300,6 +300,7 @@ function download_html {
 function set_nginx_config {
      # 输入域名
     while true; do
+        $(grep -i "server_name" /etc/ssh/sshd_config | head -1 | awk '{print $2}')
         read -p "$(echo -e ${YELLOW}"请输入网站域名（不加www.）: ${NC}")" domain_name
         if [[ -z $domain_name ]]; then
           echo -e "${GREEN}取消域名设置${NC}"
