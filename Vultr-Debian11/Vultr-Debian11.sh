@@ -451,7 +451,8 @@ function Option {
     "  4、Warp服务"
     "  5、重启Nginx、V2ray、Warp、UFW"
     "  6、查看NVWU运行状态"
-    "  7、强制更新脚本"
+    "  7、其他工具"
+    "  8、强制更新脚本"
     "  0、退出"
     )
     
@@ -484,6 +485,11 @@ function Option {
     "  4、卸载"
     "  0、退出"
     )
+     other_menu=(
+    "  1、返回上一级"
+    "  2、关闭防火墙"
+    "  0、退出"
+    )
 
 
                                                                            # 主函数
@@ -492,7 +498,7 @@ function main {
     Option "请选择以下操作选项" "${main_menu[@]}"
     case $option in
     #一级菜单1567选项
-        1 | 5 | 6 | 7)
+        1 | 5 | 6 | 8)
             case $option in
                 1) change_ssh_port
                    change_login_password;;
@@ -502,7 +508,7 @@ function main {
             esac
             wait;;
      #一级菜单234选项
-       2 | 3 | 4)
+       2 | 3 | 4| 7)
             
             get_option=$option
             
@@ -553,11 +559,23 @@ function main {
                                    2)install_warp;;
                                    3);;
                                    4)echo "没开发呢！";;
-                              esac
-                              wait;;
+                               esac
+                               wait;;
                           1)break;;
                           *)error_option;;
                         esac;;
+                        
+                  7) Option ${main_menu[$(($option - 1))]} "${other_menu[@]}" 
+                        case $option in
+                           2)
+                               case $option in
+                                   2)stop "ufw";;
+                               esac
+                               wait;;
+                          1)break;;
+                          *)error_option;;
+                        esac;;
+                        
                 esac
            done;;    
        #一级菜单其他选项  
