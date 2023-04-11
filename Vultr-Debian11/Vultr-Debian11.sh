@@ -206,7 +206,7 @@ function apply_ssl_certificate {
                                                                            # 安装V2Ray的函数（配置上传、设置配置、更新等）
 function install_v2ray {
     if [ -x "$(command -v v2ray)" ]; then
-        echo -e "${GREEN}V2Ray已安装，无需重复安装${NC}"
+        echo -e "${GREEN}V2Ray已安装，无需重复安装。${NC}"
     else
         bash <(curl -L https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh)
         if bash <(curl -L https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh) 2>&1 | tee /tmp/install_log | grep -q "is installed"; then
@@ -221,7 +221,7 @@ function install_v2ray {
                                                                            # 安装Nginx的函数（设置配置、更新、上传网页等）
 function install_nginx {
     if [ -x "$(command -v nginx)" ]; then
-        echo -e "${GREEN}Nginx已经安装，版本号为 $(nginx -v 2>&1)，无需重复安装${NC}"
+        echo -e "${GREEN}Nginx已经安装，无需重复安装。当前版本号为 $(nginx -v 2>&1)${NC}"
     else
         echo -e "${GREEN}正在更新包列表${NC}"
         apt-get update
