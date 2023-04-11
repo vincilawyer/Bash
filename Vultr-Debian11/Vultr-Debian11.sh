@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.52
+Version=1.53
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -259,7 +259,7 @@ function download_html {
        echo "已更新网页文件！"
        rm -r /home/"$input".zip
        rm -r /home/"$input"
-       rm -rf /home__MACOSX >/dev/null
+       rm -rf /home/__MACOSX >/dev/null
        echo "已清除压缩包！"
    else
        echo "下载失败，请检查文件名称或网络！"
