@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.46
+Version=1.47
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -241,7 +241,27 @@ function download_nginx_config {
     wget https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf -O /etc/nginx/conf.d/default.conf
     echo -e "${GREEN}载入完毕${NC}"
 }
-
+                                                                            # 从github下载网页文件
+function download_html {
+    echo "此操作将从github的vincilawyer/Bash/nginx/html目录下载入网页文件，并覆盖原网页文件！"
+    read -t Standby  -p "请输入网页主题名称（例如Moon）：" input
+    if [[ -z $input ]]; then 
+        echo "已取消操作!"
+        return
+    fi
+    echo "正在下载网页zip压缩包..."
+    
+   if wget https://github.com/vincilawyer/Bash/raw/main/nginx/html/"$input".zip -O /home; then
+       echo "压缩包下载完成，开始解压"
+       unzip /home/"$input".zip -d .
+       echo "开始覆盖原网页文件"
+       rm -r /var/www/html/*
+       mv /home/"$input"/* /var/www/html/
+       echo "已更新网页文件！"
+   else
+       echo "下载失败，请检查文件名称或网络！"
+   fi    
+}
                                                                            # 设置Nginx配置、待测试
 function set_nginx_config {
      # 输入域名
@@ -429,12 +449,14 @@ function Option {
   echo
   echo -n "  请按序号选择操作: "
   #监听输入
-  while ! read -t $Standby input; do
-     #发送空内容
-     echo -n "."
-     echo -ne "\b"
-  done
-  option=$input 
+  read option
+  
+#  while ! read -t $Standby input; do
+#     #发送空内容
+#     echo -n "."
+#     echo -ne "\b"
+#  done
+
   clear
   if [ "$option" == "0" ]; then
       echo $option
@@ -462,10 +484,11 @@ function Option {
     "  3、从github下载更新配置文件"
     "  4、从github下载更新网页文件"
     "  5、修改Nginx配置"
-    "  6、查看Nginx配置文件"
-    "  7、申请SSL证书"
-    "  8、停止运行Nginx"
-    "  9、卸载"
+    "  6、申请SSL证书"
+    "  7、查看Nginx配置文件"
+    "  8、查看网页文件"
+    "  9、停止运行Nginx"
+    "  10、卸载"
     "  0、退出"   
     )
     V2ray_menu=(
@@ -518,7 +541,9 @@ function main {
                  #一级菜单2选项
                  2) Option ${main_menu[$(($get_option - 1))]} "${Nginx_menu[@]}"
                     case $option in
-                           2 | 3 | 4 | 5 | 6 | 7 | 8)
+                    
+                        "  7、查看Nginx配置文件"
+                           2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10)
                                case $option in
                                    2)install_nginx;;
                                    3)download_nginx_config;;
@@ -526,8 +551,10 @@ function main {
                                    5)set_nginx_config;;
                                    6)nano /etc/nginx/conf.d/default.conf;;
                                    7)apply_ssl_certificate;;
-                                   8)stop "nginx";;
-                                   9)echo "没开发呢！";;
+                                   8)cd /var/www/html
+                                   exit 0;
+                                   9)stop "nginx";;
+                                   10)echo "没开发呢！";;
                                esac
                                wait;;
                           1)break;;
@@ -535,9 +562,9 @@ function main {
                     esac;;
                         
                   #一级菜单3选项
-                  3)Option ${main_menu[$(($get_option))]} "${V2ray_menu[@]}" 
+                  3)Option ${main_menu[$(($get_option - 1))]} "${V2ray_menu[@]}" 
                         case $option in
-                            2 | 3 | 4 | 5 | 6 | 7 | 8)
+                            2 | 3 | 4 | 5 | 6 | 7)
                                case $option in
                                    2)install_v2ray;;
                                    3);;
@@ -551,10 +578,10 @@ function main {
                           *)error_option;;
                         esac;; 
                         
-                  #一级菜单4选项
-                  4) Option ${main_menu[$(($get_option))]} "${V2ray_menu[@]}" 
+                        #一级菜单4选项
+                  4) Option ${main_menu[$(($get_option - 1))]} "${V2ray_menu[@]}" 
                         case $option in
-                           2 | 3 | 4 | 5 | 6 | 7 | 8)
+                           2 | 3 | 4)
                                case $option in
                                    2)install_warp;;
                                    3);;
@@ -565,6 +592,7 @@ function main {
                           *)error_option;;
                         esac;;
                         
+                       #一级菜单7选项 
                   7) Option ${main_menu[$(($get_option - 1))]} "${other_menu[@]}" 
                         case $option in
                            2)
