@@ -1,6 +1,7 @@
 #!/bin/bash
+
 #版本号,不得为空
-Version=1.5
+Version=1.51
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -22,9 +23,7 @@ function countdown {
     local from=$1
     while [ $from -ge 0 ]; do
         echo -ne "\r${from}s \r"
-        if $(read -s -t 1 -n 1); then
-        break
-        fi
+        if $(read -s -t 1 -n 1); then break; fi
         ((from--))
     done
 }
@@ -260,6 +259,7 @@ function download_html {
        echo "已更新网页文件！"
        rm -r /home/"$input".zip
        rm -r /home/"$input"
+       rm -rf /home__MACOSX >/dev/null
        echo "已清除压缩包！"
    else
        echo "下载失败，请检查文件名称或网络！"
@@ -520,6 +520,13 @@ function Option {
 
                                                                            # 主函数
 function main {
+  #判断系统是否适配
+  if [ ! $(lsb_release -rs) = "11" ]; then 
+  echo "请注意，本脚本是适用于Vulre服务器Debian11系统，用于其他系统或版本时将可能出错！"
+  wait;
+  fi
+  
+  #显示页面及选项
   while true; do
     Option "请选择以下操作选项" "${main_menu[@]}"
     case $option in
