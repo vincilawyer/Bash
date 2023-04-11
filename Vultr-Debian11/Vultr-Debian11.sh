@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.43
+Version=1.44
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -504,7 +504,8 @@ function main {
      #一级菜单234选项
        2 | 3 | 4)
             while true; do
-               case $option in
+               get_option=$option
+               case $get_option in
                
                  #一级菜单2选项
                  2) Option ${main_menu[$(($option - 1))]} "${Nginx_menu[@]}"
@@ -519,8 +520,8 @@ function main {
                                    7)apply_ssl_certificate;;
                                    8)stop "nginx";;
                                    9)echo "没开发呢！";;
-                              esac
-                              wait;;
+                               esac
+                               wait;;
                           1)break;;
                           *)error_option;;
                     esac;;
@@ -555,7 +556,7 @@ function main {
                           1)break;;
                           *)error_option;;
                         esac;;
-              esac
+                esac
            done;;    
        #一级菜单其他选项  
        *) error_option;;
