@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.48
+Version=1.49
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -244,7 +244,7 @@ function download_nginx_config {
                                                                             # 从github下载网页文件
 function download_html {
     echo "此操作将从github的vincilawyer/Bash/nginx/html目录下载入网页文件，并覆盖原网页文件！"
-    read -t Standby  -p "请输入网页主题名称（例如Moon）：" input
+    read -t $Standby  -p "请输入网页主题名称（例如Moon）：" input
     if [[ -z $input ]]; then 
         echo "已取消操作!"
         return
