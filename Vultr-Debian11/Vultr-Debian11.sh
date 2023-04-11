@@ -554,7 +554,7 @@ function main {
                                    6)nano /etc/nginx/conf.d/default.conf;;
                                    7)apply_ssl_certificate;;
                                    8)cd /var/www/html
-                                   exit 0;
+                                   exit 0;;
                                    9)stop "nginx";;
                                    10)echo "没开发呢！";;
                                esac
