@@ -17,7 +17,7 @@ NC='\033[0m'
 #其他参数
 Standby=50  #刷新等待时长
 option=0    #选项
-                                                                        #倒计时
+                                                                          #倒计时
 
 function countdown {
     local from=$1
@@ -27,7 +27,6 @@ function countdown {
         ((from--))
     done
 }
-
 
 
                                                                           #更新函数
@@ -52,6 +51,38 @@ update $Version
 
 
                                                                           #修改SSH端口的函数
+function change_ssh_port {
+    #询问SSH端口
+  while true; do
+    current_ssh_port=$(grep -i "port" /etc/ssh/sshd_config | awk '{print $2}' | head -1)
+    echo -e "${GREEN}当前的SSH端口为：$current_ssh_port${NC}"
+    read -p "$(echo -e ${BLUE}"请设置新SSH端口（0-65535，空则跳过）：${NC}")" ssh_port
+    if [[ -z $ssh_port ]]; then
+        echo -e "${RED}已取消SSH端口设置${NC}"
+        break
+    elif ! [[ $ssh_port =~ ^[0-9]+$ ]]; then
+        echo -e "${RED}端口值输入错误，请重新输入${NC}"
+    elif (( $ssh_port < 0 || $ssh_port > 65535 )); then
+        echo -e "${RED}端口值输入错误，请重新输入${NC}"
+    else
+        break
+    fi
+  done
+
+    # 修改SSH端口
+  if [[ -n $ssh_port ]]; then
+    sed -E -i "s/^(#\s*)?Port\s+.*/Port $ssh_port/" /etc/ssh/sshd_config
+    ufw allow $ssh_port/tcp
+    echo -e "${GREEN}SSH端口已修改为$ssh_port,并已添加进防火墙规则中。${NC}"
+    ufw delete allow $current_ssh_port/tcp
+    echo -e "${GREEN}已从防火墙规则中删除原SSH端口号：$current_ssh_port${NC}"
+    systemctl restart sshd
+    echo -e "${GREEN}当前防火墙运行规则及状态为：${NC}"
+    ufw status 
+  fi
+}
+
+                                                                         #修改SSH端口的函数
 function change_ssh_port {
     #询问SSH端口
   while true; do
