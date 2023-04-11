@@ -253,15 +253,14 @@ function download_html {
     
    if wget https://github.com/vincilawyer/Bash/raw/main/nginx/html/"$input".zip -O /home/"$input".zip; then
        echo "压缩包下载完成，开始解压"
-       unzip /home/"$input".zip -d .
+       unzip /home/"$input".zip -d /home
        echo "开始覆盖原网页文件"
        rm -r /var/www/html/*
        mv /home/"$input"/* /var/www/html/
        echo "已更新网页文件！"
-       rm -r 
-       echo "已清除压缩包！"
        rm -r /home/"$input".zip
        rm -r /home/"$input"
+       echo "已清除压缩包！"
    else
        echo "下载失败，请检查文件名称或网络！"
    fi    
@@ -554,7 +553,8 @@ function main {
                                    6)nano /etc/nginx/conf.d/default.conf;;
                                    7)apply_ssl_certificate;;
                                    8)cd /var/www/html
-                                   exit 0;;
+                                     ls -l
+                                     exit 0;;
                                    9)stop "nginx";;
                                    10)echo "没开发呢！";;
                                esac
