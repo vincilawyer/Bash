@@ -17,7 +17,8 @@ function countdown {
 function download {
     wget https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh -O /usr/local/bin/vinci
     chmod +x /usr/local/bin/vinci
-    Version=$(cat /usr/local/bin/vinci | grep 'Version=' | head -1 | cut -d'=' -f2)
+    Version=$(sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}' /usr/local/bin/vinci)
+    echo $Version
     if [[ -z $Version ]]; then
       echo "下载失败，请检查网络！"
       countdown 3
@@ -94,8 +95,8 @@ else
     else
         #检查最新版本号
         echo "正在检查版本更新..."
-        Version=$(curl -s https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh | grep 'Version=' | cut -d'=' -f2 | head -1)
-       
+        Version=$(curl -s https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
+                                                                                                                     
         #无需更新
         if [[ "${current_Version}" == "${Version}" ]]; then
            echo "当前已是最新版本(V$Version)，无需更新！"
