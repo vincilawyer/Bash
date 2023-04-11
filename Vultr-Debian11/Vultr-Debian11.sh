@@ -617,7 +617,7 @@ function main {
                         esac;; 
                         
                         #一级菜单4选项
-                  4) Option ${main_menu[$(($get_option - 1))]} "${V2ray_menu[@]}" 
+                  4) Option ${main_menu[$(($get_option - 1))]} "${Warp_menu[@]}" 
                         case $option in
                            2 | 3 | 4)
                                case $option in
