@@ -504,7 +504,7 @@ function main {
                    change_login_password;;
                 5) restart_processes;;
                 6) check_processes;;
-                7) update "force";;
+                8) update "force";;
             esac
             wait;;
      #一级菜单234选项
