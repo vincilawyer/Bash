@@ -1,6 +1,6 @@
 #!/bin/bash
 #版本号,不得为空
-Version=1.44
+Version=1.45
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -503,8 +503,10 @@ function main {
             wait;;
      #一级菜单234选项
        2 | 3 | 4)
+            
+            get_option=$option
+            
             while true; do
-               get_option=$option
                case $get_option in
                
                  #一级菜单2选项
