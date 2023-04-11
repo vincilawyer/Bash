@@ -541,8 +541,6 @@ function main {
                  #一级菜单2选项
                  2) Option ${main_menu[$(($get_option - 1))]} "${Nginx_menu[@]}"
                     case $option in
-                    
-                        "  7、查看Nginx配置文件"
                            2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10)
                                case $option in
                                    2)install_nginx;;
