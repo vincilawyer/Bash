@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.58
+Version=1.59
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -81,6 +81,14 @@ function install_Nginx_PM {
        volumes:
          - ./data:/data         # 点号表示当前文件夹，冒号左边的意思是在当前文件夹下创建一个 data 目录，用于存放数据，如果不存在的话，会自动创建
          - ./letsencrypt:/etc/letsencrypt  # 点号表示当前文件夹，冒号左边的意思是在当前文件夹下创建一个 letsencrypt 目录，用于存放证书，如果不存在的话，会自动创建" >docker-compose.yml
+   
+   #启动NPM
+   #docker-compose up -d
+   
+   echo "默认登录端口为81
+   默认管理员用户：
+   Email:    admin@example.com
+   Password: changeme"
 }
 
 
@@ -218,8 +226,8 @@ function Option {
     
     Nginx_menu=(
     "  1、返回上一级"
-    "  2、安装Nginx"
-    "  3、Nginx Proxy Manager"
+    "  2、安装Nginx Proxy Manager"
+    "  3、安装Nginx"
     "  3、从github下载更新配置文件"
     "  4、从github下载更新网页文件"
     "  5、修改Nginx配置"
@@ -283,12 +291,26 @@ function main {
             while true; do
                case $get_option in
                
-                 #一级菜单2选项
-                 2) Option ${main_menu[$(($get_option - 1))]} "${Nginx_menu[@]}"
+                 
+                 #一级菜单4选项
+                 4) Option ${main_menu[$(($get_option - 1))]} "${Docker_menu[@]}"
+                    case $option in
+                           2 | 3)
+                               case $option in
+                                   2)install_Docker;;
+                                   3)echo "没开发呢！";;
+                               esac
+                               wait;;
+                          1)break;;
+                          *)error_option;;
+                    esac;;
+                  
+                  #一级菜单5选项
+                 5) Option ${main_menu[$(($get_option - 1))]} "${Nginx_menu[@]}"
                     case $option in
                            2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10)
                                case $option in
-                                   2)install_nginx;;
+                                   2)install_Nginx_PM;;
                                    3)download_nginx_config;;
                                    4)download_html;;
                                    5)set_nginx_config;;
@@ -303,21 +325,9 @@ function main {
                           *)error_option;;
                     esac;;
                     
-                 #一级菜单4选项
-                 4) Option ${main_menu[$(($get_option - 1))]} "${Docker_menu[@]}"
-                    case $option in
-                           2 | 3)
-                               case $option in
-                                   2)install_docker;;
-                                   3)echo "没开发呢！";;
-                               esac
-                               wait;;
-                          1)break;;
-                          *)error_option;;
-                    esac;;
-                        
+                  
                   #一级菜单3选项
-                  5)Option ${main_menu[$(($get_option - 1))]} "${V2ray_menu[@]}" 
+                  6)Option ${main_menu[$(($get_option - 1))]} "${V2ray_menu[@]}" 
                         case $option in
                             2 | 3 | 4 | 5 | 6 | 7)
                                case $option in
