@@ -78,6 +78,7 @@ function find {
 
   echo "$found_text"
 }
+
 function change {
   local start_string="$1"
   local end_string="$2"
@@ -124,6 +125,7 @@ function change_ssh_port {
           break 
       fi
     done
+}
 
 function change_login_password {
     # 询问账户密码
