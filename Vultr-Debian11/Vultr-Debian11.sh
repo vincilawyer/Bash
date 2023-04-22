@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.63
+Version=1.64
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -279,12 +279,8 @@ function Option {
     )
     Xui_menu=(
     "  1、返回上一级"
-    "  2、安装Xui"
-    "  3、从github下载更新配置文件"
-    "  4、修改V2ray配置"
-    "  5、查看V2ray配置文件"
-    "  6、停止运行V2ray"
-    "  7、卸载"
+    "  2、安装\更新Xui面板"
+    "  3、进入Xui面板管理（指令:x-ui）"
     "  0、退出" 
     )
     Warp_menu=(
@@ -383,7 +379,7 @@ function main {
                         case $option in
                            2 | 3 | 4)
                                case $option in
-                                   2)install_warp;;
+                                   2)install_Warp;;
                                    3);;
                                    4)echo "没开发呢！";;
                                esac
@@ -398,7 +394,7 @@ function main {
                             2 | 3 | 4 | 5 | 6 | 7)
                                case $option in
                                    2)bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh);;
-                                   7)echo "没开发呢！";;
+                                   3)x-ui;;
                                esac
                                wait;;
                            1)break;;
