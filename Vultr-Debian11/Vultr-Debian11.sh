@@ -98,14 +98,17 @@ function change {
 }
 
 function delete {
+:
 #删除前缀 第几个  在源文件
 }
 
 function add {
+:
 #添加前缀 第几个  在源文件
 }
 
 function insert {
+:
 #在文件中某行插入文本，如果文本已存在，则删除前缀
 }
 
