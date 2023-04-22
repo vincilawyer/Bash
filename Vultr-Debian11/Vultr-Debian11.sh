@@ -97,6 +97,18 @@ function change {
   mv "$temp_file" "$file"
 }
 
+function delete {
+#删除前缀 第几个  在源文件
+}
+
+function add {
+#添加前缀 第几个  在源文件
+}
+
+function insert {
+#在文件中某行插入文本，如果文本已存在，则删除前缀
+}
+
 
                                                                           #修改SSH端口及登录密码的函数
 function change_ssh_port {
@@ -227,6 +239,36 @@ function download_nginx_config {
     else
       echo -e "${GREEN}下载失败，请检查！${NC}"
     fi
+}
+                                                                            # 从github下载网页文件
+function download_html {
+   
+    echo "此操作将从github的vincilawyer/Bash/nginx/html目录下载入网页文件，并覆盖原网页文件！(新网页格式需为html)"
+
+    #输入主题名称
+    read -p "请输入网页主题名称（例如Moon）：" input
+    if [[ -z $input ]]; then 
+        echo "已取消操作!"
+        return
+    fi
+    echo "正在下载网页zip压缩包..."
+
+    #开始下载并覆盖
+    if wget "$link_html$input".zip -O /home/"$input".zip; then
+       echo "压缩包下载完成，开始解压"
+       unzip /home/"$input".zip -d /home
+       path_html=$(find "root" " " "1" $path_nginx)
+       echo "开始覆盖原网页文件"
+       rm -r "$path_html"/*  >/dev/null
+       mv /home/"$input"/* "$path_html"/
+       echo "已更新网页文件！"
+       rm -r /home/"$input".zip
+       rm -r /home/"$input"
+       rm -rf /home/__MACOSX >/dev/null
+       echo "已清除压缩包！"
+   else
+       echo "下载失败，请检查文件名称或网络！"
+   fi    
 }
 
                                                                          
