@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.53
+Version=1.54
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -63,7 +63,7 @@ function install_Docker {
 
 
                                                                           # 安装Warp并启动Warp的函数
-function install_warp {
+function install_Warp {
     if [ -e "/usr/bin/cloudflared" ]; then
         echo -e "${GREEN}Warp已安装，无需重复安装，当前代理IP地址为：${NC}"
         curl ifconfig.me --proxy socks5://127.0.0.1:40000        
@@ -177,12 +177,19 @@ function Option {
     "  2、UfW防火墙管理"
     "  3、强制更新脚本"
     "——————————————————————————————————"
-    "  4、安装Docker及Compose插件"
+    "  4、Docker及Composeg管理"
     "  5、Warp服务"
     "  6、安装\更新X-ui面板（x-ui指令打开面板）"
     "  7、V2ray服务"
     "——————————————————————————————————"
     "  0、退出"
+    )
+    
+    Docker_menu=(
+    "  1、返回上一级"
+    "  2、安装Docker及Compose插件"
+    "  3、卸载Docker及Compose插件"
+    "  0、退出"   
     )
     
     Nginx_menu=(
@@ -235,7 +242,7 @@ function main {
     Option "请选择以下操作选项" "${main_menu[@]}"
     case $option in
     #一级菜单136选项
-        1 | 3 | 4)
+        1 | 3 | 6)
             case $option in
                 1) change_ssh_port
                    change_login_password;;
@@ -266,6 +273,19 @@ function main {
                                    8)ls /var/www/html;;
                                    9)stop "nginx";;
                                    10)echo "没开发呢！";;
+                               esac
+                               wait;;
+                          1)break;;
+                          *)error_option;;
+                    esac;;
+                    
+                 #一级菜单4选项
+                 2) Option ${main_menu[$(($get_option - 1))]} "${Docker_menu[@]}"
+                    case $option in
+                           2 | 3 |)
+                               case $option in
+                                   2)install_docker;;
+                                   3)echo "没开发呢！";;
                                esac
                                wait;;
                           1)break;;
