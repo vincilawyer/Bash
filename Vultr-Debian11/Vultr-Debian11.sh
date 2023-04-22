@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.54
+Version=1.55
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -174,7 +174,7 @@ function Option {
 # 定义菜单选项
     main_menu=(
     "  1、修改SSH登录端口和登录密码"
-    "  2、UfW防火墙管理"
+    "  2、UFW防火墙管理"
     "  3、强制更新脚本"
     "——————————————————————————————————"
     "  4、Docker及Composeg管理"
@@ -282,7 +282,7 @@ function main {
                  #一级菜单4选项
                  2) Option ${main_menu[$(($get_option - 1))]} "${Docker_menu[@]}"
                     case $option in
-                           2 | 3 |)
+                           2 | 3)
                                case $option in
                                    2)install_docker;;
                                    3)echo "没开发呢！";;
