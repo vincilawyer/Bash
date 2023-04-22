@@ -2,7 +2,7 @@
 
 #定义等待时间
 Standby=59
-Ver=004
+Ver=005
 
 function countdown {
     local from=$1
@@ -43,7 +43,7 @@ function execute {
            while true; do
               echo "新版本存在错误，正在尝试重新更新！...输入任意键退出"
               #每隔59秒更新一次
-              for i in {1..59}
+              for i in {1..$Standby}
               do
                  #监听输入同时每秒输出一个方块
                  read -t 10 -n 1 -p "$(printf "\e[42m \e[0m")" input
