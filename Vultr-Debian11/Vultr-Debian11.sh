@@ -262,12 +262,14 @@ bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
 function one_step {
 echo "正在安装X-ui面板"
 install_Xui
-echo "开始申请SSL证书"
-apply_ssl_certificate 
 echo "正在安装Nginx"
 install_Nginx
 echo "正在安装Warp"
 install_Warp
+echo "请：
+1、在x-ui中自行申请SSL
+2、上传Nginx配置
+3、在x-ui面板中调整xray模板、面板设置，并创建节点"
 }
 
 
