@@ -69,22 +69,24 @@ function install_Nginx_PM {
    touch docker-compose.yml
 
    #写入内容
-   echo "version:'3.8'
-   services:
-     app:
-       image: 'jc21/nginx-proxy-manager:latest'
-       restart: unless-stopped
-       ports:
-         - '80:80'              # 不建议修改端口
-         - '81:81'              # 可以把冒号左边的 81 端口修改成你服务器上没有被占用的端口
-         - '443:443'            # 不建议修改端口
-       volumes:
-         - ./data:/data         # 点号表示当前文件夹，冒号左边的意思是在当前文件夹下创建一个 data 目录，用于存放数据，如果不存在的话，会自动创建
-         - ./letsencrypt:/etc/letsencrypt  # 点号表示当前文件夹，冒号左边的意思是在当前文件夹下创建一个 letsencrypt 目录，用于存放证书，如果不存在的话，会自动创建" >docker-compose.yml
+   echo "
+version: '3.8'
+services:
+  app:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt" >docker-compose.yml
    
    #启动NPM
-   #docker-compose up -d
+   docker compose up -d
    
+   #提示
    echo "默认登录端口为81
    默认管理员用户：
    Email:    admin@example.com
