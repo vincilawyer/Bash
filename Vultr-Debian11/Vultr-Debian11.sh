@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.55
+Version=1.56
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -51,7 +51,7 @@ function install_Docker {
     curl -fsSL https://get.docker.com -o get-docker.sh
     sudo sh get-docker.sh
     
-    #安装 Compose CLI 插件：
+    #安装 Compose CLI 插件，可在 https://docs.docker.com/engine/install 文档中更新下载链接
     DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
     mkdir -p $DOCKER_CONFIG/cli-plugins
     curl -SL https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
@@ -60,6 +60,32 @@ function install_Docker {
     #测试安装。
     docker compose version
 }
+
+                                                                         # 安装Nginx Proxy Manager的函数
+function install_Nginx_PM{
+
+   #创建docker-compose.yml 文件
+   mkdir -p ~/data/docker_data/nginxproxymanager   
+   cd ~/data/docker_data/nginxproxymanager   
+   touch docker-compose.yml
+
+   #写入内容
+   echo "version:'3.8'
+   services:
+     app:
+       image: 'jc21/nginx-proxy-manager:latest'
+       restart: unless-stopped
+       ports:
+         - '80:80'              # 不建议修改端口
+         - '81:81'              # 可以把冒号左边的 81 端口修改成你服务器上没有被占用的端口
+         - '443:443'            # 不建议修改端口
+       volumes:
+         - ./data:/data         # 点号表示当前文件夹，冒号左边的意思是在当前文件夹下创建一个 data 目录，用于存放数据，如果不存在的话，会自动创建
+         - ./letsencrypt:/etc/letsencrypt  # 点号表示当前文件夹，冒号左边的意思是在当前文件夹下创建一个 letsencrypt 目录，用于存放证书，如果不存在的话，会自动创建" >docker-compose.yml
+    
+
+}
+
 
 
                                                                           # 安装Warp并启动Warp的函数
@@ -177,8 +203,9 @@ function Option {
     "  2、UFW防火墙管理"
     "  3、强制更新脚本"
     "——————————————————————————————————"
-    "  4、Docker及Composeg管理"
-    "  5、Warp服务"
+    "  4、Docker及Compose管理"
+    "  5、Nginx服务"
+    "  6、Warp服务"
     "  6、安装\更新X-ui面板（x-ui指令打开面板）"
     "  7、V2ray服务"
     "——————————————————————————————————"
@@ -195,6 +222,7 @@ function Option {
     Nginx_menu=(
     "  1、返回上一级"
     "  2、安装Nginx"
+    "  3、Nginx Proxy Manager"
     "  3、从github下载更新配置文件"
     "  4、从github下载更新网页文件"
     "  5、修改Nginx配置"
@@ -247,7 +275,6 @@ function main {
                 1) change_ssh_port
                    change_login_password;;
                 3) update "force";;
-                4) install_Docker;;
                 6) bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh);;
             esac
             wait;;
@@ -280,7 +307,7 @@ function main {
                     esac;;
                     
                  #一级菜单4选项
-                 2) Option ${main_menu[$(($get_option - 1))]} "${Docker_menu[@]}"
+                 4) Option ${main_menu[$(($get_option - 1))]} "${Docker_menu[@]}"
                     case $option in
                            2 | 3)
                                case $option in
@@ -293,7 +320,7 @@ function main {
                     esac;;
                         
                   #一级菜单3选项
-                  3)Option ${main_menu[$(($get_option - 1))]} "${V2ray_menu[@]}" 
+                  5)Option ${main_menu[$(($get_option - 1))]} "${V2ray_menu[@]}" 
                         case $option in
                             2 | 3 | 4 | 5 | 6 | 7)
                                case $option in
@@ -310,7 +337,7 @@ function main {
                         esac;; 
                         
                         #一级菜单4选项
-                  4) Option ${main_menu[$(($get_option - 1))]} "${Warp_menu[@]}" 
+                  7) Option ${main_menu[$(($get_option - 1))]} "${Warp_menu[@]}" 
                         case $option in
                            2 | 3 | 4)
                                case $option in
@@ -324,7 +351,7 @@ function main {
                         esac;;
                         
                        #一级菜单7选项 
-                  7) Option ${main_menu[$(($get_option - 1))]} "${other_menu[@]}" 
+                  8) Option ${main_menu[$(($get_option - 1))]} "${other_menu[@]}" 
                         case $option in
                            2)
                                case $option in
