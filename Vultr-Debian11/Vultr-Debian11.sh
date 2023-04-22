@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.57
+Version=1.58
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -62,8 +62,7 @@ function install_Docker {
 }
 
                                                                          # 安装Nginx Proxy Manager的函数
-function install_Nginx_PM{
-
+function install_Nginx_PM {
    #创建docker-compose.yml文件
    sudo mkdir -p ~/data/docker_data/nginxproxymanager   
    cd ~/data/docker_data/nginxproxymanager   
@@ -82,8 +81,6 @@ function install_Nginx_PM{
        volumes:
          - ./data:/data         # 点号表示当前文件夹，冒号左边的意思是在当前文件夹下创建一个 data 目录，用于存放数据，如果不存在的话，会自动创建
          - ./letsencrypt:/etc/letsencrypt  # 点号表示当前文件夹，冒号左边的意思是在当前文件夹下创建一个 letsencrypt 目录，用于存放证书，如果不存在的话，会自动创建" >docker-compose.yml
-    
-
 }
 
 
