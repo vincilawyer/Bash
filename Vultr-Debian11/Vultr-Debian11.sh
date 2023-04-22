@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.56
+Version=1.57
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -64,8 +64,8 @@ function install_Docker {
                                                                          # 安装Nginx Proxy Manager的函数
 function install_Nginx_PM{
 
-   #创建docker-compose.yml 文件
-   mkdir -p ~/data/docker_data/nginxproxymanager   
+   #创建docker-compose.yml文件
+   sudo mkdir -p ~/data/docker_data/nginxproxymanager   
    cd ~/data/docker_data/nginxproxymanager   
    touch docker-compose.yml
 
