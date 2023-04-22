@@ -42,14 +42,15 @@ function execute {
            while true; do
               echo "新版本存在错误，正在尝试重新更新！...输入任意键退出"
               #每隔59秒更新一次
-              for i in {1.."$Standby"}
+              for i in {1..59}
               do
                  echo "1"
                  #监听输入同时每秒输出一个方块
                  read -t 1 -n 1 -p "$(printf "\e[42m \e[0m")" input
-                 
+                 echo "2"
                  #如果有输入则退出监听
                  if [ ! -z $input ]; then
+                 echo "3"
                     break
                  fi  
               done
