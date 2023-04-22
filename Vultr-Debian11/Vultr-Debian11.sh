@@ -336,7 +336,7 @@ function main {
                                case $option in
                                    2)sudo ufw enable;;
                                    3)sudo ufw disable;;
-                                   4)sudo ufw status verbose 
+                                   4)sudo ufw status verbose;; 
                                esac
                                wait;;
                           1)break;;
