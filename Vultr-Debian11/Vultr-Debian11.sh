@@ -268,6 +268,8 @@ echo "请：
 1、在x-ui中自行申请SSL
 2、上传Nginx配置
 3、在x-ui面板中调整xray模板、面板设置，并创建节点"
+echo "已暂时关闭防火墙，配置完成后请手动开启"
+ufw disable
 }
 
 
