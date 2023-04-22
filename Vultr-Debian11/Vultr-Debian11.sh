@@ -49,6 +49,109 @@ function update {
 update $Version
 
 
+function find {
+  local start_string="$1"
+  local end_string="$2"
+  local stop_on_first="${3:-false}"
+  local file="$4"
+  local found_text=""
+
+  if [[ "$stop_on_first" == "" || "$stop_on_first" == false ]]; then
+    found_text=$(awk -v start="$start_string" -v end="$end_string" '{
+        if (match($0, start".*"end)) {
+          print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end));
+        } else if (match($0, start)) {
+          print substr($0, RSTART + length(start));
+        }
+      }' "$file")
+  else
+    found_text=$(awk -v start="$start_string" -v end="$end_string" '{
+        if (match($0, start".*"end)) {
+          print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end));
+          exit;
+        } else if (match($0, start)) {
+          print substr($0, RSTART + length(start));
+          exit;
+        }
+      }' "$file")
+  fi
+
+  echo "$found_text"
+}
+function change {
+  local start_string="$1"
+  local end_string="$2"
+  local new_text="$3"
+  local file="$4"
+  local temp_file="$(mktemp)"
+
+  awk -v start="$start_string" -v end="$end_string" -v new="$new_text" '{
+      if (match($0, start".*"end)) {
+        print substr($0, 1, RSTART + length(start) - 1) new substr($0, RSTART + RLENGTH - length(end));
+      } else {
+        print $0;
+      }
+    }' "$file" > "$temp_file"
+
+  mv "$temp_file" "$file"
+}
+
+
+                                                                          #修改SSH端口及登录密码的函数
+function change_ssh_port {
+    #询问SSH端口
+    while true; do
+      current_ssh_port=$(find "port" " " true $path_ssh)
+      echo -e "${GREEN}当前的SSH端口为：$current_ssh_port${NC}"
+      read -p "$(echo -e ${BLUE}"请设置新SSH端口（0-65535，空则跳过）：${NC}")" ssh_port
+      if [[ -z $ssh_port ]]; then
+          echo -e "${RED}已跳过SSH端口设置${NC}"
+          break
+      elif ! [[ $ssh_port =~ ^[0-9]+$ ]]; then
+          echo -e "${RED}端口值输入错误，请重新输入${NC}"
+      elif (( $ssh_port < 0 || $ssh_port > 65535 )); then
+          echo -e "${RED}端口值输入错误，请重新输入${NC}"
+      else 
+          # 修改SSH端口
+          change "Port " " " "$ssh_port" $path_ssh
+          ufw allow $ssh_port/tcp
+          echo -e "${GREEN}SSH端口已修改为$ssh_port,并已添加进防火墙规则中。${NC}"
+          ufw delete allow $current_ssh_port/tcp
+          echo -e "${GREEN}已从防火墙规则中删除原SSH端口号：$current_ssh_port${NC}"
+          systemctl restart sshd
+          echo -e "${GREEN}当前防火墙运行规则及状态为：${NC}"
+          ufw status
+          break 
+      fi
+    done
+
+function change_login_password {
+    # 询问账户密码
+    while true; do
+      read -p "$(echo -e ${BLUE}"请设置SSH登录密码（至少8位数字）：${NC}")" ssh_password
+      if [[ -z $ssh_password ]]; then
+         echo -e "${RED}已跳过登录密码设置${NC}"
+         break
+      elif (( ${#ssh_password} < 8 )); then
+         echo -e "${RED}密码长度应至少为8位，请重新输入${NC}"
+      else 
+         #修改账户密码
+         chpasswd_output=$(echo "root:$ssh_password" | chpasswd 2>&1)
+         if echo "$chpasswd_output" | grep -q "BAD PASSWORD" >/dev/null 2>&1; then
+            echo -e "${RED}SSH登录密码修改失败,错误原因：${NC}"
+            echo "$chpasswd_output" >&2
+         else
+            echo -e "${GREEN}SSH登录密码已修改成功！${NC}"
+         fi
+         break
+      fi
+    done
+}
+
+
+
+
+
                                                                           # 安装Docker及Compose插件的函数
 function install_Docker {
 
