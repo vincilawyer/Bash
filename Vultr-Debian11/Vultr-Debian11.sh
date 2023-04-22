@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.59
+Version=1.6
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -20,7 +20,12 @@ NC='\033[0m'
   option=0   
 #更新检查程序网址
   link_update="https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh"
-
+#nginx配置文件网址
+  link_nginx="https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf"
+#ssh配置文件路径                           
+  path_ssh="/etc/ssh/sshd_config"
+#nginx配置文件路径                       
+  path_nginx="/etc/nginx/conf.d/default.conf" 
 
 
                                                                           #更新函数
@@ -61,7 +66,7 @@ function install_Docker {
     docker compose version
 }
 
-                                                                         # 安装Nginx Proxy Manager的函数
+                                                                         # 安装Nginx_Proxy_Manager的函数
 function install_Nginx_PM {
    #创建docker-compose.yml文件
    sudo mkdir -p ~/data/docker_data/nginxproxymanager   
@@ -94,6 +99,32 @@ services:
 }
 
 
+                                                                           # 安装Nginx的函数（设置配置、更新、上传网页等）
+function install_Nginx {
+    if [ -x "$(command -v nginx)" ]; then
+        echo -e "${GREEN}Nginx已经安装，无需重复安装。当前版本号为 $(nginx -v 2>&1)${NC}"
+    else
+        echo -e "${GREEN}正在更新包列表${NC}"
+        apt-get update
+        echo -e "${GREEN}包列表更新完成${NC}"
+        apt-get install nginx -y
+        echo -e "${GREEN}Nginx 安装完成，版本号为 $(nginx -v 2>&1)。${NC}"
+        echo -e "${GREEN}正在调整防火墙规则，放开80、443端口 $(nginx -v 2>&1)。${NC}"
+        ufw allow http && ufw allow https 
+        echo -e "${GREEN}正在从github下载Nginx配置文件${NC}"
+        download_nginx_config
+    fi
+}
+
+                                                                           # 从github下载更新Nginx配置文件、待测试
+function download_nginx_config {
+    echo -e "${GREEN}正在载入：${NC}"
+    if wget $link_nginx -O $path_nginx; then 
+      echo -e "${GREEN}载入完毕${NC}"
+    else
+      echo -e "${GREEN}下载失败，请检查！${NC}"
+    fi
+}
 
                                                                           # 安装Warp并启动Warp的函数
 function install_Warp {
@@ -213,10 +244,17 @@ function Option {
     "  4、Docker及Compose管理"
     "  5、Nginx服务"
     "  6、Warp服务"
-    "  6、安装\更新X-ui面板（x-ui指令打开面板）"
-    "  7、V2ray服务"
+    "  7、X-ui服务"
+    安装\更新X-ui面板（x-ui指令打开面板）"
     "——————————————————————————————————"
     "  0、退出"
+    )
+    NFW_menu=(
+    "  1、返回上一级"
+    "  2、启动防火墙"
+    "  3、关闭防火墙"
+    "  4、查看防火墙规则"
+    "  0、退出"   
     )
     
     Docker_menu=(
@@ -230,8 +268,7 @@ function Option {
     "  1、返回上一级"
     "  2、安装Nginx Proxy Manager"
     "  3、安装Nginx"
-    "  3、从github下载更新配置文件"
-    "  4、从github下载更新网页文件"
+    "  4、从github下载更新配置文件"
     "  5、修改Nginx配置"
     "  6、申请SSL证书"
     "  7、查看Nginx配置文件"
@@ -240,9 +277,9 @@ function Option {
     "  10、卸载"
     "  0、退出"   
     )
-    V2ray_menu=(
+    Xui_menu=(
     "  1、返回上一级"
-    "  2、安装V2ray"
+    "  2、安装Xui"
     "  3、从github下载更新配置文件"
     "  4、修改V2ray配置"
     "  5、查看V2ray配置文件"
@@ -277,24 +314,36 @@ function main {
     Option "请选择以下操作选项" "${main_menu[@]}"
     case $option in
     #一级菜单136选项
-        1 | 3 | 6)
+        1 | 3)
             case $option in
                 1) change_ssh_port
                    change_login_password;;
                 3) update "force";;
-                6) bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh);;
             esac
             wait;;
      #一级菜单234选项
-       2 | 4 | 5 | 7)
-            
+       2 | 4 | 5 | 6 | 7)
+       
             get_option=$option
             
             while true; do
                case $get_option in
                
+                 #一级菜单2 防火墙选项
+                 2) Option ${main_menu[$(($get_option - 1))]} "${NFW_menu[@]}"
+                    case $option in
+                           2 | 3 | 4)
+                               case $option in
+                                   2)sudo ufw enable;;
+                                   3)sudo ufw disable;;
+                                   4)sudo ufw status verbose 
+                               esac
+                               wait;;
+                          1)break;;
+                          *)error_option;;
+                    esac;;
                  
-                 #一级菜单4选项
+                 #一级菜单4 Docker选项
                  4) Option ${main_menu[$(($get_option - 1))]} "${Docker_menu[@]}"
                     case $option in
                            2 | 3)
@@ -307,18 +356,17 @@ function main {
                           *)error_option;;
                     esac;;
                   
-                  #一级菜单5选项
+                  #一级菜单5 Nginx选项
                  5) Option ${main_menu[$(($get_option - 1))]} "${Nginx_menu[@]}"
                     case $option in
                            2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10)
                                case $option in
                                    2)install_Nginx_PM;;
-                                   3)download_nginx_config;;
-                                   4)download_html;;
+                                   3)install_Nginx;;
+                                   4)download_nginx_config;;
                                    5)set_nginx_config;;
                                    6)apply_ssl_certificate;;
                                    7)nano /etc/nginx/conf.d/default.conf;;
-                                   8)ls /var/www/html;;
                                    9)stop "nginx";;
                                    10)echo "没开发呢！";;
                                esac
@@ -327,26 +375,9 @@ function main {
                           *)error_option;;
                     esac;;
                     
-                  
-                  #一级菜单3选项
-                  6)Option ${main_menu[$(($get_option - 1))]} "${V2ray_menu[@]}" 
-                        case $option in
-                            2 | 3 | 4 | 5 | 6 | 7)
-                               case $option in
-                                   2)install_v2ray;;
-                                   3);;
-                                   4);;
-                                   5)nano /usr/local/etc/v2ray/config.json;;
-                                   6)stop "v2ray";;
-                                   7)echo "没开发呢！";;
-                              esac
-                              wait;;
-                          1)break;;
-                          *)error_option;;
-                        esac;; 
                         
-                        #一级菜单4选项
-                  7) Option ${main_menu[$(($get_option - 1))]} "${Warp_menu[@]}" 
+                  #一级菜单6 Warp选项
+                  6) Option ${main_menu[$(($get_option - 1))]} "${Warp_menu[@]}" 
                         case $option in
                            2 | 3 | 4)
                                case $option in
@@ -359,17 +390,20 @@ function main {
                           *)error_option;;
                         esac;;
                         
-                       #一级菜单7选项 
-                  8) Option ${main_menu[$(($get_option - 1))]} "${other_menu[@]}" 
+                  #一级菜单7 Xui选项
+                  7)Option ${main_menu[$(($get_option - 1))]} "${Xui_menu[@]}" 
                         case $option in
-                           2)
+                            2 | 3 | 4 | 5 | 6 | 7)
                                case $option in
-                                   2)stop "ufw";;
-                               esac
-                               wait;;
+                                   2)bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh);;;;
+                                   3);;
+                                   4);;
+                                   7)echo "没开发呢！";;
+                              esac
+                              wait;;
                           1)break;;
                           *)error_option;;
-                        esac;;
+                        esac;;      
                         
                 esac
            done;;    
