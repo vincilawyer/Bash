@@ -375,33 +375,7 @@ function main {
                           *)error_option;;
                     esac;;
                     
-                        
-                  #一级菜单6 Warp选项
-                  6) Option ${main_menu[$(($get_option - 1))]} "${Warp_menu[@]}" 
-                        case $option in
-                           2 | 3 | 4)
-                               case $option in
-                                   2)install_warp;;
-                                   3);;
-                                   4)echo "没开发呢！";;
-                               esac
-                               wait;;
-                          1)break;;
-                          *)error_option;;
-                        esac;;
-                        
-                  #一级菜单7 Xui选项
-                  7)Option ${main_menu[$(($get_option - 1))]} "${Xui_menu[@]}" 
-                        case $option in
-                            2 | 3 | 4 | 5 | 6 | 7)
-                               case $option in
-                                   2)bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh);;
-                                   7)echo "没开发呢！";;
-                               esac
-                               wait;;
-                           1)break;;
-                           *)error_option;;
-                        esac;;      
+    
                         
                 esac
            done;;    
