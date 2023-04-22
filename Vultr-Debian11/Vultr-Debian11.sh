@@ -111,8 +111,6 @@ function install_Nginx {
         echo -e "${GREEN}Nginx 安装完成，版本号为 $(nginx -v 2>&1)。${NC}"
         echo -e "${GREEN}正在调整防火墙规则，放开80、443端口 $(nginx -v 2>&1)。${NC}"
         ufw allow http && ufw allow https 
-        echo -e "${GREEN}正在从github下载Nginx配置文件${NC}"
-        download_nginx_config
     fi
 }
 
