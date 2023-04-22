@@ -407,9 +407,9 @@ bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
 function one_step {
 echo "正在安装X-ui面板"
 install_Xui
-echo "正在安装Nginx"
+wait "点击任意键安装Nginx"
 install_Nginx
-echo "正在安装Warp"
+wait "点击任意键安装Warp"
 install_Warp
 echo "请：
 1、在x-ui中自行申请SSL
@@ -432,7 +432,11 @@ function countdown {
 }
                                                                          # 定义等待函数
 function wait {
+   if [[ -z $1]]; then
    echo "请按下任意键返回管理系统"
+   else
+   echo $1
+   fi
    read -n 1 -s input
 }
 
