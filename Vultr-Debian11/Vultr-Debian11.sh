@@ -395,14 +395,12 @@ function main {
                         case $option in
                             2 | 3 | 4 | 5 | 6 | 7)
                                case $option in
-                                   2)bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh);;;;
-                                   3);;
-                                   4);;
+                                   2)bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh);;
                                    7)echo "没开发呢！";;
-                              esac
-                              wait;;
-                          1)break;;
-                          *)error_option;;
+                               esac
+                               wait;;
+                           1)break;;
+                           *)error_option;;
                         esac;;      
                         
                 esac
