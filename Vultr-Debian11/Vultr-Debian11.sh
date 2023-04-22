@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.67
+Version=1.68
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -241,8 +241,34 @@ function download_nginx_config {
       echo -e "${GREEN}载入完毕${NC}"
     else
       echo -e "${GREEN}下载失败，请检查！${NC}"
-    fi
+    fi   
 }
+                                                                           # 设置Nginx配置、待测试
+function set_nginx_config {
+    # 输入域名
+    while true; do 
+        echo "当前配置域名为：$(find "server_name" " " "1" $path_nginx)"
+        read -p "$(echo -e ${YELLOW}"请输入网站域名（不加www.）: ${NC}")" domain_name
+        #未输入域名
+        if [[ -z $domain_name ]]; then
+            echo -e "${GREEN}跳过域名设置${NC}"
+            break
+        # 域名输入正确
+        elif [[ $domain_name =~ ^[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$ ]]; then
+            #域名添加前缀
+            if [[ $domain_name != "www."* ]]; then domain_name="www.${domain_name}"; fi
+            #判断域名证书是否存在
+            if ! check_ssl_certificate "$domain_name"; then echo -e "${RED}该域名的SSL证书尚不存在，请注意及时申请！${NC}"; fi
+            change "server_name" ";" "1" $path_nginx
+            change "ssl_certificate /root/cert/" ";" $domain_name $path_nginx
+            change "ssl_certificate_key /root/cert/" "/" $domain_name $path_nginx
+            echo -e "${GREEN}域名设置完成${NC}"
+            break
+        else
+            echo -e "${RED}输入格式不正确，请重新输入${NC}"
+        fi
+    done
+}   
                                                                             # 从github下载网页文件
 function download_html {
    
@@ -435,10 +461,10 @@ function countdown {
 }
                                                                          # 定义等待函数
 function wait {
-   if [[ -z $1]]; then
-   echo "请按下任意键返回管理系统"
+   if [[ -z "$1" ]]; then
+    echo "请按下任意键返回管理系统"
    else
-   echo $1
+    echo $1
    fi
    read -n 1 -s input
 }
