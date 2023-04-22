@@ -313,6 +313,7 @@ function main {
   while true; do
     Option "请选择以下操作选项" "${main_menu[@]}"
     case $option in
+    
     #一级菜单136选项
         1 | 3)
             case $option in
@@ -321,6 +322,7 @@ function main {
                 3) update "force";;
             esac
             wait;;
+            
      #一级菜单234选项
        2 | 4 | 5 | 6 | 7)
        
@@ -356,25 +358,6 @@ function main {
                           *)error_option;;
                     esac;;
                   
-                  #一级菜单5 Nginx选项
-                 5) Option ${main_menu[$(($get_option - 1))]} "${Nginx_menu[@]}"
-                    case $option in
-                           2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10)
-                               case $option in
-                                   2)install_Nginx_PM;;
-                                   3)install_Nginx;;
-                                   4)download_nginx_config;;
-                                   5)set_nginx_config;;
-                                   6)apply_ssl_certificate;;
-                                   7)nano /etc/nginx/conf.d/default.conf;;
-                                   9)stop "nginx";;
-                                   10)echo "没开发呢！";;
-                               esac
-                               wait;;
-                          1)break;;
-                          *)error_option;;
-                    esac;;
-                    
     
                         
                 esac
@@ -388,4 +371,3 @@ function main {
 
                                                                            # 调用主函数
 main
-
