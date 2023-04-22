@@ -243,7 +243,7 @@ function download_nginx_config {
       echo -e "${GREEN}下载失败，请检查！${NC}"
     fi   
 }
-                                                                           # 设置Nginx配置、待测试
+                                                                           # 设置Nginx配置、未完待测试
 function set_nginx_config {
     # 输入域名
     while true; do 
