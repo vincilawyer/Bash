@@ -94,7 +94,7 @@ else
     #自动检查更新 
     else
         #检查最新版本号
-        echo "正在检查版本更新..."
+        echo "正在检查版本更新(001)..."
         Version=$(curl -s https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
                                                                                                                      
         #无需更新
