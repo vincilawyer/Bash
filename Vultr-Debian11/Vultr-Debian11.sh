@@ -126,6 +126,98 @@ function download_nginx_config {
     fi
 }
 
+                                                                         
+                                                                           # 使用Certbot申请SSL证书的函数
+function apply_ssl_certificate {
+    # 输入域名
+    while true; do
+        read -p "$(echo -e ${BLUE}"请输入申请SSL证书域名（不加www.）: ${NC}")" domain_name
+        if [[ -z $domain_name ]]; then
+          echo -e "${RED}未输入域名，退出申请操作${NC}"
+          return
+        elif [[ $domain_name =~ ^[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$ ]]; then
+            domain_name=${domain_name#www.}
+            break
+        else
+            echo -e "${RED}输入格式不正确，请重新输入${NC}"
+        fi
+    done
+
+    # 输入邮箱
+    while true; do
+        read -p "$(echo -e ${BLUE}"请输入申请SSL证书邮箱: ${NC}")" email
+        if [[ -z $email || ! $email =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]]; then
+            echo -e "${RED}输入格式不正确，请重新输入${NC}"
+        else
+            break
+        fi
+    done
+    
+  
+    # 停止nginx运行
+    if [ -x "$(command -v nginx)" ]; then
+       systemctl stop nginx
+       echo -e "${GREEN}为了防止80端口被占用，已停止nginx运行${NC}"
+    fi  
+  
+    #关闭防火墙
+    ufw disable 
+    echo -e "${GREEN}为了防止证书申请失败，已关闭防火墙${NC}"
+
+    # 检查并安装Certbot
+    if [ -x "$(command -v certbot)" ]; then
+      echo -e "${GREEN}本机已安装Certbot，无需重复安装，即将申请SSL证书...${NC}"
+    else
+      echo -e "${GREEN}正在更新包列表${NC}"
+      sudo apt update
+      echo -e "${GREEN}包列表更新完成${NC}"
+      echo -e "${GREEN}正在安装Certbot...${NC}"
+      apt install certbot certbot -y
+      echo -e "${GREEN}Certbot安装完成，即将申请SSL证书...${NC}"
+    fi
+  
+    # 申请证书
+    certbot certonly --standalone --agree-tos -n -d www.$domain_name -d $domain_name -m $email
+    
+    # 判断申请结果
+    if check_ssl_certificate "$domain_name"; then
+        echo -e "${GREEN}SSL证书申请已完成！${NC}"
+        # 证书自动续约
+        echo "0 0 1 */2 * service nginx stop; certbot renew; service nginx start;" | crontab
+        if [ $? -eq 0 ]; then
+            echo -e "${GREEN}未成功启动证书自动续约${NC}"
+        else
+            echo -e "${GREEN}已启动证书自动续约${NC}"
+        fi
+    else
+        echo -e "${RED}SSL证书申请失败！${NC}"
+    fi
+    
+    # 重启nginx
+    if [ -x "$(command -v nginx)" ]; then
+       echo -e "${GREEN}正常恢复nginx运行${NC}"  
+       systemctl start nginx
+    fi  
+
+    #重启防火墙
+    echo -e "${GREEN}正在恢复防火墙运行${NC}"  
+    ufw --force enable
+}
+
+                                                                            # 判断Certbot申请的SSL证书是否存在
+function check_ssl_certificate {
+    domain_name=$1
+    #域名添加www.前缀
+    if [[ $domain_name != "www."* ]]; then domain_name="www.${domain_name}"; fi
+    #搜索SSL证书
+    search_result=$(find /etc/letsencrypt/live/ -name fullchain.pem -print0 | xargs -0 grep -l "$domain_name" 2>/dev/null)
+    if [[ -z "$search_result" ]]; then
+      return false
+    else
+      return true
+    fi
+}
+
                                                                           # 安装Warp并启动Warp的函数
 function install_Warp {
     if [ -e "/usr/bin/cloudflared" ]; then
@@ -159,6 +251,23 @@ function install_Warp {
         curl ifconfig.me --proxy socks5://127.0.0.1:40000
         echo
     fi
+}
+
+                                                                          # 安装X-ui的函数
+function install_Xui {
+bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
+}
+
+                                                                          # 一键搭建服务端的函数
+function one_step {
+echo "正在安装X-ui面板"
+install_Xui
+echo "开始申请SSL证书"
+apply_ssl_certificate 
+echo "正在安装Nginx"
+install_Nginx
+echo "正在安装Warp"
+install_Warp
 }
 
 
@@ -241,11 +350,11 @@ function Option {
     "  2、UFW防火墙管理"
     "  3、强制更新脚本"
     "——————————————————————————————————"
-    "  4、Docker及Compose管理"
-    "  5、Nginx服务"
-    "  6、Warp服务"
-    "  7、X-ui服务"
-    "安装\更新X-ui面板（x-ui指令打开面板）"
+    "  4、一键搭建科学上网服务端"
+    "  5、Docker及Compose管理"
+    "  6、Nginx服务"
+    "  7、Warp服务"
+    "  8、X-ui服务"
     "——————————————————————————————————"
     "  0、退出"
     )
@@ -268,9 +377,9 @@ function Option {
     "  1、返回上一级"
     "  2、安装Nginx Proxy Manager"
     "  3、安装Nginx"
-    "  4、从github下载更新配置文件"
+    "  3、申请SSL证书"
     "  5、修改Nginx配置"
-    "  6、申请SSL证书"
+    "  6、从github下载更新配置文件"
     "  7、查看Nginx配置文件"
     "  8、查看网页文件根目录"
     "  9、停止运行Nginx"
@@ -310,17 +419,18 @@ function main {
     Option "请选择以下操作选项" "${main_menu[@]}"
     case $option in
     
-    #一级菜单136选项
-        1 | 3)
+    #一级菜单134选项
+        1 | 3 | 4)
             case $option in
                 1) change_ssh_port
                    change_login_password;;
                 3) update "force";;
+                4) one_step 
             esac
             wait;;
             
-     #一级菜单234选项
-       2 | 4 | 5 | 6 | 7)
+     #一级菜单25678选项
+       2 | 5 | 6 | 7 | 8)
        
             get_option=$option
             
@@ -341,8 +451,8 @@ function main {
                           *)error_option;;
                     esac;;
                  
-                 #一级菜单4 Docker选项
-                 4) Option ${main_menu[$(($get_option - 1))]} "${Docker_menu[@]}"
+                 #一级菜单5 Docker选项
+                 5) Option ${main_menu[$(($get_option - 1))]} "${Docker_menu[@]}"
                     case $option in
                            2 | 3)
                                case $option in
@@ -355,16 +465,16 @@ function main {
                     esac;;
                   
     
-                  #一级菜单5 Nginx选项
-                 5) Option ${main_menu[$(($get_option - 1))]} "${Nginx_menu[@]}"
+                  #一级菜单6 Nginx选项
+                 6) Option ${main_menu[$(($get_option - 1))]} "${Nginx_menu[@]}"
                     case $option in
                            2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10)
                                case $option in
                                    2)install_Nginx_PM;;
                                    3)install_Nginx;;
-                                   4)download_nginx_config;;
+                                   4)apply_ssl_certificate;;
                                    5)set_nginx_config;;
-                                   6)apply_ssl_certificate;;
+                                   6)download_nginx_config;;
                                    7)nano /etc/nginx/conf.d/default.conf;;
                                    9)stop "nginx";;
                                    10)echo "没开发呢！";;
@@ -374,8 +484,8 @@ function main {
                           *)error_option;;
                     esac;;
                                             
-                  #一级菜单6 Warp选项
-                  6) Option ${main_menu[$(($get_option - 1))]} "${Warp_menu[@]}" 
+                  #一级菜单7 Warp选项
+                  7) Option ${main_menu[$(($get_option - 1))]} "${Warp_menu[@]}" 
                         case $option in
                            2 | 3 | 4)
                                case $option in
@@ -388,12 +498,12 @@ function main {
                           *)error_option;;
                         esac;;
                         
-                  #一级菜单7 Xui选项
-                  7)Option ${main_menu[$(($get_option - 1))]} "${Xui_menu[@]}" 
+                  #一级菜单8 Xui选项
+                  8)Option ${main_menu[$(($get_option - 1))]} "${Xui_menu[@]}" 
                         case $option in
                             2 | 3 | 4 | 5 | 6 | 7)
                                case $option in
-                                   2)bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh);;
+                                   2)install_Xui;;
                                    3)x-ui;;
                                esac
                                wait;;
