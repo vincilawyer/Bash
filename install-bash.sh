@@ -2,7 +2,7 @@
 
 #定义等待时间
 Standby=59
-Ver=003
+Ver=004
 
 function countdown {
     local from=$1
@@ -46,7 +46,7 @@ function execute {
               for i in {1..59}
               do
                  #监听输入同时每秒输出一个方块
-                 read -t 1 -n 1 -p "$(printf "\e[42m \e[0m")" input
+                 read -t 10 -n 1 -p "$(printf "\e[42m \e[0m")" input
                  #如果有输入则退出监听
                  if [ ! -z $input ]; then
                     break
