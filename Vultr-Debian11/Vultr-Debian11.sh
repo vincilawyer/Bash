@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.62
+Version=1.63
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -245,7 +245,7 @@ function Option {
     "  5、Nginx服务"
     "  6、Warp服务"
     "  7、X-ui服务"
-    安装\更新X-ui面板（x-ui指令打开面板）"
+    "安装\更新X-ui面板（x-ui指令打开面板）"
     "——————————————————————————————————"
     "  0、退出"
     )
@@ -359,7 +359,51 @@ function main {
                     esac;;
                   
     
+                  #一级菜单5 Nginx选项
+                 5) Option ${main_menu[$(($get_option - 1))]} "${Nginx_menu[@]}"
+                    case $option in
+                           2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10)
+                               case $option in
+                                   2)install_Nginx_PM;;
+                                   3)install_Nginx;;
+                                   4)download_nginx_config;;
+                                   5)set_nginx_config;;
+                                   6)apply_ssl_certificate;;
+                                   7)nano /etc/nginx/conf.d/default.conf;;
+                                   9)stop "nginx";;
+                                   10)echo "没开发呢！";;
+                               esac
+                               wait;;
+                          1)break;;
+                          *)error_option;;
+                    esac;;
+                                            
+                  #一级菜单6 Warp选项
+                  6) Option ${main_menu[$(($get_option - 1))]} "${Warp_menu[@]}" 
+                        case $option in
+                           2 | 3 | 4)
+                               case $option in
+                                   2)install_warp;;
+                                   3);;
+                                   4)echo "没开发呢！";;
+                               esac
+                               wait;;
+                          1)break;;
+                          *)error_option;;
+                        esac;;
                         
+                  #一级菜单7 Xui选项
+                  7)Option ${main_menu[$(($get_option - 1))]} "${Xui_menu[@]}" 
+                        case $option in
+                            2 | 3 | 4 | 5 | 6 | 7)
+                               case $option in
+                                   2)bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh);;
+                                   7)echo "没开发呢！";;
+                               esac
+                               wait;;
+                           1)break;;
+                           *)error_option;;
+                        esac;;                          
                 esac
            done;;    
        #一级菜单其他选项  
