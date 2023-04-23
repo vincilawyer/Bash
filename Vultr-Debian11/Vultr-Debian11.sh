@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.71
+Version=1.72
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -13,11 +13,15 @@ CYAN='\033[0;36m'
 WHITE='\033[0;37m'
 BLACK="\033[40m"
 NC='\033[0m'
+#用户选择序号                                     
+option=0  
+#修改前内容
+text1=0
+#修改后内容
+text2=0
 
 #刷新等待时长
-  Standby=50       
-#用户选择序号                                     
-  option=0   
+  Standby=50        
 #更新检查程序网址
   link_update="https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh"
 #cf_dns修改脚本网站
@@ -28,6 +32,7 @@ NC='\033[0m'
   path_ssh="/etc/ssh/sshd_config"
 #nginx配置文件路径                       
   path_nginx="/etc/nginx/conf.d/default.conf" 
+  
 
 
                                                                           #更新函数
@@ -50,7 +55,7 @@ function update {
 #执行启动前更新检查
 update $Version
 
-
+                                                                          #查询文本内容函数
 function find {
   local start_string="$1"   # 开始文本字符串
   local end_string="$2"     # 结束文本字符串
@@ -71,15 +76,9 @@ function find {
     found_text=$(awk -v start="$start_string" -v end="$end_string" '{
         if (match($0, start".*"end)) {  # 如果匹配开始和结束文本，则提取匹配项中的文本并退出循环
           print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end));
-          if ($0 ~ /^[\t ]*#/ || $0 ~ /^[\t ]*\/\/+/) {  # 如果该行是以 # 或 // 开头，则认为是注释行
-            print "(注释行)";
-          }
           exit;
         } else if (match($0, start)) {  # 如果只匹配开始文本，则提取开始文本之后的文本并退出循环
           print substr($0, RSTART + length(start));
-          if ($0 ~ /^[\t ]*#/ || $0 ~ /^[\t ]*\/\/+/) {  # 如果该行是以 # 或 // 开头，则认为是注释行
-            print "(注释行)";
-          }
           exit;
         }
       }' "$file")
@@ -89,6 +88,7 @@ function find {
 }
 
 
+                                                                          #改变文本内容函数
 function change {
   local start_string="$1"
   local end_string="$2"
@@ -107,49 +107,101 @@ function change {
   mv "$temp_file" "$file"
 }
 
-function delete {
-:
-#删除前缀 第几个  在源文件
+                                                                          #查询文本注释性质函数
+function is_comment() {
+  local keyword="$1"
+  local file_path="$2"
+  local comment_symbol="${3:-#}" # 如果未提供注释符号，则默认为 #
+
+  # 使用grep命令搜索关键词在文本中的出现位置
+  local match=$(grep -n "$keyword" "$file_path")
+
+  # 判断搜索结果是否为空
+  if [ -z "$match" ]; then
+    echo false
+  else
+    # 使用awk命令获取关键词所在行的第一个字符
+    local line_start=$(echo "$match" | awk -F: '{print $1}')
+    local first_char=$(sed "${line_start}q;d" "$file_path" | sed 's/^[[:blank:]]*//' | cut -c 1)
+
+    # 判断第一个字符是否为注释符号
+    if [ "$first_char" == "$comment_symbol" ]; then
+      echo true
+    else
+      echo false
+    fi
+  fi
+}
+                                                                          #移除注释符号函数
+                          
+function remove_comment_symbols() {
+  local file_path="$1"
+  local comment_symbol="${2:-#}" # 如果未提供注释符号，则默认为 #
+
+  # 使用sed命令删除每行的注释符号及其前面的空格和制表符
+  sed -i "s/[[:blank:]]*$comment_symbol[[:blank:]]*//" "$file_path"
 }
 
-function add {
-:
-#添加前缀 第几个  在源文件
-}
 
-function insert {
-:
-#在文件中某行插入文本，如果文本已存在，则删除前缀
+                                                                          #查询并修改文本函数
+#1、起始字符
+#2、结束字符
+#3、是否在找到第一个匹配项后停止查找，默认为false
+#4、要设置的文件名
+#5、显示搜索和修改内容的含义
+#6、修改内容备注
+#7、修改内容正则表达式
+#8、内容与正则表达式的真假匹配
+function set {
+     text1=""
+     text2=""
+     text1=$(find $1 $2 $3 $4)
+     if is_comment $1 $4; then
+        echo -e "${GREEN}当前的$5注释缺省（值为：$text1）${NC}"
+     else
+        echo -e "${GREEN}当前的$5为：$text1${NC}"
+     fi
+     while true; do
+         read -p "$(echo -e ${BLUE}"请设置新的$5（$6空则跳过）：${NC}")" text2
+         if [[ -z $text2 ]]; then
+             echo -e "${RED}已跳过$5设置${NC}"
+             reture 0
+         elif [[ $bb =~ $7 ]]; then
+             if $8; then
+                change $1 $2 $text2 $4
+                remove_comment_symbols $1 $4
+                echo -e "${GREEN}$5已修改为$text2。${NC}"
+                reture 1
+             else
+                echo -e "${RED}$5输入错误，请重新输入${NC}"
+             fi
+         else
+             if $8; then
+                echo -e "${RED}$5输入错误，请重新输入${NC}"
+             else
+                change $1 $2 $text2 $4
+                remove_comment_symbols $1 $4
+                echo -e "${GREEN}$5已修改为$text2。${NC}"
+                reture 1
+             fi
+         fi
+     done  
 }
 
 
                                                                           #修改SSH端口及登录密码的函数
 function change_ssh_port {
     #询问SSH端口
-    while true; do
-      current_ssh_port=$(find "Port " " " true $path_ssh)
-      echo -e "${GREEN}当前的SSH端口为：$current_ssh_port${NC}"
-      read -p "$(echo -e ${BLUE}"请设置新SSH端口（0-65535，空则跳过）：${NC}")" ssh_port
-      if [[ -z $ssh_port ]]; then
-          echo -e "${RED}已跳过SSH端口设置${NC}"
-          break
-      elif ! [[ $ssh_port =~ ^[0-9]+$ ]]; then
-          echo -e "${RED}端口值输入错误，请重新输入${NC}"
-      elif (( $ssh_port < 0 || $ssh_port > 65535 )); then
-          echo -e "${RED}端口值输入错误，请重新输入${NC}"
-      else 
-          # 修改SSH端口
-          change "Port " " " "$ssh_port" $path_ssh
-          ufw allow $ssh_port/tcp
-          echo -e "${GREEN}SSH端口已修改为$ssh_port,并已添加进防火墙规则中。${NC}"
-          ufw delete allow $current_ssh_port/tcp
-          echo -e "${GREEN}已从防火墙规则中删除原SSH端口号：$current_ssh_port${NC}"
+    if set "Port " " " true $path_ssh "SSH端口" "0-65535，" "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$" false; then
+          echo -e "${GREEN}已添加进防火墙规则中。${NC}"
+          ufw delete allow $text2/tcp
+          echo -e "${GREEN}已从防火墙规则中删除原SSH端口号：$text1${NC}"
           systemctl restart sshd
           echo -e "${GREEN}当前防火墙运行规则及状态为：${NC}"
           ufw status
           break 
-      fi
-    done
+    fi
+   
 }
 
 function change_login_password {
