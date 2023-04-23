@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.68
+Version=1.67
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -434,6 +434,18 @@ function install_Xui {
 bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
 }
 
+                                                                          # 安装CF_DNS的函数
+function install_CF_DNS {
+wget $link-cfdns -O /usr/local/bin/cfdns
+chmod +x /usr/local/bin/cfdns
+}
+                                                                          # 安装CF_DNS的函数
+function set_CF_config {
+
+}
+
+
+
                                                                           # 一键搭建服务端的函数
 function one_step {
 echo "正在安装X-ui面板"
@@ -539,6 +551,7 @@ function Option {
     "  6、Nginx服务"
     "  7、Warp服务"
     "  8、X-ui服务"
+    "  9、C-DNS修改脚本" 
     "——————————————————————————————————"
     "  0、退出"
     )
@@ -583,9 +596,10 @@ function Option {
     "  4、卸载"
     "  0、退出"
     )
-     other_menu=(
-    "  1、返回上一级"
-    "  2、关闭防火墙"
+    Cf_DNS_menu=(
+    "  1、下载CF_DNS更新脚本"
+    "  2、启动更新脚本面板"
+    "  3、设置脚本配置（第一次使用需设置）"
     "  0、退出"
     )
 
@@ -614,7 +628,7 @@ function main {
             wait;;
             
      #一级菜单25678选项
-       2 | 5 | 6 | 7 | 8)
+       2 | 5 | 6 | 7 | 8 | 9)
        
             get_option=$option
             
@@ -693,7 +707,21 @@ function main {
                                wait;;
                            1)break;;
                            *)error_option;;
-                        esac;;                          
+                        esac;;        
+                        
+                   #一级菜单9 cfdns选项
+                  9)Option ${main_menu[$(($get_option - 1))]} "${CF_DNS_menu[@]}" 
+                        case $option in
+                            2 | 3 | 4)
+                               case $option in
+                                   2)install_CF_DNS;;
+                                   3)cfdns;;
+                                   4)set_CF_config
+                               esac
+                               wait;;
+                           1)break;;
+                           *)error_option;;
+                        esac;;                                
                 esac
            done;;    
        #一级菜单其他选项  
