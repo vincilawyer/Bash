@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.7
+Version=1.71
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -52,34 +52,42 @@ update $Version
 
 
 function find {
-  local start_string="$1"
-  local end_string="$2"
-  local stop_on_first="${3:-false}"
-  local file="$4"
-  local found_text=""
+  local start_string="$1"   # 开始文本字符串
+  local end_string="$2"     # 结束文本字符串
+  local stop_on_first="${3:-false}"  # 是否在找到第一个匹配项后停止查找，默认为 false
+  local file="$4"           # 要搜索的文件名
+  local found_text=""       # 存储找到的文本
 
+  # 如果 stop_on_first 为空或为 false，则找到所有匹配项
   if [[ "$stop_on_first" == "" || "$stop_on_first" == false ]]; then
     found_text=$(awk -v start="$start_string" -v end="$end_string" '{
-        if (match($0, start".*"end)) {
+        if (match($0, start".*"end)) {  # 如果匹配开始和结束文本，则提取匹配项中的文本
           print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end));
-        } else if (match($0, start)) {
+        } else if (match($0, start)) {  # 如果只匹配开始文本，则提取开始文本之后的文本
           print substr($0, RSTART + length(start));
         }
       }' "$file")
-  else
+  else  # 如果 stop_on_first 为 true，则只找到第一个匹配项
     found_text=$(awk -v start="$start_string" -v end="$end_string" '{
-        if (match($0, start".*"end)) {
+        if (match($0, start".*"end)) {  # 如果匹配开始和结束文本，则提取匹配项中的文本并退出循环
           print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end));
+          if ($0 ~ /^[\t ]*#/ || $0 ~ /^[\t ]*\/\/+/) {  # 如果该行是以 # 或 // 开头，则认为是注释行
+            print "(注释行)";
+          }
           exit;
-        } else if (match($0, start)) {
+        } else if (match($0, start)) {  # 如果只匹配开始文本，则提取开始文本之后的文本并退出循环
           print substr($0, RSTART + length(start));
+          if ($0 ~ /^[\t ]*#/ || $0 ~ /^[\t ]*\/\/+/) {  # 如果该行是以 # 或 // 开头，则认为是注释行
+            print "(注释行)";
+          }
           exit;
         }
       }' "$file")
   fi
 
-  echo "$found_text"
+  echo "$found_text"   # 输出找到的文本
 }
+
 
 function change {
   local start_string="$1"
@@ -98,6 +106,17 @@ function change {
 
   mv "$temp_file" "$file"
 }
+
+function is_comment {
+  local keyword="$1"
+  local file_path="$2"
+  
+  # 使用grep命令搜索关键词在文本中的出现位置
+  local match=$(grep -n "$keyword" "$file_path")
+
+  # 判断搜索结果是否为空
+  if [ -z "$match" ]; then
+    echo "$keyword 不是注
 
 function delete {
 :
@@ -436,12 +455,87 @@ bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
 
                                                                           # 安装CF_DNS的函数
 function install_CF_DNS {
-wget $link-cfdns -O /usr/local/bin/cfdns
-chmod +x /usr/local/bin/cfdns
+    wget $link-cfdns -O /usr/local/bin/cfdns
+    chmod +x /usr/local/bin/cfdns
 }
                                                                           # 修改CF_DNS配置的函数
 function set_CF_config {
-:
+    echo "当前Cloudfare账户邮箱为：$(find "server_name" " " "1" $path_nginx)"
+    # 正则表达式，用于检查电子邮件地址格式
+    regex="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+
+    # 循环检查电子邮件地址格式，直到格式正确为止
+    while true; do
+        read -p "请输入Cloudfare账户邮箱：" email    
+        # 如果用户输入为空，则提示用户重新输入
+        if [ -z "$email" ]; then
+            echo "已跳过邮箱设置！"
+            break
+        fi
+        
+        # 如果电子邮件地址不符合正则表达式，则提示用户重新输入
+        if [[ ! $email =~ $regex ]]; then
+            echo "您输入的电子邮件地址格式不正确，请重新输入。"
+            continue
+        fi
+    
+        
+        break
+    
+    echo "当前Cloudfare账户邮箱为：$(find "server_name" " " "1" $path_nginx)"
+    # 正则表达式，用于检查电子邮件地址格式
+    regex="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+
+    # 循环检查电子邮件地址格式，直到格式正确为止
+    while true; do
+        read -p "请输入Cloudfare账户邮箱：" email    
+        # 如果用户输入为空，则提示用户重新输入
+        if [ -z "$email" ]; then
+            echo "已跳过邮箱设置！"
+            break
+        fi
+        
+        # 如果电子邮件地址不符合正则表达式，则提示用户重新输入
+        if [[ ! $email =~ $regex ]]; then
+            echo "您输入的电子邮件地址格式不正确，请重新输入。"
+            continue
+        fi
+    
+        
+        break
+done
+
+echo "您输入的电子邮件地址是: $email"
+
+
+#!/bin/bash
+
+# 正则表达式，用于检查一级域名格式
+regex="^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$"
+
+# 循环检查一级域名格式，直到格式正确为止
+while true; do
+    read -p "请输入您的一级域名: " domain
+    
+    # 如果用户输入为空，则提示用户重新输入
+    if [ -z "$domain" ]; then
+        echo "一级域名不能为空，请重新输入。"
+        continue
+    fi
+
+    # 如果一级域名不符合正则表达式，则提示用户重新输入
+    if [[ ! $domain =~ $regex ]]; then
+        echo "您输入的一级域名格式不正确，请重新输入。"
+        continue
+    fi
+    
+    # 如果一级域名格式正确，则跳出循环
+    break
+done
+
+echo "您输入的一级域名是: $domain"
+
+
 }
 
 
