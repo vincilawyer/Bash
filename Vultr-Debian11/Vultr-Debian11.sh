@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.72
+Version=1.73
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -548,33 +548,6 @@ done
 
 echo "您输入的电子邮件地址是: $email"
 
-
-#!/bin/bash
-
-# 正则表达式，用于检查一级域名格式
-regex="^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$"
-
-# 循环检查一级域名格式，直到格式正确为止
-while true; do
-    read -p "请输入您的一级域名: " domain
-    
-    # 如果用户输入为空，则提示用户重新输入
-    if [ -z "$domain" ]; then
-        echo "一级域名不能为空，请重新输入。"
-        continue
-    fi
-
-    # 如果一级域名不符合正则表达式，则提示用户重新输入
-    if [[ ! $domain =~ $regex ]]; then
-        echo "您输入的一级域名格式不正确，请重新输入。"
-        continue
-    fi
-    
-    # 如果一级域名格式正确，则跳出循环
-    break
-done
-
-echo "您输入的一级域名是: $domain"
 
 
 }
