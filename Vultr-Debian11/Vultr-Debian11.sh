@@ -501,54 +501,7 @@ function install_CF_DNS {
 }
                                                                           # 修改CF_DNS配置的函数
 function set_CF_config {
-    echo "当前Cloudfare账户邮箱为：$(find "server_name" " " "1" $path_nginx)"
-    # 正则表达式，用于检查电子邮件地址格式
-    regex="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-
-    # 循环检查电子邮件地址格式，直到格式正确为止
-    while true; do
-        read -p "请输入Cloudfare账户邮箱：" email    
-        # 如果用户输入为空，则提示用户重新输入
-        if [ -z "$email" ]; then
-            echo "已跳过邮箱设置！"
-            break
-        fi
-        
-        # 如果电子邮件地址不符合正则表达式，则提示用户重新输入
-        if [[ ! $email =~ $regex ]]; then
-            echo "您输入的电子邮件地址格式不正确，请重新输入。"
-            continue
-        fi
-    
-        
-        break
-    
-    echo "当前Cloudfare账户邮箱为：$(find "server_name" " " "1" $path_nginx)"
-    # 正则表达式，用于检查电子邮件地址格式
-    regex="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-
-    # 循环检查电子邮件地址格式，直到格式正确为止
-    while true; do
-        read -p "请输入Cloudfare账户邮箱：" email    
-        # 如果用户输入为空，则提示用户重新输入
-        if [ -z "$email" ]; then
-            echo "已跳过邮箱设置！"
-            break
-        fi
-        
-        # 如果电子邮件地址不符合正则表达式，则提示用户重新输入
-        if [[ ! $email =~ $regex ]]; then
-            echo "您输入的电子邮件地址格式不正确，请重新输入。"
-            continue
-        fi
-    
-        
-        break
-done
-
-echo "您输入的电子邮件地址是: $email"
-
-
+:
 
 }
 
