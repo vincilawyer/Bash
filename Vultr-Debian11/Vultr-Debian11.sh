@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.74
+Version=1.75
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -67,18 +67,18 @@ function find {
   if [[ "$stop_on_first" == "" || "$stop_on_first" == false ]]; then
     found_text=$(awk -v start="$start_string" -v end="$end_string" '{
         if (match($0, start".*"end)) {  # 如果匹配开始和结束文本，则提取匹配项中的文本
-          print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end));
+          print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
         } else if (match($0, start)) {  # 如果只匹配开始文本，则提取开始文本之后的文本
-          print substr($0, RSTART + length(start));
+          print substr($0, RSTART + length(start)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
         }
       }' "$file")
   else  # 如果 stop_on_first 为 true，则只找到第一个匹配项
     found_text=$(awk -v start="$start_string" -v end="$end_string" '{
         if (match($0, start".*"end)) {  # 如果匹配开始和结束文本，则提取匹配项中的文本并退出循环
-          print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end));
+          print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
           exit;
         } else if (match($0, start)) {  # 如果只匹配开始文本，则提取开始文本之后的文本并退出循环
-          print substr($0, RSTART + length(start));
+          print substr($0, RSTART + length(start)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
           exit;
         }
       }' "$file")
@@ -89,7 +89,8 @@ function find {
 
 
                                                                           #改变文本内容函数
-function change {
+
+function replace {
   local start_string="$1"
   local end_string="$2"
   local new_text="$3"
@@ -106,41 +107,8 @@ function change {
 
   mv "$temp_file" "$file"
 }
-
-                                                                          #查询文本注释性质函数
-function is_comment() {
-  local keyword="$1"
-  local file_path="$2"
-  local comment_symbol="${3:-#}" # 如果未提供注释符号，则默认为 #
-
-  # 使用grep命令搜索关键词在文本中的出现位置
-  local match=$(grep -n "$keyword" "$file_path")
-
-  # 判断搜索结果是否为空
-  if [ -z "$match" ]; then
-    echo false
-  else
-    # 使用awk命令获取关键词所在行的第一个字符
-    local line_start=$(echo "$match" | awk -F: '{print $1}')
-    local first_char=$(sed "${line_start}q;d" "$file_path" | sed 's/^[[:blank:]]*//' | cut -c 1)
-
-    # 判断第一个字符是否为注释符号
-    if [ "$first_char" == "$comment_symbol" ]; then
-      echo true
-    else
-      echo false
-    fi
-  fi
-}
-                                                                          #移除注释符号函数
-                          
-function remove_comment_symbols() {
-  local file_path="$1"
-  local comment_symbol="${2:-#}" # 如果未提供注释符号，则默认为 #
-
-  # 使用sed命令删除每行的注释符号及其前面的空格和制表符
-  sed -i "s/[[:blank:]]*$comment_symbol[[:blank:]]*//" "$file_path"
-}
+ path_ssh="/etc/ssh/sshd_config"
+replace "Port " " " "12" $path_ssh
 
 
                                                                           #查询并修改文本函数
@@ -155,23 +123,18 @@ function remove_comment_symbols() {
 function set {
      text1=""
      text2=""
-     text1=$(find $1 $2 $3 $4)
-     if is_comment $1 $4; then
-        echo -e "${GREEN}当前的$5注释缺省（值为：$text1）${NC}"
-     else
-        echo -e "${GREEN}当前的$5为：$text1${NC}"
-     fi
+     text1=$(find "$1" "$2" "$3" "$4")
+     echo -e "${GREEN}当前的$5为：$text1${NC}"
      while true; do
          read -p "$(echo -e ${BLUE}"请设置新的$5（$6空则跳过）：${NC}")" text2
-         if [[ -z $text2 ]]; then
+         if [[ -z "$text2" ]]; then
              echo -e "${RED}已跳过$5设置${NC}"
-             reture 0
-         elif [[ $bb =~ $7 ]]; then
+             return 0
+         elif [[ $text2 =~ $7 ]]; then
              if $8; then
-                change $1 $2 $text2 $4
-                remove_comment_symbols $1 $4
+                replace  "$1" "$2" "$text2" "$4"
                 echo -e "${GREEN}$5已修改为$text2。${NC}"
-                reture 1
+                return 1
              else
                 echo -e "${RED}$5输入错误，请重新输入${NC}"
              fi
@@ -179,14 +142,33 @@ function set {
              if $8; then
                 echo -e "${RED}$5输入错误，请重新输入${NC}"
              else
-                change $1 $2 $text2 $4
-                remove_comment_symbols $1 $4
+                replace  "$1" "$2" "$text2" "$4"
                 echo -e "${GREEN}$5已修改为$text2。${NC}"
-                reture 1
+                return 1
              fi
          fi
      done  
 }
+find "Port " " " true $path_ssh
+#修改前内容
+text1=0
+#修改后内容
+text2=0
+ path_ssh="/etc/ssh/sshd_config"
+ if set "Port " " " true $path_ssh "SSH端口" "0-65535，" "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$" true; then
+ echo "ok"
+ fi
+
+function remove_comment_symbols() {
+  local file_path="$1"
+  local comment_symbol="${2:-#}" # 如果未提供注释符号，则默认为 #
+
+  # 使用sed命令删除每行行首的注释符号或空格+注释符号
+  sed -i "s/^[[:blank:]]*$comment_symbol[[:blank:]]*//" "$file_path"
+}
+remove_comment_symbols "Port " "/etc/ssh/sshd_config"
+ 
+输出 sed: -e expression #1, char 21: unknown option to `s'
 
 
                                                                           #修改SSH端口及登录密码的函数
