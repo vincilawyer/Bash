@@ -20,6 +20,8 @@ NC='\033[0m'
   option=0   
 #更新检查程序网址
   link_update="https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh"
+#cf_dns修改脚本网站
+  link-cfdns="https://raw.githubusercontent.com/vincilawyer/Bash/main/Cloudfare/ChangeDNS.sh"
 #nginx配置文件网址
   link_nginx="https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf"
 #ssh配置文件路径                           
