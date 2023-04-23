@@ -439,9 +439,9 @@ function install_CF_DNS {
 wget $link-cfdns -O /usr/local/bin/cfdns
 chmod +x /usr/local/bin/cfdns
 }
-                                                                          # 安装CF_DNS的函数
+                                                                          # 修改CF_DNS配置的函数
 function set_CF_config {
-
+:
 }
 
 
