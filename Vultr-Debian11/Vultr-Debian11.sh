@@ -119,7 +119,7 @@ function insert {
 function change_ssh_port {
     #询问SSH端口
     while true; do
-      current_ssh_port=$(find "port" " " true $path_ssh)
+      current_ssh_port=$(find "Port " " " true $path_ssh)
       echo -e "${GREEN}当前的SSH端口为：$current_ssh_port${NC}"
       read -p "$(echo -e ${BLUE}"请设置新SSH端口（0-65535，空则跳过）：${NC}")" ssh_port
       if [[ -z $ssh_port ]]; then
