@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.75
+Version=1.76
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -59,20 +59,9 @@ update $Version
 function find {
   local start_string="$1"   # 开始文本字符串
   local end_string="$2"     # 结束文本字符串
-  local stop_on_first="${3:-false}"  # 是否在找到第一个匹配项后停止查找，默认为 false
-  local file="$4"           # 要搜索的文件名
+  local file="$3"           # 要搜索的文件名
   local found_text=""       # 存储找到的文本
-
-  # 如果 stop_on_first 为空或为 false，则找到所有匹配项
-  if [[ "$stop_on_first" == "" || "$stop_on_first" == false ]]; then
-    found_text=$(awk -v start="$start_string" -v end="$end_string" '{
-        if (match($0, start".*"end)) {  # 如果匹配开始和结束文本，则提取匹配项中的文本
-          print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
-        } else if (match($0, start)) {  # 如果只匹配开始文本，则提取开始文本之后的文本
-          print substr($0, RSTART + length(start)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
-        }
-      }' "$file")
-  else  # 如果 stop_on_first 为 true，则只找到第一个匹配项
+  
     found_text=$(awk -v start="$start_string" -v end="$end_string" '{
         if (match($0, start".*"end)) {  # 如果匹配开始和结束文本，则提取匹配项中的文本并退出循环
           print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
@@ -82,14 +71,11 @@ function find {
           exit;
         }
       }' "$file")
-  fi
-
   echo "$found_text"   # 输出找到的文本
 }
 
 
                                                                           #改变文本内容函数
-
 function replace {
   local start_string="$1"
   local end_string="$2"
@@ -100,90 +86,113 @@ function replace {
   awk -v start="$start_string" -v end="$end_string" -v new="$new_text" '{
       if (match($0, start".*"end)) {
         print substr($0, 1, RSTART + length(start) - 1) new substr($0, RSTART + RLENGTH - length(end));
+      } else if (match($0, start)) {
+        print substr($0, 1, RSTART + length(start) - 1) new;
       } else {
         print $0;
       }
     }' "$file" > "$temp_file"
 
   mv "$temp_file" "$file"
+  modify "$1" "$3" false "$4"
 }
- path_ssh="/etc/ssh/sshd_config"
-replace "Port " " " "12" $path_ssh
+
+                                                                          #修改文本所在行注释符函数
+# 查找两个字符串在指定文件中所在的行，并添加或删除行首注释符
+# $1：第一个字符串
+# $2：第二个字符串
+# $3：布尔参数，true表示添加注释符，false表示删除注释符
+# $4：指定文件
+function modify() {
+    local str1=$1
+    local str2=$2
+    local add_comment=$3
+    local file=$4
+
+    # 先找到同时包含两个字符串的行
+    local line_num=$(grep -n "${str1}" "${file}" | grep "${str2}" | head -1 | cut -d ":" -f 1)
+
+    # 如果找不到，则只使用第一个字符串匹配到的行
+    if [[ -z "${line_num}" ]]; then
+        line_num=$(grep -n "${str1}" "${file}" | head -1 | cut -d ":" -f 1)
+    fi
+
+    if [[ -n "${line_num}" ]]; then
+        local line=$(sed "${line_num}q;d" "${file}")
+        if [[ "${add_comment}" == true ]]; then
+            sed -i "${line_num}s/^\(\s*\)/#\1/" "${file}"
+        else
+            sed -i "${line_num}s/^#\{0,\}\(\s*\)#*\s*/\1/" "${file}"
+        fi
+    fi
+}
+
 
 
                                                                           #查询并修改文本函数
 #1、起始字符
 #2、结束字符
-#3、是否在找到第一个匹配项后停止查找，默认为false
-#4、要设置的文件名
-#5、显示搜索和修改内容的含义
-#6、修改内容备注
-#7、修改内容正则表达式
-#8、内容与正则表达式的真假匹配
+#3、要设置的文件名
+#4、显示搜索和修改内容的含义
+#5、修改内容备注
+#6、修改内容正则表达式
+#7、内容与正则表达式的真假匹配
 function set {
      text1=""
      text2=""
-     text1=$(find "$1" "$2" "$3" "$4")
-     echo -e "${GREEN}当前的$5为：$text1${NC}"
+     text1=$(find "$1" "$2" "$3")
+     echo -e "${GREEN}当前的$4为：$text1${NC}"
      while true; do
-         read -p "$(echo -e ${BLUE}"请设置新的$5（$6空则跳过）：${NC}")" text2
+         read -p "$(echo -e ${BLUE}"请设置新的$4（$5空则跳过，#则设为注释行）：${NC}")" text2
          if [[ -z "$text2" ]]; then
-             echo -e "${RED}已跳过$5设置${NC}"
-             return 0
-         elif [[ $text2 =~ $7 ]]; then
-             if $8; then
-                replace  "$1" "$2" "$text2" "$4"
-                echo -e "${GREEN}$5已修改为$text2。${NC}"
-                return 1
+             echo -e "${RED}已跳过$4设置${NC}"
+             option=0
+             return
+         elif [[ $text2 == "#" ]]; then
+             modify "$1" "$2" true "$3"
+             echo -e "${GREEN}已将$4参数设为注释行${NC}"
+             option=0
+             return
+         elif [[ $text2 =~ $6 ]]; then
+             if $7; then
+                replace  "$1" "$2" "$text2" "$3"
+                modify "$1" "$text2" false "$3"
+                echo -e "${GREEN}$4已修改为$text2${NC}"
+                option=1
+                return
              else
-                echo -e "${RED}$5输入错误，请重新输入${NC}"
+                echo -e "${RED}$4输入错误，请重新输入${NC}"
              fi
          else
-             if $8; then
-                echo -e "${RED}$5输入错误，请重新输入${NC}"
+             if $7; then
+                echo -e "${RED}$4输入错误，请重新输入${NC}"
              else
-                replace  "$1" "$2" "$text2" "$4"
-                echo -e "${GREEN}$5已修改为$text2。${NC}"
-                return 1
+                replace  "$1" "$2" "$text2" "$3"
+                modify "$1" "$text2" false "$3"
+                echo -e "${GREEN}$4已修改为$text2${NC}"
+                option=1
+                return
              fi
          fi
      done  
 }
-find "Port " " " true $path_ssh
-#修改前内容
-text1=0
-#修改后内容
-text2=0
- path_ssh="/etc/ssh/sshd_config"
- if set "Port " " " true $path_ssh "SSH端口" "0-65535，" "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$" true; then
- echo "ok"
- fi
 
-function remove_comment_symbols() {
-  local file_path="$1"
-  local comment_symbol="${2:-#}" # 如果未提供注释符号，则默认为 #
 
-  # 使用sed命令删除每行行首的注释符号或空格+注释符号
-  sed -i "s/^[[:blank:]]*$comment_symbol[[:blank:]]*//" "$file_path"
-}
-remove_comment_symbols "Port " "/etc/ssh/sshd_config"
- 
-输出 sed: -e expression #1, char 21: unknown option to `s'
 
 
                                                                           #修改SSH端口及登录密码的函数
 function change_ssh_port {
-    #询问SSH端口
-    if set "Port " " " true $path_ssh "SSH端口" "0-65535，" "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$" false; then
-          echo -e "${GREEN}已添加进防火墙规则中。${NC}"
-          ufw delete allow $text2/tcp
-          echo -e "${GREEN}已从防火墙规则中删除原SSH端口号：$text1${NC}"
+    option=0
+    set "Port " " " $path_ssh "SSH端口" "0-65535，" "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$" true
+    if [[ option==1 ]]; then
+          echo -e "${GREEN}正在将新端口添加进防火墙规则中。${NC}"
+          ufw allow $text2/tcp
+          echo -e "${GREEN}已正从防火墙规则中删除原SSH端口号：$text1${NC}"
+          ufw delete allow $text1/tcp
           systemctl restart sshd
           echo -e "${GREEN}当前防火墙运行规则及状态为：${NC}"
           ufw status
-          break 
-    fi
-   
+    fi  
 }
 
 function change_login_password {
