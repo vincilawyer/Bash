@@ -107,17 +107,6 @@ function change {
   mv "$temp_file" "$file"
 }
 
-function is_comment {
-  local keyword="$1"
-  local file_path="$2"
-  
-  # 使用grep命令搜索关键词在文本中的出现位置
-  local match=$(grep -n "$keyword" "$file_path")
-
-  # 判断搜索结果是否为空
-  if [ -z "$match" ]; then
-    echo "$keyword 不是注
-
 function delete {
 :
 #删除前缀 第几个  在源文件
