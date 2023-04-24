@@ -37,7 +37,7 @@ text2=0
   
                                                                           #更新函数
 function update {
-    clear && current_Version="$1" bash <(curl -s -L $link_update)
+    clear && current_Version="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' $link_update)
     no=$?
     #如果成功更新
     if [ $no == 1 ]; then
@@ -528,7 +528,7 @@ function wait {
    read -n 1 -s input
 }
                                                                          # 定义选择取消函数
-function choose {
+function choose() {
    read -p "$1（Y/N）:" choose1
    if ! [[ $choose1 =~ ^[Yy]$ ]]; then
        return 1
