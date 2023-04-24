@@ -539,7 +539,7 @@ function wait {
                                                                          # 定义选择功能错误函数
 function error_option {
        echo -e "${RED}输入不正确，请重新输入${NC}"
-       countdown 3
+       countdown 2
 }
 
  
@@ -578,13 +578,6 @@ function Option {
   echo -n "  请按序号选择操作: "
   #监听输入
   read option
-  
-#  while ! read -t $Standby input; do
-#     #发送空内容
-#     echo -n "."
-#     echo -ne "\b"
-#  done
-
   clear
   if [ "$option" == "0" ]; then
       echo $option
@@ -592,6 +585,7 @@ function Option {
   fi
   echo
 }
+
 
 # 定义菜单选项
     main_menu=(
