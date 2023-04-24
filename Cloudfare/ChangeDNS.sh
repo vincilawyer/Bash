@@ -26,6 +26,7 @@ else
   # 显示所有DNS解析记录、CDN代理状态和TTL
    function all_dns_records {
        echo "以下为当前$domain域名的所有DNS解析记录："
+       echo "域名            ip      CDN状态    TTL"
        echo "$dns_records"
        echo
        echo
@@ -60,6 +61,7 @@ else
                  -H "X-Auth-Email: $email" \
                  -H "X-Auth-Key: $api_key" \
                  -H "Content-Type: application/json"
+            echo
             echo "已成功删除DNS记录: $record_name.$domain"
             get_all_dns_records
             all_dns_records
@@ -73,7 +75,7 @@ else
         # 验证IP地址
         ip_regex="^([0-9]{1,3}\.){3}[0-9]{1,3}$"
         while true; do
-            read -"请输入IP地址：" record_content
+            read -p "请输入IP地址：" record_content
             if [[ $record_content =~ $ip_regex ]]; then
                 break
             else
@@ -100,6 +102,7 @@ else
                      -H "X-Auth-Key: $api_key" \
                      -H "Content-Type: application/json" \
                      --data '{"type":"A","name":"'"$record_name"'","content":"'"$record_content"'","proxied":'"$proxy"'}'
+                echo
                 echo "已成功添加记录 $record_name.$domain"
                 get_all_dns_records
                 all_dns_records
@@ -110,6 +113,7 @@ else
                      -H "X-Auth-Key: $api_key" \
                      -H "Content-Type: application/json" \
                      --data '{"type":"A","name":"'"$record_name"'","content":"'"$record_content"'","proxied":'"$proxy"'}'
+                echo
                 echo "已成功更新记录 $record_name.$domain"
                 get_all_dns_records
                 all_dns_records
