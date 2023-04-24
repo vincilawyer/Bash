@@ -533,9 +533,8 @@ function choose {
    read -p "$1（Y/N）:" choose1
    if ! [[ $choose1 =~ ^[Yy]$ ]]; then
        echo 00
-       return true
-     fi
-
+       return 1
+   fi
 }
                                                                          # 定义选择功能错误函数
 function error_option {
