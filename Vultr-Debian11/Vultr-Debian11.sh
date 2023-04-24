@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.993
+Version=1.994
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -306,11 +306,15 @@ function set_nginx_config {
            modify "ssl_certificate_key /root/cert/" "$text2" false $path_nginx
        fi
        if set "proxy_pass https://" ";" $path_nginx "伪装域名" "不加www等前缀，" "^[a-z0-9]+(-[a-z0-9]+)*\.[a-z]{2,}$" true; then
-           replace  "sub_filter " " \$server_name" "$text2" $path_nginx
+           replace  "sub_filter \"" "\"" "$text2" $path_nginx
            modify "sub_filter " "$text2" false $path_nginx
-           replace  "proxy_set_header Host " ";" "$text2" $path_nginx
+           replace  "proxy_set_header Host \"" "\"" "$text2" $path_nginx
            modify "proxy_set_header Host " "$text2" false $path_nginx
        fi
+       set "location /ray-" " {" $path_nginx "xray分流路径" "省略/ray-前缀" "" true
+       set "proxy_pass http://127.0.0.1:" "; #Xray端口" $path_nginx "Xray监听端口" "0-65535，" "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$" true
+       set "location /xui-" " {" $path_nginx "x-ui面板分流路径" "省略/xui-前缀" "" true
+       set "proxy_pass http://127.0.0.1:" "; #xui端口" $path_nginx "X-ui监听端口" "0-65535，" "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$" true
 
 }   
                                                                             # 从github下载网页文件
