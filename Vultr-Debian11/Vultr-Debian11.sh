@@ -188,7 +188,7 @@ function change_ssh_port {
           echo -e "${GREEN}正在将新端口添加进防火墙规则中。${NC}"
           ufw allow $text2/tcp
           echo -e "${GREEN}已正从防火墙规则中删除原SSH端口号：$text1${NC}"
-          ufw delete allow ${$text1// (注释行)/}/tcp     
+          ufw delete allow ${text1// (注释行)/}/tcp     
           systemctl restart sshd
           echo -e "${GREEN}当前防火墙运行规则及状态为：${NC}"
           ufw status
