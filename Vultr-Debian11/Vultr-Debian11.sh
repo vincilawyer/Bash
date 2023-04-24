@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.78
+Version=1.79
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -25,7 +25,7 @@ text2=0
 #更新检查程序网址
   link_update="https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh"
 #cf_dns修改脚本网站
-  link-cfdns="https://raw.githubusercontent.com/vincilawyer/Bash/main/Cloudfare/ChangeDNS.sh"
+  link_cfdns="https://raw.githubusercontent.com/vincilawyer/Bash/main/Cloudfare/ChangeDNS.sh"
 #nginx配置文件网址
   link_nginx="https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf"
 #ssh配置文件路径                           
@@ -489,12 +489,15 @@ bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
 
                                                                           # 安装CF_DNS的函数
 function install_CF_DNS {
-    wget $link-cfdns -O $path_cfdns
+    wget $link_cfdns -O $path_cfdns
     chmod +x $path_cfdns
 }
                                                                           # 修改CF_DNS配置的函数
 function set_CF_config {
-set "email=\"" "\"" $path_cfdns "Cloudfare账户邮箱" "" "" true
+    set "email=\"" "\"" $path_cfdns "Cloudfare账户邮箱" "" "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" true
+    set "domain=\"" "\"" $path_cfdns "Cloudfare绑定域名" "不加www等前缀，" "^[a-z0-9]+(-[a-z0-9]+)*\.[a-z]{2,}$" true
+    set "api_key=\"" "\"" $path_cfdns "Cloudfare API密钥" "" "" true
+    
 }
 
 
@@ -592,14 +595,15 @@ function Option {
     "  1、修改SSH登录端口和登录密码"
     "  2、UFW防火墙管理"
     "  3、强制更新脚本
-    ——————————————————————————————————"
+—————————————————————————————————————"
     "  4、一键搭建科学上网服务端"
     "  5、Docker及Compose管理"
     "  6、Nginx服务"
     "  7、Warp服务"
     "  8、X-ui服务"
     "  9、CF-DNS修改脚本" 
-    "  0、退出"
+"————————————————————————————————————  
+    0、退出"
     )
     NFW_menu=(
     "  1、返回上一级"
@@ -643,9 +647,10 @@ function Option {
     "  0、退出"
     )
     Cf_DNS_menu=(
-    "  1、下载CF_DNS更新脚本"
-    "  2、启动更新脚本面板"
-    "  3、设置脚本配置（第一次使用需设置）"
+    "  1、返回上一级"
+    "  2、下载CF_DNS更新脚本"
+    "  3、启动更新脚本面板"
+    "  4、设置脚本配置（第一次使用需设置）"
     "  0、退出"
     )
 
