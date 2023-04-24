@@ -488,7 +488,6 @@ bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
                                                                           # 安装CF_DNS的函数
 function install_CF_DNS {
     wget $link_cfdns -O $path_cfdns
-    sleep 1
     chmod +x $path_cfdns
 }
                                                                           # 修改CF_DNS配置的函数
@@ -496,7 +495,7 @@ function set_CF_config {
     set "email=\"" "\"" $path_cfdns "Cloudfare账户邮箱" "" "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" true
     set "domain=\"" "\"" $path_cfdns "Cloudfare绑定域名" "不加www等前缀，" "^[a-z0-9]+(-[a-z0-9]+)*\.[a-z]{2,}$" true
     set "api_key=\"" "\"" $path_cfdns "Cloudfare API密钥" "" "" true
-    
+    chmod +x $path_cfdns
 }
 
 
