@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.97
+Version=1.98
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -167,18 +167,18 @@ function set {
          read -p "$(echo -e ${BLUE}"请设置新的$4（$5空则跳过，#则设为注释行）：${NC}")" text2
          if [[ -z "$text2" ]]; then
              echo -e "${RED}已跳过$4设置${NC}"
-             return
+             return 1
          elif [[ $text2 == "#" ]]; then
              modify "$1" "$2" true "$3"
              echo -e "${GREEN}已将$4参数设为注释行${NC}"
-             return
+             return 1
          elif [[ $text2 =~ $6 ]]; then
              if $7; then
                 replace  "$1" "$2" "$text2" "$3"
                 modify "$1" "$text2" false "$3"
                 echo -e "${GREEN}$4已修改为$text2${NC}"
-                option=1
-                return
+             #   option=1
+                return 0
              else
                 echo -e "${RED}$4输入错误，请重新输入${NC}"
              fi
@@ -189,8 +189,8 @@ function set {
                 replace  "$1" "$2" "$text2" "$3"
                 modify "$1" "$text2" false "$3"
                 echo -e "${GREEN}$4已修改为$text2${NC}"
-                option=1
-                return
+               # option=1
+                return 0
              fi
          fi
      done  
@@ -201,8 +201,7 @@ function set {
                                                                           #修改SSH端口及登录密码的函数
 function change_ssh_port {
     
-    set "Port " " " $path_ssh "SSH端口" "0-65535，" "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$" true
-    if [ $option -eq 1 ]; then
+    if set "Port " " " $path_ssh "SSH端口" "0-65535，" "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$" true; then
           echo -e "${GREEN}正在将新端口添加进防火墙规则中。${NC}"
           ufw allow $text2/tcp
           echo -e "${GREEN}已正从防火墙规则中删除原SSH端口号：$text1${NC}"
