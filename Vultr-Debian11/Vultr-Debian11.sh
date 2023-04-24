@@ -185,10 +185,10 @@ function set {
 function change_ssh_port {
     
     if set "Port " " " $path_ssh "SSH端口" "0-65535，" "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$" true; then
+          echo -e "${GREEN}已正从防火墙规则中删除原SSH端口号：${text1// (注释行)/}${NC}"
+          ufw delete allow ${text1// (注释行)/}/tcp   
           echo -e "${GREEN}正在将新端口添加进防火墙规则中。${NC}"
-          ufw allow $text2/tcp
-          echo -e "${GREEN}已正从防火墙规则中删除原SSH端口号：$text1${NC}"
-          ufw delete allow ${text1// (注释行)/}/tcp     
+          ufw allow $text2/tcp  
           systemctl restart sshd
           echo -e "${GREEN}当前防火墙运行规则及状态为：${NC}"
           ufw status
