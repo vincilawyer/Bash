@@ -60,118 +60,163 @@ update $Version
 function find {
   local start_string="$1"   # 开始文本字符串
   local end_string="$2"     # 结束文本字符串
-  local file="$3"           # 要搜索的文件名
+  local n="${3:-1}"         # 要输出的匹配结果的索引
+  local file="$4"           # 要搜索的文件名
+  local exact_match="$5"    # 是否精确匹配
+  local comment="$6"        # 是否显示注释行
   local found_text=""       # 存储找到的文本
-  
-    found_text=$(awk -v start="$start_string" -v end="$end_string" '{
-        if (match($0, start".*"end)) {  # 如果匹配开始和结束文本，则提取匹配项中的文本并退出循环
-          print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
-          exit;
-        } else if (match($0, start)) {  # 如果只匹配开始文本，则提取开始文本之后的文本并退出循环
-          print substr($0, RSTART + length(start)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
-          exit;
-        }
-      }' "$file")
-  if ! $4; then found_text=${found_text// (注释行)/}; fi
+  local count=0             # 匹配计数器
+
+  found_text=$(awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v num="$n" '{
+      if (exact == "true") {
+          if (match($0, start".*"end)) {  # 精确匹配开始和结束文本
+              if (++count == num) {  # 输出第 n 个匹配结果
+                  print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
+                  exit;
+              }
+          }
+      } else {
+          if (match($0, start".*"end)) {  # 匹配开始和结束文本
+              if (++count == num) {  # 输出第 n 个匹配结果
+                  print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
+                  exit;
+              }
+          } else if (match($0, start)) {  # 只匹配开始文本
+              count++;
+              if (++count == num) {  # 输出第 n 个匹配结果
+                  print substr($0, RSTART + length(start)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
+                  exit;
+              }
+          }
+      }
+  }' "$file")
+  if ! $comment; then found_text=${found_text// (注释行)/}; fi
   echo "$found_text"   # 输出找到的文本
 }
+                                                                          #改变文本内容函数
 
-function replace {
-  local start_string="$1"
-  local end_string="$2"
-  local new_text="$3"
-  local file="$4"
-  local n="${5:-1}"
-  local temp_file="$(mktemp)"
-
+function replace() {
+  local start_string="$1"   # 开始文本字符串
+  local end_string="$2"     # 结束文本字符串
+  local n="${3:-1}"         # 要输出的匹配结果的索引
+  local new_text="$4"       # 要替换的新文本内容
+  local file="$5"           # 要搜索的文件名
+  local exact_match="$6"    # 是否精确匹配
+  local temp_file="$(mktemp)"     # 存储找到的文本
+  if [[ "$exact_match" == "false" ]]; then
   awk -v start="$start_string" -v end="$end_string" -v new="$new_text" -v num="$n" '{
       if (match($0, start".*"end)) {
-        if (++count == num) {
-          print substr($0, 1, RSTART + length(start) - 1) new substr($0, RSTART + RLENGTH - length(end));
-        } else {
-          print $0;
-        }
+          if (++count == num) {
+               # 匹配行，替换内容
+              line = substr($0, 1, RSTART + length(start) - 1) new substr($0, RSTART + RLENGTH - length(end));
+              # 判断是否有注释符
+              if (match(line, /^[[:space:]]*#/)) {
+                 # 移除注释符
+                  sub(/^[[:space:]]*#/, "", line);
+              }
+              print line;
+          } else {
+              print $0;
+          }
       } else if (match($0, start)) {
-        if (++count == num) {
-          print substr($0, 1, RSTART + length(start) - 1) new;
-        } else {
-          print $0;
-        }
+          if (++count == num) {
+              line = substr($0, 1, RSTART + length(start) - 1) new;
+              # 判断是否有注释符
+              if (match(line, /^[[:space:]]*#/)) {
+                  # 移除注释符
+                  sub(/^[[:space:]]*#/, "", line);
+               }
+              print line;
+           } else {
+            print $0;
+           }
       } else {
         print $0;
       }
-    }' "$file" > "$temp_file"
-
-  mv "$temp_file" "$file"
-  modify "$1" "$3" false "$4"
-}
-replace "proxy_pass http://127.0.0.1:" ";" "131" "/etc/nginx/conf.d/default.conf"
-nano /etc/nginx/conf.d/default.conf
-
-
-function replaceo {
-  local start_string="$1"
-  local end_string="$2"
-  local new_text="$3"
-  local file="$4"
-  local temp_file="$(mktemp)"
-
-  awk -v start="$start_string" -v end="$end_string" -v new="$new_text" '{
-      if (!done && match($0, start".*"end)) {
-        done=1;
-        print substr($0, 1, RSTART + length(start) - 1) new substr($0, RSTART + RLENGTH - length(end));
-      } else if (!done && match($0, start)) {
-        done=1;
-        print substr($0, 1, RSTART + length(start) - 1) new;
-      } else {
-        print $0;
-      }
-    }' "$file" > "$temp_file"
-
-  mv "$temp_file" "$file"
-  modify "$1" "$3" false "$4"
-}
-                                                                          #改变文本内容函数
-function replaceoo {
-  local start_string="$1"
-  local end_string="$2"
-  local new_text="$3"
-  local file="$4"
-  local temp_file="$(mktemp)"
-
-  awk -v start="$start_string" -v end="$end_string" -v new="$new_text" '{
+      }' "$file" > "$temp_file"
+else
+   awk -v start="$start_string" -v end="$end_string" -v new="$new_text" -v num="$n" '{
       if (match($0, start".*"end)) {
-        print substr($0, 1, RSTART + length(start) - 1) new substr($0, RSTART + RLENGTH - length(end));
-      } else if (match($0, start)) {
-        print substr($0, 1, RSTART + length(start) - 1) new;
-      } else {
-        print $0;
-      }
-    }' "$file" > "$temp_file"
-
+           if (++count == num) {
+              line = substr($0, 1, RSTART + length(start) - 1) new substr($0, RSTART + RLENGTH - length(end));
+              if (match(line, /^[[:space:]]*#/)) {
+                   sub(/^[[:space:]]*#/, "", line);
+              }
+              print line;
+           } else {
+              print $0;
+           }
+       } else {
+            print $0;
+       }
+       }' "$file" > "$temp_file"
+fi
   mv "$temp_file" "$file"
-  modify "$1" "$3" false "$4"
+}
+  
+
+                                                                          #查询并修改文本函数
+
+function set {
+
+local start_string="$1"     # 开始文本字符串
+local end_string="$2"      # 结束文本字符串
+local n="${3:-1}"         # 要输出的匹配结果的索引
+local file="$4"           # 要搜索的文件名
+local exact_match="$5"    # 是否精确匹配
+local mean="$6"          #显示搜索和修改内容的含义
+local mark="$7"          #修改内容备注
+local regex2="$8"         #内容与正则表达式的真假匹配
+local regex2="$9"         #正则表达式
+     text1=""
+     text2=""
+     text1=$(find "$start_string" "$end_string" "$n" "$file" "exact_match" false)
+     echo -e "${GREEN}当前的$mean为：$text1${NC}"
+     while true; do
+         read -p "$(echo -e ${BLUE}"请设置新的$mean（$mark空则跳过，#则设为注释行）：${NC}")" text2
+         if [[ -z "$text2" ]]; then
+             echo -e "${RED}已跳过$mean设置${NC}"
+             return 1
+         elif [[ $text2 == "#" ]]; then
+             modify "$start_string" "$end_string" true "$file"
+             echo -e "${GREEN}已将$mean参数设为注释行${NC}"
+             return 1
+         elif [[ $text2 =~ $6 ]]; then
+             if $7; then
+                replace  "$start_string" "$end_string" "$n" "$text2" "$file" "exact_match"
+                echo -e "${GREEN}$mean已修改为$text2${NC}"
+                return 0
+             else
+                echo -e "${RED}$mean输入错误，请重新输入${NC}"
+             fi
+         else
+             if $7; then
+                echo -e "${RED}$mean输入错误，请重新输入${NC}"
+             else
+                replace  "$start_string" "$end_string" "$n" "$text2" "$file" "exact_match"
+                echo -e "${GREEN}$mean已修改为$text2${NC}"
+                return 0
+             fi
+         fi
+     done  
 }
 
-                                                                          #修改文本所在行注释符函数
-# 查找两个字符串在指定文件中所在的行，并添加或删除行首注释符
-# $1：第一个字符串
-# $2：第二个字符串
-# $3：布尔参数，true表示添加注释符，false表示删除注释符
-# $4：指定文件
+                                                                        #修改文本所在行注释符函数
+
 function modify() {
+    # 查找两个字符串在指定文件中所在的行，并添加或删除行首注释符
     local str1=$1
     local str2=$2
-    local add_comment=$3
-    local file=$4
+    local add_comment=$3    # $3：布尔参数，true表示添加注释符，false表示删除注释符
+    local file=$4           # $4：指定文件
 
     # 先找到同时包含两个字符串的行
     local line_num=$(grep -n "${str1}" "${file}" | grep "${str2}" | head -1 | cut -d ":" -f 1)
 
     # 如果找不到，则只使用第一个字符串匹配到的行
-    if [[ -z "${line_num}" ]]; then
-        line_num=$(grep -n "${str1}" "${file}" | head -1 | cut -d ":" -f 1)
-    fi
+    #if [[ -z "${line_num}" ]]; then
+    #    line_num=$(grep -n "${str1}" "${file}" | head -1 | cut -d ":" -f 1)
+    #fi
 
     if [[ -n "${line_num}" ]]; then
         local line=$(sed "${line_num}q;d" "${file}")
@@ -182,56 +227,6 @@ function modify() {
         fi
     fi
 }
-
-
-
-                                                                          #查询并修改文本函数
-#1、起始字符
-#2、结束字符
-#3、要设置的文件名
-#4、显示搜索和修改内容的含义
-#5、修改内容备注
-#6、修改内容正则表达式
-#7、内容与正则表达式的真假匹配
-function set {
-     option=0
-     text1=""
-     text2=""
-     text1=$(find "$1" "$2" "$3")
-     echo -e "${GREEN}当前的$4为：$text1${NC}"
-     while true; do
-         read -p "$(echo -e ${BLUE}"请设置新的$4（$5空则跳过，#则设为注释行）：${NC}")" text2
-         if [[ -z "$text2" ]]; then
-             echo -e "${RED}已跳过$4设置${NC}"
-             return 1
-         elif [[ $text2 == "#" ]]; then
-             modify "$1" "$2" true "$3"
-             echo -e "${GREEN}已将$4参数设为注释行${NC}"
-             return 1
-         elif [[ $text2 =~ $6 ]]; then
-             if $7; then
-                replace  "$1" "$2" "$text2" "$3"
-                modify "$1" "$text2" false "$3"
-                echo -e "${GREEN}$4已修改为$text2${NC}"
-             #   option=1
-                return 0
-             else
-                echo -e "${RED}$4输入错误，请重新输入${NC}"
-             fi
-         else
-             if $7; then
-                echo -e "${RED}$4输入错误，请重新输入${NC}"
-             else
-                replace  "$1" "$2" "$text2" "$3"
-                modify "$1" "$text2" false "$3"
-                echo -e "${GREEN}$4已修改为$text2${NC}"
-               # option=1
-                return 0
-             fi
-         fi
-     done  
-}
-
 
 
                                                                           #修改SSH端口及登录密码的函数
