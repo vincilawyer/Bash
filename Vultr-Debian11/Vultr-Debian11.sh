@@ -35,8 +35,6 @@ text2=0
 #cfdns脚本路径
   path_cfdns="/usr/local/bin/cfdns"
   
-
-
                                                                           #更新函数
 function update {
     clear && current_Version="$1" bash <(curl -s -L $link_update)
@@ -490,6 +488,7 @@ bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
                                                                           # 安装CF_DNS的函数
 function install_CF_DNS {
     wget $link_cfdns -O $path_cfdns
+    sleep 1
     chmod +x $path_cfdns
 }
                                                                           # 修改CF_DNS配置的函数
