@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.96
+Version=1.97
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -30,12 +30,11 @@ text2=0
   link_nginx="https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf"
 #ssh配置文件路径                           
   path_ssh="/etc/ssh/sshd_config"
-#nginx配置文件路径                       
+#nginx配置文件路径 (查看配置：nano /etc/nginx/conf.d/default.conf)                      
   path_nginx="/etc/nginx/conf.d/default.conf" 
-#cfdns脚本路径
+#cfdns脚本路径 (查看脚本：nano usr/local/bin/cfdns)            
   path_cfdns="/usr/local/bin/cfdns"
-  
- # nano /etc/nginx/conf.d/default.conf
+
   
                                                                           #更新函数
 function update {
