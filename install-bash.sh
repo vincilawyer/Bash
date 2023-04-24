@@ -4,7 +4,7 @@
 Standby=59
 Ver=005
 #Vultr-Debian11.sh文件网址
-link_Vultr-Debian11="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh"
+link_Vultr_Debian11="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh"
 
 function countdown {
     local from=$1
@@ -18,7 +18,7 @@ function countdown {
 }
 
 function download {
-    wget --no-cache $link_Vultr-Debian11 -O /usr/local/bin/vinci
+    wget --no-cache $link_Vultr_Debian11 -O /usr/local/bin/vinci
     chmod +x /usr/local/bin/vinci
     Version=$(sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}' /usr/local/bin/vinci)
     if [[ -z $Version ]]; then
@@ -60,7 +60,7 @@ function execute {
                    break
               fi  
               #强制更新
-              wget --no-cache $link_Vultr-Debian11 -O /usr/local/bin/vinci
+              wget --no-cache $link_Vultr_Debian11 -O /usr/local/bin/vinci
               chmod +x /usr/local/bin/vinci
               echo "重新更新完成，当前版本为V$1，正在尝试再次启动！"
               sleep 3
@@ -96,7 +96,7 @@ else
     else
         #检查最新版本号
         echo "正在检查版本更新($Ver)..."
-        Version=$(curl -s $link_Vultr-Debian11 | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
+        Version=$(curl -s $link_Vultr_Debian11 | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
                                                                                                                      
         #无需更新
         if [[ "${current_Version}" == "${Version}" ]]; then
