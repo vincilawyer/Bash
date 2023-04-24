@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.76
+Version=1.77
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -32,6 +32,8 @@ text2=0
   path_ssh="/etc/ssh/sshd_config"
 #nginx配置文件路径                       
   path_nginx="/etc/nginx/conf.d/default.conf" 
+#cfdns脚本路径
+  path_cfdns="/usr/local/bin/cfdns"
   
 
 
@@ -487,12 +489,12 @@ bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
 
                                                                           # 安装CF_DNS的函数
 function install_CF_DNS {
-    wget $link-cfdns -O /usr/local/bin/cfdns
-    chmod +x /usr/local/bin/cfdns
+    wget $link-cfdns -O $path_cfdns
+    chmod +x $path_cfdns
 }
                                                                           # 修改CF_DNS配置的函数
 function set_CF_config {
-set "email="" " " $path_ssh "SSH端口" "0-65535，" "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$" true
+set "email=\"" "\"" $path_cfdns "Cloudfare账户邮箱" "" "" true
 }
 
 
