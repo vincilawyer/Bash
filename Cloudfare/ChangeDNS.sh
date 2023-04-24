@@ -25,6 +25,7 @@ else
          
   # 显示所有DNS解析记录、CDN代理状态和TTL
    function all_dns_records {
+       echo "——————————DNS解析编辑器v1————————————"
        echo "以下为$domain域名当前的所有DNS解析记录："
        echo
        echo "域名                      ip        CDN状态      TTL"
