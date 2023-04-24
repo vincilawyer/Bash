@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.91
+Version=1.93
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -302,6 +302,11 @@ function download_nginx_config {
                                                                            # 设置Nginx配置、未完待测试
 function set_nginx_config {
        set "server_name " ";" $path_nginx "VPS域名" "不加www等前缀，" "^[a-z0-9]+(-[a-z0-9]+)*\.[a-z]{2,}$" true
+       if [ $option -eq 1 ]; then
+       echo "其他配置"
+       replace  "ssl_certificate /root/cert/" ".cer;" "$text2" $path_nginx
+       modify "ssl_certificate /root/cert/" "$text2" false $path_nginx
+       fi
 
 }   
                                                                             # 从github下载网页文件
