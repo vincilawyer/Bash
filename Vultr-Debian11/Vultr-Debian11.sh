@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.9
+Version=1.91
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -222,7 +222,8 @@ function change_login_password {
 
                                                                           # 安装Docker及Compose插件的函数
 function install_Docker {
-
+   echo "维护中"
+   return
     #安装docker
     curl -fsSL https://get.docker.com -o get-docker.sh
     sudo sh get-docker.sh
@@ -239,6 +240,8 @@ function install_Docker {
 
                                                                          # 安装Nginx_Proxy_Manager的函数
 function install_Nginx_PM {
+   echo "维护中"
+   return
    #创建docker-compose.yml文件
    sudo mkdir -p ~/data/docker_data/nginxproxymanager   
    cd ~/data/docker_data/nginxproxymanager   
@@ -287,17 +290,13 @@ function install_Nginx {
 
                                                                            # 从github下载更新Nginx配置文件
 function download_nginx_config {
-    read -p "是否从Github下载更新Nginx配置文件？（此举动将覆盖原配置文件，Y/N）:" choose
-     if [[ $choose =~ ^[Yy]$ ]]; then
+    if $(choose "是否从Github下载更新Nginx配置文件？此举动将覆盖原配置文件" "已取消下载更新Nginx配置文件"); then return;fi
          echo -e "${GREEN}正在载入：${NC}"
          if wget $link_nginx -O $path_nginx; then 
             echo -e "${GREEN}载入完毕${NC}"
          else
             echo -e "${GREEN}下载失败，请检查！${NC}"
          fi   
-     else
-         echo "已取消下载更新Nginx配置文件"
-     fi
     
 }
                                                                            # 设置Nginx配置、未完待测试
@@ -307,9 +306,9 @@ function set_nginx_config {
 }   
                                                                             # 从github下载网页文件
 function download_html {
-   
-    echo "此操作将从github的vincilawyer/Bash/nginx/html目录下载入网页文件，并覆盖原网页文件！(新网页格式需为html)"
-
+   if $(choose "此操作将从Github的vincilawyer/Bash/nginx/html目录下载入网页文件，并覆盖原网页文件！" "已取消下载更新网页文件"); then return;fi
+   echo "维护中..."
+   return
     #输入主题名称
     read -p "请输入网页主题名称（例如Moon）：" input
     if [[ -z $input ]]; then 
@@ -339,6 +338,8 @@ function download_html {
                                                                          
                                                                            # 使用Certbot申请SSL证书的函数
 function apply_ssl_certificate {
+   echo "维护中"
+   return
     # 输入域名
     while true; do
         read -p "$(echo -e ${BLUE}"请输入申请SSL证书域名（不加www.）: ${NC}")" domain_name
@@ -465,16 +466,12 @@ function install_Warp {
 
                                                                           # 安装X-ui的函数
 function install_Xui {
-bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
+   bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
 }
 
                                                                           # 安装CF_DNS的函数
 function install_CF_DNS {
-    if $(choose "是否从Github下载更新CF_DNS脚本文件？此举动将覆盖原脚本文件。"); then
-       echo "已取消下载更新CF_DNS脚本文件"
-       return
-    fi
-    
+    if $(choose "是否从Github下载更新CF_DNS脚本文件？此举动将覆盖原脚本文件。" "已取消下载更新CF_DNS脚本文件"); then return;fi
     echo -e "${GREEN}正在下载CF_DNS脚本文件：${NC}"
     wget $link_cfdns -O $path_cfdns
     chmod +x $path_cfdns 
@@ -492,19 +489,20 @@ function set_CF_config {
 
                                                                           # 一键搭建服务端的函数
 function one_step {
-   
-echo "正在安装X-ui面板"
-install_Xui
-wait "点击任意键安装Nginx"
-install_Nginx
-wait "点击任意键安装Warp"
-install_Warp
-echo "请：
-1、在x-ui中自行申请SSL
-2、上传Nginx配置
-3、在x-ui面板中调整xray模板、面板设置，并创建节点"
-echo "已暂时关闭防火墙，配置完成后请手动开启"
-ufw disable
+
+   if $(choose "是否一键搭建科学上网服务端？" "已取消一键搭建科学上网服务端"); then return;fi
+   echo "正在安装X-ui面板"
+   install_Xui
+   wait "点击任意键安装Nginx"
+   install_Nginx
+   wait "点击任意键安装Warp"
+   install_Warp
+   echo "请：
+   1、在x-ui中自行申请SSL
+   2、上传Nginx配置
+   3、在x-ui面板中调整xray模板、面板设置，并创建节点"
+   echo "已暂时关闭防火墙，配置完成后请手动开启"
+   ufw disable
 }
 
 
@@ -530,8 +528,9 @@ function wait {
                                                                          # 定义选择取消函数
 function choose() {
    read -p "$1（Y/N）:" choose1
-   if [[ $choose1 =~ ^[Yy]$ ]]; then
-       return 1
+   if [[ $choose1 =~ ^[Yy]$ ]]; then 
+   echo "$2"
+   return 1
    fi
 }
                                                                          # 定义选择功能错误函数
