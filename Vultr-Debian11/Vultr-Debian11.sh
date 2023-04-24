@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.991
+Version=1.992
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -581,7 +581,6 @@ function Option {
   read option
   clear
   if [ "$option" == "0" ]; then
-      echo $option
       exit 0
   fi
   echo
