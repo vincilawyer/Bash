@@ -2,7 +2,7 @@
 
 #定义等待时间
 Standby=59
-Ver=005
+Ver=006
 #Vultr-Debian11.sh文件网址
 link_Vultr_Debian11="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh"
 
