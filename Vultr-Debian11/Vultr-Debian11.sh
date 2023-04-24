@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.81
+Version=1.82
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -179,7 +179,6 @@ function set {
 
 
 
-
                                                                           #修改SSH端口及登录密码的函数
 function change_ssh_port {
     option=0
@@ -287,18 +286,24 @@ function install_Nginx {
     fi
 }
 
-                                                                           # 从github下载更新Nginx配置文件、待测试
+                                                                           # 从github下载更新Nginx配置文件
 function download_nginx_config {
-    echo -e "${GREEN}正在载入：${NC}"
-    if wget $link_nginx -O $path_nginx; then 
-      echo -e "${GREEN}载入完毕${NC}"
-    else
-      echo -e "${GREEN}下载失败，请检查！${NC}"
-    fi   
+    read -p "是否从Github下载更新Nginx配置文件？（此举动将覆盖原配置文件，Y/N）:" choose
+     if [[ $choose =~ ^[Yy]$ ]]; then
+         echo -e "${GREEN}正在载入：${NC}"
+         if wget $link_nginx -O $path_nginx; then 
+            echo -e "${GREEN}载入完毕${NC}"
+         else
+            echo -e "${GREEN}下载失败，请检查！${NC}"
+         fi   
+     else
+         echo "已取消下载更新Nginx配置文件"
+     fi
+    
 }
                                                                            # 设置Nginx配置、未完待测试
 function set_nginx_config {
-       set "server_name " "\;" $path_nginx "VPS域名" "不加www等前缀，" "^[a-z0-9]+(-[a-z0-9]+)*\.[a-z]{2,}$" true
+       set "server_name " ";" $path_nginx "VPS域名" "不加www等前缀，" "^[a-z0-9]+(-[a-z0-9]+)*\.[a-z]{2,}$" true
 
 }   
                                                                             # 从github下载网页文件
@@ -466,8 +471,15 @@ bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
 
                                                                           # 安装CF_DNS的函数
 function install_CF_DNS {
+    if choose "是否从Github下载更新CF_DNS脚本文件？此举动将覆盖原脚本文件。"; then
+       echo "已取消下载更新CF_DNS脚本文件"
+       return
+    fi
+    
+    echo -e "${GREEN}正在下载CF_DNS脚本文件：${NC}"
     wget $link_cfdns -O $path_cfdns
-    chmod +x $path_cfdns
+    chmod +x $path_cfdns 
+
 }
                                                                           # 修改CF_DNS配置的函数
 function set_CF_config {
@@ -481,6 +493,7 @@ function set_CF_config {
 
                                                                           # 一键搭建服务端的函数
 function one_step {
+   
 echo "正在安装X-ui面板"
 install_Xui
 wait "点击任意键安装Nginx"
@@ -515,7 +528,14 @@ function wait {
    fi
    read -n 1 -s input
 }
+                                                                         # 定义选择取消函数
+function choose {
+   read -p "$1（Y/N）:" choose1
+   if ! [[ $choose1 =~ ^[Yy]$ ]]; then
+       return true
+     fi
 
+}
                                                                          # 定义选择功能错误函数
 function error_option {
        echo -e "${RED}输入不正确，请重新输入${NC}"
