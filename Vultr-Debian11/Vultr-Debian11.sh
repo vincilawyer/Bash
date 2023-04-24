@@ -471,7 +471,7 @@ function install_Xui {
 
                                                                           # 安装CF_DNS的函数
 function install_CF_DNS {
-    if $(choose "是否从Github下载更新CF_DNS脚本文件？此举动将覆盖原脚本文件。" "已取消下载更新CF_DNS脚本文件"); then return;fi
+    if choose "是否从Github下载更新CF_DNS脚本文件？此举动将覆盖原脚本文件。" "已取消下载更新CF_DNS脚本文件"; then return;fi
     echo -e "${GREEN}正在下载CF_DNS脚本文件：${NC}"
     wget $link_cfdns -O $path_cfdns
     chmod +x $path_cfdns 
@@ -529,9 +529,9 @@ function wait {
 function choose() {
    read -p "$1（Y/N）:" choose1
    if [[ $choose1 =~ ^[Yy]$ ]]; then 
-   echo "$2"
    return 1
    fi
+   echo "$2"
 }
                                                                          # 定义选择功能错误函数
 function error_option {
