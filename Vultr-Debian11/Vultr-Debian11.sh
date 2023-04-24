@@ -35,7 +35,7 @@ text2=0
 #cfdns脚本路径
   path_cfdns="/usr/local/bin/cfdns"
   
-  nano /etc/nginx/conf.d/default.conf
+ # nano /etc/nginx/conf.d/default.conf
   
                                                                           #更新函数
 function update {
