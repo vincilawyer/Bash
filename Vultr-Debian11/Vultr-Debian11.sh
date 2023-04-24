@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.89
+Version=1.9
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -530,7 +530,7 @@ function wait {
                                                                          # 定义选择取消函数
 function choose() {
    read -p "$1（Y/N）:" choose1
-   if ! [[ $choose1 =~ ^[Yy]$ ]]; then
+   if [[ $choose1 =~ ^[Yy]$ ]]; then
        return 1
    fi
 }
