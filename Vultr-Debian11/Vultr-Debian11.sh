@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.87
+Version=1.88
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -182,7 +182,7 @@ function set {
 function change_ssh_port {
     
     set "Port " " " $path_ssh "SSH端口" "0-65535，" "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$" true
-    if "$option"; then
+    if [ $option -eq 1 ]; then
           echo -e "${GREEN}正在将新端口添加进防火墙规则中。${NC}"
           ufw allow $text2/tcp
           echo -e "${GREEN}已正从防火墙规则中删除原SSH端口号：$text1${NC}"
@@ -470,7 +470,7 @@ bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
 
                                                                           # 安装CF_DNS的函数
 function install_CF_DNS {
-    if choose "是否从Github下载更新CF_DNS脚本文件？此举动将覆盖原脚本文件。"; then
+    if $(choose "是否从Github下载更新CF_DNS脚本文件？此举动将覆盖原脚本文件。"); then
        echo "已取消下载更新CF_DNS脚本文件"
        return
     fi
