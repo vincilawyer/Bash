@@ -76,9 +76,40 @@ function find {
   echo "$found_text"   # 输出找到的文本
 }
 
-
-
 function replace {
+  local start_string="$1"
+  local end_string="$2"
+  local new_text="$3"
+  local file="$4"
+  local n="${5:-1}"
+  local temp_file="$(mktemp)"
+
+  awk -v start="$start_string" -v end="$end_string" -v new="$new_text" -v num="$n" '{
+      if (match($0, start".*"end)) {
+        if (++count == num) {
+          print substr($0, 1, RSTART + length(start) - 1) new substr($0, RSTART + RLENGTH - length(end));
+        } else {
+          print $0;
+        }
+      } else if (match($0, start)) {
+        if (++count == num) {
+          print substr($0, 1, RSTART + length(start) - 1) new;
+        } else {
+          print $0;
+        }
+      } else {
+        print $0;
+      }
+    }' "$file" > "$temp_file"
+
+  mv "$temp_file" "$file"
+  modify "$1" "$3" false "$4"
+}
+replace "proxy_pass http://127.0.0.1:" ";" "131" "/etc/nginx/conf.d/default.conf"
+nano /etc/nginx/conf.d/default.conf
+
+
+function replaceo {
   local start_string="$1"
   local end_string="$2"
   local new_text="$3"
@@ -101,7 +132,7 @@ function replace {
   modify "$1" "$3" false "$4"
 }
                                                                           #改变文本内容函数
-function replaceo {
+function replaceoo {
   local start_string="$1"
   local end_string="$2"
   local new_text="$3"
