@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.82
+Version=1.83
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -138,6 +138,7 @@ function modify() {
 #6、修改内容正则表达式
 #7、内容与正则表达式的真假匹配
 function set {
+     option=0
      text1=""
      text2=""
      text1=$(find "$1" "$2" "$3")
@@ -146,12 +147,10 @@ function set {
          read -p "$(echo -e ${BLUE}"请设置新的$4（$5空则跳过，#则设为注释行）：${NC}")" text2
          if [[ -z "$text2" ]]; then
              echo -e "${RED}已跳过$4设置${NC}"
-             option=0
              return
          elif [[ $text2 == "#" ]]; then
              modify "$1" "$2" true "$3"
              echo -e "${GREEN}已将$4参数设为注释行${NC}"
-             option=0
              return
          elif [[ $text2 =~ $6 ]]; then
              if $7; then
@@ -181,9 +180,10 @@ function set {
 
                                                                           #修改SSH端口及登录密码的函数
 function change_ssh_port {
-    option=0
+    
     set "Port " " " $path_ssh "SSH端口" "0-65535，" "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$" true
-    if [[ $option==1 ]]; then
+    echo $option
+    if [ $option==1 ]; then
           echo -e "${GREEN}正在将新端口添加进防火墙规则中。${NC}"
           ufw allow $text2/tcp
           echo -e "${GREEN}已正从防火墙规则中删除原SSH端口号：$text1${NC}"
@@ -532,6 +532,7 @@ function wait {
 function choose {
    read -p "$1（Y/N）:" choose1
    if ! [[ $choose1 =~ ^[Yy]$ ]]; then
+       echo 00
        return true
      fi
 
