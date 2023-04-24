@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.996
+Version=1.997
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -82,7 +82,6 @@ function find {
                   exit;
               }
           } else if (match($0, start)) {  # 只匹配开始文本
-              count++;
               if (++count == num) {  # 输出第 n 个匹配结果
                   print substr($0, RSTART + length(start)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
                   exit;
@@ -93,6 +92,7 @@ function find {
   if ! $comment; then found_text=${found_text// (注释行)/}; fi
   echo "$found_text"   # 输出找到的文本
 }
+
                                                                           #改变文本内容函数
 
 function replace() {
