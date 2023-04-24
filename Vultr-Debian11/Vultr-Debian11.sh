@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.994
+Version=1.995
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -78,8 +78,30 @@ function find {
 
 
 
-                                                                          #改变文本内容函数
 function replace {
+  local start_string="$1"
+  local end_string="$2"
+  local new_text="$3"
+  local file="$4"
+  local temp_file="$(mktemp)"
+
+  awk -v start="$start_string" -v end="$end_string" -v new="$new_text" '{
+      if (!done && match($0, start".*"end)) {
+        done=1;
+        print substr($0, 1, RSTART + length(start) - 1) new substr($0, RSTART + RLENGTH - length(end));
+      } else if (!done && match($0, start)) {
+        done=1;
+        print substr($0, 1, RSTART + length(start) - 1) new;
+      } else {
+        print $0;
+      }
+    }' "$file" > "$temp_file"
+
+  mv "$temp_file" "$file"
+  modify "$1" "$3" false "$4"
+}
+                                                                          #改变文本内容函数
+function replaceo {
   local start_string="$1"
   local end_string="$2"
   local new_text="$3"
