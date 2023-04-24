@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.79
+Version=1.8
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -184,7 +184,7 @@ function set {
 function change_ssh_port {
     option=0
     set "Port " " " $path_ssh "SSH端口" "0-65535，" "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$" true
-    if [[ option==1 ]]; then
+    if [[ $option==1 ]]; then
           echo -e "${GREEN}正在将新端口添加进防火墙规则中。${NC}"
           ufw allow $text2/tcp
           echo -e "${GREEN}已正从防火墙规则中删除原SSH端口号：$text1${NC}"
@@ -622,13 +622,11 @@ function Option {
     "  1、返回上一级"
     "  2、安装Nginx Proxy Manager"
     "  3、安装Nginx"
-    "  3、申请SSL证书"
-    "  5、修改Nginx配置"
-    "  6、从github下载更新配置文件"
-    "  7、查看Nginx配置文件"
-    "  8、查看网页文件根目录"
-    "  9、停止运行Nginx"
-    "  10、卸载"
+    "  4、使用Certbot申请SSL证书"
+    "  5、从github下载更新配置文件"
+    "  6、设置Nginx配置（第一次使用需设置）"
+    "  7、停止运行Nginx"
+    "  8、卸载"
     "  0、退出"   
     )
     Xui_menu=(
@@ -646,7 +644,7 @@ function Option {
     )
     Cf_DNS_menu=(
     "  1、返回上一级"
-    "  2、下载CF_DNS更新脚本"
+    "  2、下载\更新CF_DNS脚本"
     "  3、启动更新脚本面板"
     "  4、设置脚本配置（第一次使用需设置）"
     "  0、退出"
@@ -710,7 +708,7 @@ function main {
                           1)break;;
                           *)error_option;;
                     esac;;
-                  
+
     
                   #一级菜单6 Nginx选项
                  6) Option ${main_menu[$(($get_option - 1))]} "${Nginx_menu[@]}"
@@ -720,11 +718,10 @@ function main {
                                    2)install_Nginx_PM;;
                                    3)install_Nginx;;
                                    4)apply_ssl_certificate;;
-                                   5)set_nginx_config;;
-                                   6)download_nginx_config;;
-                                   7)nano /etc/nginx/conf.d/default.conf;;
-                                   9)stop "nginx";;
-                                   10)echo "没开发呢！";;
+                                   5)download_nginx_config;;
+                                   6)set_nginx_config;;
+                                   7)stop "nginx";;
+                                   8)echo "没开发呢！";;
                                esac
                                wait;;
                           1)break;;
