@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.93
+Version=1.94
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -60,19 +60,38 @@ function find {
   local start_string="$1"   # 开始文本字符串
   local end_string="$2"     # 结束文本字符串
   local file="$3"           # 要搜索的文件名
+  local show_comment="${4:-false}"  # 是否显示注释行标记，默认为 true
   local found_text=""       # 存储找到的文本
-  
-    found_text=$(awk -v start="$start_string" -v end="$end_string" '{
+
+  if [[ $show_comment == "true" ]]; then
+    found_text=$(awk -v start="$start_string" -v end="$end_string" '
+      {
         if (match($0, start".*"end)) {  # 如果匹配开始和结束文本，则提取匹配项中的文本并退出循环
-          print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
+          print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end));
           exit;
         } else if (match($0, start)) {  # 如果只匹配开始文本，则提取开始文本之后的文本并退出循环
-          print substr($0, RSTART + length(start)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
+          print substr($0, RSTART + length(start));
           exit;
         }
-      }' "$file")
+      }
+      ' "$file")
+  else
+    found_text=$(awk -v start="$start_string" -v end="$end_string" '
+      {
+        if (match($0, start".*"end)) {  # 如果匹配开始和结束文本，则提取匹配项中的文本并退出循环
+          print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end)) ((match($0, /^[[:space:]]*#/) ? "" : " (注释行)"));
+          exit;
+        } else if (match($0, start)) {  # 如果只匹配开始文本，则提取开始文本之后的文本并退出循环
+          print substr($0, RSTART + length(start)) ((match($0, /^[[:space:]]*#/) ? "" : " (注释行)"));
+          exit;
+        }
+      }
+      ' "$file")
+  fi
+
   echo "$found_text"   # 输出找到的文本
 }
+
 
 
                                                                           #改变文本内容函数
