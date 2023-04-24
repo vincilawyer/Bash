@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.77
+Version=1.78
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -597,15 +597,14 @@ function Option {
     main_menu=(
     "  1、修改SSH登录端口和登录密码"
     "  2、UFW防火墙管理"
-    "  3、强制更新脚本"
-    "——————————————————————————————————"
+    "  3、强制更新脚本
+    ——————————————————————————————————"
     "  4、一键搭建科学上网服务端"
     "  5、Docker及Compose管理"
     "  6、Nginx服务"
     "  7、Warp服务"
     "  8、X-ui服务"
-    "  9、C-DNS修改脚本" 
-    "——————————————————————————————————"
+    "  9、CF-DNS修改脚本" 
     "  0、退出"
     )
     NFW_menu=(
@@ -763,7 +762,7 @@ function main {
                         esac;;        
                         
                    #一级菜单9 cfdns选项
-                  9)Option ${main_menu[$(($get_option - 1))]} "${CF_DNS_menu[@]}" 
+                  9)Option ${main_menu[$(($get_option - 1))]} "${Cf_DNS_menu[@]}" 
                         case $option in
                             2 | 3 | 4)
                                case $option in
