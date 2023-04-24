@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.997
+Version=1.998
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -63,7 +63,7 @@ function find {
   local n="${3:-1}"         # 要输出的匹配结果的索引
   local file="$4"           # 要搜索的文件名
   local exact_match="$5"    # 是否精确匹配
-  local comment="$6"        # 是否显示注释行
+  local comment="${6:-True}"   # 是否显示注释行
   local found_text=""       # 存储找到的文本
   local count=0             # 匹配计数器
 
@@ -170,7 +170,7 @@ local regex1="$8"         #内容与正则表达式的真假匹配
 local regex2="$9"         #正则表达式
      text1=""
      text2=""
-     text1=$(find "$start_string" "$end_string" "$n" "$file" "$exact_match" false)
+     text1=$(find "$start_string" "$end_string" "$n" "$file" "$exact_match" true)
      echo -e "${GREEN}当前的$mean为：$text1${NC}"
      while true; do
          read -p "$(echo -e ${BLUE}"请设置新的$mean（$mark空则跳过，#则设为注释行）：${NC}")" text2
