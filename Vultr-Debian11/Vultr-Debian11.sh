@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.98
+Version=1.991
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -28,7 +28,7 @@ text2=0
   link_cfdns="https://raw.githubusercontent.com/vincilawyer/Bash/main/Cloudfare/ChangeDNS.sh"
 #nginx配置文件网址
   link_nginx="https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf"
-#ssh配置文件路径                           
+#ssh配置文件路径(查看配置：nano /etc/ssh/sshd_config)                           
   path_ssh="/etc/ssh/sshd_config"
 #nginx配置文件路径 (查看配置：nano /etc/nginx/conf.d/default.conf)                      
   path_nginx="/etc/nginx/conf.d/default.conf" 
@@ -61,35 +61,18 @@ function find {
   local start_string="$1"   # 开始文本字符串
   local end_string="$2"     # 结束文本字符串
   local file="$3"           # 要搜索的文件名
-  local show_comment="${4:-false}"  # 是否显示注释行标记，默认为 true
   local found_text=""       # 存储找到的文本
-
-  if [[ $show_comment == "true" ]]; then
-    found_text=$(awk -v start="$start_string" -v end="$end_string" '
-      {
+  
+    found_text=$(awk -v start="$start_string" -v end="$end_string" '{
         if (match($0, start".*"end)) {  # 如果匹配开始和结束文本，则提取匹配项中的文本并退出循环
-          print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end));
+          print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
           exit;
         } else if (match($0, start)) {  # 如果只匹配开始文本，则提取开始文本之后的文本并退出循环
-          print substr($0, RSTART + length(start));
+          print substr($0, RSTART + length(start)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
           exit;
         }
-      }
-      ' "$file")
-  else
-    found_text=$(awk -v start="$start_string" -v end="$end_string" '
-      {
-        if (match($0, start".*"end)) {  # 如果匹配开始和结束文本，则提取匹配项中的文本并退出循环
-          print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end)) ((match($0, /^[[:space:]]*#/) ? "" : " (注释行)"));
-          exit;
-        } else if (match($0, start)) {  # 如果只匹配开始文本，则提取开始文本之后的文本并退出循环
-          print substr($0, RSTART + length(start)) ((match($0, /^[[:space:]]*#/) ? "" : " (注释行)"));
-          exit;
-        }
-      }
-      ' "$file")
-  fi
-
+      }' "$file")
+  if ! $4; then found_text=${found_text// (注释行)/}; fi
   echo "$found_text"   # 输出找到的文本
 }
 
@@ -205,7 +188,7 @@ function change_ssh_port {
           echo -e "${GREEN}正在将新端口添加进防火墙规则中。${NC}"
           ufw allow $text2/tcp
           echo -e "${GREEN}已正从防火墙规则中删除原SSH端口号：$text1${NC}"
-          ufw delete allow $text1/tcp
+          ufw delete allow ${$text1// (注释行)/}/tcp     
           systemctl restart sshd
           echo -e "${GREEN}当前防火墙运行规则及状态为：${NC}"
           ufw status
@@ -234,10 +217,6 @@ function change_login_password {
       fi
     done
 }
-
-
-
-
 
                                                                           # 安装Docker及Compose插件的函数
 function install_Docker {
