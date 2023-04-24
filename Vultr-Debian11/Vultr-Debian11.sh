@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.94
+Version=1.95
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -34,6 +34,8 @@ text2=0
   path_nginx="/etc/nginx/conf.d/default.conf" 
 #cfdns脚本路径
   path_cfdns="/usr/local/bin/cfdns"
+  
+  nano /etc/nginx/conf.d/default.conf
   
                                                                           #更新函数
 function update {
@@ -552,11 +554,12 @@ function wait {
                                                                          # 定义选择取消函数
 function choose() {
    read -p "$1（Y/N）:" choose1
-   if [[ $choose1 =~ ^[Yy]$ ]]; then 
-   return 1
-   fi
-   echo "$2"
+   if ! [[ $choose1 =~ ^[Yy]$ ]]; then 
+   echo $2
+   return 0
+   fi  
 }
+
                                                                          # 定义选择功能错误函数
 function error_option {
        echo -e "${RED}输入不正确，请重新输入${NC}"
