@@ -531,7 +531,6 @@ function wait {
 function choose {
    read -p "$1（Y/N）:" choose1
    if ! [[ $choose1 =~ ^[Yy]$ ]]; then
-       echo 00
        return 1
    fi
 }
