@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.995
+Version=1.996
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -166,11 +166,11 @@ local file="$4"           # 要搜索的文件名
 local exact_match="$5"    # 是否精确匹配
 local mean="$6"          #显示搜索和修改内容的含义
 local mark="$7"          #修改内容备注
-local regex2="$8"         #内容与正则表达式的真假匹配
+local regex1="$8"         #内容与正则表达式的真假匹配
 local regex2="$9"         #正则表达式
      text1=""
      text2=""
-     text1=$(find "$start_string" "$end_string" "$n" "$file" "exact_match" false)
+     text1=$(find "$start_string" "$end_string" "$n" "$file" "$exact_match" false)
      echo -e "${GREEN}当前的$mean为：$text1${NC}"
      while true; do
          read -p "$(echo -e ${BLUE}"请设置新的$mean（$mark空则跳过，#则设为注释行）：${NC}")" text2
@@ -181,19 +181,19 @@ local regex2="$9"         #正则表达式
              modify "$start_string" "$end_string" true "$file"
              echo -e "${GREEN}已将$mean参数设为注释行${NC}"
              return 1
-         elif [[ $text2 =~ $6 ]]; then
-             if $7; then
-                replace  "$start_string" "$end_string" "$n" "$text2" "$file" "exact_match"
+         elif [[ $text2 =~ $regex2 ]]; then
+             if $regex1; then
+                replace  "$start_string" "$end_string" "$n" "$text2" "$file" "$exact_match"
                 echo -e "${GREEN}$mean已修改为$text2${NC}"
                 return 0
              else
                 echo -e "${RED}$mean输入错误，请重新输入${NC}"
              fi
          else
-             if $7; then
+             if $regex1; then
                 echo -e "${RED}$mean输入错误，请重新输入${NC}"
              else
-                replace  "$start_string" "$end_string" "$n" "$text2" "$file" "exact_match"
+                replace  "$start_string" "$end_string" "$n" "$text2" "$file" "$exact_match"
                 echo -e "${GREEN}$mean已修改为$text2${NC}"
                 return 0
              fi
@@ -232,7 +232,7 @@ function modify() {
                                                                           #修改SSH端口及登录密码的函数
 function change_ssh_port {
     
-    if set "Port " " " $path_ssh "SSH端口" "0-65535，" "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$" true; then
+    if set "Port " " " 1 $path_ssh false "SSH端口" "0-65535，" true "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"; then
           echo -e "${GREEN}已正从防火墙规则中删除原SSH端口号：${text1// (注释行)/}${NC}"
           ufw delete allow ${text1// (注释行)/}/tcp   
           echo -e "${GREEN}正在将新端口添加进防火墙规则中。${NC}"
