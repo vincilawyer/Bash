@@ -14,7 +14,8 @@ zone_identifier=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?nam
 # 如果区域标识符为空，则表示未找到该域名
 if [ "$zone_identifier" == "null" ]; then
     echo "在您的Cloudflare账户中未找到该域名。"
-else
+    exit 0
+fi
    # 获取所有DNS解析记录、CDN代理状态和TTL
    function get_all_dns_records {
     dns_records=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records?type=A" \
@@ -39,6 +40,7 @@ else
     echo "操作选项："
     echo "1. 删除DNS记录"
     echo "2. 修改或增加DNS记录"
+    echo "3、www域名一键绑定本机ip（开启CDN）"
     read -p "请选择要进行的操作：" choice
 
     if [ "$choice" == "1" ]; then
@@ -120,5 +122,37 @@ else
                 get_all_dns_records
                 all_dns_records
            fi
+    elif [ "$choice" == "3" ]; then
+          record_name="www"
+          record_content=$(ip addr | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v 127.0.0.1)
+          proxy="true"
+           # 获取记录标识符
+            record_identifier=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records?type=A&name=$record_name.$domain" \
+                 -H "X-Auth-Email: $email" \
+                 -H "X-Auth-Key: $api_key" \
+                 -H "Content-Type: application/json" | jq -r '.result[0].id')
+            clear 
+            # 如果记录标识符为空，则创建新记录
+            if [ "$record_identifier" == "null" ]; then
+                curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records" \
+                     -H "X-Auth-Email: $email" \
+                     -H "X-Auth-Key: $api_key" \
+                     -H "Content-Type: application/json" \
+                     --data '{"type":"A","name":"'"$record_name"'","content":"'"$record_content"'","proxied":'"$proxy"'}'
+                echo
+                echo "已成功添加记录 $record_name.$domain"
+                get_all_dns_records
+                all_dns_records
+            else
+                # 如果记录标识符不为空，则更新现有记录
+                curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records/$record_identifier" \
+                     -H "X-Auth-Email: $email" \
+                     -H "X-Auth-Key: $api_key" \
+                     -H "Content-Type: application/json" \
+                     --data '{"type":"A","name":"'"$record_name"'","content":"'"$record_content"'","proxied":'"$proxy"'}'
+                echo
+                echo "已成功更新记录 $record_name.$domain"
+                get_all_dns_records
+                all_dns_records
+           fi    
     fi
-fi
