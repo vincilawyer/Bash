@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.998
+Version=1.999
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -593,6 +593,7 @@ function choose() {
    return 1
    fi  
    echo $2
+   return 0
 }
 
                                                                          # 定义选择功能错误函数
