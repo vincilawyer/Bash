@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=1.999
+Version=2.01
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -367,9 +367,9 @@ function set_nginx_config {
 }   
                                                                             # 从github下载网页文件
 function download_html {
-   if choose "此操作将从Github的vincilawyer/Bash/nginx/html目录下载入网页文件，并覆盖原网页文件！" "已取消下载更新网页文件"; then return;fi
    echo "维护中..."
    return
+   if choose "此操作将从Github的vincilawyer/Bash/nginx/html目录下载入网页文件，并覆盖原网页文件！" "已取消下载更新网页文件"; then return;fi
     #输入主题名称
     read -p "请输入网页主题名称（例如Moon）：" input
     if [[ -z $input ]]; then 
@@ -491,7 +491,8 @@ function check_ssl_certificate {
 
                                                                           # 安装Warp并启动Warp的函数
 function install_Warp {
-    if [ -e "/usr/bin/cloudflared" ]; then
+
+    if [ -x "$(command -v warp-cli)" ]; then
         echo -e "${GREEN}Warp已安装，无需重复安装，当前代理IP地址为：${NC}"
         curl ifconfig.me --proxy socks5://127.0.0.1:40000        
     else
@@ -526,7 +527,11 @@ function install_Warp {
 
                                                                           # 安装X-ui的函数
 function install_Xui {
-   bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
+   if [ -x "$(command -v x-ui)" ]; then
+        echo -e "${GREEN}X-ui面板已安装，无需重复安装！${NC}"      
+   else
+        bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
+   fi
 }
 
                                                                           # 安装CF_DNS的函数
@@ -539,17 +544,15 @@ function install_CF_DNS {
 }
                                                                           # 修改CF_DNS配置的函数
 function set_CF_config {
-    set "email=\"" "\"" $path_cfdns "Cloudfare账户邮箱" "" "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" true
-    set "domain=\"" "\"" $path_cfdns "Cloudfare绑定域名" "不加www等前缀，" "^[a-z0-9]+(-[a-z0-9]+)*\.[a-z]{2,}$" true
-    set "api_key=\"" "\"" $path_cfdns "Cloudfare API密钥" "" "" true
+    set "email=\"" "\"" 1 $path_cfdns true "Cloudfare账户邮箱" "" true "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+    set "domain=\"" "\"" 1 $path_cfdns true "Cloudfare绑定域名" "不加www等前缀，" "^[a-z0-9]+(-[a-z0-9]+)*\.[a-z]{2,}$"
+    set "api_key=\"" "\"" 1 $path_cfdns true "Cloudfare API密钥"
     chmod +x $path_cfdns
 }
 
 
-
                                                                           # 一键搭建服务端的函数
 function one_step {
-
    if choose "是否一键搭建科学上网服务端？" "已取消一键搭建科学上网服务端"; then return;fi
    echo "正在安装X-ui面板"
    install_Xui
