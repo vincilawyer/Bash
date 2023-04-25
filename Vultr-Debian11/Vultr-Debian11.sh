@@ -348,7 +348,7 @@ function download_nginx_config {
                                                                            # 设置Nginx配置、未完待测试
 function set_nginx_config {
        current_domain=$(find "server_name " ";" 1 $path_nginx true false )
-       if set "ssl_certificate " "/$current_domain" 1 $path_nginx true "SSL证书存放路径"
+       set "ssl_certificate " "/$current_domain" 1 $path_nginx true "SSL证书存放路径"
        current_ssl_path=$(find ssl_certificate " "$current_domain" 1 $path_nginx true false )
        if set "server_name " ";" 1 $path_nginx true "VPS域名" "" true "^[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$"; then
            replace  "$current_ssl_path" ".cer;" 1 "$text2" $path_nginx true
