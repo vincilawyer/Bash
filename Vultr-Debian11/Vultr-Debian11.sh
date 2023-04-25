@@ -367,7 +367,7 @@ function set_nginx_config {
 }   
                                                                             # 从github下载网页文件
 function download_html {
-   if $(choose "此操作将从Github的vincilawyer/Bash/nginx/html目录下载入网页文件，并覆盖原网页文件！" "已取消下载更新网页文件"); then return;fi
+   if choose "此操作将从Github的vincilawyer/Bash/nginx/html目录下载入网页文件，并覆盖原网页文件！" "已取消下载更新网页文件"; then return;fi
    echo "维护中..."
    return
     #输入主题名称
@@ -587,14 +587,12 @@ function wait {
    read -n 1 -s input
 }
                                                                          # 定义选择取消函数
-function choose() {
+function choose {
    read -p "$1（Y/N）:" choose1
    if [[ $choose1 =~ ^[Yy]$ ]]; then 
    return 1
    fi  
-   echo 12
    echo $2
-   echo 13
    return 0
 }
 
