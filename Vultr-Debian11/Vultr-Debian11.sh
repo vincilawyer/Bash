@@ -336,7 +336,7 @@ function install_Nginx {
 
                                                                            # 从github下载更新Nginx配置文件
 function download_nginx_config {
-    if $(choose "是否从Github下载更新Nginx配置文件？此举动将覆盖原配置文件" "已取消下载更新Nginx配置文件"); then return;fi
+    if [$(choose "是否从Github下载更新Nginx配置文件？此举动将覆盖原配置文件" "已取消下载更新Nginx配置文件"); then return;fi
          echo -e "${GREEN}正在载入：${NC}"
          if wget $link_nginx -O $path_nginx; then 
             echo -e "${GREEN}载入完毕${NC}"
@@ -592,7 +592,9 @@ function choose() {
    if [[ $choose1 =~ ^[Yy]$ ]]; then 
    return 1
    fi  
+   echo 12
    echo $2
+   echo 13
    return 0
 }
 
