@@ -13,7 +13,7 @@ zone_identifier=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?nam
 
 # 如果区域标识符为空，则表示未找到该域名
 if [ "$zone_identifier" == "null" ]; then
-    echo "在您的Cloudflare账户中未找到该域名。"
+    echo "未找到您的Cloudflare账户\域名，请检查配置。"
     exit 0
 fi
    # 获取所有DNS解析记录、CDN代理状态和TTL
