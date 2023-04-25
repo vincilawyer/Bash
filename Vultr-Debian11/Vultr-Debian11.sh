@@ -819,7 +819,7 @@ function main {
                                case $option in
                                    2)install_CF_DNS;;
                                    3)cfdns;;
-                                   4)set_CF_config
+                                   4)set_CF_config;;
                                esac
                                wait;;
                            1)break;;
