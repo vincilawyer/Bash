@@ -336,7 +336,7 @@ function install_Nginx {
 
                                                                            # 从github下载更新Nginx配置文件
 function download_nginx_config {
-    if [$(choose "是否从Github下载更新Nginx配置文件？此举动将覆盖原配置文件" "已取消下载更新Nginx配置文件"); then return;fi
+    if choose "是否从Github下载更新Nginx配置文件？此举动将覆盖原配置文件" "已取消下载更新Nginx配置文件"; then return;fi
          echo -e "${GREEN}正在载入：${NC}"
          if wget $link_nginx -O $path_nginx; then 
             echo -e "${GREEN}载入完毕${NC}"
@@ -408,7 +408,6 @@ function apply_ssl_certificate {
           echo -e "${RED}未输入域名，退出申请操作${NC}"
           return
         elif [[ $domain_name =~ ^[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$ ]]; then
-            domain_name=${domain_name#www.}
             break
         else
             echo -e "${RED}输入格式不正确，请重新输入${NC}"
@@ -449,7 +448,7 @@ function apply_ssl_certificate {
     fi
   
     # 申请证书
-    certbot certonly --standalone --agree-tos -n -d www.$domain_name -d $domain_name -m $email
+    certbot certonly --standalone --agree-tos -n -d $domain_name -m $email
     
     # 判断申请结果
     if check_ssl_certificate "$domain_name"; then
@@ -551,7 +550,7 @@ function set_CF_config {
                                                                           # 一键搭建服务端的函数
 function one_step {
 
-   if $(choose "是否一键搭建科学上网服务端？" "已取消一键搭建科学上网服务端"); then return;fi
+   if choose "是否一键搭建科学上网服务端？" "已取消一键搭建科学上网服务端"; then return;fi
    echo "正在安装X-ui面板"
    install_Xui
    wait "点击任意键安装Nginx"
@@ -562,8 +561,6 @@ function one_step {
    1、在x-ui中自行申请SSL
    2、上传Nginx配置
    3、在x-ui面板中调整xray模板、面板设置，并创建节点"
-   echo "已暂时关闭防火墙，配置完成后请手动开启"
-   ufw disable
 }
 
 
