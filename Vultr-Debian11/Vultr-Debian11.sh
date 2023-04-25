@@ -671,7 +671,6 @@ function Option {
     Docker_menu=(
     "  1、返回上一级"
     "  2、安装Docker及Compose插件"
-    "  3、卸载Docker及Compose插件"
     "  0、退出"   
     )
     
@@ -682,8 +681,6 @@ function Option {
     "  4、使用Certbot申请SSL证书"
     "  5、从github下载更新配置文件"
     "  6、设置Nginx配置（第一次使用需设置）"
-    "  7、停止运行Nginx"
-    "  8、卸载"
     "  0、退出"   
     )
     Xui_menu=(
@@ -695,8 +692,6 @@ function Option {
     Warp_menu=(
     "  1、返回上一级"
     "  2、安装Warp"
-    "  3、停止运行"
-    "  4、卸载"
     "  0、退出"
     )
     Cf_DNS_menu=(
@@ -759,7 +754,6 @@ function main {
                            2 | 3)
                                case $option in
                                    2)install_Docker;;
-                                   3)echo "没开发呢！";;
                                esac
                                wait;;
                           1)break;;
@@ -777,8 +771,6 @@ function main {
                                    4)apply_ssl_certificate;;
                                    5)download_nginx_config;;
                                    6)set_nginx_config;;
-                                   7)stop "nginx";;
-                                   8)echo "没开发呢！";;
                                esac
                                wait;;
                           1)break;;
@@ -791,8 +783,6 @@ function main {
                            2 | 3 | 4)
                                case $option in
                                    2)install_Warp;;
-                                   3);;
-                                   4)echo "没开发呢！";;
                                esac
                                wait;;
                           1)break;;
