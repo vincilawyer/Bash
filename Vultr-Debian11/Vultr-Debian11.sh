@@ -57,7 +57,7 @@ function update {
 update $Version
 
                                                                           #查询文本内容函数
-function find {
+function search {
   local start_string="$1"   # 开始文本字符串
   local end_string="$2"     # 结束文本字符串
   local n="${3:-1}"         # 要输出的匹配结果的索引
@@ -170,7 +170,7 @@ local regex1="$8"         #内容与正则表达式的真假匹配
 local regex2="$9"         #正则表达式
      text1=""
      text2=""
-     text1=$(find "$start_string" "$end_string" "$n" "$file" "$exact_match" true)
+     text1=$(search "$start_string" "$end_string" "$n" "$file" "$exact_match" true)
      echo -e "${GREEN}当前的$mean为：$text1${NC}"
      while true; do
          read -p "$(echo -e ${BLUE}"请设置新的$mean（$mark空则跳过，#则设为注释行）：${NC}")" text2
@@ -347,9 +347,9 @@ function download_nginx_config {
 }
                                                                            # 设置Nginx配置、未完待测试
 function set_nginx_config {
-       current_domain=$(find "server_name " ";" 1 $path_nginx true false)
+       current_domain=$(search "server_name " ";" 1 $path_nginx true false)
        set "ssl_certificate " "/$current_domain" 1 $path_nginx true "SSL证书存放路径"
-       current_ssl_path=$(find "ssl_certificate " "$current_domain" 1 $path_nginx true false)
+       current_ssl_path=$(search "ssl_certificate " "$current_domain" 1 $path_nginx true false)
        if set "server_name " ";" 1 $path_nginx true "VPS域名" "" true "^[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$"; then
            replace  "$current_ssl_path" ".cer;" 1 "$text2" $path_nginx true
            replace  "$current_ssl_path" ".key;" 1 "$text2" $path_nginx true
@@ -381,7 +381,7 @@ function download_html {
     if wget "$link_html$input".zip -O /home/"$input".zip; then
        echo "压缩包下载完成，开始解压"
        unzip /home/"$input".zip -d /home
-       path_html=$(find "root" " " "1" $path_nginx)
+       path_html=$(search "root" " ")
        echo "开始覆盖原网页文件"
        rm -r "$path_html"/*  >/dev/null
        mv /home/"$input"/* "$path_html"/
@@ -476,11 +476,12 @@ function apply_ssl_certificate {
 
                                                                             # 判断Certbot申请的SSL证书是否存在
 function check_ssl_certificate {
-    domain_name=$1
-    #域名添加www.前缀
-    if [[ $domain_name != "www."* ]]; then domain_name="www.${domain_name}"; fi
+   echo "维护中"
+   return
+    domain_name="$1"
+    ssl_path="$2"
     #搜索SSL证书
-    search_result=$(find /etc/letsencrypt/live/ -name fullchain.pem -print0 | xargs -0 grep -l "$domain_name" 2>/dev/null)
+    search_result=$(find "$2/" -name fullchain.pem -print0 | xargs -0 grep -l "$domain_name" 2>/dev/null)
     if [[ -z "$search_result" ]]; then
       return false
     else
