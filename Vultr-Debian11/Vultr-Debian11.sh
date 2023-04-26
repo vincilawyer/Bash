@@ -268,8 +268,7 @@ function change_login_password {
 
                                                                           # 安装Docker及Compose插件的函数
 function install_Docker {
-   echo "维护中"
-   return
+
     #安装docker
     curl -fsSL https://get.docker.com -o get-docker.sh
     sudo sh get-docker.sh
@@ -347,7 +346,7 @@ function download_nginx_config {
             echo -e "${GREEN}下载失败，请检查！${NC}"
          fi       
 }
-                                                                           # 设置Nginx配置、未完待测试
+                                                                           # 设置Nginx配置
 function set_nginx_config {
        current_domain=$(search "server_name " ";" 1 $path_nginx true false)
        set "ssl_certificate " "/$current_domain" 1 $path_nginx true "SSL证书存放路径"
