@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.04
+Version=2.05
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -329,8 +329,10 @@ function install_Nginx {
         echo -e "${GREEN}包列表更新完成${NC}"
         apt-get install nginx -y
         echo -e "${GREEN}Nginx 安装完成，版本号为 $(nginx -v 2>&1)。${NC}"
-        echo -e "${GREEN}正在调整防火墙规则，放开80、443端口 $(nginx -v 2>&1)。${NC}"
+        echo -e "${GREEN}正在调整防火墙规则，放开80、443端口。${NC}"
         ufw allow http && ufw allow https 
+        echo -e "${GREEN}正在调整Nginx配置${NC}"
+        download_nginx_config
     fi
 }
 
@@ -339,11 +341,11 @@ function download_nginx_config {
     if choose "是否从Github下载更新Nginx配置文件？此举动将覆盖原配置文件" "已取消下载更新Nginx配置文件"; then return;fi
          echo -e "${GREEN}正在载入：${NC}"
          if wget $link_nginx -O $path_nginx; then 
-            echo -e "${GREEN}载入完毕${NC}"
+            echo -e "${GREEN}载入完毕，第一次使用请设置配置：${NC}"
+            set_nginx_config
          else
             echo -e "${GREEN}下载失败，请检查！${NC}"
-         fi   
-    
+         fi       
 }
                                                                            # 设置Nginx配置、未完待测试
 function set_nginx_config {
@@ -562,8 +564,7 @@ function one_step {
    install_Warp
    echo "请：
    1、在x-ui中自行申请SSL
-   2、上传Nginx配置
-   3、在x-ui面板中调整xray模板、面板设置，并创建节点"
+   2、在x-ui面板中调整xray模板、面板设置，并创建节点"
 }
 
 
