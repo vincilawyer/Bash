@@ -548,7 +548,7 @@ function install_CF_DNS {
 }
                                                                           # 修改CF_DNS配置的函数
 function set_CF_config {
-    if ! [ -e "/root/a.sh" ]; then
+    if ! [ -e "$path_cfdns" ]; then
         echo "CF_DNS脚本尚未安装，请先安装！"
         return
     fi
