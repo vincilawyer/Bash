@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.05
+Version=2.06
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -348,6 +348,9 @@ function download_nginx_config {
 }
                                                                            # 设置Nginx配置
 function set_nginx_config {
+       if ! [ -x "$(command -v nginx)" ]; then
+          echo -e "${RED}Nginx尚未安装，请先进行安装！${NC}"
+       fi
        current_domain=$(search "server_name " ";" 1 $path_nginx true false)
        set "ssl_certificate " "/$current_domain" 1 $path_nginx true "SSL证书存放路径"
        current_ssl_path=$(search "ssl_certificate " "$current_domain" 1 $path_nginx true false)
@@ -545,6 +548,10 @@ function install_CF_DNS {
 }
                                                                           # 修改CF_DNS配置的函数
 function set_CF_config {
+    if ! [ -e "/root/a.sh" ]; then
+        echo "CF_DNS脚本尚未安装，请先安装！"
+        return
+    fi
     set "email=\"" "\"" 1 $path_cfdns true "Cloudfare账户邮箱" "" true "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     set "domain=\"" "\"" 1 $path_cfdns true "Cloudfare绑定域名" "不加www等前缀，" true "^[a-z0-9]+(-[a-z0-9]+)*\.[a-z]{2,}$"
     set "api_key=\"" "\"" 1 $path_cfdns true "Cloudfare API密钥"
