@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.06
+Version=2.08
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -541,6 +541,14 @@ function install_Xui {
                                                                           # 安装CF_DNS的函数
 function install_CF_DNS {
     if choose "是否从Github下载更新CF_DNS脚本文件？此举动将覆盖原脚本文件。" "已取消下载更新CF_DNS脚本文件"; then return;fi
+    #安装jq
+    echo "正在安装依赖软件JQ..."
+    if [ -x "$(command -v jq)" ]; then
+        echo -e "${GREEN}JQ已安装，无需重复安装！${NC}"      
+    else
+        apt update
+        apt install jq -y
+    fi
     echo -e "${GREEN}正在下载CF_DNS脚本文件：${NC}"
     wget $link_cfdns -O $path_cfdns
     chmod +x $path_cfdns 
