@@ -42,8 +42,8 @@ fi
     echo "2. 修改或增加DNS记录"
     echo "3、www域名一键绑定本机ip（开启CDN）"
     read -p "请选择要进行的操作：" choice
-
-    if [ "$choice" == "1" ]; then
+    case $choice in
+      1)
         # 删除DNS记录
         clear
         all_dns_records
@@ -69,8 +69,8 @@ fi
             echo "已成功删除DNS记录: $record_name.$domain"
             get_all_dns_records
             all_dns_records
-        fi
-    elif [ "$choice" == "2" ]; then
+        fi;;
+     2)
         # 修改或增加DNS记录
         clear
         all_dns_records
@@ -121,8 +121,8 @@ fi
                 echo "已成功更新记录 $record_name.$domain"
                 get_all_dns_records
                 all_dns_records
-           fi
-    elif [ "$choice" == "3" ]; then
+           fi;;
+     3)
           record_name="www"
           record_content=$(ip addr | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v 127.0.0.1)
           proxy="true"
@@ -155,4 +155,5 @@ fi
                 get_all_dns_records
                 all_dns_records
            fi    
-    fi
+    *) echo "输入错误，已取消操作！";;
+  esac
