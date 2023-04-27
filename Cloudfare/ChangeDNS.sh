@@ -26,7 +26,7 @@ fi
          
   # 显示所有DNS解析记录、CDN代理状态和TTL
    function all_dns_records {
-       echo "——————————DNS解析编辑器v1————————————"
+       echo "——————————DNS解析编辑器v2————————————"
        echo "以下为$domain域名当前的所有DNS解析记录："
        echo
        echo "域名                      ip        CDN状态      TTL"
@@ -154,6 +154,6 @@ fi
                 echo "已成功更新记录 $record_name.$domain"
                 get_all_dns_records
                 all_dns_records
-           fi    
+           fi;;    
     *) echo "输入错误，已取消操作！";;
   esac
