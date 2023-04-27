@@ -67,6 +67,7 @@ fi
                  -H "Content-Type: application/json"
             echo
             echo "已成功删除DNS记录: $record_name.$domain"
+            echo
             get_all_dns_records
             all_dns_records
         fi;;
@@ -108,6 +109,7 @@ fi
                      --data '{"type":"A","name":"'"$record_name"'","content":"'"$record_content"'","proxied":'"$proxy"'}'
                 echo
                 echo "已成功添加记录 $record_name.$domain"
+                echo
                 get_all_dns_records
                 all_dns_records
             else
@@ -119,6 +121,7 @@ fi
                      --data '{"type":"A","name":"'"$record_name"'","content":"'"$record_content"'","proxied":'"$proxy"'}'
                 echo
                 echo "已成功更新记录 $record_name.$domain"
+                echo
                 get_all_dns_records
                 all_dns_records
            fi;;
@@ -141,6 +144,7 @@ fi
                      --data '{"type":"A","name":"'"$record_name"'","content":"'"$record_content"'","proxied":'"$proxy"'}'
                 echo
                 echo "已成功添加记录 $record_name.$domain"
+                echo
                 get_all_dns_records
                 all_dns_records
             else
@@ -152,6 +156,7 @@ fi
                      --data '{"type":"A","name":"'"$record_name"'","content":"'"$record_content"'","proxied":'"$proxy"'}'
                 echo
                 echo "已成功更新记录 $record_name.$domain"
+                echo
                 get_all_dns_records
                 all_dns_records
            fi;;    
