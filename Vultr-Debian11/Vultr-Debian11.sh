@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.08
+Version=2.09
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -589,6 +589,10 @@ function one_step {
    1、在x-ui中自行申请SSL
    2、在x-ui面板中调整xray模板、面板设置，并创建节点"
 }
+function restart {
+   echo "正在重启$1..."
+   systemctl restart "$1"
+}
 
 
                                                                           # 定义倒计时
@@ -706,6 +710,7 @@ function Option {
     "  4、使用Certbot申请SSL证书"
     "  5、从github下载更新配置文件"
     "  6、设置Nginx配置（第一次使用需设置）"
+    "  7、重启Nginx"
     "  0、退出"   
     )
     Xui_menu=(
@@ -776,7 +781,7 @@ function main {
                  #一级菜单5 Docker选项
                  5) Option ${main_menu[$(($get_option - 1))]} "${Docker_menu[@]}"
                     case $option in
-                           2 | 3)
+                           2)
                                case $option in
                                    2)install_Docker;;
                                esac
@@ -789,13 +794,14 @@ function main {
                   #一级菜单6 Nginx选项
                  6) Option ${main_menu[$(($get_option - 1))]} "${Nginx_menu[@]}"
                     case $option in
-                           2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10)
+                           2 | 3 | 4 | 5 | 6 | 7)
                                case $option in
                                    2)install_Nginx_PM;;
                                    3)install_Nginx;;
                                    4)apply_ssl_certificate;;
                                    5)download_nginx_config;;
                                    6)set_nginx_config;;
+                                   7)restart "nginx";;
                                esac
                                wait;;
                           1)break;;
@@ -805,7 +811,7 @@ function main {
                   #一级菜单7 Warp选项
                   7) Option ${main_menu[$(($get_option - 1))]} "${Warp_menu[@]}" 
                         case $option in
-                           2 | 3 | 4)
+                           2)
                                case $option in
                                    2)install_Warp;;
                                esac
@@ -817,7 +823,7 @@ function main {
                   #一级菜单8 Xui选项
                   8)Option ${main_menu[$(($get_option - 1))]} "${Xui_menu[@]}" 
                         case $option in
-                            2 | 3 | 4 | 5 | 6 | 7)
+                            2 | 3)
                                case $option in
                                    2)install_Xui;;
                                    3)x-ui;;
