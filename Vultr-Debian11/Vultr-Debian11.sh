@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.15
+Version=2.16
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -71,7 +71,7 @@ function search {
   local count=0             # 匹配计数器
  
   found_text=$(awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v num="$n" '{
-      if ($exact_match == "true") {
+      if (exact == "true") {
         if (match($0, start".*")) {  # 精确匹配开始文本
               split(substr($0, RSTART + length(start)), a, end);  # 按 end_string 将开始文本之后的内容分割为两部分
               if (++count == num) {
@@ -191,6 +191,7 @@ local regex2="$9"         #正则表达式
          elif [[ $text2 =~ $regex2 ]]; then
              if $regex1; then
                 replace  "$start_string" "$end_string" "$n" "$text2" "$file" "$exact_match"
+                modify "$start_string" "$end_string" "$n" "$file" "$exact_match" false
                 echo -e "${GREEN}$mean已修改为$text2${NC}"
                 return 0
              else
@@ -201,6 +202,7 @@ local regex2="$9"         #正则表达式
                 echo -e "${RED}$mean输入错误，请重新输入${NC}"
              else
                 replace  "$start_string" "$end_string" "$n" "$text2" "$file" "$exact_match"
+                modify "$start_string" "$end_string" "$n" "$file" "$exact_match" false
                 echo -e "${GREEN}$mean已修改为$text2${NC}"
                 return 0
              fi
@@ -209,7 +211,8 @@ local regex2="$9"         #正则表达式
 }
 
                                                                         #修改文本所在行注释符函数
-function modify{
+
+function modify {
   local start_string="$1"   # 开始文本字符串
   local end_string="$2"     # 结束文本字符串
   local n="${3:-1}"         # 要输出的匹配结果的索引
@@ -221,7 +224,7 @@ function modify{
   
  
   line_num=$(awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v num="$n" '{
-      if ($exact_match == "true") {
+      if (exact == "true") {
           if (match($0, start".*"end)) {  # 精确匹配开始和结束文本
               if (++count == num) {  # 输出第 n 个匹配结果的行号
                   print NR;
@@ -242,14 +245,13 @@ function modify{
           }
       }
   }' "$file")
-  
-        local line=$(sed "${line_num}q;d" "${file}")
+  echo "$line_num"
+        local line=$(sed "${line_num}q;d" "$file")
         if [[ "${add_comment}" == true ]]; then
-            sed -i "${line_num}s/^\(\s*\)/#\1/" "${file}"
+            sed -i "${line_num}s/^\(\s*\)/#\1/" "$file"
         else
-            sed -i "${line_num}s/^#\{0,\}\(\s*\)#*\s*/\1/" "${file}"
+            sed -i "${line_num}s/^#\{0,\}\(\s*\)#*\s*/\1/" "$file"
         fi
-    fi
 }
 
 
