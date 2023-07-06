@@ -32,6 +32,8 @@ text2=0
   path_ssh="/etc/ssh/sshd_config"
 #nginx配置文件路径 (查看配置：nano /etc/nginx/conf.d/default.conf)                      
   path_nginx="/etc/nginx/conf.d/default.conf" 
+#tor路径 (查看脚本：nano /etc/tor/torrc)            
+  path_tor="/etc/tor/torrc"
 #cfdns脚本路径 (查看脚本：nano usr/local/bin/cfdns)            
   path_cfdns="/usr/local/bin/cfdns"
 
@@ -546,6 +548,20 @@ function install_Xui {
         bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
    fi
 }
+                                                                          # 安装Tor的函数
+function install_Tor {
+   if [ -x "$(command -v tor)" ]; then
+        echo -e "${GREEN}X-ui面板已安装，无需重复安装！${NC}"      
+   else
+        echo -e "${GREEN}正在更新包列表${NC}"
+        sudo apt update
+        echo -e "${GREEN}开始安装Tor${NC}"
+        apt install tor -y
+   fi
+}
+funtion set_tor_config {
+   set "SOCKSPort " " " 1 $path_tor false "Tor监听端口" "0-65535，" true "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"
+}
 
                                                                           # 安装CF_DNS的函数
 function install_CF_DNS {
@@ -676,16 +692,17 @@ function Option {
 
 # 定义菜单选项
     main_menu=(
-    "  1、修改SSH登录端口和登录密码"
-    "  2、UFW防火墙管理"
-    "  3、强制更新脚本
+    "  1、 修改SSH登录端口和登录密码"
+    "  2、 UFW防火墙管理"
+    "  3、 强制更新脚本
 —————————————————————————————————————"
-    "  4、一键搭建科学上网服务端"
-    "  5、Docker及Compose管理"
-    "  6、Nginx服务"
-    "  7、Warp服务"
-    "  8、X-ui服务"
-    "  9、CF-DNS修改脚本" 
+    "  4、 一键搭建科学上网服务端"
+    "  5、 Docker及Compose管理"
+    "  6、 Nginx服务"
+    "  7、 Warp服务"
+    "  8、 X-ui服务"
+    "  9、 Tor服务"
+    "  10、CF-DNS脚本" 
 "—————————————————————————————————————  
   0、退出"
     )
@@ -724,10 +741,17 @@ function Option {
     "  2、安装Warp"
     "  0、退出"
     )
+    Tor_menu=(
+    "  1、返回上一级"
+    "  2、安装Tor"
+    "  3、设置Tor配置（第一次使用需设置）"
+    "  4、重启Tor"
+    "  0、退出"
+    )
     Cf_DNS_menu=(
     "  1、返回上一级"
-    "  2、下载\更新CF_DNS脚本"
-    "  3、启动更新脚本面板"
+    "  2、启动Cf_DNS脚本面板"
+    "  3、下载\更新CF_DNS脚本"
     "  4、设置脚本配置（第一次使用需设置）"
     "  0、退出"
     )
@@ -757,7 +781,7 @@ function main {
             wait;;
             
      #一级菜单25678选项
-       2 | 5 | 6 | 7 | 8 | 9)
+       2 | 5 | 6 | 7 | 8 | 9 | 10)
        
             get_option=$option
             
@@ -831,15 +855,29 @@ function main {
                                wait;;
                            1)break;;
                            *)error_option;;
-                        esac;;        
+                        esac;;     
                         
-                   #一级菜单9 cfdns选项
-                  9)Option ${main_menu[$(($get_option - 1))]} "${Cf_DNS_menu[@]}" 
+                  #一级菜单9 Tor选项
+                  9)Option ${main_menu[$(($get_option - 1))]} "${Tor_menu[@]}" 
                         case $option in
                             2 | 3 | 4)
                                case $option in
-                                   2)install_CF_DNS;;
-                                   3)cfdns;;
+                                   2)install_Tor;;
+                                   3)set_tor_config;;
+                                   4)restart "tor";;
+                               esac
+                               wait;;
+                           1)break;;
+                           *)error_option;;
+                        esac;;  
+                        
+                   #一级菜单10 cfdns选项
+                  10)Option ${main_menu[$(($get_option - 1))]} "${Cf_DNS_menu[@]}" 
+                        case $option in
+                            2 | 3 | 4)
+                               case $option in
+                                   2)cfdns;;
+                                   3)install_CF_DNS;;
                                    4)set_CF_config;;
                                esac
                                wait;;
