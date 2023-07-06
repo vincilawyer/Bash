@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.11
+Version=2.12
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -59,6 +59,7 @@ function update {
 update $Version
 
                                                                           #查询文本内容函数
+
 function search {
   local start_string="$1"   # 开始文本字符串
   local end_string="$2"     # 结束文本字符串
@@ -68,20 +69,24 @@ function search {
   local comment="${6:-True}"   # 是否显示注释行
   local found_text=""       # 存储找到的文本
   local count=0             # 匹配计数器
-
+ 
   found_text=$(awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v num="$n" '{
       if (exact == "true") {
-          if (match($0, start".*"end)) {  # 精确匹配开始和结束文本
-              if (++count == num) {  # 输出第 n 个匹配结果
-                  print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
+        if (match($0, start".*")) {  # 精确匹配开始文本
+              split(substr($0, RSTART + length(start)), a, end);  # 按 end_string 将开始文本之后的内容分割为两部分
+              if (++count == num) {
+                  print a[1] ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
                   exit;
               }
           }
       } else {
           if (match($0, start".*"end)) {  # 匹配开始和结束文本
-              if (++count == num) {  # 输出第 n 个匹配结果
-                  print substr($0, RSTART + length(start), RLENGTH - length(start) - length(end)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
-                  exit;
+              if (match($0, start".*")) {  # 
+                 split(substr($0, RSTART + length(start)), a, end);  # 按 end_string 将开始文本之后的内容分割为两部分
+                 if (++count == num) {  # 输出第 n 个匹配结果
+                 print a[1] ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
+                 exit;
+                 }
               }
           } else if (match($0, start)) {  # 只匹配开始文本
               if (++count == num) {  # 输出第 n 个匹配结果
