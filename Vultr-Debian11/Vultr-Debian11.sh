@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.16
+Version=2.17
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -103,58 +103,64 @@ function search {
                                                                           #改变文本内容函数
 
 function replace() {
-  local start_string="$1"   # 开始文本字符串
-  local end_string="$2"     # 结束文本字符串
-  local n="${3:-1}"         # 要输出的匹配结果的索引
-  local new_text="$4"       # 要替换的新文本内容
-  local file="$5"           # 要搜索的文件名
-  local exact_match="$6"    # 是否精确匹配
-  local temp_file="$(mktemp)"     # 存储找到的文本
+  local start_string="$1"
+  local end_string="$2"
+  local n="${3:-1}"
+  local new_text="$4"
+  local file="$5"
+  local exact_match="$6"
+  local temp_file="$(mktemp)"
   if [[ "$exact_match" == "false" ]]; then
     awk -v start="$start_string" -v end="$end_string" -v new="$new_text" -v num="$n" '{
         if (match($0, start".*"end)) {
             if (++count == num) {
-                rest = substr($0, RSTART + length(start));
-                split(rest, parts, end);
-                parts[1] = new;
-                for (i=2; i<=length(parts); ++i) {
-                    parts[1] = parts[1] end parts[i];
+                split($0, a, start);
+                split(a[2], b, end);
+                line = a[1] start new b[2];
+                if (match(line, /^[[:space:]]*#/)) {
+                    sub(/^[[:space:]]*#/, "", line);
                 }
-                print substr($0, 1, RSTART-1) start parts[1];
+                print line;
             } else {
                 print $0;
             }
         } else if (match($0, start)) {
             if (++count == num) {
-                print substr($0, 1, RSTART + length(start) - 1) start new;
+                split($0, a, start);
+                line = a[1] start new;
+                if (match(line, /^[[:space:]]*#/)) {
+                    sub(/^[[:space:]]*#/, "", line);
+                }
+                print line;
             } else {
-                print $0;
+              print $0;
             }
         } else {
-            print $0;
+          print $0;
         }
     }' "$file" > "$temp_file"
   else
     awk -v start="$start_string" -v end="$end_string" -v new="$new_text" -v num="$n" '{
-        if (match($0, start".*"end)) {
+        if (match($0, start".*")) {
             if (++count == num) {
-                rest = substr($0, RSTART + length(start));
-                split(rest, parts, end);
-                parts[1] = new;
-                for (i=2; i<=length(parts); ++i) {
-                    parts[1] = parts[1] end parts[i];
+                split($0, a, start);
+                split(a[2], b, end);
+                line = a[1] start new b[2];
+                if (match(line, /^[[:space:]]*#/)) {
+                    sub(/^[[:space:]]*#/, "", line);
                 }
-                print substr($0, 1, RSTART-1) start parts[1];
+                print line;
             } else {
                 print $0;
             }
         } else {
-            print $0;
+          print $0;
         }
     }' "$file" > "$temp_file"
   fi
   mv "$temp_file" "$file"
 }
+
 
   
 
@@ -245,7 +251,6 @@ function modify {
           }
       }
   }' "$file")
-  echo "$line_num"
         local line=$(sed "${line_num}q;d" "$file")
         if [[ "${add_comment}" == true ]]; then
             sed -i "${line_num}s/^\(\s*\)/#\1/" "$file"
