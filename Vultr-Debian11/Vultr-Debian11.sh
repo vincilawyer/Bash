@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.13
+Version=2.15
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -71,7 +71,7 @@ function search {
   local count=0             # 匹配计数器
  
   found_text=$(awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v num="$n" '{
-      if (exact == "true") {
+      if ($exact_match == "true") {
         if (match($0, start".*")) {  # 精确匹配开始文本
               split(substr($0, RSTART + length(start)), a, end);  # 按 end_string 将开始文本之后的内容分割为两部分
               if (++count == num) {
@@ -111,57 +111,51 @@ function replace() {
   local exact_match="$6"    # 是否精确匹配
   local temp_file="$(mktemp)"     # 存储找到的文本
   if [[ "$exact_match" == "false" ]]; then
-  awk -v start="$start_string" -v end="$end_string" -v new="$new_text" -v num="$n" '{
-      if (match($0, start".*"end)) {
-          if (++count == num) {
-              split(substr($0, RSTART + length(start)), a, end);
-              line = substr($0, 1, RSTART + length(start) - 1) new a[2];
-
-              # 判断是否有注释符
-              if (match(line, /^[[:space:]]*#/)) {
-                 # 移除注释符
-                  sub(/^[[:space:]]*#/, "", line);
-              }
-              print line;
-          } else {
-              print $0;
-          }
-      } else if (match($0, start)) {
-          if (++count == num) {
-              line = substr($0, 1, RSTART + length(start) - 1) new;
-              # 判断是否有注释符
-              if (match(line, /^[[:space:]]*#/)) {
-                  # 移除注释符
-                  sub(/^[[:space:]]*#/, "", line);
-               }
-              print line;
-           } else {
+    awk -v start="$start_string" -v end="$end_string" -v new="$new_text" -v num="$n" '{
+        if (match($0, start".*"end)) {
+            if (++count == num) {
+                rest = substr($0, RSTART + length(start));
+                split(rest, parts, end);
+                parts[1] = new;
+                for (i=2; i<=length(parts); ++i) {
+                    parts[1] = parts[1] end parts[i];
+                }
+                print substr($0, 1, RSTART-1) start parts[1];
+            } else {
+                print $0;
+            }
+        } else if (match($0, start)) {
+            if (++count == num) {
+                print substr($0, 1, RSTART + length(start) - 1) start new;
+            } else {
+                print $0;
+            }
+        } else {
             print $0;
-           }
-      } else {
-        print $0;
-      }
-      }' "$file" > "$temp_file"
-else
-   awk -v start="$start_string" -v end="$end_string" -v new="$new_text" -v num="$n" '{
-      if (match($0, start".*"end)) {
-           if (++count == num) {
-              split(substr($0, RSTART + length(start)), a, end);
-              line = substr($0, 1, RSTART + length(start) - 1) new a[2];
-              if (match(line, /^[[:space:]]*#/)) {
-                   sub(/^[[:space:]]*#/, "", line);
-              }
-              print line;
-           } else {
-              print $0;
-           }
-       } else {
+        }
+    }' "$file" > "$temp_file"
+  else
+    awk -v start="$start_string" -v end="$end_string" -v new="$new_text" -v num="$n" '{
+        if (match($0, start".*"end)) {
+            if (++count == num) {
+                rest = substr($0, RSTART + length(start));
+                split(rest, parts, end);
+                parts[1] = new;
+                for (i=2; i<=length(parts); ++i) {
+                    parts[1] = parts[1] end parts[i];
+                }
+                print substr($0, 1, RSTART-1) start parts[1];
+            } else {
+                print $0;
+            }
+        } else {
             print $0;
-       }
-       }' "$file" > "$temp_file"
-fi
+        }
+    }' "$file" > "$temp_file"
+  fi
   mv "$temp_file" "$file"
 }
+
   
 
                                                                           #查询并修改文本函数
@@ -191,7 +185,7 @@ local regex2="$9"         #正则表达式
              echo -e "${RED}已跳过$mean设置${NC}"
              return 1
          elif [[ $text2 == "#" ]]; then
-             modify "$start_string" "$end_string" true "$file"
+             modify "$start_string" "$end_string" "$n" "$file" "$exact_match" true
              echo -e "${GREEN}已将$mean参数设为注释行${NC}"
              return 1
          elif [[ $text2 =~ $regex2 ]]; then
@@ -215,23 +209,40 @@ local regex2="$9"         #正则表达式
 }
 
                                                                         #修改文本所在行注释符函数
-
-function modify() {
-    # 查找两个字符串在指定文件中所在的行，并添加或删除行首注释符
-    local str1=$1
-    local str2=$2
-    local add_comment=$3    # $3：布尔参数，true表示添加注释符，false表示删除注释符
-    local file=$4           # $4：指定文件
-
-    # 先找到同时包含两个字符串的行
-    local line_num=$(grep -n "${str1}" "${file}" | grep "${str2}" | head -1 | cut -d ":" -f 1)
-
-    # 如果找不到，则只使用第一个字符串匹配到的行
-    #if [[ -z "${line_num}" ]]; then
-    #    line_num=$(grep -n "${str1}" "${file}" | head -1 | cut -d ":" -f 1)
-    #fi
-
-    if [[ -n "${line_num}" ]]; then
+function modify{
+  local start_string="$1"   # 开始文本字符串
+  local end_string="$2"     # 结束文本字符串
+  local n="${3:-1}"         # 要输出的匹配结果的索引
+  local file="$4"           # 要搜索的文件名
+  local exact_match="$5"    # 是否精确匹配
+  local add_comment="$6"    # 布尔参数，true表示添加注释符，false表示删除注释符
+  local count=0             # 匹配计数器
+  local line_num=0          # 行号
+  
+ 
+  line_num=$(awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v num="$n" '{
+      if ($exact_match == "true") {
+          if (match($0, start".*"end)) {  # 精确匹配开始和结束文本
+              if (++count == num) {  # 输出第 n 个匹配结果的行号
+                  print NR;
+                  exit;
+              }
+          }
+      } else {
+          if (match($0, start".*"end)) {  # 匹配开始和结束文本
+              if (++count == num) {  # 输出第 n 个匹配结果的行号
+                  print NR;
+                  exit;
+              }
+          } else if (match($0, start)) {  # 只匹配开始文本
+              if (++count == num) {  # 输出第 n 个匹配结果的行号
+                  print NR;
+                  exit;
+              }
+          }
+      }
+  }' "$file")
+  
         local line=$(sed "${line_num}q;d" "${file}")
         if [[ "${add_comment}" == true ]]; then
             sed -i "${line_num}s/^\(\s*\)/#\1/" "${file}"
@@ -558,7 +569,7 @@ function install_Xui {
                                                                           # 安装Tor的函数
 function install_Tor {
    if [ -x "$(command -v tor)" ]; then
-        echo -e "${GREEN}X-ui面板已安装，无需重复安装！${NC}"      
+        echo -e "${GREEN}Tor已安装，无需重复安装！${NC}"      
    else
         echo -e "${GREEN}正在更新包列表${NC}"
         sudo apt update
@@ -567,7 +578,7 @@ function install_Tor {
    fi
 }
 function set_tor_config {
-   set "SOCKSPort " " " 1 $path_tor false "Tor监听端口" "0-65535，" true "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"
+   set "SocksPort " " " 2 $path_tor false "Tor监听端口" "0-65535，" true "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"
 }
 
                                                                           # 安装CF_DNS的函数
