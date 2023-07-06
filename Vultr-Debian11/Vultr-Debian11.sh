@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.12
+Version=2.13
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -114,8 +114,9 @@ function replace() {
   awk -v start="$start_string" -v end="$end_string" -v new="$new_text" -v num="$n" '{
       if (match($0, start".*"end)) {
           if (++count == num) {
-               # 匹配行，替换内容
-              line = substr($0, 1, RSTART + length(start) - 1) new substr($0, RSTART + RLENGTH - length(end));
+              split(substr($0, RSTART + length(start)), a, end);
+              line = substr($0, 1, RSTART + length(start) - 1) new a[2];
+
               # 判断是否有注释符
               if (match(line, /^[[:space:]]*#/)) {
                  # 移除注释符
@@ -145,7 +146,8 @@ else
    awk -v start="$start_string" -v end="$end_string" -v new="$new_text" -v num="$n" '{
       if (match($0, start".*"end)) {
            if (++count == num) {
-              line = substr($0, 1, RSTART + length(start) - 1) new substr($0, RSTART + RLENGTH - length(end));
+              split(substr($0, RSTART + length(start)), a, end);
+              line = substr($0, 1, RSTART + length(start) - 1) new a[2];
               if (match(line, /^[[:space:]]*#/)) {
                    sub(/^[[:space:]]*#/, "", line);
               }
