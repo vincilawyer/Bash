@@ -584,8 +584,16 @@ function install_Tor {
         apt install tor -y
    fi
 }
+                                                                           # 设置Tor配置
 function set_tor_config {
    set "SocksPort " " " 2 $path_tor false "Tor监听端口" "0-65535，" true "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"
+}
+                                                                           # 获取Tor ip
+function ip_tor {
+  text1=$(search "SocksPort " " " 2 $path_tor false false)
+  echo "当前Tor代理IP为："
+  curl --socks5-hostname localhost:$text1 http://ip-api.com/line/?fields=status,country,regionName,city,query
+  echo
 }
 
                                                                           # 安装CF_DNS的函数
@@ -771,6 +779,7 @@ function Option {
     "  2、安装Tor"
     "  3、设置Tor配置（第一次使用需设置）"
     "  4、重启Tor"
+    "  5、IP信息"
     "  0、退出"
     )
     Cf_DNS_menu=(
@@ -885,11 +894,13 @@ function main {
                   #一级菜单9 Tor选项
                   9)Option ${main_menu[$(($get_option - 1))]} "${Tor_menu[@]}" 
                         case $option in
-                            2 | 3 | 4)
+                            2 | 3 | 4 | 5)
                                case $option in
                                    2)install_Tor;;
                                    3)set_tor_config;;
-                                   4)restart "tor";;
+                                   4)restart "tor"
+                                   ip_tor;;
+                                   5)ip_tor;;
                                esac
                                wait;;
                            1)break;;
