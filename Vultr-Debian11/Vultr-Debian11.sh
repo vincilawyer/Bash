@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.10
+Version=2.11
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -559,7 +559,7 @@ function install_Tor {
         apt install tor -y
    fi
 }
-funtion set_tor_config {
+function set_tor_config {
    set "SOCKSPort " " " 1 $path_tor false "Tor监听端口" "0-65535，" true "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"
 }
 
