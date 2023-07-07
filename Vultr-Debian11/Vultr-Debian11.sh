@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.18
+Version=2.19
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -610,12 +610,30 @@ function install_Frp {
         wget https://github.com/fatedier/frp/releases/download/$version/$file_name
         # 解压下载的文件
         tar -xvzf $file_name
-        #删除压缩包
         rm $file_name
-        #更改文件名
-        mv $(echo $file_name | sed 's/.tar.gz//')  Frp
+        # 把frps加入systemd
+        mv $(echo $file_name | sed 's/.tar.gz//')/frps /usr/bin/
+        mkdir -p /etc/frp/
+        mv $(echo $file_name | sed 's/.tar.gz//')/frps.ini /etc/frp/
+        rm -r $(echo $file_name | sed 's/.tar.gz//')
+        cat > /usr/lib/systemd/system/frps.service <<EOF
+        [Unit]
+        Description=Frp Server Service
+        After=network.target
+        
+        [Service]
+        Type=simple
+        User=nobody
+        Restart=on-failure
+        RestartSec=5s
+        ExecStart=/usr/bin/frps -c /etc/frp/frps.ini
+
+        [Install]
+        WantedBy=multi-user.target
+        EOF
    fi
 }
+function install_Frp 
 
                                                                           # 安装CF_DNS的函数
 function install_CF_DNS {
@@ -757,6 +775,7 @@ function Option {
     "  8、X-ui服务"
     "  9、Tor服务"
     "  10、CF-DNS脚本" 
+    "  11、启动Chatgpt"
 "—————————————————————————————————————  
   0、退出"
     )
@@ -826,12 +845,14 @@ function main {
     case $option in
     
     #一级菜单134选项
-        1 | 3 | 4)
+        1 | 3 | 4 | 11)
             case $option in
                 1) change_ssh_port
                    change_login_password;;
                 3) update "force";;
-                4) one_step 
+                4) one_step ;;
+                11) cd ~/ChatGPT-Next-Web
+                    pm2 start chat.config.js ;;
             esac
             wait;;
             
@@ -839,8 +860,8 @@ function main {
        2 | 5 | 6 | 7 | 8 | 9 | 10)
        
             get_option=$option
-            
-            while true; do
+
+                        while true; do
                case $get_option in
                
                  #一级菜单2 防火墙选项
