@@ -912,8 +912,7 @@ function main {
        2 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12)
        
             get_option=$option
-
-                        while true; do
+            while true; do
                case $get_option in
                
                  #一级菜单2 防火墙选项
@@ -1035,7 +1034,7 @@ function main {
                         case $option in
                             2 | 3 | 4)
                                case $option in
-                                   2)if choose "是否启动Chatgpt？" "已取消启动Chatgpt"; then return;fi
+                                   2)if choose "是否启动Chatgpt？" "已取消启动Chatgpt"; then continue;fi
                                      cd ~/ChatGPT-Next-Web
                                      pm2 start chat.config.js;;
                                    3)pm2 list;;
