@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.22
+Version=2.23
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -118,6 +118,11 @@ function replace() {
   local file="$5"
   local exact_match="$6"
   local temp_file="$(mktemp)"
+  
+  # 将分号转义
+  start_string=$(echo "$start_string" | awk '{gsub(";","\\;"); print}')
+  end_string=$(echo "$end_string" | awk '{gsub(";","\\;"); print}')
+  
   if [[ "$exact_match" == "false" ]]; then
     awk -v start="$start_string" -v end="$end_string" -v new="$new_text" -v num="$n" '{
         if (match($0, start".*"end)) {
@@ -166,8 +171,12 @@ function replace() {
         }
     }' "$file" > "$temp_file"
   fi
-  mv "$temp_file" "$file"
+
+  # 恢复原来的字符串，即将转义的分号替换回普通分号
+  awk '{gsub("\\\\;", ";"); print}' "$temp_file" > "$file"
+  rm "$temp_file"
 }
+
 
 
   
