@@ -599,8 +599,8 @@ function ip_tor {
   
                                                                           # 安装Frp的函数
 function install_Frp {
-   if [ -n "$(find / -name frpc.ini)" ]; then 
-        echo -e "${GREEN}Frp已安装，无需重复安装！${NC}"      
+   if [ -x "$(command -v frps)" ]; then 
+        echo -e "${GREEN}Frp已安装，无需重复安装！${NC}"   
    else
         # 获取最新的 frp 版本
         version=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | grep 'tag_name' | cut -d\" -f4)
@@ -611,6 +611,7 @@ function install_Frp {
         # 解压下载的文件
         tar -xvzf $file_name
         rm $file_name
+        
         # 把frps加入systemd
         mv $(echo $file_name | sed 's/.tar.gz//')/frps /usr/bin/
         mkdir -p /etc/frp/
@@ -633,7 +634,7 @@ function install_Frp {
         EOF
    fi
 }
-function install_Frp 
+
 
                                                                           # 安装CF_DNS的函数
 function install_CF_DNS {
