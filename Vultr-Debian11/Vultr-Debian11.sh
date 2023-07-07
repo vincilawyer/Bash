@@ -116,60 +116,56 @@ function replace() {
   local file="$5"
   local exact_match="$6"
   local temp_file="$(mktemp)"
-  if [[ "$exact_match" == "false" ]]; then
-    awk -v start="$start_string" -v end="$end_string" -v new="$new_text" -v num="$n" '{
-        if (match($0, start".*"end)) {
-            if (++count == num) {
-                split($0, a, start);
-                split(a[2], b, end);
-                line = a[1] start new b[2];
-                if (match(line, /^[[:space:]]*#/)) {
-                    sub(/^[[:space:]]*#/, "", line);
-                }
-                print line;
-            } else {
-                print $0;
-            }
-        } else if (match($0, start)) {
-            if (++count == num) {
-                split($0, a, start);
-                line = a[1] start new;
-                if (match(line, /^[[:space:]]*#/)) {
-                    sub(/^[[:space:]]*#/, "", line);
-                }
-                print line;
-            } else {
-              print $0;
-            }
-        } else {
-          print $0;
-        }
-    }' "$file" > "$temp_file"
-  else
-    awk -v start="$start_string" -v end="$end_string" -v new="$new_text" -v num="$n" '{
-        if (match($0, start".*")) {
-            if (++count == num) {
-                split($0, a, start);
-                split(a[2], b, end);
-                line = a[1] start new b[2];
-                if (match(line, /^[[:space:]]*#/)) {
-                    sub(/^[[:space:]]*#/, "", line);
-                }
-                print line;
-            } else {
-                print $0;
-            }
-        } else {
-          print $0;
-        }
-    }' "$file" > "$temp_file"
-  fi
-  mv "$temp_file" "$file"
-}
-
-
-
   
+    awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v new="$new_text" -v num="$n" '{
+        if (exact == "true") {
+             startPos = index($0, start);
+             if (startPos > 0) {
+                 endPos = index(substr($0, startPos + length(start)), end);
+                  if (endPos > 0) {
+                      if (++count == num) {
+                          starttext = substr($0, 1 , startPos - 1 + length(start) );
+                          endtext = substr($0, startPos + endPos - 1 );
+                          line = starttext new endtext;
+                          print line;
+                      } else {
+                       print $0;
+                      }
+                  } else {
+                       print $0;
+                  }
+             } else {
+                 print $0;
+             }
+        } else {
+             startPos = index($0, start);
+             if (startPos > 0) {
+                 endPos = index(substr($0, startPos + length(start)), end);
+                  if (endPos > 0) {
+                      if (++count == num) {
+                          starttext = substr($0, 1 , startPos - 1 + length(start) );
+                          endtext = substr($0, startPos + endPos - 1 );
+                          line = starttext new endtext;
+                          print line;
+                      } else {
+                       print $0;
+                      }
+                  } else {
+                      if (++count == num) {
+                          starttext = substr($0, 1 , startPos - 1 + length(start) );
+                          line = starttext new;
+                          print line;
+                      } else {
+                       print $0;
+                      }
+                  }
+             } else {
+                 print $0;
+             }        
+        }         
+    }' "$file" > "$temp_file"
+    mv "$temp_file" "$file"
+}  
 
                                                                           #查询并修改文本函数
 
@@ -258,8 +254,10 @@ function modify {
                       exit;
                   }
               } else {
-                  print NR;
-                  exit;
+                  if (++count == num) {
+                      print NR;
+                      exit;
+                  }
               }
           }
       }    
