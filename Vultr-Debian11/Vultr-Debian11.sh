@@ -741,7 +741,7 @@ function choose {
                                                                          # 定义选择功能错误函数
 function error_option {
        echo -e "${RED}输入不正确，请重新输入${NC}"
-       countdown 2
+       countdown 1
 }
 
  
@@ -1022,7 +1022,7 @@ function main {
                         case $option in
                             2 | 3 | 4)
                                case $option in
-                                   2)if choose "是否启动Chatgpt" "已取消启动Chatgpt"; then return;fi 
+                                   2)if choose "是否启动Chatgpt" "已取消启动Chatgpt"; then return;fi ;;
                                      cd ~/ChatGPT-Next-Web ;;
                                      pm2 start chat.config.js ;;
                                    3)pm2 list;;
