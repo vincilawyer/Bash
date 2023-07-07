@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.19
+Version=2.2
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -618,20 +618,20 @@ function install_Frp {
         mv $(echo $file_name | sed 's/.tar.gz//')/frps.ini /etc/frp/
         rm -r $(echo $file_name | sed 's/.tar.gz//')
         cat > /usr/lib/systemd/system/frps.service <<EOF
-        [Unit]
-        Description=Frp Server Service
-        After=network.target
-        
-        [Service]
-        Type=simple
-        User=nobody
-        Restart=on-failure
-        RestartSec=5s
-        ExecStart=/usr/bin/frps -c /etc/frp/frps.ini
+[Unit]
+Description=Frp Server Service
+After=network.target
 
-        [Install]
-        WantedBy=multi-user.target
-        EOF
+[Service]
+Type=simple
+User=nobody
+Restart=on-failure
+RestartSec=5s
+ExecStart=/usr/bin/frps -c /etc/frp/frps.ini
+
+[Install]
+WantedBy=multi-user.target
+EOF
    fi
 }
 
