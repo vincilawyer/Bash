@@ -1038,7 +1038,8 @@ function main {
                                      cd ~/ChatGPT-Next-Web
                                      pm2 start chat.config.js;;
                                    3)pm2 list;;
-                                   4)chatgpt;;
+                                   4)cd ~/ChatGPT-Next-Web
+                                     chatgpt;;
                                esac
                                wait;;
                            1)break;;
