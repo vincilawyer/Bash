@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.29
+Version=2.30
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -647,6 +647,7 @@ EOF
    fi
 }
 function reset_Frp {
+if choose "是否重置Frp配置" "已取消重置！"; then return;fi 
 cat > $path_frp/frps.ini <<EOF
 [common]
 # 服务端监听端口
@@ -801,7 +802,7 @@ function Option {
     "  9、Tor服务"
     "  10、Frp服务"
     "  11、CF-DNS脚本" 
-    "  12、启动Chatgpt"
+    "  12、Chatgpt服务"
 "—————————————————————————————————————  
   0、退出"
     )
@@ -863,6 +864,13 @@ function Option {
     "  4、设置脚本配置（第一次使用需设置）"
     "  0、退出"
     )
+    Chatgpt_menu=(
+    "  1、返回上一级"
+    "  2、启动Chatgpt"
+    "  3、查看Chatgpt运行状态"
+    "  4、Chatgpt更新脚本"
+    "  0、退出"
+    )
 
 
                                                                            # 主函数
@@ -879,19 +887,17 @@ function main {
     case $option in
     
     #一级菜单134选项
-        1 | 3 | 4 | 12)
+        1 | 3 | 4)
             case $option in
                 1) change_ssh_port
                    change_login_password;;
                 3) update "force";;
                 4) one_step ;;
-                12) cd ~/ChatGPT-Next-Web
-                    pm2 start chat.config.js ;;
             esac
             wait;;
             
-     #一级菜单25678选项
-       2 | 5 | 6 | 7 | 8 | 9 | 10 | 11)
+     #一级菜单2、5、6至12选项
+       2 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12)
        
             get_option=$option
 
@@ -1010,7 +1016,22 @@ function main {
                                wait;;
                            1)break;;
                            *)error_option;;
-                        esac;;                                
+                        esac;;                           
+                  #一级菜单12 Chatgpt选项
+                  12)Option ${main_menu[$(($get_option - 1))]} "${Chatgpt_menu[@]}" 
+                        case $option in
+                            2 | 3 | 4)
+                               case $option in
+                                   2)if choose "是否启动Chatgpt" "已取消启动Chatgpt"; then return;fi 
+                                     cd ~/ChatGPT-Next-Web ;;
+                                     pm2 start chat.config.js ;;
+                                   3)pm2 list;;
+                                   4)chatgpt;;
+                               esac
+                               wait;;
+                           1)break;;
+                           *)error_option;;
+                        esac;;  
                 esac
            done;;    
        #一级菜单其他选项  
