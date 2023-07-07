@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.28
+Version=2.29
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -646,7 +646,7 @@ WantedBy=multi-user.target
 EOF
    fi
 }
-function reset_frp {
+function reset_Frp {
 cat > $path_frp/frps.ini <<EOF
 [common]
 # 服务端监听端口
@@ -799,8 +799,9 @@ function Option {
     "  7、Warp服务"
     "  8、X-ui服务"
     "  9、Tor服务"
-    "  10、CF-DNS脚本" 
-    "  11、启动Chatgpt"
+    "  10、Frp服务"
+    "  11、CF-DNS脚本" 
+    "  12、启动Chatgpt"
 "—————————————————————————————————————  
   0、退出"
     )
@@ -847,6 +848,14 @@ function Option {
     "  5、IP信息"
     "  0、退出"
     )
+    Frp_menu=(
+    "  1、返回上一级"
+    "  2、安装Frp"
+    "  3、初始化Frp配置"
+    "  4、设置Frp配置"
+    "  5、重启Frp"
+    "  0、退出"
+    )
     Cf_DNS_menu=(
     "  1、返回上一级"
     "  2、启动Cf_DNS脚本面板"
@@ -870,19 +879,19 @@ function main {
     case $option in
     
     #一级菜单134选项
-        1 | 3 | 4 | 11)
+        1 | 3 | 4 | 12)
             case $option in
                 1) change_ssh_port
                    change_login_password;;
                 3) update "force";;
                 4) one_step ;;
-                11) cd ~/ChatGPT-Next-Web
+                12) cd ~/ChatGPT-Next-Web
                     pm2 start chat.config.js ;;
             esac
             wait;;
             
      #一级菜单25678选项
-       2 | 5 | 6 | 7 | 8 | 9 | 10)
+       2 | 5 | 6 | 7 | 8 | 9 | 10 | 11)
        
             get_option=$option
 
@@ -972,10 +981,25 @@ function main {
                                wait;;
                            1)break;;
                            *)error_option;;
-                        esac;;  
+                        esac;; 
                         
-                   #一级菜单10 cfdns选项
-                  10)Option ${main_menu[$(($get_option - 1))]} "${Cf_DNS_menu[@]}" 
+                  #一级菜单10 Frp选项
+                  10)Option ${main_menu[$(($get_option - 1))]} "${Tor_menu[@]}" 
+                        case $option in
+                            2 | 3 | 4 | 5)
+                               case $option in
+                                   2)install_Frp;;
+                                   3)reset_Frp;;
+                                   4)set_tor_config;;
+                                   5)restart "frps";;
+                               esac
+                               wait;;
+                           1)break;;
+                           *)error_option;;
+                        esac;;       
+                        
+                   #一级菜单11 cfdns选项
+                  11)Option ${main_menu[$(($get_option - 1))]} "${Cf_DNS_menu[@]}" 
                         case $option in
                             2 | 3 | 4)
                                case $option in
