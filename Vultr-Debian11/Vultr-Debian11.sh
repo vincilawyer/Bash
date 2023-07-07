@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.21
+Version=2.22
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -74,20 +74,20 @@ function search {
  
   found_text=$(awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v num="$n" '{
       if (exact == "true") {
-               startPos = index($0, start);
+          startPos = index($0, start);
           if (startPos > 0) {
-              endPos = index(substr($0, startPos + length(start)), end);
+          endPos = index(substr($0, startPos + length(start)), end);
               if (endPos > 0) {
                   if (++count == num) {
                       print substr($0, startPos + length(start), endPos - 1) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
                       exit;
                   }
               }
-
+          }
       } else {
           if (match($0, start".*"end)) {  # 匹配开始和结束文本
-               startPos = index($0, start);
-          if (startPos > 0) {
+            startPos = index($0, start);
+            if (startPos > 0) {
               endPos = index(substr($0, startPos + length(start)), end);
               if (endPos > 0) {
                   if (++count == num) {
@@ -95,6 +95,7 @@ function search {
                       exit;
                   }
               }
+            }
           } else if (match($0, start)) {  # 只匹配开始文本
               if (++count == num) {  # 输出第 n 个匹配结果
                   print substr($0, RSTART + length(start)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
