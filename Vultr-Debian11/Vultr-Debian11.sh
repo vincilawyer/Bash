@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.25
+Version=2.27
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -109,14 +109,14 @@ function search {
                                                                           #改变文本内容函数
 
 function replace() {
-  local start_string="$1"
-  local end_string="$2"
-  local n="${3:-1}"
-  local new_text="$4"
-  local file="$5"
-  local exact_match="$6"
+  local start_string="$1"         # 开始文本字符串
+  local end_string="$2"           # 结束文本字符串
+  local n="${3:-1}"               # 要输出的匹配结果的索引
+  local new_text="$4"             # 替换的新文本
+  local file="$5"                 # 要搜索的文件名              
+  local exact_match="$6"          # 是否精确匹配
   local temp_file="$(mktemp)"
-  
+
     awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v new="$new_text" -v num="$n" '{
         if (exact == "true") {
              startPos = index($0, start);
