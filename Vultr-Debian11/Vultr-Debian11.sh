@@ -653,9 +653,21 @@ cat > $path_frp/frps.ini <<EOF
 # 服务端监听端口
 bind_port = 8888
 # HTTP 类型代理监听的端口（给Nginx反向代理用）
-vhost_http_port = 8080
+vhost_http_port = 10080
+vhost_https_port = 10443
 # 鉴权使用的 token 值
 token = 88888888
+#服务端仪表板端口
+dashboard_port = 21211
+#仪表板登录用户名
+dashboard_user = admin
+#仪表板登录密码
+dashboard_pwd = admin
+
+本文采用 CC BY-NC-SA 4.0 许可协议，著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+作者：凤曦
+来源：Frp使用Nginx前端反向代理Https – 凤曦的小窝
+链接：https://blog.rayfalling.com/2020/02/frp%E4%BD%BF%E7%94%A8nginx%E5%89%8D%E7%AB%AF%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86https.html
 EOF
 }
 
@@ -1022,9 +1034,9 @@ function main {
                         case $option in
                             2 | 3 | 4)
                                case $option in
-                                   2)if choose "是否启动Chatgpt" "已取消启动Chatgpt"; then return;fi ;;
-                                     cd ~/ChatGPT-Next-Web ;;
-                                     pm2 start chat.config.js ;;
+                                   2)if choose "是否启动Chatgpt" "已取消启动Chatgpt"; then return;fi;;
+                                     cd ~/ChatGPT-Next-Web;;
+                                     pm2 start chat.config.js;;
                                    3)pm2 list;;
                                    4)chatgpt;;
                                esac
