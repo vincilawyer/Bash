@@ -1035,7 +1035,7 @@ function main {
                             2 | 3 | 4)
                                case $option in
                                    2)if choose "是否启动Chatgpt" "已取消启动Chatgpt"; then return;fi;;
-                                     cd ~/ChatGPT-Next-Web;;
+                                     cd /root/ChatGPT-Next-Web;;
                                      pm2 start chat.config.js;;
                                    3)pm2 list;;
                                    4)chatgpt;;
