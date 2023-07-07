@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.17
+Version=2.18
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -594,6 +594,27 @@ function ip_tor {
   echo "当前Tor代理IP为："
   curl --socks5-hostname localhost:$text1 http://ip-api.com/line/?fields=status,country,regionName,city,query
   echo
+}
+  
+  
+                                                                          # 安装Frp的函数
+function install_Frp {
+   if [ -n "$(find / -name frpc.ini)" ]; then 
+        echo -e "${GREEN}Frp已安装，无需重复安装！${NC}"      
+   else
+        # 获取最新的 frp 版本
+        version=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | grep 'tag_name' | cut -d\" -f4)
+        # 获取Linux amd64版本的tar.gz文件名
+        file_name=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r '.assets[] | select(.name | contains("linux_amd64")) | .name')
+        # 下载最新版本的 frp
+        wget https://github.com/fatedier/frp/releases/download/$version/$file_name
+        # 解压下载的文件
+        tar -xvzf $file_name
+        #删除压缩包
+        rm $file_name
+        #更改文件名
+        mv $(echo $file_name | sed 's/.tar.gz//')  Frp
+   fi
 }
 
                                                                           # 安装CF_DNS的函数
