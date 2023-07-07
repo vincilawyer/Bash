@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.30
+Version=2.31
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -663,11 +663,6 @@ dashboard_port = 21211
 dashboard_user = admin
 #仪表板登录密码
 dashboard_pwd = admin
-
-本文采用 CC BY-NC-SA 4.0 许可协议，著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
-作者：凤曦
-来源：Frp使用Nginx前端反向代理Https – 凤曦的小窝
-链接：https://blog.rayfalling.com/2020/02/frp%E4%BD%BF%E7%94%A8nginx%E5%89%8D%E7%AB%AF%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86https.html
 EOF
 }
 
@@ -1001,7 +996,7 @@ function main {
                         esac;; 
                         
                   #一级菜单10 Frp选项
-                  10)Option ${main_menu[$(($get_option - 1))]} "${Tor_menu[@]}" 
+                  10)Option ${main_menu[$(($get_option - 1))]} "${Frp_menu[@]}" 
                         case $option in
                             2 | 3 | 4 | 5)
                                case $option in
