@@ -125,7 +125,7 @@ function replace() {
                   if (endPos > 0) {
                       if (++count == num) {
                           starttext = substr($0, 1 , startPos - 1 + length(start) );
-                          endtext = substr($0, startPos + endPos - 1 );
+                          endtext = substr($0, startPos + length(start) + endPos - 1 );
                           line = starttext new endtext;
                           print line;
                       } else {
@@ -144,7 +144,7 @@ function replace() {
                   if (endPos > 0) {
                       if (++count == num) {
                           starttext = substr($0, 1 , startPos - 1 + length(start) );
-                          endtext = substr($0, startPos + endPos - 1 );
+                          endtext = substr($0, startPos + length(start) + endPos - 1 );
                           line = starttext new endtext;
                           print line;
                       } else {
