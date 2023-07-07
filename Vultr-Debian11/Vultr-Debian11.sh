@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.23
+Version=2.24
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -126,14 +126,18 @@ function replace() {
   if [[ "$exact_match" == "false" ]]; then
     awk -v start="$start_string" -v end="$end_string" -v new="$new_text" -v num="$n" '{
         if (match($0, start".*"end)) {
-            if (++count == num) {
-                split($0, a, start);
-                split(a[2], b, end);
-                line = a[1] start new b[2];
-                if (match(line, /^[[:space:]]*#/)) {
-                    sub(/^[[:space:]]*#/, "", line);
+            startIdx = index($0, start);
+            if (startIdx != 0) {
+                if (++count == num) {
+                    endIdx = index(substr($0, startIdx+length(start)), end);
+                    if (endIdx != 0) {
+                        print substr($0, 1, startIdx-1) start new substr($0, startIdx+length(start)+endIdx);
+                    } else {
+                        print $0;
+                    }
+                } else {
+                    print $0;
                 }
-                print line;
             } else {
                 print $0;
             }
@@ -154,20 +158,20 @@ function replace() {
     }' "$file" > "$temp_file"
   else
     awk -v start="$start_string" -v end="$end_string" -v new="$new_text" -v num="$n" '{
-        if (match($0, start".*")) {
+        startIdx = index($0, start);
+        if (startIdx != 0) {
             if (++count == num) {
-                split($0, a, start);
-                split(a[2], b, end);
-                line = a[1] start new b[2];
-                if (match(line, /^[[:space:]]*#/)) {
-                    sub(/^[[:space:]]*#/, "", line);
+                endIdx = index(substr($0, startIdx+length(start)), end);
+                if (endIdx != 0) {
+                    print substr($0, 1, startIdx-1) start new substr($0, startIdx+length(start)+endIdx);
+                } else {
+                    print $0;
                 }
-                print line;
             } else {
                 print $0;
             }
         } else {
-          print $0;
+            print $0;
         }
     }' "$file" > "$temp_file"
   fi
