@@ -1029,12 +1029,14 @@ function main {
                            1)break;;
                            *)error_option;;
                         esac;;                           
+                        
                   #一级菜单12 Chatgpt选项
                   12)Option ${main_menu[$(($get_option - 1))]} "${Chatgpt_menu[@]}" 
                         case $option in
                             2 | 3 | 4)
                                case $option in
-                                   2)cd ~/ChatGPT-Next-Web;;
+                                   2)if choose "是否启动Chatgpt？" "已取消启动Chatgpt"; then return;fi
+                                     cd ~/ChatGPT-Next-Web
                                      pm2 start chat.config.js;;
                                    3)pm2 list;;
                                    4)chatgpt;;
