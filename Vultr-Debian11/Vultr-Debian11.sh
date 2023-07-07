@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.2
+Version=2.21
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -32,10 +32,12 @@ text2=0
   path_ssh="/etc/ssh/sshd_config"
 #nginx配置文件路径 (查看配置：nano /etc/nginx/conf.d/default.conf)                      
   path_nginx="/etc/nginx/conf.d/default.conf" 
-#tor路径 (查看脚本：nano /etc/tor/torrc)            
+#tor路径 (查看配置：nano /etc/tor/torrc)            
   path_tor="/etc/tor/torrc"
-#cfdns脚本路径 (查看脚本：nano usr/local/bin/cfdns)            
+#cfdns脚本路径 (查看配置：nano usr/local/bin/cfdns)            
   path_cfdns="/usr/local/bin/cfdns"
+#frp配置文件路径（查看配置：nano /etc/frp/frps.ini）  
+  path_frp="/etc/frp"
 
   
                                                                           #更新函数
@@ -72,21 +74,26 @@ function search {
  
   found_text=$(awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v num="$n" '{
       if (exact == "true") {
-        if (match($0, start".*")) {  # 精确匹配开始文本
-              split(substr($0, RSTART + length(start)), a, end);  # 按 end_string 将开始文本之后的内容分割为两部分
-              if (++count == num) {
-                  print a[1] ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
-                  exit;
+               startPos = index($0, start);
+          if (startPos > 0) {
+              endPos = index(substr($0, startPos + length(start)), end);
+              if (endPos > 0) {
+                  if (++count == num) {
+                      print substr($0, startPos + length(start), endPos - 1) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
+                      exit;
+                  }
               }
-          }
+
       } else {
           if (match($0, start".*"end)) {  # 匹配开始和结束文本
-              if (match($0, start".*")) {  # 
-                 split(substr($0, RSTART + length(start)), a, end);  # 按 end_string 将开始文本之后的内容分割为两部分
-                 if (++count == num) {  # 输出第 n 个匹配结果
-                 print a[1] ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
-                 exit;
-                 }
+               startPos = index($0, start);
+          if (startPos > 0) {
+              endPos = index(substr($0, startPos + length(start)), end);
+              if (endPos > 0) {
+                  if (++count == num) {
+                      print substr($0, startPos + length(start), endPos - 1) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
+                      exit;
+                  }
               }
           } else if (match($0, start)) {  # 只匹配开始文本
               if (++count == num) {  # 输出第 n 个匹配结果
@@ -614,8 +621,8 @@ function install_Frp {
         
         # 把frps加入systemd
         mv $(echo $file_name | sed 's/.tar.gz//')/frps /usr/bin/
-        mkdir -p /etc/frp/
-        mv $(echo $file_name | sed 's/.tar.gz//')/frps.ini /etc/frp/
+        mkdir -p $path_frp
+        mv $(echo $file_name | sed 's/.tar.gz//')/frps.ini $path_frp
         rm -r $(echo $file_name | sed 's/.tar.gz//')
         cat > /usr/lib/systemd/system/frps.service <<EOF
 [Unit]
@@ -634,6 +641,18 @@ WantedBy=multi-user.target
 EOF
    fi
 }
+function reset_frp {
+cat > $path_frp/frps.ini <<EOF
+[common]
+# 服务端监听端口
+bind_port = 8888
+# HTTP 类型代理监听的端口（给Nginx反向代理用）
+vhost_http_port = 8080
+# 鉴权使用的 token 值
+token = 88888888
+EOF
+}
+
 
 
                                                                           # 安装CF_DNS的函数
