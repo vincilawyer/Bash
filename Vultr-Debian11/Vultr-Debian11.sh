@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.24
+Version=2.25
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -85,7 +85,6 @@ function search {
               }
           }
       } else {
-          if (match($0, start".*"end)) {  # 匹配开始和结束文本
             startPos = index($0, start);
             if (startPos > 0) {
               endPos = index(substr($0, startPos + length(start)), end);
@@ -93,15 +92,14 @@ function search {
                   if (++count == num) {
                       print substr($0, startPos + length(start), endPos - 1) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
                       exit;
+                  }    
+              } else {  
+                  if (++count == num) {  # 输出第 n 个匹配结果
+                      print substr($0, RSTART + length(start)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
+                      exit;
                   }
               }
-            }
-          } else if (match($0, start)) {  # 只匹配开始文本
-              if (++count == num) {  # 输出第 n 个匹配结果
-                  print substr($0, RSTART + length(start)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
-                  exit;
-              }
-          }
+           }
       }
   }' "$file")
   if ! $comment; then found_text=${found_text// (注释行)/}; fi
@@ -118,26 +116,17 @@ function replace() {
   local file="$5"
   local exact_match="$6"
   local temp_file="$(mktemp)"
-  
-  # 将分号转义
-  start_string=$(echo "$start_string" | awk '{gsub(";","\\;"); print}')
-  end_string=$(echo "$end_string" | awk '{gsub(";","\\;"); print}')
-  
   if [[ "$exact_match" == "false" ]]; then
     awk -v start="$start_string" -v end="$end_string" -v new="$new_text" -v num="$n" '{
         if (match($0, start".*"end)) {
-            startIdx = index($0, start);
-            if (startIdx != 0) {
-                if (++count == num) {
-                    endIdx = index(substr($0, startIdx+length(start)), end);
-                    if (endIdx != 0) {
-                        print substr($0, 1, startIdx-1) start new substr($0, startIdx+length(start)+endIdx);
-                    } else {
-                        print $0;
-                    }
-                } else {
-                    print $0;
+            if (++count == num) {
+                split($0, a, start);
+                split(a[2], b, end);
+                line = a[1] start new b[2];
+                if (match(line, /^[[:space:]]*#/)) {
+                    sub(/^[[:space:]]*#/, "", line);
                 }
+                print line;
             } else {
                 print $0;
             }
@@ -158,27 +147,24 @@ function replace() {
     }' "$file" > "$temp_file"
   else
     awk -v start="$start_string" -v end="$end_string" -v new="$new_text" -v num="$n" '{
-        startIdx = index($0, start);
-        if (startIdx != 0) {
+        if (match($0, start".*")) {
             if (++count == num) {
-                endIdx = index(substr($0, startIdx+length(start)), end);
-                if (endIdx != 0) {
-                    print substr($0, 1, startIdx-1) start new substr($0, startIdx+length(start)+endIdx);
-                } else {
-                    print $0;
+                split($0, a, start);
+                split(a[2], b, end);
+                line = a[1] start new b[2];
+                if (match(line, /^[[:space:]]*#/)) {
+                    sub(/^[[:space:]]*#/, "", line);
                 }
+                print line;
             } else {
                 print $0;
             }
         } else {
-            print $0;
+          print $0;
         }
     }' "$file" > "$temp_file"
   fi
-
-  # 恢复原来的字符串，即将转义的分号替换回普通分号
-  awk '{gsub("\\\\;", ";"); print}' "$temp_file" > "$file"
-  rm "$temp_file"
+  mv "$temp_file" "$file"
 }
 
 
@@ -252,26 +238,33 @@ function modify {
  
   line_num=$(awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v num="$n" '{
       if (exact == "true") {
-          if (match($0, start".*"end)) {  # 精确匹配开始和结束文本
-              if (++count == num) {  # 输出第 n 个匹配结果的行号
-                  print NR;
-                  exit;
+          startPos = index($0, start);
+          if (startPos > 0) {
+          endPos = index(substr($0, startPos + length(start)), end);
+              if (endPos > 0) {
+                  if (++count == num) {
+                      print NR;
+                      exit;
+                  }
               }
           }
       } else {
-          if (match($0, start".*"end)) {  # 匹配开始和结束文本
-              if (++count == num) {  # 输出第 n 个匹配结果的行号
-                  print NR;
-                  exit;
-              }
-          } else if (match($0, start)) {  # 只匹配开始文本
-              if (++count == num) {  # 输出第 n 个匹配结果的行号
+          startPos = index($0, start);
+          if (startPos > 0) {
+          endPos = index(substr($0, startPos + length(start)), end);
+              if (endPos > 0) {
+                  if (++count == num) {
+                      print NR;
+                      exit;
+                  }
+              } else {
                   print NR;
                   exit;
               }
           }
-      }
+      }    
   }' "$file")
+  
         local line=$(sed "${line_num}q;d" "$file")
         if [[ "${add_comment}" == true ]]; then
             sed -i "${line_num}s/^\(\s*\)/#\1/" "$file"
