@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.47
+Version=2.48
 dat_Version=1
 
 #定义彩色字体
@@ -59,7 +59,15 @@ tel_regex="^1[3-9]\d{9}$"
 #若干#和空格前置的表达式 
 comment_regex="^ *[# ]*"
 
-
+#用户配置文本
+dat_text='# 该文件为vinci用户配置文本
+# "*"表示不可在脚本中修改的常量,变量值需要用双引号包围,"#@"用于分隔变量名称、备注、匹配正则表达式。
+dat_Version1="1"              #@版本号*              
+Domain="domain.com"           #@一级域名#@不用加www
+Email="email@email.com"       #@邮箱
+Cloudflare_api_key="abc"      #@Cloudflare Api
+Chatgpt_api_key="abc"         #@Chatgpt Api
+'
 
 
 
@@ -85,20 +93,14 @@ update $Version
 
                                                                           # 创建用户数据
 function creat_dat {
-cat > $dat_path <<EOF
-# "*"表示不可在脚本中修改的常量,变量值需要用双引号包围,"#@"用于分隔变量名称、备注、匹配正则表达式。
-*dat_Version1="1"             #@版本号              
-Domain="domain.com"           #@一级域名#@不用加www
-Email="email@email.com"       #@邮箱
-Cloudflare_api_key="abc"      #@Cloudflare Api
-Chatgpt_api_key="abc"         #@Chatgpt Api
-EOF
+    echo "$dat_text" > "$dat_path"
 }
                                                                           # 设置数据
 function set_dat { 
     lines=()
     while IFS= read -r line; do   # IFS用于指定分隔符，IFS= read -r line 的含义是：在没有任何字段分隔符的情况下（即将IFS设置为空），读取一整行内容并赋值给变量line
-         if [[ $line =~ ^([[:space:]]*[#*]+|[#*]+) ]] ; then continue ; fi  #跳过有注释符和常量符的变量
+         if [[ $line =~ ^([[:space:]]*[#]+|[#]+) ]] ; then continue ; fi  #跳过有注释符变量
+         if [[ $line =~ \*([[:space:]]*|$) ]]; then continue ; fi  #跳过有*常量
          lines+=("$line")    #将每行文本转化为数组     
     done < "$dat_path"
     
@@ -974,14 +976,14 @@ function main {
   fi
 
   #检查用户数据文件是否存在及更新
-  if source $dat_path; then   #读取用户数据
+  if ! source $dat_path; then   #读取用户数据
         echo "未找到配置文件，正在新建数据..."
         creat_dat
         echo "新建完成，请设置配置参数！"
         set_dat
         echo "已完成配置！"
         wait
-  elif [ $(search "dat_Version1=\"" "\"" 1 true false true $dat_path) == $dat_Version ] ; then
+  elif [ $dat_Version1 == $dat_Version ] ; then
         echo "配置文件更新中..."
         #update_dat
         echo "更新完成，请重新设置配置参数！"
@@ -1012,7 +1014,7 @@ function main {
                case $get_option in
 
                  #一级菜单1 系统工具选项
-                 2) Option ${main_menu[$(($get_option - 1))]} "${system_menu[@]}"
+                 1) Option ${main_menu[$(($get_option - 1))]} "${system_menu[@]}"
                     case $option in
                            2 | 3 | 4)
                                case $option in
