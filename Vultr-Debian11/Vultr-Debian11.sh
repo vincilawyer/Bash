@@ -42,6 +42,23 @@ text2=0
 #frp配置文件路径（查看配置：nano /etc/frp/frps.ini）  
   path_frp="/etc/frp"
 
+#一级域名正则表达式
+domain_regex="^[a-zA-Z0-9-]{1,63}(\.[a-zA-Z]{2,})$"
+#二级域名正则表达式
+subdomain_regex="^[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+$"
+#邮箱表正则表达式
+email_regex="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+#IPV4表达式
+ipv4_regex="^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
+#IPV6表达式
+ipv6_regex="^([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])$"
+#ip端口号表达式
+port_regex="^([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"
+#大陆手机11位手机号表达式
+tel_regex="^1[3-9]\d{9}$"
+
+
+
 
                                                                           #更新函数
 function update {
@@ -67,43 +84,55 @@ update $Version
 dat_path="/usr/local/bin/vinci.dat"
 function creat_dat {
 cat > $dat_path <<EOF
-# #*表示不可在脚本中修改的常量   #@表示可修改的变量，变量值需要用双引号包围。
-dat_Version1="1"              #@版本号              
-Domain="domain.com"           #@根域名
-#Email="email@email.com"      #@邮箱 
-#Cloudflare_api_key="abc"     #@Cloudflare Api
+# "*"表示不可在脚本中修改的常量,变量值需要用双引号包围,"#@"用于分隔变量名称、备注、匹配正则表达式。
+*dat_Version1="1"             #@版本号              
+Domain="domain.com"           #@一级域名#@不用加www#@domain_regex
+Email="email@email.com"       #@邮箱#@#@email_regex
+#Cloudflare_api_key="abc"      #@Cloudflare Api
 Chatgpt_api_key="abc"         #@Chatgpt Api
 EOF
 }
 
                                                                           # 设置数据
 function set_dat {
-    awk '{
-      if ($0 ~ /^([[:space:]]*#|\*|#|\*)$/) {next} #跳过有注释符的变量
-      #split($0, a, "=");    #找出变量名
-      #gsub(/^ *| *$/, "", a[1]);   #剔除变量名前后空格
-      split($0, a, "");    #找出变量注释
-      set """ """ 
-    }' $dat_path 
+    while IFS= read -r line   # IFS用于指定分隔符，IFS= read -r line 的含义是：在没有任何字段分隔符的情况下（即将IFS设置为空），读取一整行内容并赋值给变量line
+    do
+         if [[ $line =~ ^([[:space:]]*[#*]+|[#*]+) ]] ; then continue ; fi  #跳过有注释符和常量符的变量
+         IFS='#@' read -a a <<< "$line"    #找出变量名称及正则表达式
+         set """ """ 1 $line true "${a[2]}" "${a[3]}" false
+    done < "$dat_path"
 }
 creat_dat
 set_dat
 
                                                                           # 创建用户数据
 function creat_dat {
+ awk '{
+      if ($0 ~ /^([[:space:]]*[#*]+|[#*]+)/) {next} #跳过有注释符和常量符的变量
+      split($0, a, "#@");    #找出变量注释
+      gsub(/^ *| *$/, "", a[2]);   #剔除注释前后空格
+               a[2]="${a[2]#"${a[2]%%[![:space:]]*}"}"
+         a[2]="${a[2]%"${a[2]##*[![:space:]]}"}"
+      print a[2];
+      echo 1;
+      read -r -e -p "(echo -e "请设置新的内容：")" text2;
+    }' $dat_path 
 }
                                                                           #查询文本内容函数
 
 function search {
-  local start_string="$1"   # 开始文本字符串
-  local end_string="$2"     # 结束文本字符串
-  local n="${3:-1}"         # 要输出的匹配结果的索引
-  local file="$4"           # 要搜索的文件名
-  local exact_match="$5"    # 是否精确匹配
-  local comment="${6:-True}"   # 是否显示注释行
-  local found_text=""       # 存储找到的文本
-  local count=0             # 匹配计数器
- 
+  local start_string="$1"           # 开始文本字符串
+  local end_string="$2"             # 结束文本字符串
+  local n="${3:-1}"                 # 要输出的匹配结果的索引
+  local exact_match="${4:-True}"    # 是否精确匹配
+  local is_file="${5:-True}"        # 是否为文件
+  local input="$6"                   # 要搜索的内容
+  local comment="${7:-True}"        # 是否显示注释行
+  local found_text=""               # 存储找到的文本
+  local count=0                     # 匹配计数器
+  
+  if [ "$is_file" = "true" ]; then    #如果输入的是文件
+  
   found_text=$(awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v num="$n" '{
       if (exact == "true") {
           startPos = index($0, start);
@@ -133,7 +162,42 @@ function search {
               }
            }
       }
-  }' "$file")
+  }' "$input")
+  
+  else   #如果输入的是字符串
+  
+    found_text=$(echo "$input" | awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v num="$n" '{
+      if (exact == "true") {
+          startPos = index($0, start);
+          if (startPos > 0) {
+          endPos = index(substr($0, startPos + length(start)), end);
+              if (endPos > 0) {
+                  if (++count == num) {
+                      print substr($0, startPos + length(start), endPos - 1) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
+                      exit;
+                  }
+              }
+          }
+      } else {
+            startPos = index($0, start);
+            if (startPos > 0) {
+              endPos = index(substr($0, startPos + length(start)), end);
+              if (endPos > 0) {
+                  if (++count == num) {
+                      print substr($0, startPos + length(start), endPos - 1) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
+                      exit;
+                  }    
+              } else {  
+                  if (++count == num) {  # 输出第 n 个匹配结果
+                      print substr($0, RSTART + length(start)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
+                      exit;
+                  }
+              }
+           }
+      }
+    }')
+
+  fi
   if ! $comment; then found_text=${found_text// (注释行)/}; fi
   echo "$found_text"   # 输出找到的文本
 }
@@ -514,6 +578,8 @@ function apply_ssl_certificate {
           return
         elif [[ $domain_name =~ ^[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$ ]]; then
             break
+                                 ^[a-zA-Z0-9-]{1,63}(\.[a-zA-Z]{2,})$
+
         else
             echo -e "${RED}输入格式不正确，请重新输入${NC}"
         fi
@@ -724,7 +790,7 @@ EOF
 
                                                                           # 安装CF_DNS的函数
 function install_CF_DNS {
-    if choose "是否从Github下载更新CF_DNS脚本文件？此举动将覆盖原脚本文件。" "已取消下载更新CF_DNS脚本文件"; then return;fi
+    if choose "是否从Github下载更新CF_DNS脚本文件？此举动将覆盖原脚本文件。" "已取消下载更新CF_DNS脚本文件"; then return; fi
     #安装jq
     echo "正在安装依赖软件JQ..."
     if [ -x "$(command -v jq)" ]; then
