@@ -973,7 +973,7 @@ function main {
         set_dat
         echo "已完成配置！"
         wait
-  fi
+  #fi
   
   
   #显示页面及选项
