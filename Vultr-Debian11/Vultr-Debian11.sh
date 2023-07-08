@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.44
+Version=2.45
 dat_Version=1
 
 #定义彩色字体
@@ -94,7 +94,6 @@ Cloudflare_api_key="abc"      #@Cloudflare Api
 Chatgpt_api_key="abc"         #@Chatgpt Api
 EOF
 }
-creat_dat
                                                                           # 设置数据
 function set_dat { 
     lines=()
@@ -112,10 +111,10 @@ function set_dat {
     done
 }
 
-set_dat
-
                                                                           # 创建用户数据
-#function creat_dat {
+function update_dat {
+    
+}
 # awk '{
     
  # if ($0 ~ /^([[:space:]]*[#*]+|[#*]+)/) {next} #跳过有注释符和常量符的变量
@@ -963,15 +962,18 @@ function main {
   #判断系统是否适配
   if [ ! $(lsb_release -rs) = "11" ]; then 
   echo "请注意，本脚本是适用于Vulre服务器Debian11系统，用于其他系统或版本时将可能出错！"
-  wait;
+  wait
   fi
 
   #检查用户数据文件是否存在及更新
-#  if source $dat_path; then   #读取用户数据
- #   echo "未找到配置文件，正在重新创建！"
-  #  creat_dat
-   # set_dat
-  #fi
+  #if source $dat_path; then   #读取用户数据
+        echo "未找到配置文件，正在新建数据！"
+        creat_dat
+        echo "请设置配置参数！"
+        set_dat
+        echo "已完成配置！"
+        wait
+  fi
   
   
   #显示页面及选项
