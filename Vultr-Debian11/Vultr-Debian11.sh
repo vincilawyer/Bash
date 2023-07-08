@@ -113,7 +113,7 @@ function set_dat {
 
                                                                           # 创建用户数据
 function update_dat {
-    
+   echo 1 
 }
 # awk '{
     
