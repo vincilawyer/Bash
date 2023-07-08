@@ -1017,7 +1017,8 @@ function main {
                            2 | 3 | 4)
                                case $option in
                                    2)set_dat;;
-                                   3)creat_dat;;
+                                   3)if choose "是否重置默认配置参数？" "已取消重置"; then return; fi
+                                   creat_dat;;
                                    4)change_ssh_port
                                      change_login_password;;
                                esac
