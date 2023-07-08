@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.37
+Version=2.38
 dat_Version=1
 
 #定义彩色字体
