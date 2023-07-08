@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.46
+Version=2.47
 dat_Version=1
 
 #定义彩色字体
@@ -873,7 +873,7 @@ function Option {
 
 # 定义菜单选项
     main_menu=(
-    "  1、修改SSH登录端口和登录密码"
+    "  1、系统设置"
     "  2、UFW防火墙管理"
     "  3、强制更新脚本
 —————————————————————————————————————"
@@ -889,6 +889,13 @@ function Option {
 "—————————————————————————————————————  
   0、退出"
     )
+    system_menu=(
+    "  1、返回上一级"
+    "  2、修改默认配置参数"
+    "  3、修改SSH登录端口和登录密码"
+    "  0、退出"   
+    )
+    
     NFW_menu=(
     "  1、返回上一级"
     "  2、启动防火墙"
@@ -981,30 +988,42 @@ function main {
         echo "已完成配置！"
         wait
   fi
-  set_dat
+
   
   #显示页面及选项
   while true; do
     Option "请选择以下操作选项" "${main_menu[@]}"
     case $option in
     
-    #一级菜单134选项
-        1 | 3 | 4)
+    #一级菜单34选项
+        | 3 | 4)
             case $option in
-                1) change_ssh_port
-                   change_login_password;;
                 3) update "force";;
                 4) one_step ;;
             esac
             wait;;
             
      #一级菜单2、5、6至12选项
-       2 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12)
+       1 | 2 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12)
        
             get_option=$option
             while true; do
                case $get_option in
-               
+
+                 #一级菜单1 系统工具选项
+                 2) Option ${main_menu[$(($get_option - 1))]} "${system_menu[@]}"
+                    case $option in
+                           2 | 3)
+                               case $option in
+                                   2)set_dat;;
+                                   3)change_ssh_port
+                                     change_login_password;;
+                               esac
+                               wait;;
+                          1)break;;
+                          *)error_option;;
+                    esac;;
+                    
                  #一级菜单2 防火墙选项
                  2) Option ${main_menu[$(($get_option - 1))]} "${NFW_menu[@]}"
                     case $option in
