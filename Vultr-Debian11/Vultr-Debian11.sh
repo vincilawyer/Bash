@@ -1,7 +1,8 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.35
+Version=2.36
+dat_Version=1
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -24,8 +25,8 @@ text2=0
   Standby=50        
 #更新检查程序网址
   link_update="https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh"
-#cf_dns修改脚本网站
-  link_cfdns="https://raw.githubusercontent.com/vincilawyer/Bash/main/Cloudfare/ChangeDNS.sh"
+#用户数据路径
+  dat_path="/usr/local/bin/vinci.dat"
 #nginx配置文件网址
   link_nginx="https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf"
 #ssh配置文件路径(查看配置：nano /etc/ssh/sshd_config)                           
@@ -38,12 +39,10 @@ text2=0
   default_nginx="/etc/nginx/sites-enabled/default"
 #tor路径 (查看配置：nano /etc/tor/torrc)            
   path_tor="/etc/tor/torrc"
-#cfdns脚本路径 (查看配置：nano usr/local/bin/cfdns)            
-  path_cfdns="/usr/local/bin/cfdns"
 #frp配置文件路径（查看配置：nano /etc/frp/frps.ini）  
   path_frp="/etc/frp"
 
-  
+
                                                                           #更新函数
 function update {
     clear && current_Version="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' $link_update)
@@ -64,6 +63,35 @@ function update {
 #执行启动前更新检查
 update $Version
 
+                                                                          # 创建用户数据
+dat_path="/usr/local/bin/vinci.dat"
+function creat_dat {
+cat > $dat_path <<EOF
+# #*表示不可在脚本中修改的常量   #@表示可修改的变量，变量值需要用双引号包围。
+dat_Version1="1"              #@版本号              
+Domain="domain.com"           #@根域名
+#Email="email@email.com"      #@邮箱 
+#Cloudflare_api_key="abc"     #@Cloudflare Api
+Chatgpt_api_key="abc"         #@Chatgpt Api
+EOF
+}
+
+                                                                          # 设置数据
+function set_dat {
+    awk '{
+      if ($0 ~ /^([[:space:]]*#|\*|#|\*)$/) {next} #跳过有注释符的变量
+      #split($0, a, "=");    #找出变量名
+      #gsub(/^ *| *$/, "", a[1]);   #剔除变量名前后空格
+      split($0, a, "");    #找出变量注释
+      set """ """ 
+    }' $dat_path 
+}
+creat_dat
+set_dat
+
+                                                                          # 创建用户数据
+function creat_dat {
+}
                                                                           #查询文本内容函数
 
 function search {
@@ -415,6 +443,8 @@ function download_nginx_config {
 }
                                                                            # 设置Nginx配置
 function set_nginx_config {
+      echo "维护中，请手动导入配置！"
+       return
        if ! [ -x "$(command -v nginx)" ]; then
           echo -e "${RED}Nginx尚未安装，请先进行安装！${NC}"
        fi
@@ -833,7 +863,7 @@ function Option {
     "  9、Tor服务"
     "  10、Frp服务"
     "  11、CF-DNS脚本" 
-    "  12、Chatgpt服务"
+    "  12、Chatgpt-Docker服务"
 "—————————————————————————————————————  
   0、退出"
     )
@@ -912,6 +942,14 @@ function main {
   echo "请注意，本脚本是适用于Vulre服务器Debian11系统，用于其他系统或版本时将可能出错！"
   wait;
   fi
+
+  #检查用户数据文件是否存在及更新
+  if source $dat_path; then   #读取用户数据
+    echo "未找到配置文件，正在重新创建！"
+    creat_dat
+    set_dat
+  else 
+  
   
   #显示页面及选项
   while true; do
