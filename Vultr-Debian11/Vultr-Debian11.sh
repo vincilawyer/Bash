@@ -56,6 +56,8 @@ ipv6_regex="^([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|
 port_regex="^([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"
 #大陆手机11位手机号表达式
 tel_regex="^1[3-9]\d{9}$"
+#注释表达式
+
 
 
 
@@ -102,22 +104,23 @@ function set_dat {
          set """ """ 1 $line true "${a[2]}" "${a[3]}" false
     done < "$dat_path"
 }
-creat_dat
-set_dat
+#creat_dat
+#set_dat
 
                                                                           # 创建用户数据
-function creat_dat {
- awk '{
-      if ($0 ~ /^([[:space:]]*[#*]+|[#*]+)/) {next} #跳过有注释符和常量符的变量
-      split($0, a, "#@");    #找出变量注释
-      gsub(/^ *| *$/, "", a[2]);   #剔除注释前后空格
-               a[2]="${a[2]#"${a[2]%%[![:space:]]*}"}"
-         a[2]="${a[2]%"${a[2]##*[![:space:]]}"}"
-      print a[2];
-      echo 1;
-      read -r -e -p "(echo -e "请设置新的内容：")" text2;
-    }' $dat_path 
-}
+#function creat_dat {
+# awk '{
+    
+ # if ($0 ~ /^([[:space:]]*[#*]+|[#*]+)/) {next} #跳过有注释符和常量符的变量
+  #    split($0, a, "#@");    #找出变量注释
+   #   gsub(/^ *| *$/, "", a[2]);   #剔除注释前后空格
+    #           a[2]="${a[2]#"${a[2]%%[![:space:]]*}"}"
+     #    a[2]="${a[2]%"${a[2]##*[![:space:]]}"}"
+
+   #   print a[2];
+
+ #   }' $dat_path 
+#}
                                                                           #查询文本内容函数
 
 function search {
@@ -126,7 +129,7 @@ function search {
   local n="${3:-1}"                 # 要输出的匹配结果的索引
   local exact_match="${4:-True}"    # 是否精确匹配
   local is_file="${5:-True}"        # 是否为文件
-  local input="$6"                   # 要搜索的内容
+  local input="$6"                  # 要搜索的内容
   local comment="${7:-True}"        # 是否显示注释行
   local found_text=""               # 存储找到的文本
   local count=0                     # 匹配计数器
@@ -167,6 +170,8 @@ function search {
   else   #如果输入的是字符串
   
     found_text=$(echo "$input" | awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v num="$n" '{
+
+      #以下内容应当与前面部分一致
       if (exact == "true") {
           startPos = index($0, start);
           if (startPos > 0) {
@@ -195,6 +200,7 @@ function search {
               }
            }
       }
+     #以上内容应当与前面部分一致
     }')
 
   fi
@@ -207,10 +213,12 @@ function search {
 function replace() {
   local start_string="$1"         # 开始文本字符串
   local end_string="$2"           # 结束文本字符串
-  local n="${3:-1}"               # 要输出的匹配结果的索引
-  local new_text="$4"             # 替换的新文本
-  local file="$5"                 # 要搜索的文件名              
-  local exact_match="$6"          # 是否精确匹配
+  local n="${3:-1}"               # 要输出的匹配结果的索引            
+  local exact_match="${4:-True}"  # 是否精确匹配
+  local is_file="${5:-True}"      # 是否为文件
+  local input="$6"                # 要搜索的内容
+  local comment="${7:-fasle}"      # 是否修改注释行
+  local new_text="$8"             # 替换的新文本
   local temp_file="$(mktemp)"
 
     awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v new="$new_text" -v num="$n" '{
@@ -259,8 +267,8 @@ function replace() {
                  print $0;
              }        
         }         
-    }' "$file" > "$temp_file"
-    mv "$temp_file" "$file"
+    }' "$input" > "$temp_file"
+    mv "$temp_file" "$input"
 }  
 
                                                                           #查询并修改文本函数
@@ -507,8 +515,8 @@ function download_nginx_config {
 }
                                                                            # 设置Nginx配置
 function set_nginx_config {
-      echo "维护中，请手动导入配置！"
-       return
+     # echo "维护中，请手动导入配置！"
+     #  return
        if ! [ -x "$(command -v nginx)" ]; then
           echo -e "${RED}Nginx尚未安装，请先进行安装！${NC}"
        fi
