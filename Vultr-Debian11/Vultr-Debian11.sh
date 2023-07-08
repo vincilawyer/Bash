@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.41
+Version=2.42
 dat_Version=1
 
 #定义彩色字体
@@ -106,9 +106,11 @@ function set_dat {
     
     # 因为在上面含有IFS= read的循环中，没法再次read到用户的输入数据，因此在循环外处理数据
     for line in "${lines[@]}"; do   
-         IFS=$'\n' read -d '' -r -a a <<< $(echo $line | sed 's/#@/\n/g') 将 #@ 替换为换行符，并用IFS分隔
-  #set '"' '"' 1 true false false $line "${a[2]}" "${a[3]}" "${a[4]}"
-done
+         a=()
+         IFS=$'\n' read -d '' -r -a a <<< $(echo $line | sed 's/#@/\n/g')   # 将 #@ 替换为换行符，并用IFS分隔
+        # echo   "${a[2]}" "${a[3]}" "${a[0]}" "${a[1]}"
+         set "\"" "\"" 1 "true" "false" "false" "${line}" "${a[1]}" "${a[2]}" "${a[3]}"
+    done
 }
 set_dat
 
