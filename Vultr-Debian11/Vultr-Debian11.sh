@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.4
+Version=2.41
 dat_Version=1
 
 #定义彩色字体
@@ -15,11 +15,11 @@ WHITE='\033[0;37m'
 BLACK="\033[40m"
 NC='\033[0m'
 #用户选择序号                                     
-option=0  
+option=""
 #修改前内容
-text1=0
+text1=""
 #修改后内容
-text2=0
+text2=""
 
 #刷新等待时长
   Standby=50        
@@ -290,10 +290,10 @@ function set {
   local input="$7"                # 要替换的内容
   local mean="$8"                 # 显示搜索和修改内容的含义
   local mark="$9"                 # 修改内容备注
-  local regex="$11"              # 正则表达式
-  local regex1="${12:-fasle}"     # 内容与正则表达式的真假匹配
+  local regex="$10"              # 正则表达式
+  local regex1="${11:-fasle}"     # 内容与正则表达式的真假匹配
   local temp_file="$(mktemp)"
-
+  
      text1=""
      text2=""
      text1=$(search "$start_string" "$end_string" "$n" "$exact_match" "true" "$is_file" "$input")
@@ -311,22 +311,11 @@ function set {
              repalce "$start_string" "$end_string" "$n" "$exact_match" "$is_file" "$input" "$comment" "$text2"
              echo -e "${GREEN}已将$mean参数设为注释行${NC}"
              return 1
-         elif [[ $text2 =~ $regex2 ]]; then
-             if $regex1; then
+         elif [[ $text2 =~ $regex ]]; then
                 replace  "$start_string" "$end_string" "$n" "$exact_match" "$comment" "$is_file" "$input" "$text2"
                 echo -e "${GREEN}$mean已修改为$text2${NC}"
-                return 0
-             else
-                echo -e "${RED}$mean输入错误，请重新输入${NC}"
-             fi
          else
-             if $regex1; then
                 echo -e "${RED}$mean输入错误，请重新输入${NC}"
-             else
-                replace  "$start_string" "$end_string" "$n" "$exact_match" "$comment" "$is_file" "$input" "$comment"
-                echo -e "${GREEN}$mean已修改为$text2${NC}"
-                return 0
-             fi
          fi
      done  
 }
