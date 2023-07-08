@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.33
+Version=2.34
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -34,6 +34,8 @@ text2=0
   path_nginx="/etc/nginx/conf.d/default.conf" 
 #nginx日志文件路径
   log_nginx="/var/log/nginx/access.log"
+#nginx 80端口默认服务块文件路径
+  default_nginx="/etc/nginx/sites-enabled/default"
 #tor路径 (查看配置：nano /etc/tor/torrc)            
   path_tor="/etc/tor/torrc"
 #cfdns脚本路径 (查看配置：nano usr/local/bin/cfdns)            
@@ -377,6 +379,9 @@ function install_Nginx {
         ufw allow http && ufw allow https 
         echo -e "${GREEN}正在调整Nginx配置${NC}"
         download_nginx_config
+        #清空nginx对80端口默认服务块的配置内容
+        cat > $default_nginx <<EOF
+        EOF
     fi
 }
 
