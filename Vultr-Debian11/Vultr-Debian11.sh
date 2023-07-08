@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.32
+Version=2.33
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -32,6 +32,8 @@ text2=0
   path_ssh="/etc/ssh/sshd_config"
 #nginx配置文件路径 (查看配置：nano /etc/nginx/conf.d/default.conf)                      
   path_nginx="/etc/nginx/conf.d/default.conf" 
+#nginx日志文件路径
+  log_nginx="/var/log/nginx/access.log"
 #tor路径 (查看配置：nano /etc/tor/torrc)            
   path_tor="/etc/tor/torrc"
 #cfdns脚本路径 (查看配置：nano usr/local/bin/cfdns)            
@@ -835,6 +837,7 @@ function Option {
     "  5、从github下载更新配置文件"
     "  6、设置Nginx配置（第一次使用需设置）"
     "  7、重启Nginx"
+    "  8、查看Nginx日志"
     "  0、退出"   
     )
     Xui_menu=(
@@ -940,7 +943,7 @@ function main {
                   #一级菜单6 Nginx选项
                  6) Option ${main_menu[$(($get_option - 1))]} "${Nginx_menu[@]}"
                     case $option in
-                           2 | 3 | 4 | 5 | 6 | 7)
+                           2 | 3 | 4 | 5 | 6 | 7 | 8)
                                case $option in
                                    2)install_Nginx_PM;;
                                    3)install_Nginx;;
@@ -948,6 +951,7 @@ function main {
                                    5)download_nginx_config;;
                                    6)set_nginx_config;;
                                    7)restart "nginx";;
+                                   8)nano /var/log/nginx/access.log;;
                                esac
                                wait;;
                           1)break;;
