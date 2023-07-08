@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.36
+Version=2.37
 dat_Version=1
 
 #定义彩色字体
@@ -586,8 +586,6 @@ function apply_ssl_certificate {
           return
         elif [[ $domain_name =~ ^[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$ ]]; then
             break
-                                 ^[a-zA-Z0-9-]{1,63}(\.[a-zA-Z]{2,})$
-
         else
             echo -e "${RED}输入格式不正确，请重新输入${NC}"
         fi
