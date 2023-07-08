@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.42
+Version=2.43
 dat_Version=1
 
 #定义彩色字体
@@ -89,9 +89,9 @@ function creat_dat {
 cat > $dat_path <<EOF
 # "*"表示不可在脚本中修改的常量,变量值需要用双引号包围,"#@"用于分隔变量名称、备注、匹配正则表达式。
 *dat_Version1="1"             #@版本号              
-Domain="domain.com"           #@一级域名#@不用加www#@
-Email="email@email.com"       #@邮箱#@#@email_regex
-#Cloudflare_api_key="abc"      #@Cloudflare Api
+Domain="domain.com"           #@一级域名#@不用加www
+Email="email@email.com"       #@邮箱
+Cloudflare_api_key="abc"      #@Cloudflare Api
 Chatgpt_api_key="abc"         #@Chatgpt Api
 EOF
 }
@@ -107,9 +107,9 @@ function set_dat {
     # 因为在上面含有IFS= read的循环中，没法再次read到用户的输入数据，因此在循环外处理数据
     for line in "${lines[@]}"; do   
          a=()
-         IFS=$'\n' read -d '' -r -a a <<< $(echo $line | sed 's/#@/\n/g')   # 将 #@ 替换为换行符，并用IFS分隔
-        # echo   "${a[2]}" "${a[3]}" "${a[0]}" "${a[1]}"
-         set "\"" "\"" 1 "true" "false" "false" "${line}" "${a[1]}" "${a[2]}" "${a[3]}"
+         IFS=$'\n' read -d '' -ra a <<< $(echo "$line" | sed 's/#@/\n/g')   # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔
+         IFS="=" read -ra b <<< "$line" 
+         set "${b[0]}\="" "\"" 1 "true" "false" "true" "$dat_path" "${a[1]}" "${a[2]}" "${a[3]}"
     done
 }
 set_dat
