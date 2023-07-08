@@ -996,7 +996,7 @@ function main {
     case $option in
     
     #一级菜单34选项
-        | 3 | 4)
+       3 | 4)
             case $option in
                 3) update "force";;
                 4) one_step ;;
