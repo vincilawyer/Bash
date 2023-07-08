@@ -892,7 +892,8 @@ function Option {
     system_menu=(
     "  1、返回上一级"
     "  2、修改默认配置参数"
-    "  3、修改SSH登录端口和登录密码"
+    "  3、重置默认配置参数"
+    "  4、修改SSH登录端口和登录密码"
     "  0、退出"   
     )
     
@@ -1013,10 +1014,11 @@ function main {
                  #一级菜单1 系统工具选项
                  2) Option ${main_menu[$(($get_option - 1))]} "${system_menu[@]}"
                     case $option in
-                           2 | 3)
+                           2 | 3 | 4)
                                case $option in
                                    2)set_dat;;
-                                   3)change_ssh_port
+                                   3)creat_dat;;
+                                   4)change_ssh_port
                                      change_login_password;;
                                esac
                                wait;;
