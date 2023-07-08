@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.34
+Version=2.35
 
 #定义彩色字体
 RED='\033[0;31m'
@@ -315,19 +315,35 @@ function change_login_password {
 
                                                                           # 安装Docker及Compose插件的函数
 function install_Docker {
-
-    #安装docker
-    curl -fsSL https://get.docker.com -o get-docker.sh
-    sudo sh get-docker.sh
+  if [ -x "$(command -v docker)" ]; then
+        echo -e "${GREEN}Docker已经安装，无需重复安装。当前版本号为 $(docker -v 2>&1)${NC}"
+  else
+    # 安装docker，具体在https://docs.docker.com/engine/install/debian/中查看说明教程
+    # 卸载冲突包
+    for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do sudo apt-get remove $pkg; done
     
-    #安装 Compose CLI 插件，可在 https://docs.docker.com/engine/install 文档中更新下载链接
-    DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
-    mkdir -p $DOCKER_CONFIG/cli-plugins
-    curl -SL https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
-    chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+    # 更新apt包索引并安装包以允许apt通过 HTTPS 使用存储库：
+    sudo apt-get update
+    sudo apt-get install ca-certificates curl gnupg
 
-    #测试安装。
-    docker compose version
+    #添加Docker官方GPG密钥：
+    sudo install -m 0755 -d /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    sudo chmod a+r /etc/apt/keyrings/docker.gpg
+    
+    #使用以下命令设置存储库：
+    echo \
+    "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
+    "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    #更新apt包索引：
+    sudo apt-get update
+    #安装最新版本 Docker 引擎、containerd 和 Docker Compose。
+    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    #通过运行镜像来验证Docker Engine安装是否成功。
+    if docker run hello-world; then echo "Docker安装成功！" ; fi
+  fi   
 }
 
                                                                          # 安装Nginx_Proxy_Manager的函数
@@ -380,8 +396,9 @@ function install_Nginx {
         echo -e "${GREEN}正在调整Nginx配置${NC}"
         download_nginx_config
         #清空nginx对80端口默认服务块的配置内容
-        cat > $default_nginx <<EOF
-        EOF
+cat > $default_nginx <<EOF
+        
+EOF
     fi
 }
 
@@ -809,7 +826,7 @@ function Option {
     "  3、强制更新脚本
 —————————————————————————————————————"
     "  4、一键搭建科学上网服务端"
-    "  5、Docker及Compose管理"
+    "  5、Docker服务"
     "  6、Nginx服务"
     "  7、Warp服务"
     "  8、X-ui服务"
@@ -830,7 +847,7 @@ function Option {
     
     Docker_menu=(
     "  1、返回上一级"
-    "  2、安装Docker及Compose插件"
+    "  2、安装Docker"
     "  0、退出"   
     )
     
