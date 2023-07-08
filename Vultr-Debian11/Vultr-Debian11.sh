@@ -56,7 +56,8 @@ ipv6_regex="^([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|
 port_regex="^([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"
 #大陆手机11位手机号表达式
 tel_regex="^1[3-9]\d{9}$"
-#注释表达式
+#若干#和空格前置的表达式 
+comment_regex="^ *[# ]*"
 
 
 
@@ -134,76 +135,44 @@ function search {
   local found_text=""               # 存储找到的文本
   local count=0                     # 匹配计数器
   
+  #定义awk的脚本代码
+  local awk_script='{
+      if (exact == "true") {
+          startPos = index($0, start);
+          if (startPos > 0) {
+          endPos = index(substr($0, startPos + length(start)), end);
+              if (endPos > 0) {
+                  if (++count == num) {
+                      print substr($0, startPos + length(start), endPos - 1) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
+                      exit;
+                  }
+              }
+          }
+      } else {
+            startPos = index($0, start);
+            if (startPos > 0) {
+              endPos = index(substr($0, startPos + length(start)), end);
+              if (endPos > 0) {
+                  if (++count == num) {
+                      print substr($0, startPos + length(start), endPos - 1) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
+                      exit;
+                  }    
+              } else {  
+                  if (++count == num) {  # 输出第 n 个匹配结果
+                      print substr($0, RSTART + length(start)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
+                      exit;
+                  }
+              }
+           }
+      }
+  }'
+  
   if [ "$is_file" = "true" ]; then    #如果输入的是文件
-  
-  found_text=$(awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v num="$n" '{
-      if (exact == "true") {
-          startPos = index($0, start);
-          if (startPos > 0) {
-          endPos = index(substr($0, startPos + length(start)), end);
-              if (endPos > 0) {
-                  if (++count == num) {
-                      print substr($0, startPos + length(start), endPos - 1) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
-                      exit;
-                  }
-              }
-          }
-      } else {
-            startPos = index($0, start);
-            if (startPos > 0) {
-              endPos = index(substr($0, startPos + length(start)), end);
-              if (endPos > 0) {
-                  if (++count == num) {
-                      print substr($0, startPos + length(start), endPos - 1) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
-                      exit;
-                  }    
-              } else {  
-                  if (++count == num) {  # 输出第 n 个匹配结果
-                      print substr($0, RSTART + length(start)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
-                      exit;
-                  }
-              }
-           }
-      }
-  }' "$input")
-  
+    found_text=$(awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v num="$n" "$awk_script" "$input")
   else   #如果输入的是字符串
-  
-    found_text=$(echo "$input" | awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v num="$n" '{
-
-      #以下内容应当与前面部分一致
-      if (exact == "true") {
-          startPos = index($0, start);
-          if (startPos > 0) {
-          endPos = index(substr($0, startPos + length(start)), end);
-              if (endPos > 0) {
-                  if (++count == num) {
-                      print substr($0, startPos + length(start), endPos - 1) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
-                      exit;
-                  }
-              }
-          }
-      } else {
-            startPos = index($0, start);
-            if (startPos > 0) {
-              endPos = index(substr($0, startPos + length(start)), end);
-              if (endPos > 0) {
-                  if (++count == num) {
-                      print substr($0, startPos + length(start), endPos - 1) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
-                      exit;
-                  }    
-              } else {  
-                  if (++count == num) {  # 输出第 n 个匹配结果
-                      print substr($0, RSTART + length(start)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
-                      exit;
-                  }
-              }
-           }
-      }
-     #以上内容应当与前面部分一致
-    }')
-
+    found_text=$(echo "$input" | awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v num="$n" "$awk_script")
   fi
+  
   if ! $comment; then found_text=${found_text// (注释行)/}; fi
   echo "$found_text"   # 输出找到的文本
 }
@@ -213,25 +182,36 @@ function search {
 function replace() {
   local start_string="$1"         # 开始文本字符串
   local end_string="$2"           # 结束文本字符串
-  local n="${3:-1}"               # 要输出的匹配结果的索引            
+  local n="${3:-1}"               # 匹配结果的索引            
   local exact_match="${4:-True}"  # 是否精确匹配
   local is_file="${5:-True}"      # 是否为文件
-  local input="$6"                # 要搜索的内容
+  local input="$6"                # 要替换的内容
   local comment="${7:-fasle}"      # 是否修改注释行
   local new_text="$8"             # 替换的新文本
   local temp_file="$(mktemp)"
-
-    awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v new="$new_text" -v num="$n" '{
+    
+  #定义awk的脚本代码
+  local awk_script='{
         if (exact == "true") {
              startPos = index($0, start);
              if (startPos > 0) {
                  endPos = index(substr($0, startPos + length(start)), end);
                   if (endPos > 0) {
                       if (++count == num) {
-                          starttext = substr($0, 1 , startPos - 1 + length(start) );
-                          endtext = substr($0, startPos + length(start) + endPos - 1 );
-                          line = starttext new endtext;
-                          print line;
+                          if (comment == "true"  && new == "#" ) {
+                              print "#" $0 
+                          } else {
+                              starttext = substr($0, 1 , startPos - 1 + length(start) );
+                              endtext = substr($0, startPos + length(start) + endPos - 1 );
+                              line = starttext new endtext;
+                              if (comment == "true") {
+                                   match(line, /^[ \#]*/)
+                                   s = substr(line, RSTART, RLENGTH)
+                                   gsub(/\#/, "", s)
+                                   line = s substr(line, RLENGTH + 1)
+                              }
+                              print line;
+                          }
                       } else {
                        print $0;
                       }
@@ -247,18 +227,38 @@ function replace() {
                  endPos = index(substr($0, startPos + length(start)), end);
                   if (endPos > 0) {
                       if (++count == num) {
-                          starttext = substr($0, 1 , startPos - 1 + length(start) );
-                          endtext = substr($0, startPos + length(start) + endPos - 1 );
-                          line = starttext new endtext;
-                          print line;
+                          if (comment == "true"  && new == "#" ) {
+                              print "#" $0 
+                          } else {
+                              starttext = substr($0, 1 , startPos - 1 + length(start) );
+                              endtext = substr($0, startPos + length(start) + endPos - 1 );
+                              line = starttext new endtext;
+                              if (comment == "true") {
+                                   match(line, /^[ \#]*/)
+                                   s = substr(line, RSTART, RLENGTH)
+                                   gsub(/\#/, "", s)
+                                   line = s substr(line, RLENGTH + 1)
+                              }
+                              print line;
+                          }
                       } else {
                        print $0;
                       }
                   } else {
                       if (++count == num) {
-                          starttext = substr($0, 1 , startPos - 1 + length(start) );
-                          line = starttext new;
-                          print line;
+                          if (comment == "true"  && new == "#" ) {
+                              print "#" $0 
+                          } else {
+                              starttext = substr($0, 1 , startPos - 1 + length(start) );
+                              line = starttext new;
+                              if (comment == "true") {
+                                   match(line, /^[ \#]*/)
+                                   s = substr(line, RSTART, RLENGTH)
+                                   gsub(/\#/, "", s)
+                                   line = s substr(line, RLENGTH + 1)
+                              }
+                              print line;
+                          }                      
                       } else {
                        print $0;
                       }
@@ -267,23 +267,35 @@ function replace() {
                  print $0;
              }        
         }         
-    }' "$input" > "$temp_file"
-    mv "$temp_file" "$input"
+    }'
+
+  if [ "$is_file" = "true" ]; then    #如果输入的是文件
+      awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v new="$new_text" -v comment="$comment" -v num="$n" "$awk_script" "$input" > "$temp_file"
+      mv "$temp_file" "$input"
+  else   #如果输入的是字符串
+      temp_text=$(echo "$input" | awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v new="$new_text" -v comment="$comment" -v num="$n" "$awk_script")
+      echo "$found_temp"   # 输出替换的内容
+  fi
 }  
 
                                                                           #查询并修改文本函数
 
 function set {
+  local start_string="$1"         # 开始文本字符串
+  local end_string="$2"           # 结束文本字符串
+  local n="${3:-1}"               # 匹配结果的索引            
+  local exact_match="${4:-True}"  # 是否精确匹配
+  local is_file="${5:-True}"      # 是否为文件
+  local input="$6"                # 要替换的内容
+  local comment="${7:-fasle}"     # 是否修改注释行
+  local mean="$8"                 # 显示搜索和修改内容的含义
+  local mark="$9"                 # 修改内容备注
+  local regex1="${10:-fasle}"     # 内容与正则表达式的真假匹配
+  local regex2="$11"              # 正则表达式
+  local temp_file="$(mktemp)"
 
-local start_string="$1"     # 开始文本字符串
-local end_string="$2"      # 结束文本字符串
-local n="${3:-1}"         # 要输出的匹配结果的索引
-local file="$4"           # 要搜索的文件名
-local exact_match="$5"    # 是否精确匹配
-local mean="$6"          #显示搜索和修改内容的含义
-local mark="$7"          #修改内容备注
-local regex1="$8"         #内容与正则表达式的真假匹配
-local regex2="$9"         #正则表达式
+
+
      text1=""
      text2=""
      text1=$(search "$start_string" "$end_string" "$n" "$file" "$exact_match" true)
@@ -322,59 +334,6 @@ local regex2="$9"         #正则表达式
          fi
      done  
 }
-
-                                                                        #修改文本所在行注释符函数
-
-function modify {
-  local start_string="$1"   # 开始文本字符串
-  local end_string="$2"     # 结束文本字符串
-  local n="${3:-1}"         # 要输出的匹配结果的索引
-  local file="$4"           # 要搜索的文件名
-  local exact_match="$5"    # 是否精确匹配
-  local add_comment="$6"    # 布尔参数，true表示添加注释符，false表示删除注释符
-  local count=0             # 匹配计数器
-  local line_num=0          # 行号
-  
- 
-  line_num=$(awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v num="$n" '{
-      if (exact == "true") {
-          startPos = index($0, start);
-          if (startPos > 0) {
-          endPos = index(substr($0, startPos + length(start)), end);
-              if (endPos > 0) {
-                  if (++count == num) {
-                      print NR;
-                      exit;
-                  }
-              }
-          }
-      } else {
-          startPos = index($0, start);
-          if (startPos > 0) {
-          endPos = index(substr($0, startPos + length(start)), end);
-              if (endPos > 0) {
-                  if (++count == num) {
-                      print NR;
-                      exit;
-                  }
-              } else {
-                  if (++count == num) {
-                      print NR;
-                      exit;
-                  }
-              }
-          }
-      }    
-  }' "$file")
-  
-        local line=$(sed "${line_num}q;d" "$file")
-        if [[ "${add_comment}" == true ]]; then
-            sed -i "${line_num}s/^\(\s*\)/#\1/" "$file"
-        else
-            sed -i "${line_num}s/^#\{0,\}\(\s*\)#*\s*/\1/" "$file"
-        fi
-}
-
 
                                                                           #修改SSH端口及登录密码的函数
 function change_ssh_port {
