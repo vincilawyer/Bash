@@ -2,9 +2,13 @@
 
 #定义等待时间
 Standby=59
-Ver=006
+Ver=007
 #Vultr-Debian11.sh文件网址
 link_Vultr_Debian11="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh"
+#脚本保存路径
+download_path="/usr/local/bin"
+#脚本名称
+name="vinci"
 
 function countdown {
     local from=$1
@@ -18,9 +22,9 @@ function countdown {
 }
 
 function download {
-    wget --no-cache $link_Vultr_Debian11 -O /usr/local/bin/vinci
-    chmod +x /usr/local/bin/vinci
-    Version=$(sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}' /usr/local/bin/vinci)
+    wget --no-cache $link_Vultr_Debian11 -O $download_path/$name
+    chmod +x $download_path/$name
+    Version=$(sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}' $download_path/$name)
     if [[ -z $Version ]]; then
       echo "下载失败，请检查网络！"
       countdown 3
@@ -60,8 +64,8 @@ function execute {
                    break
               fi  
               #强制更新
-              wget --no-cache $link_Vultr_Debian11 -O /usr/local/bin/vinci
-              chmod +x /usr/local/bin/vinci
+              wget --no-cache $link_Vultr_Debian11 -O $download_path/$name
+              chmod +x $download_path/$name
               echo "重新更新完成，当前版本为V$1，正在尝试再次启动！"
               sleep 3
               vinci
