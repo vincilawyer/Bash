@@ -37,7 +37,7 @@ text2=""
   log_nginx="/var/log/nginx/access.log"
 #nginx 80端口默认服务块文件路径
   default_nginx="/etc/nginx/sites-enabled/default"
-#tor路径 (查看配置：nano /etc/tor/torrc)            
+#tor配置路径 (查看配置：nano /etc/tor/torrc)            
   path_tor="/etc/tor/torrc"
 #frp配置文件路径（查看配置：nano /etc/frp/frps.ini）  
   path_frp="/etc/frp"
@@ -89,24 +89,28 @@ function creat_dat {
 cat > $dat_path <<EOF
 # "*"表示不可在脚本中修改的常量,变量值需要用双引号包围,"#@"用于分隔变量名称、备注、匹配正则表达式。
 *dat_Version1="1"             #@版本号              
-Domain="domain.com"           #@一级域名#@不用加www#@domain_regex
+Domain="domain.com"           #@一级域名#@不用加www#@
 Email="email@email.com"       #@邮箱#@#@email_regex
 #Cloudflare_api_key="abc"      #@Cloudflare Api
 Chatgpt_api_key="abc"         #@Chatgpt Api
 EOF
 }
-
+creat_dat
                                                                           # 设置数据
-function set_dat {
-    while IFS= read -r line   # IFS用于指定分隔符，IFS= read -r line 的含义是：在没有任何字段分隔符的情况下（即将IFS设置为空），读取一整行内容并赋值给变量line
-    do
+function set_dat { 
+    lines=()
+    while IFS= read -r line; do   # IFS用于指定分隔符，IFS= read -r line 的含义是：在没有任何字段分隔符的情况下（即将IFS设置为空），读取一整行内容并赋值给变量line
          if [[ $line =~ ^([[:space:]]*[#*]+|[#*]+) ]] ; then continue ; fi  #跳过有注释符和常量符的变量
-         IFS='#@' read -a a <<< "$line"    #找出变量名称及正则表达式
-         set """ """ 1 $line true "${a[2]}" "${a[3]}" false
+         lines+=("$line")    #将每行文本转化为数组     
     done < "$dat_path"
+    
+    # 因为在上面含有IFS= read的循环中，没法再次read到用户的输入数据，因此在循环外处理数据
+    for line in "${lines[@]}"; do   
+         IFS=$'\n' read -d '' -r -a a <<< $(echo $line | sed 's/#@/\n/g') 将 #@ 替换为换行符，并用IFS分隔
+  #set '"' '"' 1 true false false $line "${a[2]}" "${a[3]}" "${a[4]}"
+done
 }
-#creat_dat
-#set_dat
+set_dat
 
                                                                           # 创建用户数据
 #function creat_dat {
@@ -290,10 +294,9 @@ function set {
   local input="$7"                # 要替换的内容
   local mean="$8"                 # 显示搜索和修改内容的含义
   local mark="$9"                 # 修改内容备注
-  local regex="$10"              # 正则表达式
+  local regex="${10}"              # 正则表达式
   local regex1="${11:-fasle}"     # 内容与正则表达式的真假匹配
   local temp_file="$(mktemp)"
-  
      text1=""
      text2=""
      text1=$(search "$start_string" "$end_string" "$n" "$exact_match" "true" "$is_file" "$input")
@@ -308,12 +311,13 @@ function set {
              echo -e "${RED}已跳过$mean设置${NC}"
              return 1
          elif [[ $text2 == "#" ]] && [[ $comment == "true" ]]; then
-             repalce "$start_string" "$end_string" "$n" "$exact_match" "$is_file" "$input" "$comment" "$text2"
+             replace "$start_string" "$end_string" "$n" "$exact_match" "$comment" "$is_file" "$input" "$text2"
              echo -e "${GREEN}已将$mean参数设为注释行${NC}"
              return 1
          elif [[ $text2 =~ $regex ]]; then
                 replace  "$start_string" "$end_string" "$n" "$exact_match" "$comment" "$is_file" "$input" "$text2"
                 echo -e "${GREEN}$mean已修改为$text2${NC}"
+                return 1
          else
                 echo -e "${RED}$mean输入错误，请重新输入${NC}"
          fi
@@ -323,7 +327,7 @@ function set {
                                                                           #修改SSH端口及登录密码的函数
 function change_ssh_port {
     
-    if set "Port " " " 1 false true true $path_ssh "SSH端口" "0-65535，"  $port_regex; then
+    if set "Port " " " 1 false true true $path_ssh "SSH端口" "0-65535，" $port_regex; then
           echo -e "${GREEN}已正从防火墙规则中删除原SSH端口号：${text1// (注释行)/}${NC}"
           ufw delete allow ${text1// (注释行)/}/tcp   
           echo -e "${GREEN}正在将新端口添加进防火墙规则中。${NC}"
