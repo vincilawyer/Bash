@@ -84,7 +84,6 @@ function update {
 update $Version
 
                                                                           # 创建用户数据
-dat_path="/usr/local/bin/vinci.dat"
 function creat_dat {
 cat > $dat_path <<EOF
 # "*"表示不可在脚本中修改的常量,变量值需要用双引号包围,"#@"用于分隔变量名称、备注、匹配正则表达式。
