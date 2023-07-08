@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.43
+Version=2.44
 dat_Version=1
 
 #定义彩色字体
@@ -108,9 +108,10 @@ function set_dat {
          a=()
          IFS=$'\n' read -d '' -ra a <<< $(echo "$line" | sed 's/#@/\n/g')   # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔
          IFS="=" read -ra b <<< "$line" 
-         set "${b[0]}\="" "\"" 1 "true" "false" "true" "$dat_path" "${a[1]}" "${a[2]}" "${a[3]}"
+         set "${b[0]}=\"" "\"" 1 "true" "false" "true" "$dat_path" "${a[1]}" "${a[2]}" "${a[3]}"
     done
 }
+
 set_dat
 
                                                                           # 创建用户数据
