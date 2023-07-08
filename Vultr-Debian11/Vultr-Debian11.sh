@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.38
+Version=2.39
 dat_Version=1
 
 #定义彩色字体
@@ -1016,11 +1016,11 @@ function main {
   fi
 
   #检查用户数据文件是否存在及更新
-  if source $dat_path; then   #读取用户数据
-    echo "未找到配置文件，正在重新创建！"
-    creat_dat
-    set_dat
-  else 
+#  if source $dat_path; then   #读取用户数据
+ #   echo "未找到配置文件，正在重新创建！"
+  #  creat_dat
+   # set_dat
+  #fi
   
   
   #显示页面及选项
