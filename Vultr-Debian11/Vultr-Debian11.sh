@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.48
+Version=2.49
 dat_Version=1
 
 #定义彩色字体
@@ -99,8 +99,7 @@ function creat_dat {
 function set_dat { 
     lines=()
     while IFS= read -r line; do   # IFS用于指定分隔符，IFS= read -r line 的含义是：在没有任何字段分隔符的情况下（即将IFS设置为空），读取一整行内容并赋值给变量line
-         if [[ $line =~ ^([[:space:]]*[#]+|[#]+) ]] ; then continue ; fi  #跳过有注释符变量
-         if [[ $line =~ \*([[:space:]]*|$) ]]; then continue ; fi  #跳过有*常量
+         if [[ ! $line =~ "=" ]] || [[ $line =~ ^([[:space:]]*[#]+|[#]+) ]] || [[ $line =~ \*([[:space:]]*|$) ]] ; then continue ; fi  #跳过不符合条件的行
          lines+=("$line")    #将每行文本转化为数组     
     done < "$dat_path"
     
