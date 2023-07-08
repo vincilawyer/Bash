@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.39
+Version=2.4
 dat_Version=1
 
 #定义彩色字体
@@ -129,9 +129,9 @@ function search {
   local end_string="$2"             # 结束文本字符串
   local n="${3:-1}"                 # 要输出的匹配结果的索引
   local exact_match="${4:-True}"    # 是否精确匹配
-  local is_file="${5:-True}"        # 是否为文件
-  local input="$6"                  # 要搜索的内容
-  local comment="${7:-True}"        # 是否显示注释行
+  local comment="${5:-True}"        # 是否显示注释行
+  local is_file="${6:-True}"        # 是否为文件
+  local input="$7"                  # 要搜索的内容
   local found_text=""               # 存储找到的文本
   local count=0                     # 匹配计数器
   
@@ -184,9 +184,9 @@ function replace() {
   local end_string="$2"           # 结束文本字符串
   local n="${3:-1}"               # 匹配结果的索引            
   local exact_match="${4:-True}"  # 是否精确匹配
-  local is_file="${5:-True}"      # 是否为文件
-  local input="$6"                # 要替换的内容
-  local comment="${7:-fasle}"      # 是否修改注释行
+  local comment="${5:-fasle}"     # 是否修改注释行
+  local is_file="${6:-True}"      # 是否为文件
+  local input="$7"                # 要替换的内容
   local new_text="$8"             # 替换的新文本
   local temp_file="$(mktemp)"
     
@@ -285,18 +285,18 @@ function set {
   local end_string="$2"           # 结束文本字符串
   local n="${3:-1}"               # 匹配结果的索引            
   local exact_match="${4:-True}"  # 是否精确匹配
-  local is_file="${5:-True}"      # 是否为文件
-  local input="$6"                # 要替换的内容
-  local comment="${7:-fasle}"     # 是否修改注释行
+  local comment="${5:-fasle}"     # 是否修改注释行
+  local is_file="${6:-True}"      # 是否为文件
+  local input="$7"                # 要替换的内容
   local mean="$8"                 # 显示搜索和修改内容的含义
   local mark="$9"                 # 修改内容备注
-  local regex1="${10:-fasle}"     # 内容与正则表达式的真假匹配
-  local regex2="$11"              # 正则表达式
+  local regex="$11"              # 正则表达式
+  local regex1="${12:-fasle}"     # 内容与正则表达式的真假匹配
   local temp_file="$(mktemp)"
 
      text1=""
      text2=""
-     text1=$(search "$start_string" "$end_string" "$n" "$exact_match" "$is_file" "$input" true)
+     text1=$(search "$start_string" "$end_string" "$n" "$exact_match" "true" "$is_file" "$input")
      echo
      echo -e "${GREEN}当前的$mean为：$text1${NC}"
      while true; do
@@ -313,7 +313,7 @@ function set {
              return 1
          elif [[ $text2 =~ $regex2 ]]; then
              if $regex1; then
-                replace  "$start_string" "$end_string" "$n" "$exact_match" "$is_file" "$input" "$comment" "$text2"
+                replace  "$start_string" "$end_string" "$n" "$exact_match" "$comment" "$is_file" "$input" "$text2"
                 echo -e "${GREEN}$mean已修改为$text2${NC}"
                 return 0
              else
@@ -323,7 +323,7 @@ function set {
              if $regex1; then
                 echo -e "${RED}$mean输入错误，请重新输入${NC}"
              else
-                replace  "$start_string" "$end_string" "$n" "$exact_match" "$is_file" "$input" "$comment" "$text2"
+                replace  "$start_string" "$end_string" "$n" "$exact_match" "$comment" "$is_file" "$input" "$comment"
                 echo -e "${GREEN}$mean已修改为$text2${NC}"
                 return 0
              fi
@@ -334,7 +334,7 @@ function set {
                                                                           #修改SSH端口及登录密码的函数
 function change_ssh_port {
     
-    if set "Port " " " 1 false true $path_ssh true "SSH端口" "0-65535，"  $port_regex; then
+    if set "Port " " " 1 false true true $path_ssh "SSH端口" "0-65535，"  $port_regex; then
           echo -e "${GREEN}已正从防火墙规则中删除原SSH端口号：${text1// (注释行)/}${NC}"
           ufw delete allow ${text1// (注释行)/}/tcp   
           echo -e "${GREEN}正在将新端口添加进防火墙规则中。${NC}"
@@ -679,11 +679,11 @@ function install_Tor {
 }
                                                                            # 设置Tor配置
 function set_tor_config {
-   set "SocksPort " " " 2 $path_tor false "Tor监听端口" "0-65535，" true "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"
+   set "SocksPort " " " 2 "false" "true" "true" $path_tor "Tor监听端口" "0-65535，" $port_regex
 }
                                                                            # 获取Tor ip
 function ip_tor {
-  text1=$(search "SocksPort " " " 2 false true $path_tor false)
+  text1=$(search "SocksPort " " " 2 "false" "false" "true" $path_tor )
   echo "当前Tor代理IP为："
   curl --socks5-hostname localhost:$text1 http://ip-api.com/line/?fields=status,country,regionName,city,query
   echo
@@ -767,13 +767,14 @@ function install_CF_DNS {
 }
                                                                           # 修改CF_DNS配置的函数
 function set_CF_config {
+#维护中
     if ! [ -e "$path_cfdns" ]; then
         echo "CF_DNS脚本尚未安装，请先安装！"
         return
     fi
-    set "email=\"" "\"" 1 $path_cfdns true "Cloudfare账户邮箱" "" true "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-    set "domain=\"" "\"" 1 $path_cfdns true "Cloudfare绑定域名" "不加www等前缀，" true "^[a-z0-9]+(-[a-z0-9]+)*\.[a-z]{2,}$"
-    set "api_key=\"" "\"" 1 $path_cfdns true "Cloudfare API密钥"
+    set 'email="' '"' 1 $path_cfdns "true" "true" "Cloudfare账户邮箱" "" true "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+    set 'domain="' '"' 1 $path_cfdns true "Cloudfare绑定域名" "不加www等前缀，" true "^[a-z0-9]+(-[a-z0-9]+)*\.[a-z]{2,}$"
+    set 'api_key="' '"' 1 $path_cfdns true "Cloudfare API密钥"
     chmod +x $path_cfdns
 }
 
