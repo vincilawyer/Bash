@@ -334,7 +334,7 @@ function set {
                                                                           #修改SSH端口及登录密码的函数
 function change_ssh_port {
     
-    if set "Port " " " 1 $path_ssh false "SSH端口" "0-65535，" true "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"; then
+    if set "Port " " " 1 false true $path_ssh true "SSH端口" "0-65535，"  $port_regex; then
           echo -e "${GREEN}已正从防火墙规则中删除原SSH端口号：${text1// (注释行)/}${NC}"
           ufw delete allow ${text1// (注释行)/}/tcp   
           echo -e "${GREEN}正在将新端口添加进防火墙规则中。${NC}"
@@ -683,7 +683,7 @@ function set_tor_config {
 }
                                                                            # 获取Tor ip
 function ip_tor {
-  text1=$(search "SocksPort " " " 2 $path_tor false false)
+  text1=$(search "SocksPort " " " 2 false true $path_tor false)
   echo "当前Tor代理IP为："
   curl --socks5-hostname localhost:$text1 http://ip-api.com/line/?fields=status,country,regionName,city,query
   echo
