@@ -306,7 +306,7 @@ function set {
      echo -e "${GREEN}当前的$mean为：$text1${NC}"
      while true; do
          #-r选项告诉read命令不要对反斜杠进行转义，避免误解用户输入。-e选项启用反向搜索功能，这样用户在输入时可以通过向左箭头键或Ctrl + B键来移动光标并修改输入。
-         read -r -e -p "$(echo -e ${BLUE}"请设置新的$mean（$mark输入为空则跳过，#则设为注释行）：${NC}")" text2
+         read -r -e -p "$(echo -e ${BLUE}"请设置新的$mean（$mark输入为空则跳过$( [[ $coment == "true" ]] && echo "，#则设为注释行")）：${NC}")" text2
          #s/^[[:space:]]*//表示将输入字符串中开头的任何空格字符替换为空字符串；s/[[:space:]]*$//表示将输入字符串结尾的任何空格字符替换为空字符串。
          text2="$(echo -e "${text2}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
          if [[ -z "$text2" ]]; then
