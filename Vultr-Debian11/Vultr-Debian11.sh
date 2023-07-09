@@ -63,7 +63,7 @@ comment_regex="^ *[# ]*"
 dat_text='# 该文件为vinci用户配置文本
 # "*"表示不可在脚本中修改的常量,变量值需要用双引号包围,"#@"用于分隔变量名称、备注、匹配正则表达式。
 dat_Version1="1"              #@版本号*              
-Domain="domain.com"           #@一级域名#@不用加www
+Domain="d23ain.com"           #@一级域名#@不用加www
 Email="email@email.com"       #@邮箱
 Cloudflare_api_key="abc"      #@Cloudflare Api
 Chatgpt_api_key="abc"         #@Chatgpt Api
@@ -115,21 +115,27 @@ function set_dat {
                                                                           # 创建用户数据
 function update_dat {
     lines=()
-    dat_text1=$dat_text
+    #dat_text1=$dat_text
     while IFS= read -r line; do   
-         if [[ ! $line =~ "=" ]] || [[ $line =~ ^([[:space:]]*[#]+|[#]+) ]] || [[ $line =~ \*([[:space:]]*|$) ]] ; then continue ; fi  #跳过不符合条件的行
          lines+=("$line")    #将每行文本转化为数组     
     done <<< "$dat_text" 
-    
-    for line in "${lines[@]}"; do   
+
+    for index in "${!lines[@]}"; do   
+         line=${lines[$index]}
+         if [[ ! $line =~ "=" ]] || [[ $line =~ ^([[:space:]]*[#]+|[#]+) ]] || [[ $line =~ \*([[:space:]]*|$) ]] ; then continue ; fi  #跳过不符合条件的行
          a=()
          IFS=$'\n' read -d '' -ra a <<< $(echo "$line" | sed 's/#@/\n/g')   # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔
          IFS="=" read -ra b <<< "$line" 
-         set "${b[0]}=\"" "\"" 1 "true" "false" "true" "$dat_path" "${a[1]}" "${a[2]}" "${a[3]}"
+         echo ${!b[0]}
+         lines[$index]=1
+         #$(replace '"' '"' 1 "true" "false" "false" "$line"  ${!b[0]})
     done
     
-    
+    for line in "${lines[@]}"; do   
+          echo $line
+    done   
 }
+update_dat
 
 # awk '{
     
