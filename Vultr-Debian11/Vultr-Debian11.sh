@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.50
+Version=2.51
 dat_Version=1
 
 #定义彩色字体
@@ -63,7 +63,7 @@ comment_regex="^ *[# ]*"
 dat_text='# 该文件为vinci用户配置文本
 # "*"表示不可在脚本中修改的常量,变量值需要用双引号包围,"#@"用于分隔变量名称、备注、匹配正则表达式。
 dat_Version1="1"              #@版本号*              
-Domain="d23ain.com"           #@一级域名#@不用加www
+Domain="domain.com"           #@一级域名#@不用加www
 Email="email@email.com"       #@邮箱
 Cloudflare_api_key="abc"      #@Cloudflare Api
 Chatgpt_api_key="abc"         #@Chatgpt Api
@@ -126,29 +126,14 @@ function update_dat {
          a=()
          IFS=$'\n' read -d '' -ra a <<< $(echo "$line" | sed 's/#@/\n/g')   # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔
          IFS="=" read -ra b <<< "$line" 
-         echo ${!b[0]}
-         lines[$index]=1
-         #$(replace '"' '"' 1 "true" "false" "false" "$line"  ${!b[0]})
+         #去除前后空格
+         b[0]="${b[0]#"${b[0]%%[![:space:]]*}"}"  
+         b[0]="${b[0]%"${b[0]##*[![:space:]]}"}"
+         lines[$index]=$(replace '"' '"' 1 "true" "false" "false" "$line"  ${!b[0]})
     done
-    
-    for line in "${lines[@]}"; do   
-          echo $line
-    done   
+    printf '%s\n' "${lines[@]}"  > "$dat_path" 
+    nano "$dat_path"
 }
-update_dat
-
-# awk '{
-    
- # if ($0 ~ /^([[:space:]]*[#*]+|[#*]+)/) {next} #跳过有注释符和常量符的变量
-  #    split($0, a, "#@");    #找出变量注释
-   #   gsub(/^ *| *$/, "", a[2]);   #剔除注释前后空格
-    #           a[2]="${a[2]#"${a[2]%%[![:space:]]*}"}"
-     #    a[2]="${a[2]%"${a[2]##*[![:space:]]}"}"
-
-   #   print a[2];
-
- #   }' $dat_path 
-#}
                                                                           #查询文本内容函数
 
 function search {
@@ -301,7 +286,7 @@ function replace() {
       mv "$temp_file" "$input"
   else   #如果输入的是字符串
       temp_text=$(echo "$input" | awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v new="$new_text" -v comment="$comment" -v num="$n" "$awk_script")
-      echo "$found_temp"   # 输出替换的内容
+      echo "$temp_text"   # 输出替换的内容
   fi
 }  
 
@@ -1005,7 +990,7 @@ function main {
         wait
   elif ! [ $dat_Version1 == $dat_Version ] ; then
         echo "配置文件更新中..."
-        #update_dat
+        update_dat
         echo "更新完成，请重新设置配置参数！"
         set_dat
         echo "已完成配置！"
