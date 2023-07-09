@@ -6,16 +6,18 @@
 ###          目  录        
 ###   1.参数               
 ###   2.更新检查模块        
-###   3.用户数据管理模块     
-###   4.文本管理模块        
-###   5.开发工具
-###   6.系统工具
-###   7.Docker
-###   8.Nginx
-###   9.Xui
-###   10.Cloudflare
-###   11.Tor
-###   12.Frp
+###   3.主函数
+###   4.UI模块
+###   5.用户数据管理模块     
+###   6.文本管理模块        
+###   7.开发工具
+###   8.系统工具
+###   9.Docker
+###   10.Nginx
+###   11.Xui
+###   12.Cloudflare
+###   13.Tor
+###   14.Frp
 ############################
 
 ####### 版本号 ######
@@ -146,6 +148,350 @@ function bar() {
 #######   设置当脚本遇到错误时强制更新  #######   
 trap 'update_force' ERR
 
+#############################################################################################################################################################################################
+##############################################################################   3.主函数  ################################################################################################
+############################################################################################################################################################################################
+
+function main {
+  #######   判断系统适配     #######   
+  if [ ! $(lsb_release -rs) = "11" ]; then 
+  echo "请注意，本脚本是适用于Vulre服务器Debian11系统，用于其他系统或版本时将可能出错！"
+  wait
+  fi
+
+  #######   检查用户数据文件  #######   
+  if ! source $dat_path; then   #读取用户数据
+        echo "未找到配置文件，正在新建数据..."
+        creat_dat
+        echo "新建完成，请设置配置参数！"
+        set_dat
+        echo "已完成配置！"
+        wait
+  elif ! [ $dat_Version1 == $dat_Version ] ; then
+        echo "配置文件更新中..."
+        update_dat
+        echo "更新完成，请重新设置配置参数！"
+        set_dat
+        echo "已完成配置！"
+        wait
+  fi
+
+
+  while true; do     #显示页面及选项
+  
+  #######   主菜单选项  ######
+    main_menu=(
+    "  1、系统设置"
+    "  2、UFW防火墙管理"
+    "  3、Docker服务"
+    "  4、Nginx服务"
+    "  5、X-ui服务"
+    "  6、Cloudflare服务"
+    "  7、Tor服务"
+    "  8、Frp服务"
+    "  9、Chatgpt-Docker服务"
+"—————————————————————————————————————  
+  0、退出")
+    Option "请选择以下操作选项" "${main_menu[@]}"
+    case $option in
+    
+    #一级菜单34选项
+       3 | 4)
+            case $option in
+                3) update "true";;
+                4) one_step ;;
+            esac
+            wait;;
+            
+     #一级菜单2、5、6至12选项
+       1 | 2 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12)
+       
+            get_option=$option
+            while true; do
+               case $get_option in
+
+###### 1、系统设置  ######
+    system_menu=(
+    "  1、返回上一级"
+    "  2、修改默认配置参数"
+    "  3、重置默认配置参数"
+    "  4、修改SSH登录端口和登录密码"
+    "  0、退出" )
+                 1) Option ${main_menu[$(($get_option - 1))]} "${system_menu[@]}"
+                    case $option in
+                           2 | 3 | 4)
+                               case $option in
+                                   2)set_dat;;
+                                   3)if cofirm "是否重置默认配置参数？" "已取消重置"; then return; fi
+                                   echo "默认配置已重置！"
+                                   creat_dat;;
+                                   4)change_ssh_port
+                                     change_login_password;;
+                               esac
+                               wait;;
+                          1)break;;
+                          *)input_error;;
+                    esac;;
+                    
+###### 2、UFW防火墙管理  ###### 
+      NFW_menu=(
+    "  1、返回上一级"
+    "  2、启动防火墙"
+    "  3、关闭防火墙"
+    "  4、查看防火墙规则"
+    "  0、退出")                  
+                 2) Option ${main_menu[$(($get_option - 1))]} "${NFW_menu[@]}"
+                    case $option in
+                           2 | 3 | 4)
+                               case $option in
+                                   2)sudo ufw enable;;
+                                   3)sudo ufw disable;;
+                                   4)sudo ufw status verbose;; 
+                               esac
+                               wait;;
+                          1)break;;
+                          *)input_error;;
+                    esac;;
+                 
+                 #一级菜单5 Docker选项
+                 5) Option ${main_menu[$(($get_option - 1))]} "${Docker_menu[@]}"
+                    case $option in
+                           2)
+                               case $option in
+                                   2)install_Docker;;
+                               esac
+                               wait;;
+                          1)break;;
+                          *)input_error;;
+                    esac;;
+
+    
+                  #一级菜单6 Nginx选项
+                 6) Option ${main_menu[$(($get_option - 1))]} "${Nginx_menu[@]}"
+                    case $option in
+                           2 | 3 | 4 | 5 | 6 | 7 | 8)
+                               case $option in
+                                   2)install_Nginx_PM;;
+                                   3)install_Nginx;;
+                                   4)apply_ssl_certificate;;
+                                   5)download_nginx_config;;
+                                   6)set_nginx_config;;
+                                   7)restart "nginx";;
+                                   8)nano /var/log/nginx/access.log;;
+                               esac
+                               wait;;
+                          1)break;;
+                          *)input_error;;
+                    esac;;
+                                            
+                  #一级菜单7 Warp选项
+                  7) Option ${main_menu[$(($get_option - 1))]} "${Warp_menu[@]}" 
+                        case $option in
+                           2)
+                               case $option in
+                                   2)install_Warp;;
+                               esac
+                               wait;;
+                          1)break;;
+                          *)input_error;;
+                        esac;;
+                        
+                  #一级菜单8 Xui选项
+                  8)Option ${main_menu[$(($get_option - 1))]} "${Xui_menu[@]}" 
+                        case $option in
+                            2 | 3)
+                               case $option in
+                                   2)install_Xui;;
+                                   3)x-ui;;
+                               esac
+                               wait;;
+                           1)break;;
+                           *)input_error;;
+                        esac;;     
+                        
+                  #一级菜单9 Tor选项
+                  9)Option ${main_menu[$(($get_option - 1))]} "${Tor_menu[@]}" 
+                        case $option in
+                            2 | 3 | 4 | 5)
+                               case $option in
+                                   2)install_Tor;;
+                                   3)set_tor_config;;
+                                   4)restart "tor"
+                                   ip_tor;;
+                                   5)ip_tor;;
+                               esac
+                               wait;;
+                           1)break;;
+                           *)input_error;;
+                        esac;; 
+                        
+                  #一级菜单10 Frp选项
+                  10)Option ${main_menu[$(($get_option - 1))]} "${Frp_menu[@]}" 
+                        case $option in
+                            2 | 3 | 4 | 5)
+                               case $option in
+                                   2)install_Frp;;
+                                   3)reset_Frp;;
+                                   4)set_tor_config;;
+                                   5)restart "frps";;
+                               esac
+                               wait;;
+                           1)break;;
+                           *)input_error;;
+                        esac;;       
+                        
+                   #一级菜单11 cfdns选项
+                  11)Option ${main_menu[$(($get_option - 1))]} "${Cf_DNS_menu[@]}" 
+                        case $option in
+                            2 | 3 | 4)
+                               case $option in
+                                   2)cfdns;;
+                                   3)install_CF_DNS;;
+                                   4)set_CF_config;;
+                               esac
+                               wait;;
+                           1)break;;
+                           *)input_error;;
+                        esac;;                           
+                        
+                  #一级菜单12 Chatgpt选项
+                  12)Option ${main_menu[$(($get_option - 1))]} "${Chatgpt_menu[@]}" 
+                        case $option in
+                            2 | 3 | 4)
+                               case $option in
+                                   2)if cofirm "是否启动Chatgpt？" "已取消启动Chatgpt"; then continue;fi
+                                     cd ~/ChatGPT-Next-Web
+                                     pm2 start chat.config.js;;
+                                   3)pm2 list;;
+                                   4)cd ~/ChatGPT-Next-Web
+                                     chatgpt;;
+                               esac
+                               wait;;
+                           1)break;;
+                           *)input_error;;
+                        esac;;  
+                esac
+           done;;    
+       #一级菜单其他选项  
+       *) input_error;;
+     esac
+  done   
+}
+#############################################################################################################################################################################################
+##############################################################################   9.UI模块  ################################################################################################
+############################################################################################################################################################################################
+
+######   页面显示   ######
+function Page {
+clear
+art=$(cat << "EOF"
+  __     __                         _   _           ____                   
+  \ \   /"/u          ___          | \ |"|       U /"___|         ___      
+    \ \ / //          |_"_|        <|  \| |>      \| | u          |_"_|     
+    /\ V /_,-.         | |         U| |\  |u       | |/__          | |      
+   U  \_/-(_/        U/| |\u        |_| \_|         \____|       U/| |\u    
+     //           .-,_|___|_,-.     ||   \\,-.     _// \\     .-,_|___|_,-. 
+    (__)           \_)-' '-(_/      (_")  (_/     (__)(__)     \_)-' '-(_/ 
+EOF
+)
+
+  echo
+  echo -e "${RED}${art}${NC}"
+  echo
+  echo
+  echo "                   欢迎进入Vinci服务器管理系统(版本V$Version)"
+  echo
+  echo "=========================== "$1" =============================="
+  echo 
+}
+
+###### 显示选项  ######
+function Option {
+  Page $1
+  #展示选项
+  for menu in "${@:2}"
+  do
+    echo "$menu"
+  done
+  echo
+  echo -n "  请按序号选择操作: "
+  #监听输入
+  read option
+  clear
+  if [ "$option" == "0" ]; then
+      exit 0
+  fi
+  echo
+}
+#######   输入错误提示  #######    
+function input_error {
+       echo -e "${RED}输入错误，请重新输入${NC}"
+       countdown 1
+}
+
+# 定义菜单选项
+
+
+    
+
+    
+    Docker_menu=(
+    "  1、返回上一级"
+    "  2、安装Docker"
+    "  3、查看Docker容器"
+    "  0、退出"   
+    )
+    
+    Nginx_menu=(
+    "  1、返回上一级"
+    "  2、安装Nginx"
+    "  4、从github下载\更新配置文件"
+    "  5、设置Nginx配置（第一次使用需设置）"
+    "  6、重启Nginx"
+    "  7、查看Nginx日志"
+    "  0、退出"   
+    )
+    
+    Xui_menu=(
+    "  1、返回上一级"
+    "  2、安装\更新Xui面板"
+    "  3、进入Xui面板管理（指令:x-ui）"
+    "  0、退出" 
+    )
+    
+    Tor_menu=(
+    "  1、返回上一级"
+    "  2、安装Tor"
+    "  3、设置Tor配置（第一次使用需设置）"
+    "  4、重启Tor"
+    "  5、IP信息"
+    "  0、退出"
+    )
+    
+    Frp_menu=(
+    "  1、返回上一级"
+    "  2、安装Frp"
+    "  3、初始化Frp配置"
+    "  4、设置Frp配置"
+    "  5、重启Frp"
+    "  0、退出"
+    )
+    
+    Cf_menu=(
+    "  1、返回上一级"
+    "  2、启动Cf_DNS脚本面板"
+    "  3、下载\更新CF_DNS脚本"
+    "  4、设置脚本配置（第一次使用需设置）"
+    "下载warp"
+    "  0、退出"
+    )
+    Chatgpt_menu=(
+    "  1、返回上一级"
+    "  2、启动Chatgpt"
+    "  3、查看Chatgpt运行状态"
+    "  4、Chatgpt更新脚本"
+    "  0、退出"
+    )
 #############################################################################################################################################################################################
 ##############################################################################   3.用户数据管理模块  ################################################################################################
 ############################################################################################################################################################################################
@@ -465,12 +811,6 @@ function confirm {
    return 0
 }
 
-#######   输入错误提示  #######    
-function input_error {
-       echo -e "${RED}输入错误，请重新输入${NC}"
-       countdown 1
-}
-
 #############################################################################################################################################################################################
 ##############################################################################   6.系 统 工 具  ################################################################################################
 ############################################################################################################################################################################################
@@ -594,7 +934,7 @@ function install_Nginx {
 
                                                                            # 从github下载更新Nginx配置文件
 function download_nginx_config {
-      if choose "是否从Github下载更新Nginx配置文件？此举动将覆盖原配置文件" "已取消下载更新Nginx配置文件"; then return;fi
+      if cofirm "是否从Github下载更新Nginx配置文件？此举动将覆盖原配置文件" "已取消下载更新Nginx配置文件"; then return;fi
       echo -e "${GREEN}正在载入：${NC}"
       if wget $link_nginx -O $path_nginx; then 
          echo -e "${GREEN}载入完毕，第一次使用请设置配置：${NC}"
@@ -636,7 +976,7 @@ function set_nginx_config {
 function download_html {
    echo "维护中..."
    return
-   if choose "此操作将从Github的vincilawyer/Bash/nginx/html目录下载入网页文件，并覆盖原网页文件！" "已取消下载更新网页文件"; then return;fi
+   if cofirm "此操作将从Github的vincilawyer/Bash/nginx/html目录下载入网页文件，并覆盖原网页文件！" "已取消下载更新网页文件"; then return;fi
     #输入主题名称
     read -p "请输入网页主题名称（例如Moon）：" input
     if [[ -z $input ]]; then 
@@ -870,7 +1210,7 @@ EOF
    fi
 }
 function reset_Frp {
-if choose "是否重置Frp配置" "已取消重置！"; then return;fi 
+if cofirm "是否重置Frp配置" "已取消重置！"; then return;fi 
 cat > $path_frp/frps.ini <<EOF
 [common]
 # 服务端监听端口
@@ -893,7 +1233,7 @@ EOF
 
                                                                           # 安装CF_DNS的函数
 function install_CF_DNS {
-    if choose "是否从Github下载更新CF_DNS脚本文件？此举动将覆盖原脚本文件。" "已取消下载更新CF_DNS脚本文件"; then return; fi
+    if cofirm "是否从Github下载更新CF_DNS脚本文件？此举动将覆盖原脚本文件。" "已取消下载更新CF_DNS脚本文件"; then return; fi
     #安装jq
     echo "正在安装依赖软件JQ..."
     if [ -x "$(command -v jq)" ]; then
@@ -923,7 +1263,7 @@ function set_CF_config {
 
                                                                           # 一键搭建服务端的函数
 function one_step {
-   if choose "是否一键搭建科学上网服务端？" "已取消一键搭建科学上网服务端"; then return;fi
+   if cofirm "是否一键搭建科学上网服务端？" "已取消一键搭建科学上网服务端"; then return;fi
    echo "正在安装X-ui面板"
    install_Xui
    wait "点击任意键安装Nginx"
@@ -941,345 +1281,6 @@ function restart {
 
 
 
- 
-                                                                         # 页面显示函数
-function Page {
-clear
-art=$(cat << "EOF"
-  __     __                         _   _           ____                   
-  \ \   /"/u          ___          | \ |"|       U /"___|         ___      
-    \ \ / //          |_"_|        <|  \| |>      \| | u          |_"_|     
-    /\ V /_,-.         | |         U| |\  |u       | |/__          | |      
-   U  \_/-(_/        U/| |\u        |_| \_|         \____|       U/| |\u    
-     //           .-,_|___|_,-.     ||   \\,-.     _// \\     .-,_|___|_,-. 
-    (__)           \_)-' '-(_/      (_")  (_/     (__)(__)     \_)-' '-(_/ 
-EOF
-)
-
-  echo
-  echo -e "${RED}${art}${NC}"
-  echo
-  echo
-  echo "                   欢迎进入Vinci服务器管理系统(版本V$Version)"
-  echo
-  echo "=========================== "$1" =============================="
-  echo 
-}
-                                                                          # 选择内容函数
-function Option {
-  Page $1
-  #展示选项
-  for menu in "${@:2}"
-  do
-    echo "$menu"
-  done
-  echo
-  echo -n "  请按序号选择操作: "
-  #监听输入
-  read option
-  clear
-  if [ "$option" == "0" ]; then
-      exit 0
-  fi
-  echo
-}
-
-
-# 定义菜单选项
-    main_menu=(
-    "  1、系统设置"
-    "  2、UFW防火墙管理"
-    "  3、强制更新脚本
-—————————————————————————————————————"
-    "  4、一键搭建科学上网服务端"
-    "  5、Docker服务"
-    "  6、Nginx服务"
-    "  7、Warp服务"
-    "  8、X-ui服务"
-    "  9、Tor服务"
-    "  10、Frp服务"
-    "  11、CF-DNS脚本" 
-    "  12、Chatgpt-Docker服务"
-"—————————————————————————————————————  
-  0、退出"
-    )
-    system_menu=(
-    "  1、返回上一级"
-    "  2、修改默认配置参数"
-    "  3、重置默认配置参数"
-    "  4、修改SSH登录端口和登录密码"
-    "  0、退出"   
-    )
-    
-    NFW_menu=(
-    "  1、返回上一级"
-    "  2、启动防火墙"
-    "  3、关闭防火墙"
-    "  4、查看防火墙规则"
-    "  0、退出"   
-    )
-    
-    Docker_menu=(
-    "  1、返回上一级"
-    "  2、安装Docker"
-    "  0、退出"   
-    )
-    
-    Nginx_menu=(
-    "  1、返回上一级"
-    "  2、安装Nginx Proxy Manager"
-    "  3、安装Nginx"
-    "  4、使用Certbot申请SSL证书"
-    "  5、从github下载更新配置文件"
-    "  6、设置Nginx配置（第一次使用需设置）"
-    "  7、重启Nginx"
-    "  8、查看Nginx日志"
-    "  0、退出"   
-    )
-    Xui_menu=(
-    "  1、返回上一级"
-    "  2、安装\更新Xui面板"
-    "  3、进入Xui面板管理（指令:x-ui）"
-    "  0、退出" 
-    )
-    Warp_menu=(
-    "  1、返回上一级"
-    "  2、安装Warp"
-    "  0、退出"
-    )
-    Tor_menu=(
-    "  1、返回上一级"
-    "  2、安装Tor"
-    "  3、设置Tor配置（第一次使用需设置）"
-    "  4、重启Tor"
-    "  5、IP信息"
-    "  0、退出"
-    )
-    Frp_menu=(
-    "  1、返回上一级"
-    "  2、安装Frp"
-    "  3、初始化Frp配置"
-    "  4、设置Frp配置"
-    "  5、重启Frp"
-    "  0、退出"
-    )
-    Cf_DNS_menu=(
-    "  1、返回上一级"
-    "  2、启动Cf_DNS脚本面板"
-    "  3、下载\更新CF_DNS脚本"
-    "  4、设置脚本配置（第一次使用需设置）"
-    "  0、退出"
-    )
-    Chatgpt_menu=(
-    "  1、返回上一级"
-    "  2、启动Chatgpt"
-    "  3、查看Chatgpt运行状态"
-    "  4、Chatgpt更新脚本"
-    "  0、退出"
-    )
-
-
-                                                                           # 主函数
-function main {
-  #判断系统是否适配
-  if [ ! $(lsb_release -rs) = "11" ]; then 
-  echo "请注意，本脚本是适用于Vulre服务器Debian11系统，用于其他系统或版本时将可能出错！"
-  wait
-  fi
-
-  #检查用户数据文件是否存在及更新
-  if ! source $dat_path; then   #读取用户数据
-        echo "未找到配置文件，正在新建数据..."
-        creat_dat
-        echo "新建完成，请设置配置参数！"
-        set_dat
-        echo "已完成配置！"
-        wait
-  elif ! [ $dat_Version1 == $dat_Version ] ; then
-        echo "配置文件更新中..."
-        update_dat
-        echo "更新完成，请重新设置配置参数！"
-        set_dat
-        echo "已完成配置！"
-        wait
-  fi
-
-  #显示页面及选项
-  while true; do
-    Option "请选择以下操作选项" "${main_menu[@]}"
-    case $option in
-    
-    #一级菜单34选项
-       3 | 4)
-            case $option in
-                3) update "true";;
-                4) one_step ;;
-            esac
-            wait;;
-            
-     #一级菜单2、5、6至12选项
-       1 | 2 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12)
-       
-            get_option=$option
-            while true; do
-               case $get_option in
-
-                 #一级菜单1 系统工具选项
-                 1) Option ${main_menu[$(($get_option - 1))]} "${system_menu[@]}"
-                    case $option in
-                           2 | 3 | 4)
-                               case $option in
-                                   2)set_dat;;
-                                   3)if choose "是否重置默认配置参数？" "已取消重置"; then return; fi
-                                   echo "默认配置已重置！"
-                                   creat_dat;;
-                                   4)change_ssh_port
-                                     change_login_password;;
-                               esac
-                               wait;;
-                          1)break;;
-                          *)error_option;;
-                    esac;;
-                    
-                 #一级菜单2 防火墙选项
-                 2) Option ${main_menu[$(($get_option - 1))]} "${NFW_menu[@]}"
-                    case $option in
-                           2 | 3 | 4)
-                               case $option in
-                                   2)sudo ufw enable;;
-                                   3)sudo ufw disable;;
-                                   4)sudo ufw status verbose;; 
-                               esac
-                               wait;;
-                          1)break;;
-                          *)error_option;;
-                    esac;;
-                 
-                 #一级菜单5 Docker选项
-                 5) Option ${main_menu[$(($get_option - 1))]} "${Docker_menu[@]}"
-                    case $option in
-                           2)
-                               case $option in
-                                   2)install_Docker;;
-                               esac
-                               wait;;
-                          1)break;;
-                          *)error_option;;
-                    esac;;
-
-    
-                  #一级菜单6 Nginx选项
-                 6) Option ${main_menu[$(($get_option - 1))]} "${Nginx_menu[@]}"
-                    case $option in
-                           2 | 3 | 4 | 5 | 6 | 7 | 8)
-                               case $option in
-                                   2)install_Nginx_PM;;
-                                   3)install_Nginx;;
-                                   4)apply_ssl_certificate;;
-                                   5)download_nginx_config;;
-                                   6)set_nginx_config;;
-                                   7)restart "nginx";;
-                                   8)nano /var/log/nginx/access.log;;
-                               esac
-                               wait;;
-                          1)break;;
-                          *)error_option;;
-                    esac;;
-                                            
-                  #一级菜单7 Warp选项
-                  7) Option ${main_menu[$(($get_option - 1))]} "${Warp_menu[@]}" 
-                        case $option in
-                           2)
-                               case $option in
-                                   2)install_Warp;;
-                               esac
-                               wait;;
-                          1)break;;
-                          *)error_option;;
-                        esac;;
-                        
-                  #一级菜单8 Xui选项
-                  8)Option ${main_menu[$(($get_option - 1))]} "${Xui_menu[@]}" 
-                        case $option in
-                            2 | 3)
-                               case $option in
-                                   2)install_Xui;;
-                                   3)x-ui;;
-                               esac
-                               wait;;
-                           1)break;;
-                           *)error_option;;
-                        esac;;     
-                        
-                  #一级菜单9 Tor选项
-                  9)Option ${main_menu[$(($get_option - 1))]} "${Tor_menu[@]}" 
-                        case $option in
-                            2 | 3 | 4 | 5)
-                               case $option in
-                                   2)install_Tor;;
-                                   3)set_tor_config;;
-                                   4)restart "tor"
-                                   ip_tor;;
-                                   5)ip_tor;;
-                               esac
-                               wait;;
-                           1)break;;
-                           *)error_option;;
-                        esac;; 
-                        
-                  #一级菜单10 Frp选项
-                  10)Option ${main_menu[$(($get_option - 1))]} "${Frp_menu[@]}" 
-                        case $option in
-                            2 | 3 | 4 | 5)
-                               case $option in
-                                   2)install_Frp;;
-                                   3)reset_Frp;;
-                                   4)set_tor_config;;
-                                   5)restart "frps";;
-                               esac
-                               wait;;
-                           1)break;;
-                           *)error_option;;
-                        esac;;       
-                        
-                   #一级菜单11 cfdns选项
-                  11)Option ${main_menu[$(($get_option - 1))]} "${Cf_DNS_menu[@]}" 
-                        case $option in
-                            2 | 3 | 4)
-                               case $option in
-                                   2)cfdns;;
-                                   3)install_CF_DNS;;
-                                   4)set_CF_config;;
-                               esac
-                               wait;;
-                           1)break;;
-                           *)error_option;;
-                        esac;;                           
-                        
-                  #一级菜单12 Chatgpt选项
-                  12)Option ${main_menu[$(($get_option - 1))]} "${Chatgpt_menu[@]}" 
-                        case $option in
-                            2 | 3 | 4)
-                               case $option in
-                                   2)if choose "是否启动Chatgpt？" "已取消启动Chatgpt"; then continue;fi
-                                     cd ~/ChatGPT-Next-Web
-                                     pm2 start chat.config.js;;
-                                   3)pm2 list;;
-                                   4)cd ~/ChatGPT-Next-Web
-                                     chatgpt;;
-                               esac
-                               wait;;
-                           1)break;;
-                           *)error_option;;
-                        esac;;  
-                esac
-           done;;    
-       #一级菜单其他选项  
-       *) error_option;;
-     esac
-  done
-    
-}
 
                                                                            # 调用主函数
 main
