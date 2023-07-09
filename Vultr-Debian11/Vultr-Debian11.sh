@@ -91,7 +91,7 @@ update
 # 当脚本出错时，强制更新
 function update_force() {
     echo "当前脚本运行出现错误！"
-    if bar 60 "即将更新尝试强制更新！...输入任意键退出" "开始强制更新" true "已取消强制更新！"; then return;fi
+    if bar 60 "即将更新尝试强制更新！...输入任意键退出" "开始强制更新" true "已取消强制更新！"; then return; fi
     update "true"
     exit
 }
@@ -492,7 +492,7 @@ services:
 
                                                                            # 安装Nginx的函数（设置配置、更新、上传网页等）
 function install_Nginx {
-    if install_already "nginx" ;then return;fi  #检验安装
+       if install_already "nginx" ;then return;fi  #检验安装
         echo -e "${GREEN}正在更新包列表${NC}"
         apt-get update
         echo -e "${GREEN}包列表更新完成${NC}"
@@ -508,12 +508,12 @@ function install_Nginx {
 
                                                                            # 从github下载更新Nginx配置文件
 function download_nginx_config {
-    if choose "是否从Github下载更新Nginx配置文件？此举动将覆盖原配置文件" "已取消下载更新Nginx配置文件"; then return;fi
-         echo -e "${GREEN}正在载入：${NC}"
-         if wget $link_nginx -O $path_nginx; then 
-            echo -e "${GREEN}载入完毕，第一次使用请设置配置：${NC}"
-            set_nginx_config
-         else
+      if choose "是否从Github下载更新Nginx配置文件？此举动将覆盖原配置文件" "已取消下载更新Nginx配置文件"; then return;fi
+      echo -e "${GREEN}正在载入：${NC}"
+      if wget $link_nginx -O $path_nginx; then 
+         echo -e "${GREEN}载入完毕，第一次使用请设置配置：${NC}"
+        set_nginx_config
+    else
             echo -e "${GREEN}下载失败，请检查！${NC}"
          fi       
 }
