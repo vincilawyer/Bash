@@ -27,7 +27,7 @@ if [[ -z $current_Version ]]; then
     download "Linux管理系统V"$Version"版本已下载完成，即将进入系统！"   
     exit
 #强制更新
-elif [ "$force" == "true" ]
+elif [ "$force" == "true" ]; then
     echo "当前版本号为：V${current_Version}"
     echo "最新版本号为：V${Version}，即将强制更新脚本..."
     download "Linux管理系统V"$Version"版本已强制更新完成，即将重启管理系统！"
