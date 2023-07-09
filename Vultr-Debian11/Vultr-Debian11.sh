@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.56
+Version=2.57
 dat_Version=1
 
 #定义彩色字体
@@ -17,9 +17,9 @@ NC='\033[0m'
 #用户选择序号                                     
 option=""
 #修改前内容
-text1=""
+old_text=""
 #修改后内容
-text2=""
+new_text=""
 
 #刷新等待时长
   Standby=50        
@@ -69,8 +69,6 @@ Cloudflare_api_key="abc"      #@Cloudflare Api
 Chatgpt_api_key="abc"         #@Chatgpt Api
 '
 
-
-
                                                                           #更新函数
 function update {
     clear && current_Version="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' $link_update)
@@ -118,7 +116,6 @@ function set_dat {
                                                                           # 创建用户数据
 function update_dat {
     lines=()
-    #dat_text1=$dat_text
     while IFS= read -r line; do     # 
          lines+=("$line")    #将每行文本转化为数组     
     done <<< "$dat_text" 
@@ -134,7 +131,6 @@ function update_dat {
          lines[$index]=$(replace '"' '"' "" 1 true false false false "$line"  ${!b[0]})
     done
     printf '%s\n' "${lines[@]}"  > "$dat_path" 
-    nano "$dat_path"
 }
                                                                           #查询文本内容函数
 
@@ -208,7 +204,7 @@ function replace() {
   local comment="${7:-fasle}"     # 是否修改注释行
   local is_file="${8:-True}"      # 是否为文件
   local input="$9"                # 要替换的内容
-  local new_text="$10"             # 替换的新文本
+  local input_text="${10}"          # 替换的新文本
   local temp_file="$(mktemp)"
     
   #定义awk的脚本代码
@@ -294,10 +290,10 @@ function replace() {
     }'
 
   if [ "$is_file" = "true" ]; then    #如果输入的是文件
-      awk -v start="$start_string" -v end="$end_string" -v location="$location_string"  -v mod="$module" -v exact="$exact_match" -v new="$new_text" -v comment="$comment" -v num="$n" "$awk_script" "$input" > "$temp_file"
+      awk -v start="$start_string" -v end="$end_string" -v location="$location_string"  -v mod="$module" -v exact="$exact_match" -v new="$input_text" -v comment="$comment" -v num="$n" "$awk_script" "$input" > "$temp_file"
       mv "$temp_file" "$input"
   else   #如果输入的是字符串
-      temp_text=$(echo "$input" | awk -v start="$start_string" -v end="$end_string" -v location="$location_string"  -v mod="$module"  -v exact="$exact_match" -v new="$new_text" -v comment="$comment" -v num="$n" "$awk_script")
+      temp_text=$(echo "$input" | awk -v start="$start_string" -v end="$end_string" -v location="$location_string"  -v mod="$module"  -v exact="$exact_match" -v new="$input_text" -v comment="$comment" -v num="$n" "$awk_script")
       echo "$temp_text"   # 输出替换的内容
   fi
 }  
@@ -319,26 +315,28 @@ function settext {
   local regex="${12}"             # 正则表达式
   local regex1="${13:-fasle}"     # 内容与正则表达式的真假匹配
   local temp_file="$(mktemp)"
-     text1=""
-     text2=""
-     text1=$(search "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "true" "$is_file" "$input")
+  old_text=""                     # 设置搜中的旧文本作为全局变量（不含“注释行”字样）
+  new_text=""                     # 设置输入的新文本作为全局变量（不含前后空格）
+  
+     old_text1=$(search "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "true" "$is_file" "$input")
+     old_text=${old_text1// (注释行)/}
      echo
-     echo -e "${GREEN}当前的$mean为：$text1${NC}"
+     echo -e "${GREEN}当前的$mean为："$old_text1"${NC}"
      while true; do
          #-r选项告诉read命令不要对反斜杠进行转义，避免误解用户输入。-e选项启用反向搜索功能，这样用户在输入时可以通过向左箭头键或Ctrl + B键来移动光标并修改输入。
-         read -r -e -p "$(echo -e ${BLUE}"请设置新的$mean（$mark输入为空则跳过$( [[ $coment == "true" ]] && echo "，#则设为注释行")）：${NC}")" text2
+         read -r -e -p "$(echo -e ${BLUE}"请设置新的$mean（$mark输入为空则跳过$( [[ $coment == "true" ]] && echo "，#则设为注释行")）：${NC}")" new_text
          #s/^[[:space:]]*//表示将输入字符串中开头的任何空格字符替换为空字符串；s/[[:space:]]*$//表示将输入字符串结尾的任何空格字符替换为空字符串。
-         text2="$(echo -e "${text2}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
-         if [[ -z "$text2" ]]; then
+         new_text="$(echo -e "${new_text}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+         if [[ -z "$new_text" ]]; then
              echo -e "${RED}已跳过$mean设置${NC}"
              return 1
-         elif [[ $text2 == "#" ]] && [[ $comment == "true" ]]; then
-             replace "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "$comment" "$is_file" "$input" "$text2"
+         elif [[ "$new_text" == "#" ]] && [[ $comment == "true" ]]; then
+             replace "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "$comment" "$is_file" "$input" "$new_text"
              echo -e "${GREEN}已将$mean参数设为注释行${NC}"
              return 1
-         elif [[ $text2 =~ $regex ]]; then
-                replace  "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "$comment" "$is_file" "$input" "$text2"
-                echo -e "${GREEN}$mean已修改为$text2${NC}"
+         elif [[ "$new_text" =~ $regex ]]; then
+                replace  "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "$comment" "$is_file" "$input" "$new_text"
+                echo -e "${GREEN}$mean已修改为$new_text${NC}"
                 return 1
          else
                 echo -e "${RED}$mean输入错误，请重新输入${NC}"
@@ -350,10 +348,10 @@ function settext {
 function change_ssh_port {
     
     if settext "Port " " " "" 1 false false true true $path_ssh "SSH端口" "0-65535，" $port_regex; then
-          echo -e "${GREEN}已正从防火墙规则中删除原SSH端口号：${text1// (注释行)/}${NC}"
-          ufw delete allow ${text1// (注释行)/}/tcp   
-          echo -e "${GREEN}正在将新端口添加进防火墙规则中。${NC}"
-          ufw allow $text2/tcp  
+          echo -e "${GREEN}已正从防火墙规则中删除原SSH端口号：$old_text${NC}"
+          ufw delete allow $old_text/tcp   
+          echo -e "${GREEN}正在将新端口"$new_text"添加进防火墙规则中。${NC}"
+          ufw allow "$new_text"/tcp  
           systemctl restart sshd
           echo -e "${GREEN}当前防火墙运行规则及状态为：${NC}"
           ufw status
@@ -698,9 +696,9 @@ function set_tor_config {
 }
                                                                            # 获取Tor ip
 function ip_tor {
-  text1=$(search "SocksPort " " " "" 2 "false" "false" "false" "true" $path_tor )
+  old_text=$(search "SocksPort " " " "" 2 "false" "false" "false" "true" $path_tor )
   echo "当前Tor代理IP为："
-  curl --socks5-hostname localhost:$text1 http://ip-api.com/line/?fields=status,country,regionName,city,query
+  curl --socks5-hostname localhost:$old_text http://ip-api.com/line/?fields=status,country,regionName,city,query
   echo
 }
   
