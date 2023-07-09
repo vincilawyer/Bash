@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.53
+Version=2.54
 dat_Version=1
 
 #定义彩色字体
@@ -63,7 +63,7 @@ comment_regex="^ *[# ]*"
 dat_text='# 该文件为vinci用户配置文本
 # "*"表示不可在脚本中修改的常量,变量值需要用双引号包围,"#@"用于分隔变量名称、备注、匹配正则表达式。
 dat_Version1="1"              #@版本号*              
-Domain="domain.com"           #@一级域名#@不用加www@domain_regex
+Domain="domain.com"           #@一级域名#@不用加www#@domain_regex
 Email="email@email.com"       #@邮箱#@#@email_regex
 Cloudflare_api_key="abc"      #@Cloudflare Api
 Chatgpt_api_key="abc"         #@Chatgpt Api
@@ -108,12 +108,10 @@ function set_dat {
          a=()
          IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
          IFS="=" read -ra b <<< "$line" 
-         IFS="=" read -ra b <<< "$line" 
          #去除前后空格
          a[3]="${a[3]#"${a[3]%%[![:space:]]*}"}"  
          a[3]="${a[3]%"${a[3]##*[![:space:]]}"}"
-         echo ${a[3]}
-        # set "${b[0]}=\"" "\"" 1 "true" "false" "true" "$dat_path" "${a[1]}" $("${a[2]}"  [ -z "${a[3]}" ] && echo "" || echo "${!a[3]}")
+         set "${b[0]}=\"" "\"" 1 "true" "false" "true" "$dat_path" "${a[1]}" "${a[2]}"  $([ -z "${a[3]}" ] && echo "" || echo "${!a[3]}")
     done
 }
 
