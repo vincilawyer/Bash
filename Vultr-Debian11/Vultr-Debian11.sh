@@ -7,15 +7,15 @@
 ###   2、更新检查模块        
 ###   3、用户数据管理模块     
 ###   4、文本管理模块        
-###   、
-###   、
+###   5、开发工具
+###   6、系统工具
 ###   、
 ###   、
 
 
 
 ####### 版本号 ######
-Version=2.66  #版本号,不得为空
+Version=2.67  #版本号,不得为空
 dat_Version=1 #用户配置版本号
 
 ####### 定义颜色 ######
@@ -380,7 +380,7 @@ function settext {
      old_text1=$(search "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "true" "$is_file" "$input")
      old_text=${old_text1// (注释行)/}
      echo
-     echo -e "${GREEN}当前的$mean为："$old_text1"${NC}"
+     echo -e "${GREEN}【修改"$mean"】当前的"$mean"为："$old_text1"${NC}"
      while true; do
          #-r选项告诉read命令不要对反斜杠进行转义，避免误解用户输入。-e选项启用反向搜索功能，这样用户在输入时可以通过向左箭头键或Ctrl + B键来移动光标并修改输入。
          read -r -e -p "$(echo -e ${BLUE}"请设置新的"$mean"（$( [ -n "$mark" ] && echo "$mark,")输入为空则跳过$( [[ $coment == "true" ]] && echo "，输入#则设为注释行")）：${NC}")" new_text
@@ -400,26 +400,76 @@ function settext {
                      echo -e "${GREEN}"$mean"已修改为"$new_text"${NC}"
                      return 0
                  else
-                     echo -e "${RED}新的"$mean"不符合要求，请重新输入!${NC}"
+                     echo -e "${RED}输入的"$mean"不符合要求，请重新输入！${NC}"
+                     printf "\033[2A\033[K%s"
                  fi
             else                           #如果在文本模式下
                  if [[ "$new_text" =~ $regex ]]; then
                  return 0
                  else
-                 echo -e "${RED}新的"$mean"不符合要求，请重新输入!${NC}"
+                 echo -e "${RED}输入的"$mean"不符合要求，请重新输入！${NC}"
+                 printf "\033[2A\033[K%s"
                  fi
             fi
          fi
      done  
 }
 #############################################################################################################################################################################################
-##############################################################################   5、系 统 工 具  ################################################################################################
+##############################################################################   5、开 发 工 具  ################################################################################################
 ############################################################################################################################################################################################
 
-#######  修改SSH端口及登录密码的函数    #######  
+#######  检验程序安装情况   ########
+function installed {
+    local name=$1
+    if [ ! -x "$(command -v $name)"]; then return 1; fi
+    echo -e "${GREEN}程序已经安装，无需重复安装。${NC}"
+    echo -e "${GREEN}当前版本号为 $(docker -v 2>&1)${NC}"
+    return 0
+}
+
+#######   倒计时   ####### 
+function countdown {
+    local from=$1
+    while [ $from -ge 0 ]; do
+        echo -ne "\r${from}s \r"
+        if $(read -s -t 1 -n 1); then break; fi
+        ((from--))
+    done
+}
+
+#######   等待函数   #######   
+function wait {
+   if [[ -z "$1" ]]; then
+    echo "请按下任意键返回管理系统"
+   else
+    echo $1
+   fi
+   read -n 1 -s input
+}
+
+#######   确认函数    #######   
+function confirm {
+   read -p "$1（Y/N）:" confirm1
+   if [[ $confirm1 =~ ^[Yy]$ ]]; then 
+   return 1
+   fi  
+   echo $2
+   return 0
+}
+
+#######   输入错误提示  #######    
+function input_error {
+       echo -e "${RED}输入错误，请重新输入${NC}"
+       countdown 1
+}
+
+#############################################################################################################################################################################################
+##############################################################################   6、系 统 工 具  ################################################################################################
+############################################################################################################################################################################################
+
+#######  修改SSH端口    #######  
 function change_ssh_port {
     if settext "Port " " " "" 1 false false true true $path_ssh "SSH端口" "0-65535，" $port_regex; then
-    rearch "Port " " " "" 1 false false true true $path_ssh
           echo -e "${GREEN}已正从防火墙规则中删除原SSH端口号：$old_text${NC}"
           ufw delete allow $old_text/tcp   
           echo -e "${GREEN}正在将新端口"$new_text"添加进防火墙规则中。${NC}"
@@ -430,6 +480,7 @@ function change_ssh_port {
     fi  
 }
 
+#######  修改登录密码    ####### 
 function change_login_password {
     # 询问账户密码 
     if settext "@" "@" "" "" "" "" "" false "@********@" "SSH登录密码" "至少8位" ".{8,}"; then 
@@ -443,15 +494,7 @@ function change_login_password {
          fi
    fi
 }
-                                                                          #  检验程序安装情况        
-function install_already {
-    local name=$1
-    if [ ! -x "$(command -v $name)"]; then return 1; fi
-    echo -e "${GREEN}程序已经安装，无需重复安装。${NC}"
-    echo -e "${GREEN}当前版本号为 $(docker -v 2>&1)${NC}"
-    return 0
-}
-
+ 
                                                                           # 安装Docker及Compose插件的函数
 function install_Docker {
 
@@ -876,40 +919,6 @@ function restart {
 }
 
 
-                                                                          # 定义倒计时
-
-function countdown {
-    local from=$1
-    while [ $from -ge 0 ]; do
-        echo -ne "\r${from}s \r"
-        if $(read -s -t 1 -n 1); then break; fi
-        ((from--))
-    done
-}
-                                                                         # 定义等待函数
-function wait {
-   if [[ -z "$1" ]]; then
-    echo "请按下任意键返回管理系统"
-   else
-    echo $1
-   fi
-   read -n 1 -s input
-}
-                                                                         # 定义选择取消函数
-function choose {
-   read -p "$1（Y/N）:" choose1
-   if [[ $choose1 =~ ^[Yy]$ ]]; then 
-   return 1
-   fi  
-   echo $2
-   return 0
-}
-
-                                                                         # 定义选择功能错误函数
-function error_option {
-       echo -e "${RED}输入不正确，请重新输入${NC}"
-       countdown 1
-}
 
  
                                                                          # 页面显示函数
