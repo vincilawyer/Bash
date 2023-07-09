@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.54
+Version=2.55
 dat_Version=1
 
 #定义彩色字体
@@ -141,27 +141,30 @@ function update_dat {
 function search {
   local start_string="$1"           # 开始文本字符串
   local end_string="$2"             # 结束文本字符串
-  local n="${3:-1}"                 # 要输出的匹配结果的索引
-  local exact_match="${4:-True}"    # 是否精确匹配
-  local comment="${5:-True}"        # 是否显示注释行
-  local is_file="${6:-True}"        # 是否为文件
-  local input="$7"                  # 要搜索的内容
+  local location_string="$3"        # 定位字符串
+  local n="${4:-1}"                 # 要输出的匹配结果的索引
+  local module="${5:-True}"         # 是否在一段代码内寻找定位字符串，false为行内寻找
+  local exact_match="${6:-True}"    # 是否精确匹配
+  local comment="${7:-True}"        # 是否显示注释行
+  local is_file="${8:-True}"        # 是否为文件
+  local input="$9"                  # 要搜索的内容
   local found_text=""               # 存储找到的文本
   local count=0                     # 匹配计数器
   
   #定义awk的脚本代码
   local awk_script='{
+    if($0 ~ location) {
       if (exact == "true") {
-          startPos = index($0, start);
-          if (startPos > 0) {
-          endPos = index(substr($0, startPos + length(start)), end);
-              if (endPos > 0) {
-                  if (++count == num) {
-                      print substr($0, startPos + length(start), endPos - 1) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
-                      exit;
-                  }
-              }
-          }
+              startPos = index($0, start);
+              if (startPos > 0) {
+              endPos = index(substr($0, startPos + length(start)), end);
+                  if (endPos > 0) {
+                      if (++count == num) {
+                          print substr($0, startPos + length(start), endPos - 1) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
+                          exit;
+                      }
+                 }
+             }  
       } else {
             startPos = index($0, start);
             if (startPos > 0) {
@@ -177,14 +180,15 @@ function search {
                       exit;
                   }
               }
-           }
+           }  
       }
+    }
   }'
   
   if [ "$is_file" = "true" ]; then    #如果输入的是文件
-    found_text=$(awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v num="$n" "$awk_script" "$input")
+    found_text=$(awk -v start="$start_string" -v end="$end_string" -v location="$location_string"  -v mod="$module" -v exact="$exact_match" -v num="$n" "$awk_script" "$input")
   else   #如果输入的是字符串
-    found_text=$(echo "$input" | awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v num="$n" "$awk_script")
+    found_text=$(echo "$input" | awk -v start="$start_string" -v end="$end_string" -v location="$location_string"  -v mod="$module" -v exact="$exact_match" -v num="$n" "$awk_script")
   fi
   
   if ! $comment; then found_text=${found_text// (注释行)/}; fi
@@ -196,16 +200,19 @@ function search {
 function replace() {
   local start_string="$1"         # 开始文本字符串
   local end_string="$2"           # 结束文本字符串
-  local n="${3:-1}"               # 匹配结果的索引            
-  local exact_match="${4:-True}"  # 是否精确匹配
-  local comment="${5:-fasle}"     # 是否修改注释行
-  local is_file="${6:-True}"      # 是否为文件
-  local input="$7"                # 要替换的内容
-  local new_text="$8"             # 替换的新文本
+  local location_string="$3"      # 定位字符串
+  local n="${4:-1}"               # 匹配结果的索引
+  local module="${5:-True}"       # 是否在一段代码内寻找定位字符串，false为行内寻找
+  local exact_match="${6:-True}"  # 是否精确匹配
+  local comment="${7:-fasle}"     # 是否修改注释行
+  local is_file="${8:-True}"      # 是否为文件
+  local input="$9"                # 要替换的内容
+  local new_text="$10"             # 替换的新文本
   local temp_file="$(mktemp)"
     
   #定义awk的脚本代码
   local awk_script='{
+    if($0 ~ location) {
         if (exact == "true") {
              startPos = index($0, start);
              if (startPos > 0) {
@@ -280,14 +287,15 @@ function replace() {
              } else {
                  print $0;
              }        
-        }         
+        }  
+      } 
     }'
 
   if [ "$is_file" = "true" ]; then    #如果输入的是文件
-      awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v new="$new_text" -v comment="$comment" -v num="$n" "$awk_script" "$input" > "$temp_file"
+      awk -v start="$start_string" -v end="$end_string" -v location="$location_string"  -v mod="$module" -v exact="$exact_match" -v new="$new_text" -v comment="$comment" -v num="$n" "$awk_script" "$input" > "$temp_file"
       mv "$temp_file" "$input"
   else   #如果输入的是字符串
-      temp_text=$(echo "$input" | awk -v start="$start_string" -v end="$end_string" -v exact="$exact_match" -v new="$new_text" -v comment="$comment" -v num="$n" "$awk_script")
+      temp_text=$(echo "$input" | awk -v start="$start_string" -v end="$end_string" -v location="$location_string"  -v mod="$module"  -v exact="$exact_match" -v new="$new_text" -v comment="$comment" -v num="$n" "$awk_script")
       echo "$temp_text"   # 输出替换的内容
   fi
 }  
@@ -297,19 +305,21 @@ function replace() {
 function set {
   local start_string="$1"         # 开始文本字符串
   local end_string="$2"           # 结束文本字符串
-  local n="${3:-1}"               # 匹配结果的索引            
-  local exact_match="${4:-True}"  # 是否精确匹配
-  local comment="${5:-fasle}"     # 是否修改注释行
-  local is_file="${6:-True}"      # 是否为文件
-  local input="$7"                # 要替换的内容
-  local mean="$8"                 # 显示搜索和修改内容的含义
-  local mark="$9"                 # 修改内容备注
-  local regex="${10}"              # 正则表达式
-  local regex1="${11:-fasle}"     # 内容与正则表达式的真假匹配
+  local location_string="$3"      # 定位字符串
+  local n="${4:-1}"               # 匹配结果的索引            
+  local module="${5:-True}"       # 是否在一段代码内寻找定位字符串，false为行内寻找
+  local exact_match="${6:-True}"  # 是否精确匹配结束文本字符串
+  local comment="${7:-fasle}"     # 是否修改注释行
+  local is_file="${8:-True}"      # 是否为文件
+  local input="$9"                # 要替换的内容
+  local mean="${10}"              # 显示搜索和修改内容的含义
+  local mark="${11}"              # 修改内容备注
+  local regex="${12}"             # 正则表达式
+  local regex1="${13:-fasle}"     # 内容与正则表达式的真假匹配
   local temp_file="$(mktemp)"
      text1=""
      text2=""
-     text1=$(search "$start_string" "$end_string" "$n" "$exact_match" "true" "$is_file" "$input")
+     text1=$(search "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "true" "$is_file" "$input")
      echo
      echo -e "${GREEN}当前的$mean为：$text1${NC}"
      while true; do
@@ -321,11 +331,11 @@ function set {
              echo -e "${RED}已跳过$mean设置${NC}"
              return 1
          elif [[ $text2 == "#" ]] && [[ $comment == "true" ]]; then
-             replace "$start_string" "$end_string" "$n" "$exact_match" "$comment" "$is_file" "$input" "$text2"
+             replace "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$comment" "$is_file" "$input" "$text2"
              echo -e "${GREEN}已将$mean参数设为注释行${NC}"
              return 1
          elif [[ $text2 =~ $regex ]]; then
-                replace  "$start_string" "$end_string" "$n" "$exact_match" "$comment" "$is_file" "$input" "$text2"
+                replace  "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$comment" "$is_file" "$input" "$text2"
                 echo -e "${GREEN}$mean已修改为$text2${NC}"
                 return 1
          else
