@@ -111,7 +111,7 @@ function set_dat {
          #去除前后空格
          a[3]="${a[3]#"${a[3]%%[![:space:]]*}"}"  
          a[3]="${a[3]%"${a[3]##*[![:space:]]}"}"
-         set "${b[0]}=\"" "\"" 1 "true" "false" "true" "$dat_path" "${a[1]}" "${a[2]}"  $([ -z "${a[3]}" ] && echo "" || echo "${!a[3]}")
+         settext "${b[0]}=\"" "\"" "" 1 true false false true "$dat_path" "${a[1]}" "${a[2]}"  $([ -z "${a[3]}" ] && echo "" || echo "${!a[3]}")
     done
 }
 
@@ -131,7 +131,7 @@ function update_dat {
          #去除前后空格
          b[0]="${b[0]#"${b[0]%%[![:space:]]*}"}"  
          b[0]="${b[0]%"${b[0]##*[![:space:]]}"}"
-         lines[$index]=$(replace '"' '"' 1 "true" "false" "false" "$line"  ${!b[0]})
+         lines[$index]=$(replace '"' '"' "" 1 true false false false "$line"  ${!b[0]})
     done
     printf '%s\n' "${lines[@]}"  > "$dat_path" 
     nano "$dat_path"
@@ -143,8 +143,8 @@ function search {
   local end_string="$2"             # 结束文本字符串
   local location_string="$3"        # 定位字符串
   local n="${4:-1}"                 # 要输出的匹配结果的索引
-  local module="${5:-True}"         # 是否在一段代码内寻找定位字符串，false为行内寻找
-  local exact_match="${6:-True}"    # 是否精确匹配
+  local exact_match="${5:-True}"    # 是否精确匹配结束文本字符串
+  local module="${6:-True}"         # 是否在一段代码内寻找定位字符串，false为行内寻找
   local comment="${7:-True}"        # 是否显示注释行
   local is_file="${8:-True}"        # 是否为文件
   local input="$9"                  # 要搜索的内容
@@ -203,8 +203,8 @@ function replace() {
   local end_string="$2"           # 结束文本字符串
   local location_string="$3"      # 定位字符串
   local n="${4:-1}"               # 匹配结果的索引
-  local module="${5:-True}"       # 是否在一段代码内寻找定位字符串，false为行内寻找
-  local exact_match="${6:-True}"  # 是否精确匹配
+  local exact_match="${5:-True}"  # 是否精确匹配
+  local module="${6:-True}"       # 是否在一段代码内寻找定位字符串，false为行内寻找
   local comment="${7:-fasle}"     # 是否修改注释行
   local is_file="${8:-True}"      # 是否为文件
   local input="$9"                # 要替换的内容
@@ -304,13 +304,13 @@ function replace() {
 
                                                                           #查询并修改文本函数
 
-function set {
+function settext {
   local start_string="$1"         # 开始文本字符串
   local end_string="$2"           # 结束文本字符串
   local location_string="$3"      # 定位字符串
   local n="${4:-1}"               # 匹配结果的索引            
-  local module="${5:-True}"       # 是否在一段代码内寻找定位字符串，false为行内寻找
-  local exact_match="${6:-True}"  # 是否精确匹配结束文本字符串
+  local exact_match="${5:-True}"  # 是否精确匹配结束文本字符串
+  local module="${6:-True}"       # 是否在一段代码内寻找定位字符串，false为行内寻找
   local comment="${7:-fasle}"     # 是否修改注释行
   local is_file="${8:-True}"      # 是否为文件
   local input="$9"                # 要替换的内容
@@ -321,7 +321,7 @@ function set {
   local temp_file="$(mktemp)"
      text1=""
      text2=""
-     text1=$(search "$start_string" "$end_string" "$location_string" "$n" "$module" "$exact_match" "true" "$is_file" "$input")
+     text1=$(search "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "true" "$is_file" "$input")
      echo
      echo -e "${GREEN}当前的$mean为：$text1${NC}"
      while true; do
@@ -333,11 +333,11 @@ function set {
              echo -e "${RED}已跳过$mean设置${NC}"
              return 1
          elif [[ $text2 == "#" ]] && [[ $comment == "true" ]]; then
-             replace "$start_string" "$end_string" "$location_string" "$n" "$module" "$exact_match" "$comment" "$is_file" "$input" "$text2"
+             replace "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "$comment" "$is_file" "$input" "$text2"
              echo -e "${GREEN}已将$mean参数设为注释行${NC}"
              return 1
          elif [[ $text2 =~ $regex ]]; then
-                replace  "$start_string" "$end_string" "$location_string" "$n" "$module" "$exact_match" "$comment" "$is_file" "$input" "$text2"
+                replace  "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "$comment" "$is_file" "$input" "$text2"
                 echo -e "${GREEN}$mean已修改为$text2${NC}"
                 return 1
          else
@@ -349,7 +349,7 @@ function set {
                                                                           #修改SSH端口及登录密码的函数
 function change_ssh_port {
     
-    if set "Port " " " 1 false true true $path_ssh "SSH端口" "0-65535，" $port_regex; then
+    if settext "Port " " " "" 1 false false true true $path_ssh "SSH端口" "0-65535，" $port_regex; then
           echo -e "${GREEN}已正从防火墙规则中删除原SSH端口号：${text1// (注释行)/}${NC}"
           ufw delete allow ${text1// (注释行)/}/tcp   
           echo -e "${GREEN}正在将新端口添加进防火墙规则中。${NC}"
@@ -694,11 +694,11 @@ function install_Tor {
 }
                                                                            # 设置Tor配置
 function set_tor_config {
-   set "SocksPort " " " 2 "false" "true" "true" $path_tor "Tor监听端口" "0-65535，" $port_regex
+   settext "SocksPort " " " "" 2 false false "true" "true" $path_tor "Tor监听端口" "0-65535，" $port_regex
 }
                                                                            # 获取Tor ip
 function ip_tor {
-  text1=$(search "SocksPort " " " 2 "false" "false" "true" $path_tor )
+  text1=$(search "SocksPort " " " "" 2 "false" "false" "false" "true" $path_tor )
   echo "当前Tor代理IP为："
   curl --socks5-hostname localhost:$text1 http://ip-api.com/line/?fields=status,country,regionName,city,query
   echo
