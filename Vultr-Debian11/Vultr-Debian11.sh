@@ -3,7 +3,7 @@
 ############################################################################################################################################################################################
 
 ####### 版本号 ######
-Version=2.61  #版本号,不得为空
+Version=2.62  #版本号,不得为空
 dat_Version=1 #用户配置版本号
 
 ####### 定义颜色 ######
@@ -75,50 +75,46 @@ Chatgpt_api_key="abc"         #@Chatgpt Api
 
 ####### 脚本更新函数  ####### 
 function update {
-    clear && current_Version="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' $link_update)
-    no=$?
+    clear 
     #如果成功更新
-    if [ $no == 1 ]; then
-      exit 
-    #如果无需更新  
-    elif [ $no == 0 ]; then
-    :
-    #如果更新失败
-    else
-      echo "更新检查错误，请检查网络！"
-      sleep 5
+    if current_Version="$Version" force="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update"); then 
+        exit 
+    else       #如果更新失败
+        echo "更新检查错误，请检查网络！"
+        countdown 5
     fi
 } 
 
 #执行启动前更新检查
-update $Version
+update
 
 # 当脚本出错时，强制更新
 function update_force() {
     echo "当前脚本运行出现错误！"
     if bar 60 "即将更新尝试强制更新！...输入任意键退出" "开始强制更新" true "已取消强制更新！"; then return;fi
-    update "force"
+    update "true"
     exit
 }
 
 # 进度条
 function bar() {
+    time=$1
     for i in $(seq 1 $1); do
         # 监听输入同时每秒输出一个方块，并在方块后输出字符串
-        output=$output$(printf "\e[42m \e[0m")
-        echo -ne "$output$2””···\r"
+        block=$block$(printf "\e[42m \e[0m")
+        echo -ne "$block"$2"···"$time"s\r"
         read -t 1 -n 1 input
         # 如果有输入则退出监听·
         if [ -n "$input" ] && [[ $4 == "true" ]]; then
             echo "$5"
             return 1
         fi  
+        time=$time-1
     done
     echo -ne "$3\r"
     echo
     return 0
     echo
-
 }
 
 # 设置当脚本遇到错误时强制更新
@@ -1057,7 +1053,7 @@ function main {
     #一级菜单34选项
        3 | 4)
             case $option in
-                3) update "force";;
+                3) update "true";;
                 4) one_step ;;
             esac
             wait;;
