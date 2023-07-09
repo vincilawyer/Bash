@@ -175,8 +175,6 @@ function main {
         echo "已完成配置！"
         wait
   fi
-
-
   while true; do     #显示页面及选项
   
   #######   主菜单选项  ######
@@ -209,8 +207,7 @@ function main {
                  case $option in
                  {2..7})
                          case $option in
-                            2)status
-                            wait;;
+                            2)status;;
                             3)ipinfo;;
                             4)set_dat;;
                             5)if cofirm "是否重置默认配置参数？" "已取消重置"; then return; fi
@@ -366,28 +363,14 @@ function main {
                            1)break;;
                            *)input_error;;
                         esac;;       
-                        
-                   #一级菜单11 cfdns选项
-                  11)Option ${main_menu[$(($get_option - 1))]} "${Cf_DNS_menu[@]}" 
-                        case $option in
-                            {2..4}
-                               case $option in
-                                   2)cfdns;;
-                                   3)install_CF_DNS;;
-                                   4)set_CF_config;;
-                               esac
-                               wait;;
-                           1)break;;
-                           *)input_error;;
-                        esac;;                           
+                                                
 9)###### Chatgpt ######
-           Chatgpt_menu=(
+   Chatgpt_menu=(
     "  1、返回上一级"
     "  2、启动Chatgpt"
     "  3、查看Chatgpt运行状态"
     "  4、Chatgpt更新脚本"
     "  0、退出")                     
- 
                   Option ${main_menu[$(($get_option - 1))]} "${Chatgpt_menu[@]}" 
                         case $option in
                             {2..4})
@@ -404,10 +387,7 @@ function main {
                            *)input_error;;
                         esac;;  
                 esac
-           done;;    
-       #一级菜单其他选项  
-       *) input_error;;
-     esac
+           done    
   done   
 }
 #############################################################################################################################################################################################
@@ -1359,6 +1339,4 @@ function restart {
 
 
 
-
-                                                                           # 调用主函数
-main
+#main
