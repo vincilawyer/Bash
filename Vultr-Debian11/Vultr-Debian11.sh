@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.55
+Version=2.56
 dat_Version=1
 
 #定义彩色字体
@@ -153,7 +153,8 @@ function search {
   
   #定义awk的脚本代码
   local awk_script='{
-    if($0 ~ location) {
+    if($0 ~ location || (mod && mat) ) {
+      mat="true"
       if (exact == "true") {
               startPos = index($0, start);
               if (startPos > 0) {
@@ -212,7 +213,8 @@ function replace() {
     
   #定义awk的脚本代码
   local awk_script='{
-    if($0 ~ location) {
+    if($0 ~ location || (mod && mat) ) {
+        mat="true"
         if (exact == "true") {
              startPos = index($0, start);
              if (startPos > 0) {
@@ -319,7 +321,7 @@ function set {
   local temp_file="$(mktemp)"
      text1=""
      text2=""
-     text1=$(search "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "true" "$is_file" "$input")
+     text1=$(search "$start_string" "$end_string" "$location_string" "$n" "$module" "$exact_match" "true" "$is_file" "$input")
      echo
      echo -e "${GREEN}当前的$mean为：$text1${NC}"
      while true; do
@@ -331,11 +333,11 @@ function set {
              echo -e "${RED}已跳过$mean设置${NC}"
              return 1
          elif [[ $text2 == "#" ]] && [[ $comment == "true" ]]; then
-             replace "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$comment" "$is_file" "$input" "$text2"
+             replace "$start_string" "$end_string" "$location_string" "$n" "$module" "$exact_match" "$comment" "$is_file" "$input" "$text2"
              echo -e "${GREEN}已将$mean参数设为注释行${NC}"
              return 1
          elif [[ $text2 =~ $regex ]]; then
-                replace  "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$comment" "$is_file" "$input" "$text2"
+                replace  "$start_string" "$end_string" "$location_string" "$n" "$module" "$exact_match" "$comment" "$is_file" "$input" "$text2"
                 echo -e "${GREEN}$mean已修改为$text2${NC}"
                 return 1
          else
