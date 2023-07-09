@@ -199,24 +199,26 @@ function main {
     system_menu=(
     "  1、返回上一级"
     "  2、查看所有重要程序运行状态"
-    "  3、修改默认配置参数"
-    "  4、重置默认配置参数"
-    "  5、修改SSH登录端口和登录密码"
-    "  6、强制更新脚本"
+    "  3、本机ip信息"
+    "  4、修改默认配置参数"
+    "  5、重置默认配置参数"
+    "  6、修改SSH登录端口和登录密码"
+    "  7、强制更新脚本"
     "  0、退出" )
                  Option ${main_menu[$(($get_option - 1))]} "${system_menu[@]}"
                  case $option in
-                 {2..5})
+                 {2..7})
                          case $option in
                             2)status
                             wait;;
-                            3)set_dat;;
-                            4)if cofirm "是否重置默认配置参数？" "已取消重置"; then return; fi
+                            3)ipinfo;;
+                            4)set_dat;;
+                            5)if cofirm "是否重置默认配置参数？" "已取消重置"; then return; fi
                             echo "默认配置已重置！"
                             creat_dat;;
-                            5)change_ssh_port
+                            6)change_ssh_port
                             change_login_password;;
-                            6)update "true";;
+                            7)update "true";;
                          esac
                          wait;;
                   1)break;;
@@ -256,8 +258,7 @@ function main {
                                    2)install_Docker;;
                                    3)docker ps
                                    echo
-                                   echo "提示：可使用docker stop 或 docker rm 语句加容器 ID 或者名称来停止容器的运行或者删除容器 "
-                                   wait;;
+                                   echo "提示：可使用docker stop 或 docker rm 语句加容器 ID 或者名称来停止容器的运行或者删除容器 ";;
                                esac
                                wait;;
                           1)break;;
@@ -307,16 +308,15 @@ function main {
 6) ###### Cloudflare服务  ######
     Cf_menu=(
     "  1、返回上一级"
-    "  2、启动Cf_DNS脚本面板"
-    "  3、下载\更新CF_DNS脚本"
-    "  4、设置脚本配置（第一次使用需设置）"
-    "下载warp"
+    "  2、Cloudflare DNS配置（账户信息在默认配置中设置）"
+    "  3、下载Warp"
     "  0、退出")
                   Option ${main_menu[$(($get_option - 1))]} "${Warp_menu[@]}" 
                         case $option in
                            {2..3})
                                case $option in
-                                   2)install_Warp;;
+                                   2)CF_DNS;;
+                                   3)install_Warp;;
                                esac
                                wait;;
                           1)break;;
@@ -329,7 +329,6 @@ function main {
     "  2、安装Tor"
     "  3、设置Tor配置（第一次使用需设置）"
     "  4、重启Tor"
-    "  5、IP信息"
     "  0、退出")
                   Option ${main_menu[$(($get_option - 1))]} "${Tor_menu[@]}" 
                         case $option in
@@ -799,7 +798,17 @@ function confirm {
 ###### 查看程序运行状态 ######
 function status {
 systemctl status ufw
+systemctl status warp-cli
 systemctl status tor
+}
+###### 查看ip信息 ######
+function ipinfo {
+  echo "本机IP信息："
+  hostname -I
+  echo "Warp IP信息："
+  curl --socks5-hostname localhost:40000 http://api.ipify.org
+  echo "Tor IP信息："
+  curl --socks5-hostname localhost:50000 http://api.ipify.org
 }
 
 #######  修改SSH端口    #######  
@@ -1063,27 +1072,123 @@ function install_Xui {
 }
 
 #############################################################################################################################################################################################
-##############################################################################   9.Xui模块  ################################################################################################
+##############################################################################   12.Cloudflare模块  ################################################################################################
 ############################################################################################################################################################################################
 
-                                                                          # 安装Tor的函数
-function install_Tor {
-   if [ -x "$(command -v tor)" ]; then
-        echo -e "${GREEN}Tor已安装，无需重复安装！${NC}"      
-   else
-        echo -e "${GREEN}正在更新包列表${NC}"
-        sudo apt update
-        echo -e "${GREEN}开始安装Tor${NC}"
-        apt install tor -y
+###### Cf dns配置 ######
+function CF_DNS {
+   # 获取区域标识符
+   zone_identifier=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$Domain" \
+     -H "X-Auth-Email: $Email" \
+     -H "X-Auth-Key: $Cloudflare_api_key" \
+     -H "Content-Type: application/json" | jq -r '.result[0].id')
+     
+   if [ "$zone_identifier" == "null" ]; then
+       echo "未找到您的Cloudflare账户\域名，请检查配置。"
+       return
    fi
+    get_all_dns_records $zone_identifier
+    read -p "请输入要修改或增加的DNS记录名称（例如 www）：" record_name
+        while true; do
+            read -p "请输入IP地址：" record_content
+            if [[ $record_content =~ $ipv4_regex ]]; then
+                break
+            else
+                echo "无效的IP地址，请重试。"
+            fi
+        done
+        read -p "是否启用Cloudflare CDN代理？（Y/N）" enable_proxy
+        if [[ $enable_proxy =~ ^[Yy]$ ]]; then
+            proxy="true"
+        else
+            proxy="false"
+        fi
+
+            # 获取记录标识符
+            record_identifier=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records?type=A&name=$record_name.$Domain" \
+                 -H "X-Auth-Email: $Email" \
+                 -H "X-Auth-Key: $Cloudflare_api_key" \
+                 -H "Content-Type: application/json" | jq -r '.result[0].id')
+            clear 
+            # 如果记录标识符为空，则创建新记录
+            if [ "$record_identifier" == "null" ]; then
+                curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records" \
+                     -H "X-Auth-Email: $Email" \
+                     -H "X-Auth-Key: $Cloudflare_api_key" \
+                     -H "Content-Type: application/json" \
+                     --data '{"type":"A","name":"'"$record_name"'","content":"'"$record_content"'","proxied":'"$proxy"'}'
+                echo
+                echo "已成功添加记录 $record_name.$Domain"
+                echo
+                get_all_dns_records $zone_identifier
+            else
+                # 如果记录标识符不为空，则更新现有记录
+                curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records/$record_identifier" \
+                     -H "X-Auth-Email: $email" \
+                     -H "X-Auth-Key: $Cloudflare_api_key" \
+                     -H "Content-Type: application/json" \
+                     --data '{"type":"A","name":"'"$record_name"'","content":"'"$record_content"'","proxied":'"$proxy"'}'
+                echo
+                echo "已成功更新记录 $record_name.$Domain"
+                echo
+                get_all_dns_records $zone_identifier
+           fi;;
+     3)
+          record_name="www"
+          record_content=$(ip addr | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v 127.0.0.1)
+          proxy="true"
+           # 获取记录标识符
+            record_identifier=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records?type=A&name=$record_name.$Domain" \
+                 -H "X-Auth-Email: $Email" \
+                 -H "X-Auth-Key: $Cloudflare_api_key" \
+                 -H "Content-Type: application/json" | jq -r '.result[0].id')
+            clear 
+            # 如果记录标识符为空，则创建新记录
+            if [ "$record_identifier" == "null" ]; then
+                curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records" \
+                     -H "X-Auth-Email: $Email" \
+                     -H "X-Auth-Key: $Cloudflare_api_key" \
+                     -H "Content-Type: application/json" \
+                     --data '{"type":"A","name":"'"$record_name"'","content":"'"$record_content"'","proxied":'"$proxy"'}'
+                echo
+                echo "已成功添加记录 $record_name.$domain"
+                echo
+                get_all_dns_records $zone_identifier
+            else
+                # 如果记录标识符不为空，则更新现有记录
+                curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records/$record_identifier" \
+                     -H "X-Auth-Email: $Email" \
+                     -H "X-Auth-Key: $Cloudflare_api_key" \
+                     -H "Content-Type: application/json" \
+                     --data '{"type":"A","name":"'"$record_name"'","content":"'"$record_content"'","proxied":'"$proxy"'}'
+                echo
+                echo "已成功更新记录 $record_name.$Domain"
+                echo
+                get_all_dns_records $zone_identifier
+           fi;;    
+    *) echo "输入错误，已取消操作！";;
+  esac
 }
-                                                                     # 安装Warp并启动Warp的函数
+######  获取并显示所有DNS解析记录、CDN代理状态和TTL  ######
+function get_all_dns_records {
+    dns_records=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$1/dns_records?type=A" \
+         -H "X-Auth-Email: $Email" \
+         -H "X-Auth-Key: $Cloudflare_api_key" \
+         -H "Content-Type: application/json" | jq -r '.result[] | [.name, .content, .proxied, .ttl] | @tsv')
+       echo "——————————DNS解析编辑器v2————————————"
+       echo "以下为$Domain域名当前的所有DNS解析记录："
+       echo
+       echo "域名                      ip        CDN状态      TTL"
+       echo "$dns_records"
+       echo
+       echo
+}
+
+
+###### 安装cf warp套 ######
 function install_Warp {
 
-    if [ -x "$(command -v warp-cli)" ]; then
-        echo -e "${GREEN}Warp已安装，无需重复安装，当前代理IP地址为：${NC}"
-        curl ifconfig.me --proxy socks5://127.0.0.1:40000        
-    else
+    if installed "warp-cli"; then return; fi
         #先安装WARP仓库GPG密钥：
         echo -e "${GREEN}正在安装WARP仓库GPG 密钥${NC}"
         curl https://pkg.cloudflareclient.com/pubkey.gpg | sudo gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
@@ -1110,8 +1215,28 @@ function install_Warp {
         echo -e "${GREEN}Warp 安装完成，代理IP地址为：${NC}"
         curl ifconfig.me --proxy socks5://127.0.0.1:40000
         echo
-    fi
 }
+
+#############################################################################################################################################################################################
+##############################################################################   13.Tor模块  ################################################################################################
+############################################################################################################################################################################################
+
+
+                                                                          # 安装Tor的函数
+function install_Tor {
+   if [ -x "$(command -v tor)" ]; then
+        echo -e "${GREEN}Tor已安装，无需重复安装！${NC}"      
+   else
+        echo -e "${GREEN}正在更新包列表${NC}"
+        sudo apt update
+        echo -e "${GREEN}开始安装Tor${NC}"
+        apt install tor -y
+   fi
+}
+
+                                                                     
+                                                                     # 安装Warp并启动Warp的函数
+
                                                                            # 设置Tor配置
 function set_tor_config {
    settext "SocksPort " " " "" 2 false false "true" "true" $path_tor "Tor监听端口" "0-65535，" $port_regex
