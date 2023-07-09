@@ -4,7 +4,7 @@
 ############################################################################################################################################################################################
 
 ####### 版本号 ######
-Version=2.62  #版本号,不得为空
+Version=2.64  #版本号,不得为空
 dat_Version=1 #用户配置版本号
 
 ####### 定义颜色 ######
@@ -76,11 +76,13 @@ Chatgpt_api_key="abc"         #@Chatgpt Api
 
 ####### 脚本更新函数  ####### 
 function update {
-    clear 
-    #如果成功更新
-    if current_Version="$Version" force="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update"); then 
+    clear && current_Version="$Version" force="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
+    result=$?
+    if [ $result -eq "1" ] ; then        #如果已经更新
         exit 
-    else       #如果更新失败
+    elif [ $result -eq "2" ] ; then      #如果没有更新
+        :
+    else                                 #如果更新失败
         echo "更新检查错误，请检查网络！"
         countdown 5
     fi
