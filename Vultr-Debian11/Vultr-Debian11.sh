@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.52
+Version=2.53
 dat_Version=1
 
 #定义彩色字体
@@ -112,7 +112,8 @@ function set_dat {
          #去除前后空格
          a[3]="${a[3]#"${a[3]%%[![:space:]]*}"}"  
          a[3]="${a[3]%"${a[3]##*[![:space:]]}"}"
-         set "${b[0]}=\"" "\"" 1 "true" "false" "true" "$dat_path" "${a[1]}" "${a[2]}" "${!a[3]}"
+         echo ${a[3]}
+        # set "${b[0]}=\"" "\"" 1 "true" "false" "true" "$dat_path" "${a[1]}" $("${a[2]}"  [ -z "${a[3]}" ] && echo "" || echo "${!a[3]}")
     done
 }
 
