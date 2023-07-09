@@ -36,7 +36,7 @@ elif [ "$force" == "true" ]; then
 #已是最新
 elif [[ "${current_Version}" == "${Version}" ]]; then
     echo "当前已是最新版本(V$Version)，无需更新！"
-    exit 0
+    exit 2
 #正常更新
 else 
     echo "当前版本号为：V${current_Version}"
@@ -44,7 +44,7 @@ else
     download "Linux管理系统V"$Version"版本已更新完成，即将进入系统！"
     exit 1
 fi
-    exit 0
+    exit 2
   }
   
 ####### 下载vinci脚本 ###### 
