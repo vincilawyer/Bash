@@ -1,10 +1,12 @@
-#!/bin/bash
+#!/bin/bash #################################################################################################################################################################################
+##############################################################################   vinci脚本源代码 参数  ########################################################################################
+############################################################################################################################################################################################
 
-#版本号,不得为空
-Version=2.60
-dat_Version=1
+####### 版本号 ######
+Version=2.60  #版本号,不得为空
+dat_Version=1 #用户配置版本号
 
-#定义彩色字体
+####### 定义颜色 ######
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -14,39 +16,38 @@ CYAN='\033[0;36m'
 WHITE='\033[0;37m'
 BLACK="\033[40m"
 NC='\033[0m'
-#用户选择序号                                     
-option=""
-#修改前内容
-old_text=""
-#修改后内容
-new_text=""
 
-#刷新等待时长
-  Standby=50        
-  #更新检查程序网址
-  link_update="https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh"
+####### 定义全局变量  ######                                  
+option=""     #用户选择序号 
+old_text=""   #settext函数修改前内容
+new_text=""   #settext函数修改后内容
+
+####### 定义路径  ######
+#更新检查程序网址
+link_update="https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh"
 #用户数据路径
-  dat_path="/usr/local/bin/vinci.dat"
-#nginx配置文件网址
-  link_nginx="https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf"
+dat_path="/usr/local/bin/vinci.dat"
 #ssh配置文件路径(查看配置：nano /etc/ssh/sshd_config)                           
-  path_ssh="/etc/ssh/sshd_config"
+path_ssh="/etc/ssh/sshd_config"
+#nginx配置文件网址
+link_nginx="https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf"
 #nginx配置文件路径 (查看配置：nano /etc/nginx/conf.d/default.conf)                      
-  path_nginx="/etc/nginx/conf.d/default.conf" 
+path_nginx="/etc/nginx/conf.d/default.conf" 
 #nginx日志文件路径
-  log_nginx="/var/log/nginx/access.log"
+log_nginx="/var/log/nginx/access.log"
 #nginx 80端口默认服务块文件路径
-  default_nginx="/etc/nginx/sites-enabled/default"
+default_nginx="/etc/nginx/sites-enabled/default"
 #tor配置路径 (查看配置：nano /etc/tor/torrc)            
-  path_tor="/etc/tor/torrc"
+path_tor="/etc/tor/torrc"
 #frp配置文件路径（查看配置：nano /etc/frp/frps.ini）  
-  path_frp="/etc/frp"
+path_frp="/etc/frp"
 
-#一级域名正则表达式
+####### 定义正则表达式 ####### 
+#一级域名表达式
 domain_regex="^[a-zA-Z0-9-]{1,63}(\.[a-zA-Z]{2,})$"
-#二级域名正则表达式
+#二级域名表达式
 subdomain_regex="^[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+$"
-#邮箱表正则表达式
+#邮箱表表达式
 email_regex="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
 #IPV4表达式
 ipv4_regex="^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
@@ -59,7 +60,7 @@ tel_regex="^1[3-9]\d{9}$"
 #若干#和空格前置的表达式 
 comment_regex="^ *[# ]*"
 
-#用户配置文本
+####### 用户配置模板文本 ####### 
 dat_text='# 该文件为vinci用户配置文本
 # "*"表示不可在脚本中修改的常量,变量值需要用双引号包围,"#@"用于分隔变量名称、备注、匹配正则表达式。
 dat_Version1="1"              #@版本号*              
@@ -68,8 +69,11 @@ Email="email@email.com"       #@邮箱#@#@email_regex
 Cloudflare_api_key="abc"      #@Cloudflare Api
 Chatgpt_api_key="abc"         #@Chatgpt Api
 '
+#############################################################################################################################################################################################
+##############################################################################   更 新 检 查 模 块  ################################################################################################
+############################################################################################################################################################################################
 
-                                                                          #更新函数
+####### 脚本更新函数  ####### 
 function update {
     clear && current_Version="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' $link_update)
     no=$?
@@ -88,6 +92,19 @@ function update {
 
 #执行启动前更新检查
 update $Version
+
+# 当脚本出错时，强制更新
+update_force() {
+    echo "当前脚本运行出现错误！"
+    if choose "是否强制更新？" "已取消更新！"; then return;fi
+    update "force"
+    exit
+}
+
+# 设置当脚本遇到错误时强制更新
+trap 'update_force' ERR
+
+
 
                                                                           # 创建用户数据
 function creat_dat {
@@ -420,7 +437,6 @@ function install_Docker {
     sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
     #通过运行镜像来验证Docker Engine安装是否成功。
     if docker run hello-world; then echo "Docker安装成功！" ; fi
-  fi   
 }
 
                                                                          # 安装Nginx_Proxy_Manager的函数
@@ -460,9 +476,7 @@ services:
 
                                                                            # 安装Nginx的函数（设置配置、更新、上传网页等）
 function install_Nginx {
-    if [ -x "$(command -v nginx)" ]; then
-        echo -e "${GREEN}Nginx已经安装，无需重复安装。当前版本号为 $(nginx -v 2>&1)${NC}"
-    else
+    if install_already "nginx" ;then return;fi  #检验安装
         echo -e "${GREEN}正在更新包列表${NC}"
         apt-get update
         echo -e "${GREEN}包列表更新完成${NC}"
@@ -472,11 +486,8 @@ function install_Nginx {
         ufw allow http && ufw allow https 
         echo -e "${GREEN}正在调整Nginx配置${NC}"
         download_nginx_config
-        #清空nginx对80端口默认服务块的配置内容
-cat > $default_nginx <<EOF
-        
-EOF
-    fi
+        echo "" > $default_nginx   # 清空nginx对80端口默认服务块的配置内容
+
 }
 
                                                                            # 从github下载更新Nginx配置文件
