@@ -214,7 +214,7 @@ function main {
                             echo "默认配置已重置！"
                             creat_dat;;
                             6)change_ssh_port
-                            change_login_password;;
+                              change_login_password;;
                             7)update "true";;
                          esac
                          wait;;
@@ -375,7 +375,7 @@ function main {
                         case $option in
                             {2..4})
                                case $option in
-                                   2)if cofirm "是否启动Chatgpt？" "已取消启动Chatgpt"; then continue;fi
+                                   2)if cofirm "是否启动Chatgpt？" "已取消启动Chatgpt"; then continue; fi
                                      cd ~/ChatGPT-Next-Web
                                      pm2 start chat.config.js;;
                                    3)pm2 list;;
@@ -824,7 +824,7 @@ function change_login_password {
 
 #######  安装Docker及依赖包  #######
 function install_Docker {
-    if installed "docker" ;then return;fi  #检验安装
+    if installed "docker" ;then return; fi  #检验安装
     
     # 安装docker，具体在https://docs.docker.com/engine/install/debian/中查看说明教程
     # 卸载冲突包
@@ -876,7 +876,7 @@ function install_Nginx {
 
 ####### 从github下载更新Nginx配置文件 ####### 
 function download_nginx_config {
-      if cofirm "是否从Github下载更新Nginx配置文件？此举动将覆盖原配置文件" "已取消下载更新Nginx配置文件"; then return;fi
+      if cofirm "是否从Github下载更新Nginx配置文件？此举动将覆盖原配置文件" "已取消下载更新Nginx配置文件"; then return; fi
       echo -e "${GREEN}正在载入：${NC}"
       if wget $link_nginx -O $path_nginx; then 
          echo -e "${GREEN}载入完毕，第一次使用请设置配置：${NC}"
@@ -919,7 +919,7 @@ function set_nginx_config {
 function download_html {
    echo "维护中..."
    return
-   if cofirm "此操作将从Github的vincilawyer/Bash/nginx/html目录下载入网页文件，并覆盖原网页文件！" "已取消下载更新网页文件"; then return;fi
+   if cofirm "此操作将从Github的vincilawyer/Bash/nginx/html目录下载入网页文件，并覆盖原网页文件！" "已取消下载更新网页文件"; then return; fi
     #输入主题名称
     read -p "请输入网页主题名称（例如Moon）：" input
     if [[ -z $input ]]; then 
@@ -1068,7 +1068,44 @@ function CF_DNS {
        return
    fi
     get_all_dns_records $zone_identifier
-    read -p "请输入要修改或增加的DNS记录名称（例如 www）：" record_name
+    # 询问用户要进行的操作
+    echo "操作选项："
+    echo "1. 删除DNS记录"
+    echo "2. 修改或增加DNS记录"
+    echo "3、www域名一键绑定本机ip（开启CDN）"
+    read -p "请选择要进行的操作：" choice
+    case $choice in
+      1)
+        # 删除DNS记录
+        clear
+        get_all_dns_records $zone_identifier
+        read -p "请输入要删除的DNS记录名称（例如 www）：" record_name
+
+        # 获取记录标识符
+        record_identifier=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records?type=A&name=$record_name.$Domain" \
+             -H "X-Auth-Email: $Email" \
+             -H "X-Auth-Key: $Cloudflare_api_key" \
+             -H "Content-Type: application/json" | jq -r '.result[0].id')
+        
+        clear
+        # 如果记录标识符为空，则表示未找到该记录
+        if [ "$record_identifier" == "null" ]; then
+            echo "未找到该DNS记录。"
+        else
+            # 删除记录
+            curl -s -X DELETE "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records/$record_identifier" \
+                 -H "X-Auth-Email: $Email" \
+                 -H "X-Auth-Key: $Cloudflare_api_key" \
+                 -H "Content-Type: application/json"
+            echo
+            echo "已成功删除DNS记录: $record_name.$Domain"
+            echo
+            get_all_dns_records $zone_identifier
+        fi;;
+    2)# 修改或增加DNS记录
+        clear
+        get_all_dns_records $zone_identifier
+        read -p "请输入要修改或增加的DNS记录名称（例如 www）：" record_name
         while true; do
             read -p "请输入IP地址：" record_content
             if [[ $record_content =~ $ipv4_regex ]]; then
@@ -1268,7 +1305,7 @@ EOF
    fi
 }
 function reset_Frp {
-if cofirm "是否重置Frp配置" "已取消重置！"; then return;fi 
+if cofirm "是否重置Frp配置" "已取消重置！"; then return; fi 
 cat > $path_frp/frps.ini <<EOF
 [common]
 # 服务端监听端口
@@ -1321,7 +1358,7 @@ function set_CF_config {
 
                                                                           # 一键搭建服务端的函数
 function one_step {
-   if cofirm "是否一键搭建科学上网服务端？" "已取消一键搭建科学上网服务端"; then return;fi
+   if cofirm "是否一键搭建科学上网服务端？" "已取消一键搭建科学上网服务端"; then return; fi
    echo "正在安装X-ui面板"
    install_Xui
    wait "点击任意键安装Nginx"
