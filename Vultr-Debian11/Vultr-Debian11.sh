@@ -98,7 +98,7 @@ function creat_dat {
                                                                           # 设置数据
 function set_dat { 
     lines=()
-    while IFS= read -r line; do   # IFS用于指定分隔符，IFS= read -r line 的含义是：在没有任何字段分隔符的情况下（即将IFS设置为空），读取一整行内容并赋值给变量line
+    while IFS= read -r line; do   # IFS用于指定分隔符，IFS= read -r line 的含义是：在没有任何字段分隔符的情况下（即将IFS设置为空），读取一整行内容并赋值给变量line。与下面的IFS不同，这个命令在一个 while 循环中执行，每次循环都会读取 line1 中的一行，直到 line1 中的所有行都被读取完毕。
          if [[ ! $line =~ "=" ]] || [[ $line =~ ^([[:space:]]*[#]+|[#]+) ]] || [[ $line =~ \*([[:space:]]*|$) ]] ; then continue ; fi  #跳过不符合条件的行
          lines+=("$line")    #将每行文本转化为数组     
     done < "$dat_path"
@@ -106,7 +106,8 @@ function set_dat {
     # 因为在上面含有IFS= read的循环中，没法再次read到用户的输入数据，因此在循环外处理数据
     for line in "${lines[@]}"; do   
          a=()
-         IFS=$'\n' read -d '' -ra a <<< $(echo "$line" | sed 's/#@/\n/g')   # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔
+         IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
+         IFS="=" read -ra b <<< "$line" 
          IFS="=" read -ra b <<< "$line" 
          #去除前后空格
          a[3]="${a[3]#"${a[3]%%[![:space:]]*}"}"  
@@ -119,7 +120,7 @@ function set_dat {
 function update_dat {
     lines=()
     #dat_text1=$dat_text
-    while IFS= read -r line; do   
+    while IFS= read -r line; do     # 
          lines+=("$line")    #将每行文本转化为数组     
     done <<< "$dat_text" 
 
@@ -127,8 +128,7 @@ function update_dat {
          line=${lines[$index]}
          if [[ ! $line =~ "=" ]] || [[ $line =~ ^([[:space:]]*[#]+|[#]+) ]] || [[ $line =~ \*([[:space:]]*|$) ]] ; then continue ; fi  #跳过不符合条件的行
          a=()
-         IFS=$'\n' read -d '' -ra a <<< $(echo "$line" | sed 's/#@/\n/g')   # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔
-         IFS="=" read -ra b <<< "$line" 
+         IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g')    # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。
          #去除前后空格
          b[0]="${b[0]#"${b[0]%%[![:space:]]*}"}"  
          b[0]="${b[0]%"${b[0]##*[![:space:]]}"}"
