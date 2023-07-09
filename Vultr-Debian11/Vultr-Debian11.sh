@@ -3,7 +3,7 @@
 ############################################################################################################################################################################################
 
 ####### 版本号 ######
-Version=2.60  #版本号,不得为空
+Version=2.61  #版本号,不得为空
 dat_Version=1 #用户配置版本号
 
 ####### 定义颜色 ######
@@ -94,11 +94,31 @@ function update {
 update $Version
 
 # 当脚本出错时，强制更新
-update_force() {
+function update_force() {
     echo "当前脚本运行出现错误！"
-    if choose "是否强制更新？" "已取消更新！"; then return;fi
+    if bar 60 "即将更新尝试强制更新！...输入任意键退出" "开始强制更新" true "已取消强制更新！"; then return;fi
     update "force"
     exit
+}
+
+# 进度条
+function bar() {
+    for i in $(seq 1 $1); do
+        # 监听输入同时每秒输出一个方块，并在方块后输出字符串
+        output=$output$(printf "\e[42m \e[0m")
+        echo -ne "$output$2””···\r"
+        read -t 1 -n 1 input
+        # 如果有输入则退出监听·
+        if [ -n "$input" ] && [[ $4 == "true" ]]; then
+            echo "$5"
+            return 1
+        fi  
+    done
+    echo -ne "$3\r"
+    echo
+    return 0
+    echo
+
 }
 
 # 设置当脚本遇到错误时强制更新
