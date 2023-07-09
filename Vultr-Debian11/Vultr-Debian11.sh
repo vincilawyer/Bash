@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #版本号,不得为空
-Version=2.57
+Version=2.58
 dat_Version=1
 
 #定义彩色字体
@@ -324,22 +324,32 @@ function settext {
      echo -e "${GREEN}当前的$mean为："$old_text1"${NC}"
      while true; do
          #-r选项告诉read命令不要对反斜杠进行转义，避免误解用户输入。-e选项启用反向搜索功能，这样用户在输入时可以通过向左箭头键或Ctrl + B键来移动光标并修改输入。
-         read -r -e -p "$(echo -e ${BLUE}"请设置新的$mean（$mark输入为空则跳过$( [[ $coment == "true" ]] && echo "，#则设为注释行")）：${NC}")" new_text
+         read -r -e -p "$(echo -e ${BLUE}"请设置新的$mean（ $( [ -z "$mark" ] && echo "$mark",)输入为空则跳过$( [[ $coment == "true" ]] && echo "，输入#则设为注释行")）：${NC}")" new_text
          #s/^[[:space:]]*//表示将输入字符串中开头的任何空格字符替换为空字符串；s/[[:space:]]*$//表示将输入字符串结尾的任何空格字符替换为空字符串。
          new_text="$(echo -e "${new_text}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
          if [[ -z "$new_text" ]]; then
              echo -e "${RED}已跳过$mean设置${NC}"
              return 1
-         elif [[ "$new_text" == "#" ]] && [[ $comment == "true" ]]; then
-             replace "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "$comment" "$is_file" "$input" "$new_text"
-             echo -e "${GREEN}已将$mean参数设为注释行${NC}"
-             return 1
-         elif [[ "$new_text" =~ $regex ]]; then
-                replace  "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "$comment" "$is_file" "$input" "$new_text"
-                echo -e "${GREEN}$mean已修改为$new_text${NC}"
-                return 1
-         else
-                echo -e "${RED}$mean输入错误，请重新输入${NC}"
+         else    
+            if  [[ $is_file == "true" ]]; then   #如果在文件模式下
+                 if [[ "$new_text" == "#" ]] && [[ $comment == "true" ]]; then
+                     replace "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "$comment" "$is_file" "$input" "$new_text"
+                     echo -e "${GREEN}已将$mean参数设为注释行${NC}"
+                     return 0
+                 elif [[ "$new_text" =~ $regex ]]; then
+                     replace  "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "$comment" "$is_file" "$input" "$new_text"
+                     echo -e "${GREEN}$mean已修改为"$new_text"${NC}"
+                     return 0
+                 else
+                     echo -e "${RED}$mean输入错误，请重新输入${NC}"
+                 fi
+            else                           #如果在文本模式下
+                 if [[ "$new_text" =~ $regex ]]; then
+                 return 0
+                 else
+                 echo -e "${RED}$mean输入错误，请重新输入${NC}"
+                 fi
+            fi
          fi
      done  
 }
@@ -359,15 +369,12 @@ function change_ssh_port {
 }
 
 function change_login_password {
-    # 询问账户密码
-    while true; do
-      read -p "$(echo -e ${BLUE}"请设置SSH登录密码（至少8位数字）：${NC}")" ssh_password
-      if [[ -z $ssh_password ]]; then
-         echo -e "${RED}已跳过登录密码设置${NC}"
-         break
-      elif (( ${#ssh_password} < 8 )); then
-         echo -e "${RED}密码长度应至少为8位，请重新输入${NC}"
-      else 
+    # 询问账户密码 
+    settext "@" "@" "" "" "" "" "" false "@********@" "SSH登录密码" "至少8位" ".{8,}"
+    echo $new_text
+    if ; then 
+         echo new_text 1
+         ssh_password="c"
          #修改账户密码
          chpasswd_output=$(echo "root:$ssh_password" | chpasswd 2>&1)
          if echo "$chpasswd_output" | grep -q "BAD PASSWORD" >/dev/null 2>&1; then
@@ -376,15 +383,13 @@ function change_login_password {
          else
             echo -e "${GREEN}SSH登录密码已修改成功！${NC}"
          fi
-         break
-      fi
-    done
+   fi
 }
 
                                                                           # 安装Docker及Compose插件的函数
 function install_Docker {
   if [ -x "$(command -v docker)" ]; then
-        echo -e "${GREEN}Docker已经安装，无需重复安装。当前版本号为 $(docker -v 2>&1)${NC}"
+          echo -e "${GREEN}Docker已经安装，无需重复安装。当前版本号为 $(docker -v 2>&1)${NC}"
   else
     # 安装docker，具体在https://docs.docker.com/engine/install/debian/中查看说明教程
     # 卸载冲突包
