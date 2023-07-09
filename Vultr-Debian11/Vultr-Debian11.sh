@@ -119,13 +119,13 @@ function bar() {
        read -t 1 -n 1 input
            if [ -n "$input" ] && [[ $4 == "true" ]]; then
                echo "$5"
-               return 1
+               return 0
            fi  
            time=$((time-1))
     done       
     echo
     printf "\033[1A\033[K%s\n" $3
-    return 0
+    return 1
 }
 
 # 设置当脚本遇到错误时强制更新
