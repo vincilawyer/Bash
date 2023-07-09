@@ -4,7 +4,7 @@
 ############################################################################################################################################################################################
 
 ####### 基本参数 ######
-Ver=009       #检查脚本版本号
+Ver=010       #检查脚本版本号
 name="vinci"  #脚本名称
 #$current_Version 为当前版本号，由运行本脚本时传递该变量
 #$force           为是否强制更新，true为强制更新，由运行本脚本时传递该变量
@@ -26,13 +26,13 @@ Version=$(curl -s $link_Vultr_Debian11 | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]
 if [[ -z $current_Version ]]; then
     echo "正在下载Vultr-Debian11脚本..."
     download "Linux管理系统V"$Version"版本已下载完成，即将进入系统！"   
-    exit
+    exit 1
 #强制更新
 elif [ "$force" == "true" ]; then
     echo "当前版本号为：V${current_Version}"
     echo "最新版本号为：V${Version}，即将强制更新脚本..."
     download "Linux管理系统V"$Version"版本已强制更新完成，即将重启管理系统！"
-
+    exit 1
 #已是最新
 elif [[ "${current_Version}" == "${Version}" ]]; then
     echo "当前已是最新版本(V$Version)，无需更新！"
@@ -42,7 +42,9 @@ else
     echo "当前版本号为：V${current_Version}"
     echo "最新版本号为：V${Version}，即将更新脚本..."
     download "Linux管理系统V"$Version"版本已更新完成，即将进入系统！"
+    exit 1
 fi
+    exit 0
   }
   
 ####### 下载vinci脚本 ###### 
