@@ -25,7 +25,7 @@ Version=$(curl -s $link_Vultr_Debian11 | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]
 if [[ -z $current_Version ]]; then
     echo "正在下载Vultr-Debian11脚本..."
     download "Linux管理系统V"$Version"版本已下载完成，即将进入系统！"   
-    
+    exit
 #强制更新
 elif [ "$force" == "true" ]
     echo "当前版本号为：V${current_Version}"
