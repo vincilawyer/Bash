@@ -100,14 +100,15 @@ Tor_port="50000"              #@Tor监听端口
 
 ####### 脚本更新  ####### 
 function update {
-    clear && current_Version="$Version" download_path_path="$script_path" name="$script_name" force="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
+    force="$1"   #用户强制更新为1，程序错误自更新为2
+    clear && current_Version="$Version" download_path_path="$script_path" name="$script_name" force="$wrong_force" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
     result=$?
     if [ $result == "1" ] ; then        #如果已经更新
         exit 
     elif [ $result == "2" ]; then      #如果没有更新，则继续执行当前脚本
         :
     elif [ $result == "3" ] ; then      #如果脚本下载失败，则继续执行当前脚本   
-        echo -n "vinci脚本下载失败，请检查网络！即将返回..."
+        echo -n "即将返回..."
         countdown 5
     elif [ $result == "4" ] ; then      #如果新脚本运行错误，则继续执行旧版本   
         echo -n "新版本系统存在运行错误"
@@ -124,7 +125,7 @@ update
 #######   当脚本错误退出   ####### 
 function handle_error() {
    if [ $startup == "true" ]; then exit 1; fi
-   update "true"
+   update 2
    exit
 }
 #######   当脚本正常退出   ####### 
@@ -204,7 +205,7 @@ function main {
                         creat_dat;;
                       6)change_ssh_port
                         change_login_password;;
-                      7)update "true";;
+                      7)update 1;;
                   esac;;
                     
 2)###### 2、UFW防火墙管理  ###### 
@@ -418,8 +419,8 @@ function set_dat {
          #去除前后空格
          a[3]="${a[3]#"${a[3]%%[![:space:]]*}"}"  
          a[3]="${a[3]%"${a[3]##*[![:space:]]}"}"
-         settext "${b[0]}=\"" "\"" "" 1 true false false true "$dat_path" "${a[1]}" "${a[2]}"  $([ -z "${a[3]}" ] && echo "" || echo "${!a[3]}")
-    done
+         settext "${b[0]}=\"" "\"" "" 1 true false false true "$dat_path" "${a[1]}" "${a[2]}"  "$([ -z "${a[3]}" ] && echo "" || echo "${!a[3]}")"
+    done                                                                                      
 }
 
 #######   用户数据模板更新   #######   
