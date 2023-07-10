@@ -5,75 +5,86 @@
 
 ####### 基本参数 ######
 Ver=010       #检查脚本版本号
-name="vinci"  #脚本名称
+new_name="vinci"  #脚本名称
 #$current_Version 为当前版本号，由运行本脚本时传递该变量
-#$force           为是否强制更新，true为强制更新，由运行本脚本时传递该变量
+#$download_path   为脚本当前的目录路径
+#$name            为脚本名称
+#$force           为强制更新模式，1为用户强制更新，2为自启动程序报错强制更新，由运行本脚本时传递该变量
+
 
 ####### 路径 ######
 #Vultr-Debian11.sh文件网址
 link_Vultr_Debian11="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh"
-#脚本保存路径
-download_path="/usr/local/bin"
+#新下载脚本保存路径
+new_path="/usr/local/bin/$new_name"
+#脚本路径
+position=$( [ -z "$download_path"/"$name" ] && echo "$new_path" || echo "$download_path"/"$name" )
+
 
 ####### 主函数 ######
 function main {
-clear
-#检查最新版本号
-echo "正在检查最新版本($Ver)..."
-Version=$(curl -s "$link_Vultr_Debian11" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
-        
-#下载脚本请求
-if [[ -z "$current_Version" ]]; then
-    echo "正在下载Vultr-Debian11脚本..."
-    download "Linux管理系统V"$Version"版本已下载完成，即将进入系统！"   
-    exit 1
-#强制更新
-elif [ "$force" == "true" ]; then
-    echo "当前版本号为：V$current_Version"
-    echo "最新版本号为：V$Version，即将强制更新脚本..."
-    download "Linux管理系统V"$Version"版本已强制更新完成，即将重启管理系统！"
-    exit 1
+         
+#用户强制更新，且备份（如有）
+if [ "$force" == "1" ]; then
+    download
+#自启动程序错误强制更新
+elif [ "$force" == "2" ]; then
+    warning
+    download
 #已是最新
 elif [[ "$current_Version" == "$Version" ]]; then
     echo "当前已是最新版本(V$Version)，无需更新！"
-    exit 2
-#正常更新
-else 
-    echo "当前版本号为：V$current_Version"
-    echo "最新版本号为：V$Version，即将更新脚本..."
-    download "Linux管理系统V$Version版本已更新完成，即将进入系统！"
-    exit 1
+    exit 2                                            #无需更新返回值
+#正常下载更新
+else
+    download
 fi
-    exit 2
   }
   
 ####### 下载vinci脚本 ###### 
 function download {
-    notice="$1"
-    while true; do     
-        if wget --no-cache "$link_Vultr_Debian11" -O "$download_path"/"$name" ; then
-            chmod +x "$download_path/$name"
-            echo "$notice"
+    clear
+    if [ -e "$position" ]; then 
+        echo "正在检查最新版本($Ver)..."
+        Version=$(curl -s "$link_Vultr_Debian11" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
+        echo "当前版本号为：V$current_Version"
+        echo "最新版本号为：V$Version，即将更新脚本..."
+        echo "旧脚本备份中"
+        if [ ！"$force" == "2" ] ; then cp "$position" "$position"_backup; fi
+    else
+        echo "正在检查最新版本($Ver)..."
+        Version=$(curl -s "$link_Vultr_Debian11" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
+        echo "最新版本号为：V$Version，即将下载脚本..."
+    fi
+    
+    while true; do    
+        if wget --no-cache "$link_Vultr_Debian11" -O  "$position" ; then
+            chmod +x "$position"
+            echo "Linux管理系统V"$Version"版本已下载\更新完成，即将进入系统！"
             sleep 1
-            vinci
+            $name "true"      #启动新脚本
             result=$?
             if [ "$result" == "0" ]; then                          #如果脚本正常运行，则退出
-               exit
-            else                                                    #如果脚本运行错误，则强制更新
-               current_Version=$(sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}' $download_path/$name)
-               echo -e "${RED}###################################################${NC}"
-               echo -e "${RED}#####  请注意，当前脚本运行出现错误！版本号：V$current_Version ######${NC}"
-               echo -e "${RED}###################################################${NC}"
-               if bar 60 "即将尝试重新更新" "开始重新更新" true "已取消重新更新！"; then return; fi
-               Version=$(curl -s "$link_Vultr_Debian11" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
-               notice=download "Linux管理系统V"$Version"版本已重新更新完成，即将重启管理系统！"
+               exit 1                                              #已更新脚本并正常运行的返回值
+            else                                                   #如果脚本运行错误，则强制更新
+               warning
             fi
         else
-            exit 3
+          #  rm "$position"_backup
+            echo -n "vinci脚本下载失败，请检查网络！"
+            exit 3                                                #未更新脚本的返回值                                          
         fi    
   done
 } 
-
+#######   保存提示  ####### 
+ function warning {
+      current_Version=$(sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}' "$position")
+      Version=$(curl -s "$link_Vultr_Debian11" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
+      echo -e "${RED}#######################################################################################${NC}"
+      echo -e "${RED}#####  请注意，当前脚本运行出现错误！当前版本号：V$current_Version，最新版本号：V$Version ######${NC}"
+      echo -e "${RED}#######################################################################################${NC}"
+      if bar 60 "即将尝试重新更新" "开始重新更新" true "已取消重新更新！"; then exit 4; fi     #脚本运行错误，取消更新的返回值
+}
 #######   进度条  ####### 
 function bar() {
     time=$1 #进度条时间
@@ -99,9 +110,5 @@ function bar() {
     printf "\033[1A\033[K%s\n" "$3"
     return 1
 }
-
-
-
-
-
+######  运行主函数  ######
 main
