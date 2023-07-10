@@ -23,7 +23,7 @@
 
 
 ####### 版本更新相关参数 ######
-Version=2.95  #版本号,不得为空
+Version=2.96  #版本号,不得为空
 Dat_Version=0.1 #用户配置模板版本号
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #本脚本的运行路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
@@ -92,9 +92,13 @@ Dat_Version1="$Dat_Version"                       #@版本号*
 Domain="$Domain"                              #@一级域名#@不用加www#@domain_regex
 Email="$Email"                                #@邮箱#@#@email_regex
 Cloudflare_api_key="$Cloudflare_api_key"      #@Cloudflare Api
-Chatgpt_api_key="$Chatgpt_api_key"         #@Chatgpt Api
 Warp_port="$Warp_port"             #@Warp监听端口
 Tor_port="$Tor_port"              #@Tor监听端口
+
+#####Chatgpt-docker######
+Chatgpt_api_key="$Chatgpt_api_key"         #@Chatgpt Api
+Gpt_code="$Gpt_code"                       #@授权码
+BASE_URL="$BASE_URL"
 '
 
 #############################################################################################################################################################################################
@@ -340,13 +344,13 @@ function main {
 10)###### Chatgpt ######
    sub_menu=(
     "  1、返回上一级"
-    "  2、启动Chatgpt"
-    "  3、查看Chatgpt运行状态"
-    "  4、Chatgpt更新脚本"
+    "  2、下载\更新Chatgpt"
+    "  3、启动Chatgpt"
     "  0、退出")                     
                   if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                   case $option in
-                       2)echo 1;;
+                       2)pull_gpt;;
+                       2)run_gpt;;
                   esac;; 
             
 esac
@@ -1357,6 +1361,18 @@ function set_CF_config {
     set 'domain="' '"' 1 $path_cfdns true "Cloudfare绑定域名" "不加www等前缀，" true "^[a-z0-9]+(-[a-z0-9]+)*\.[a-z]{2,}$"
     set 'api_key="' '"' 1 $path_cfdns true "Cloudfare API密钥"
     chmod +x $path_cfdns
+}
+
+function pull_gpt {
+docker pull yidadaa/chatgpt-next-web
+}
+funtion run_gpt {
+docker stop $(docker ps -aq)
+docker run -d -p 3000:3000 \
+   -e OPENAI_API_KEY="$Chatgpt_api_key" \
+   -e CODE="$Gpt_code" \
+   -e BASE_URL="$BASE_URL" \
+   yidadaa/chatgpt-next-web
 }
 
 function boot_notifier {
