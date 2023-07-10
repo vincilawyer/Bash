@@ -22,7 +22,7 @@
 #!/bin/bash
 
 ####### 版本更新相关参数 ######
-Version=2.80  #版本号,不得为空
+Version=2.81  #版本号,不得为空
 Dat_Version=1 #用户配置模板版本号
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #本脚本的运行路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
@@ -379,23 +379,19 @@ function Option {
   #监听输入
 while true; do
   read opt
-  if [[ "$opt" =~ ^[0-9]+$ ]]; then #先做数字检查
-  
-      if (( $opt >= 1 && $opt <= $(($# - 2)) )); then   #如果选中正确（需要减掉前面2个参数数量）。
-         echo
-         clear
-         return 1
-      elif [ "$opt" == "0" ]; then             #如果选择零则退出
-         quit      
-      elif [ "$opt" == "1" ] && [ "$2" == "true" ]; then    #如果二级菜单选择1，则返回上一级
-         return 2
-      else
-         echo -ne "${RED}  输入错误，请重新输入${NC}"
-         tput rc  # Restore the saved cursor position
-      fi
-   else
-      echo -ne "${RED}  输入错误，请重新输入${NC}"
-      tput rc  # Restore the saved cursor position
+  if [ "$opt" == "0" ]; then             #如果选择零则退出
+      quit      
+  elif [ "$opt" == "1" ] && [ "$2" == "true" ]; then    #如果二级菜单选择1，则返回上一级
+      return 2
+  elif [[ "$opt" =~ ^[0-9]+$ ]] && (( $opt >= 1 && $opt <= $(($# - 2)) )); then  #如果选中正确序号（需要减掉本函数前面2个参数数量）。
+      clear
+      return 1
+  else
+      tput rc  # 回到输入位置
+      tput el  # 清空光标后面内容
+      echo
+      echo -e "${RED}  输入错误，请重新输入${NC}"
+      tput rc  # 再次回到输入位置
    fi
 done
 }
