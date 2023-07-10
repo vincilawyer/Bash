@@ -6,7 +6,7 @@
 ####1、关于脚本返回值：当下载成功并正常运行脚本，脚本返回值为1；当脚本无需更新，返回为2；当脚本下载失败未更新，返回为3 ；当脚本运行出现错误，用户取消更新，返回为4。
 
 ####### 基本参数 ######
-Ver=015           #检本查脚本版本号
+Ver=016           #检本查脚本版本号
 Version=""        #最新版本号
 new_name="vinci"  #新脚本名称
 new_path="/usr/local/bin/$new_name"     #新下载脚本保存路径
@@ -63,7 +63,7 @@ function download {
         if wget --no-cache "$link_Vultr_Debian11" -O  "$position" ; then
             chmod +x "$position"
             echo "Linux管理系统V"$Version"版本已下载\更新完成，即将进入系统！"
-            sleep 1
+            countdown 10
             $name 1      #启动新脚本
             result=$?
             if [ "$result" == "0" ]; then                          #如果脚本正常运行，则退出
