@@ -470,7 +470,8 @@ function update_dat {
          #去除前后空格
          b[0]="${b[0]#"${b[0]%%[![:space:]]*}"}"  
          b[0]="${b[0]%"${b[0]##*[![:space:]]}"}"
-         lines[$index]=$(replace '"' '"' "" 1 true false false false "$line"  ${!b[0]})
+         if [ -z "${!b[0]}" ]; then continue; fi #如果变量不存在，则跳过更新
+         lines[$index]=$(replace '"' '"' "" 1 true false false false "$line"  "${!b[0]}")
     done
     printf '%s\n' "${lines[@]}"  > "$dat_path" 
 }
