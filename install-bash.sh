@@ -44,16 +44,14 @@ fi
 ####### 下载vinci脚本 ###### 
 function download {
     clear
+    echo "更新程序运行中($Ver)..."
+    Version=$(curl -s "$link_Vultr_Debian11" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
     if [ -e "$position" ]; then 
-        echo "正在检查最新版本($Ver)..."
-        Version=$(curl -s "$link_Vultr_Debian11" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
         echo "当前版本号为：V$current_Version"
         echo "最新版本号为：V$Version，即将更新脚本..."
         echo "旧脚本备份中"
         if [ ！"$force" == "2" ] ; then cp "$position" "$position"_backup; fi
     else
-        echo "正在检查最新版本($Ver)..."
-        Version=$(curl -s "$link_Vultr_Debian11" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
         echo "最新版本号为：V$Version，即将下载脚本..."
     fi
     
@@ -84,6 +82,8 @@ function download {
       echo -e "${RED}#####  请注意，当前脚本运行出现错误！当前版本号：V$current_Version，最新版本号：V$Version ######${NC}"
       echo -e "${RED}#######################################################################################${NC}"
       if bar 60 "即将尝试重新更新" "开始重新更新" true "已取消重新更新！"; then exit 4; fi     #脚本运行错误，取消更新的返回值
+      clear
+      echo "更新程序运行中($Ver)..."
 }
 #######   进度条  ####### 
 function bar() {
