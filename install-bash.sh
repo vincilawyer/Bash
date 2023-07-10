@@ -41,8 +41,6 @@ function main {
 function download {
     clear
     echo "更新程序运行中($Ver)..."
-    echo $position
-    sleep 100
     if [ -e "$position" ]; then 
         echo "当前版本号为：V$current_Version"
         echo "最新版本号为：V$Version，即将更新脚本..."
