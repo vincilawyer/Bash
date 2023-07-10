@@ -204,7 +204,6 @@ function main {
     "  7、强制更新脚本"
     "  0、退出" )
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
                       2)status;;
                       3)ipinfo;;
@@ -225,7 +224,6 @@ function main {
     "  4、查看防火墙规则"
     "  0、退出")                  
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
                       2)sudo ufw enable;;
                       3)sudo ufw disable;;
@@ -238,7 +236,6 @@ function main {
     "  3、查看Docker容器"
     "  0、退出")
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
                       2)install_Docker;;
                       3)docker ps $$ echo
@@ -254,7 +251,6 @@ function main {
     "  6、查看Nginx日志"
     "  0、退出")
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
                       2)install_Nginx;;
                       3)set_nginx_config;;
@@ -269,7 +265,6 @@ function main {
     "  3、进入Xui面板管理（指令:x-ui）"
     "  0、退出" )
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
                       2)install_Xui;;
                       3)x-ui;;
@@ -281,7 +276,6 @@ function main {
     "  3、下载Warp"
     "  0、退出")
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
                      2)CF_DNS;;
                      3)install_Warp;;
@@ -294,7 +288,6 @@ function main {
     "  4、重启Tor"
     "  0、退出")
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
                       2)install_Tor;;
                       3)set_tor_config;;
@@ -311,7 +304,6 @@ function main {
     "  5、重启Frp"
     "  0、退出")                    
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
                       2)install_Frp;;
                       3)reset_Frp;;
@@ -327,12 +319,12 @@ function main {
     "  4、Chatgpt更新脚本"
     "  0、退出")                     
                   if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                  if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                   case $option in
                        2)echo 1;;
                   esac;; 
             
 esac
+if [ "$option" == "1" ]; then break; fi  #如果在二级菜单中输出为1，则返回上一级
 wait
 done    
 done   
