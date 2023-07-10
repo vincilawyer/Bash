@@ -16,6 +16,7 @@ new_path="/usr/local/bin/$new_name"     #新下载脚本保存路径
 #$force           为强制更新模式，1为用户强制更新，2为自启动程序报错强制更新，由运行本脚本时传递该变量
 position=$( [ -z "$download_path" ] && echo "$new_path" || echo "$download_path"/"$name" )     #脚本路径
 
+
 ####### 下载网址 ######
 #Vultr-Debian11.sh文件网址
 link_Vultr_Debian11="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh"
@@ -65,10 +66,10 @@ function download {
             sleep 1
             $name 1      #启动新脚本
             result=$?
-            if [ "$result" == "1" ]; then                          #如果脚本正常运行，则退出
-               warning                                             #如果脚本运行错误，则强制更新
-            else                                                   
-               exit 1                                              #已更新脚本并正常运行的返回值
+            if [ "$result" == "0" ]; then                          #如果脚本正常运行，则退出
+               exit 1                                            
+            else                                                   #如果脚本运行错误，则强制更新
+               warning                                             #已更新脚本并正常运行的返回值
             fi
         else
             echo -n "vinci脚本下载失败，请检查网络！"
@@ -86,8 +87,8 @@ function download {
            if bar 30 "即将回滚至旧版本" "开始回滚" true "已取消回滚！"; then exit 4; fi 
            cp -f "$position"_backup "$position" 
            echo "已回滚至旧版本！"
-           exit 4
-      fi     #脚本运行错误，取消更新的返回值
+           exit 4         #脚本运行错误，取消更新的返回值
+      fi     
       clear
       echo "更新程序运行中($Ver)..."
 }
