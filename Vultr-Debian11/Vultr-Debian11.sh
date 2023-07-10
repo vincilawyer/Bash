@@ -190,14 +190,15 @@ function main {
   #######   主菜单选项  ######
     main_menu=(
     "  1、系统设置"
-    "  2、UFW防火墙管理"
-    "  3、Docker服务"
-    "  4、Nginx服务"
-    "  5、X-ui服务"
-    "  6、Cloudflare服务"
-    "  7、Tor服务"
-    "  8、Frp服务"
-    "  9、Chatgpt-Docker服务"
+    "  2、工具箱"
+    "  3、UFW防火墙管理"
+    "  4、Docker服务"
+    "  5、Nginx服务"
+    "  6、X-ui服务"
+    "  7、Cloudflare服务"
+    "  8、Tor服务"
+    "  9、Frp服务"
+    "  10、Chatgpt-Docker服务"
     "  0、退出")
     if Option "请选择以下操作选项" false "${main_menu[@]}" ; then continue; fi   #监听输入一级菜单选项，并判断项目内容
     get_option=$option #记住一级选项
@@ -226,8 +227,20 @@ function main {
                         echo "默认配置已重置！"
                         creat_dat;;
                   esac;;
-                    
-2)###### 2、UFW防火墙管理  ###### 
+2)###### 工具箱  ###### 
+      sub_menu=(
+    "  1、返回上一级"
+    "  2、设置开机手机提醒"
+    "  3、关闭防火墙"
+    "  4、查看防火墙规则"
+    "  0、退出")                  
+                 if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
+                 case $option in
+                      2)boot_notifier;;
+                      3)sudo ufw disable;;
+                      4)sudo ufw status verbose;; 
+                 esac;;                    
+3)###### UFW防火墙管理  ###### 
       sub_menu=(
     "  1、返回上一级"
     "  2、启动防火墙"
@@ -240,7 +253,7 @@ function main {
                       3)sudo ufw disable;;
                       4)sudo ufw status verbose;; 
                  esac;;
-3) ###### Docker服务  ###### 
+4) ###### Docker服务  ###### 
     sub_menu=(
     "  1、返回上一级"
     "  2、安装Docker"
@@ -252,7 +265,7 @@ function main {
                       3)echo "Docker当前运行状况如下：" && docker ps && echo
                         echo "提示：可使用docker stop 或 docker rm 语句加容器 ID 或者名称来停止容器的运行或者删除容器 ";;
                  esac;;
-4)####  Nginx选项   ######
+5)####  Nginx选项   ######
    sub_menu=(
     "  1、返回上一级"
     "  2、安装Nginx"
@@ -269,7 +282,7 @@ function main {
                       5)download_nginx_config;;
                       6)nano /var/log/nginx/access.log;;
                     esac;;
-5)###### Xui服务  ######
+6)###### Xui服务  ######
      sub_menu=(
     "  1、返回上一级"
     "  2、安装\更新Xui面板"
@@ -280,7 +293,7 @@ function main {
                       2)install_Xui;;
                       3)x-ui;;
                   esac;;
-6) ###### Cloudflare服务  ######
+7) ###### Cloudflare服务  ######
     sub_menu=(
     "  1、返回上一级"
     "  2、Cloudflare DNS配置（账户信息在默认配置中设置）"
@@ -291,7 +304,7 @@ function main {
                      2)CF_DNS;;
                      3)install_Warp;;
                  esac;; 
-7)###### Tor服务 ######
+8)###### Tor服务 ######
  sub_menu=(
     "  1、返回上一级"
     "  2、安装Tor"
@@ -306,7 +319,7 @@ function main {
                         ipinfo "Tor";;
                  esac;; 
          
-8)######  Frp服务 ######
+9)######  Frp服务 ######
     sub_menu=(
     "  1、返回上一级"
     "  2、安装Frp"
@@ -322,7 +335,7 @@ function main {
                       5)restart "frps";;
                  esac;;       
                                                 
-9)###### Chatgpt ######
+10)###### Chatgpt ######
    sub_menu=(
     "  1、返回上一级"
     "  2、启动Chatgpt"
@@ -1343,6 +1356,26 @@ function set_CF_config {
     set 'api_key="' '"' 1 $path_cfdns true "Cloudfare API密钥"
     chmod +x $path_cfdns
 }
+
+function boot_notifier {
+if ! [ -e "$path_boot_notifier" ]; then
+cat > "$path_boot_notifier" <<EOF
+#!/bin/sh
+# 获取当前时间
+TIME=$(date '+%Y-%m-%d %H:%M:%S')
+# 使用curl发送POST请求，这里使用的JSON格式的数据
+curl "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=615a90ac-4d8a-48f1-b396-1f4bfbc650cd" \
+     -H 'Content-Type: application/json' \
+     -d '
+{
+     "msgtype": "text",
+     "text": {
+         "content": "【服务器已开机】"
+     }
+}'
+curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"服务器已开机，开机时间：$TIME\"}" YOUR_WEBHOOK_URL
+EOF
+fi
 
 
                                                                           # 一键搭建服务端的函数
