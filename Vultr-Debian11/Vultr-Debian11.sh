@@ -209,22 +209,22 @@ function main {
     "  1、返回上一级"
     "  2、查看所有重要程序运行状态"
     "  3、本机ip信息"
-    "  4、修改默认配置参数"
-    "  5、重置默认配置参数"
-    "  6、修改SSH登录端口和登录密码"
-    "  7、强制更新脚本"
+    "  4、修改配置参数"
+    "  5、修改SSH登录端口和登录密码"
+    "  6、强制更新脚本"
+    "  7、重置配置参数"
     "  0、退出" )
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  case $option in
                       2)status;;
                       3)ipinfo;;
                       4)set_dat;;
-                      5)if confirm "是否重置默认配置参数？" "已取消重置"; then return; fi
+                      5)change_ssh_port
+                        change_login_password;;
+                      6)update 1;;
+                      7)if confirm "是否重置默认配置参数？" "已取消重置"; then return; fi
                         echo "默认配置已重置！"
                         creat_dat;;
-                      6)change_ssh_port
-                        change_login_password;;
-                      7)update 1;;
                   esac;;
                     
 2)###### 2、UFW防火墙管理  ###### 
@@ -421,7 +421,7 @@ function update_dat {
          a=()
          IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g')    # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。
          IFS="=" read -ra b <<< "$line" 
-         #去除前后空格
+         #去除变量名的前后空格
          b[0]="${b[0]#"${b[0]%%[![:space:]]*}"}"  
          b[0]="${b[0]%"${b[0]##*[![:space:]]}"}"
          if [ -z "${!b[0]}" ]; then continue; fi #如果变量不存在，则跳过更新
@@ -433,6 +433,18 @@ function update_dat {
 }
 #######   修改数据      #######   
 function set_dat { 
+  if [ -n $1 ] ; then  #指定修改配置
+     line=$(search "#@" "" "$1" 1 true false false true "$dat_path" ) 
+     IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
+     #去除正则表达式的前后空格
+     a[2]="${a[2]#"${a[2]%%[![:space:]]*}"}"  
+     a[2]="${a[2]%"${a[2]##*[![:space:]]}"}"
+     settext "\"" "\"" "$1" 1 true false false true "$dat_path" "${a[0]}" "${a[1]}"  "$([ -z "${a[2]}" ] && echo "" || echo "${!a[2]}")"
+     return
+     #还需手动载入变量
+  fi
+    
+    #如果没有指定配置，则全文修改
     lines=()
     while IFS= read -r line; do   # IFS用于指定分隔符，IFS= read -r line 的含义是：在没有任何字段分隔符的情况下（即将IFS设置为空），读取一整行内容并赋值给变量line。与下面的IFS不同，这个命令在一个 while 循环中执行，每次循环都会读取 line1 中的一行，直到 line1 中的所有行都被读取完毕。
          if [[ ! $line =~ "=" ]] || [[ $line =~ ^([[:space:]]*[#]+|[#]+) ]] || [[ $line =~ \*([[:space:]]*|$) ]] ; then continue ; fi  #跳过#开头和*结尾的行
@@ -444,7 +456,7 @@ function set_dat {
          a=()
          IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
          IFS="=" read -ra b <<< "$line" 
-         #去除前后空格
+         #去除正则表达式的前后空格
          a[3]="${a[3]#"${a[3]%%[![:space:]]*}"}"  
          a[3]="${a[3]%"${a[3]##*[![:space:]]}"}"
          settext "${b[0]}=\"" "\"" "" 1 true false false true "$dat_path" "${a[1]}" "${a[2]}"  "$([ -z "${a[3]}" ] && echo "" || echo "${!a[3]}")"
@@ -1038,6 +1050,7 @@ function CF_DNS {
      
    if [ "$zone_identifier" == "null" ]; then
        echo "未找到您的Cloudflare账户\域名，请检查配置。"
+       set_dat "Domain"
        return
    fi
     get_all_dns_records $zone_identifier
@@ -1114,7 +1127,7 @@ function CF_DNS {
             else
                 # 如果记录标识符不为空，则更新现有记录
                 curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records/$record_identifier" \
-                     -H "X-Auth-Email: $email" \
+                     -H "X-Auth-Email: $Email" \
                      -H "X-Auth-Key: $Cloudflare_api_key" \
                      -H "Content-Type: application/json" \
                      --data '{"type":"A","name":"'"$record_name"'","content":"'"$record_content"'","proxied":'"$proxy"'}'
