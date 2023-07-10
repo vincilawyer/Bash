@@ -21,7 +21,7 @@
 ############################
 
 ####### 版本号 ######
-Version=2.69  #版本号,不得为空
+Version=2.70  #版本号,不得为空
 dat_Version=1 #用户配置版本号
 
 ####### 定义颜色 ######
@@ -152,7 +152,7 @@ trap 'update_force' ERR
 ##############################################################################   3.主函数  ################################################################################################
 ############################################################################################################################################################################################
 
-function main {
+function main1 {
   #######   判断系统适配     #######   
   if [ ! $(lsb_release -rs) = "11" ]; then 
   echo "请注意，本脚本是适用于Vulre服务器Debian11系统，用于其他系统或版本时将可能出错！"
@@ -205,7 +205,7 @@ function main {
     "  7、强制更新脚本"
     "  0、退出" )
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if [ $0 == 2 ]]; then break; fi  #如果输入为1，则返回上一级
+                 if (( $0 == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
                       2)status;;
                       3)ipinfo;;
@@ -225,8 +225,8 @@ function main {
     "  3、关闭防火墙"
     "  4、查看防火墙规则"
     "  0、退出")                  
-                 if Option ${main_menu[$(($get_option - 1))]} true "${sub_menu[@]}" ; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if [ $0 == 2 ]]; then break; fi  #如果输入为1，则返回上一级
+                 if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
+                 if (( $0 == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
                                    2)sudo ufw enable;;
                                    3)sudo ufw disable;;
@@ -238,8 +238,8 @@ function main {
     "  2、安装Docker"
     "  3、查看Docker容器"
     "  0、退出")
-                 if Option ${main_menu[$(($get_option - 1))]} true "${sub_menu[@]}" ; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if [ $0 == 2 ]]; then break; fi  #如果输入为1，则返回上一级
+                 if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
+                 if (( $0 == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
                                    2)install_Docker;;
                                    3)docker ps
@@ -255,8 +255,8 @@ function main {
     "  5、从github下载\更新配置文件"
     "  6、查看Nginx日志"
     "  0、退出")
-                 if Option ${main_menu[$(($get_option - 1))]} true "${sub_menu[@]}" ; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if [ $0 == 2 ]]; then break; fi  #如果输入为1，则返回上一级
+                 if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
+                 if (( $0 == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
                                    2)install_Nginx;;
                                    3)set_nginx_config;;
@@ -270,8 +270,8 @@ function main {
     "  2、安装\更新Xui面板"
     "  3、进入Xui面板管理（指令:x-ui）"
     "  0、退出" )
-                 if Option ${main_menu[$(($get_option - 1))]} true "${sub_menu[@]}" ; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if [ $0 == 2 ]]; then break; fi  #如果输入为1，则返回上一级
+                 if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
+                 if (( $0 == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
     2)install_Xui;;
     3)x-ui;;
@@ -282,8 +282,8 @@ function main {
     "  2、Cloudflare DNS配置（账户信息在默认配置中设置）"
     "  3、下载Warp"
     "  0、退出")
-                 if Option ${main_menu[$(($get_option - 1))]} true "${sub_menu[@]}" ; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if [ $0 == 2 ]]; then break; fi  #如果输入为1，则返回上一级
+                 if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
+                 if (( $0 == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
                                case $option in
      2)CF_DNS;;
@@ -296,8 +296,8 @@ function main {
     "  3、设置Tor配置（第一次使用需设置）"
     "  4、重启Tor"
     "  0、退出")
-                 if Option ${main_menu[$(($get_option - 1))]} true "${sub_menu[@]}" ; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if [ $0 == 2 ]]; then break; fi  #如果输入为1，则返回上一级
+                 if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
+                 if (( $0 == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
                                    2)install_Tor;;
                                    3)set_tor_config;;
@@ -314,8 +314,8 @@ function main {
     "  4、设置Frp配置"
     "  5、重启Frp"
     "  0、退出")                    
-                 if Option ${main_menu[$(($get_option - 1))]} true "${sub_menu[@]}" ; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if [ $0 == 2 ]]; then break; fi  #如果输入为1，则返回上一级
+                 if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
+                 if (( $0 == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
      2)install_Frp;;
        3)reset_Frp;;
@@ -331,9 +331,9 @@ function main {
     "  3、查看Chatgpt运行状态"
     "  4、Chatgpt更新脚本"
     "  0、退出")                     
-                 if Option ${main_menu[$(($get_option - 1))]} true "${sub_menu[@]}" ; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if [ $0 == 2 ]]; then break; fi  #如果输入为1，则返回上一级
-                 case $option in
+                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
+                  if (( $0 == 2 )); then break; fi  #如果输入为1，则返回上一级
+                  case $option in
                                    2)if cofirm "是否启动Chatgpt？" "已取消启动Chatgpt"; then continue; fi
                                      cd ~/ChatGPT-Next-Web
                                      pm2 start chat.config.js;;
@@ -379,12 +379,9 @@ EOF
 function Option {
   Page $1
   #展示选项
-  echo  $(($# - 1))
-  for menu in "${@:2}"
+  for menu in "${@:3}"   #需要跳过前面2个参数元素
   do 
-    echo 1
     echo "$menu"
-    echo 2
   done
   echo
   echo -n "  请按序号选择操作: "
@@ -392,7 +389,7 @@ function Option {
   read option
   clear
   if [[ "$option" =~ ^[0-9]+$ ]]; then #先做数字检查
-      if (( option >= 1 && option <= $(($# - 1)) )); then   #如果选中正确
+      if (( option >= 1 && option <= $(($# - 2)) )); then   #如果选中正确（需要减掉前面2个参数数量）。
          echo
          return 1
       elif [ "$option" == "0" ]; then             #如果选择零则退出
