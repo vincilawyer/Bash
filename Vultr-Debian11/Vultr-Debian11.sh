@@ -175,8 +175,8 @@ function main {
         echo "已完成配置！"
         wait
   fi
-  while true; do     #显示页面及选项
   
+  while true; do     #显示页面及选项
   #######   主菜单选项  ######
     main_menu=(
     "  1、系统设置"
@@ -189,12 +189,13 @@ function main {
     "  8、Frp服务"
     "  9、Chatgpt-Docker服务"
     "  0、退出")
-    Option "请选择以下操作选项" "${main_menu[@]}"
+    if Option "请选择以下操作选项" "${main_menu[@]}" false; then continue; fi   #监听输入一级菜单选项，并判断项目内容
     get_option=$option #记住一级选项
     while true; do
+          sub_menu=""
           case $get_option in               
 1)###### 1、系统设置  ######
-    system_menu=(
+    sub_menu=(
     "  1、返回上一级"
     "  2、查看所有重要程序运行状态"
     "  3、本机ip信息"
@@ -203,67 +204,56 @@ function main {
     "  6、修改SSH登录端口和登录密码"
     "  7、强制更新脚本"
     "  0、退出" )
-                 Option ${main_menu[$(($get_option - 1))]} "${system_menu[@]}"
+                 Option ${main_menu[$(($get_option - 1))]} "${sub_menu[@]}" true; then continue; fi #监听输入二级菜单选项，并判断项目内容
+                 if [ $0 == 2 ]]; then break; fi  #如果输入为1，则返回上一级
                  case $option in
-                 {2..7})
-                         case $option in
-                            2)status;;
-                            3)ipinfo;;
-                            4)set_dat;;
-                            5)if cofirm "是否重置默认配置参数？" "已取消重置"; then return; fi
-                            echo "默认配置已重置！"
-                            creat_dat;;
-                            6)change_ssh_port
-                              change_login_password;;
-                            7)update "true";;
-                         esac
-                         wait;;
-                  1)break;;
-                  *)input_error;;
-                  esac;;
+                      2)status;;
+                      3)ipinfo;;
+                      4)set_dat;;
+                      5)if cofirm "是否重置默认配置参数？" "已取消重置"; then return; fi
+                        echo "默认配置已重置！"
+                        creat_dat;;
+                      6)change_ssh_port
+                        change_login_password;;
+                      7)update "true";;
+                  esac
+                  wait
                     
 2)###### 2、UFW防火墙管理  ###### 
-      NFW_menu=(
+      sub_menu=(
     "  1、返回上一级"
     "  2、启动防火墙"
     "  3、关闭防火墙"
     "  4、查看防火墙规则"
     "  0、退出")                  
-                    Option ${main_menu[$(($get_option - 1))]} "${NFW_menu[@]}"
-                    case $option in
-                          {2..4})
-                               case $option in
+                 Option ${main_menu[$(($get_option - 1))]} "${sub_menu[@]}" true; then continue; fi #监听输入二级菜单选项，并判断项目内容
+                 if [ $0 == 2 ]]; then break; fi  #如果输入为1，则返回上一级
+                 case $option in
                                    2)sudo ufw enable;;
                                    3)sudo ufw disable;;
                                    4)sudo ufw status verbose;; 
                                esac
-                               wait;;
-                          1)break;;
-                          *)input_error;;
-                    esac;;
+                               wait
+
     
 3) ###### Docker服务  ###### 
-    Docker_menu=(
+    sub_menu=(
     "  1、返回上一级"
     "  2、安装Docker"
     "  3、查看Docker容器"
     "  0、退出")
-                 Option ${main_menu[$(($get_option - 1))]} "${Docker_menu[@]}"
-                    case $option in
-                           {2..3})
-                               case $option in
+                 Option ${main_menu[$(($get_option - 1))]} "${sub_menu[@]}" true; then continue; fi #监听输入二级菜单选项，并判断项目内容
+                 if [ $0 == 2 ]]; then break; fi  #如果输入为1，则返回上一级
+                 case $option in
                                    2)install_Docker;;
                                    3)docker ps
                                    echo
                                    echo "提示：可使用docker stop 或 docker rm 语句加容器 ID 或者名称来停止容器的运行或者删除容器 ";;
                                esac
-                               wait;;
-                          1)break;;
-                          *)input_error;;
-                    esac;;
+                               wait
 
 4)####  Nginx选项   ######
-   Nginx_menu=(
+   sub_menu=(
     "  1、返回上一级"
     "  2、安装Nginx"
     "  3、设置Nginx配置"
@@ -271,66 +261,55 @@ function main {
     "  5、从github下载\更新配置文件"
     "  6、查看Nginx日志"
     "  0、退出")
-                  Option ${main_menu[$(($get_option - 1))]} "${Nginx_menu[@]}"
-                    case $option in
-                           {2..6})
-                               case $option in
+                 Option ${main_menu[$(($get_option - 1))]} "${sub_menu[@]}" true; then continue; fi #监听输入二级菜单选项，并判断项目内容
+                 if [ $0 == 2 ]]; then break; fi  #如果输入为1，则返回上一级
+                 case $option in
                                    2)install_Nginx;;
                                    3)set_nginx_config;;
                                    4)restart "nginx";;
                                    5)download_nginx_config;;
                                    6)nano /var/log/nginx/access.log;;
                                esac
-                               wait;;
-                          1)break;;
-                          *)input_error;;
+                               wait
                     esac;;
 5)###### Xui服务  ######
-     Xui_menu=(
+     sub_menu=(
     "  1、返回上一级"
     "  2、安装\更新Xui面板"
     "  3、进入Xui面板管理（指令:x-ui）"
     "  0、退出" )
-                   Option ${main_menu[$(($get_option - 1))]} "${Xui_menu[@]}" 
-                        case $option in
-                            {2..3})
-                               case $option in
-                                   2)install_Xui;;
-                                   3)x-ui;;
-                               esac
-                               wait;;
-                           1)break;;
-                           *)input_error;;
-                        esac;;     
+                 Option ${main_menu[$(($get_option - 1))]} "${sub_menu[@]}" true; then continue; fi #监听输入二级菜单选项，并判断项目内容
+                 if [ $0 == 2 ]]; then break; fi  #如果输入为1，则返回上一级
+                 case $option in
+    2)install_Xui;;
+    3)x-ui;;
+                  esac
+                  wait
 6) ###### Cloudflare服务  ######
-    Cf_menu=(
+    sub_menu=(
     "  1、返回上一级"
     "  2、Cloudflare DNS配置（账户信息在默认配置中设置）"
     "  3、下载Warp"
     "  0、退出")
-                  Option ${main_menu[$(($get_option - 1))]} "${Warp_menu[@]}" 
-                        case $option in
-                           {2..3})
+                 Option ${main_menu[$(($get_option - 1))]} "${sub_menu[@]}" true; then continue; fi #监听输入二级菜单选项，并判断项目内容
+                 if [ $0 == 2 ]]; then break; fi  #如果输入为1，则返回上一级
+                 case $option in
                                case $option in
-                                   2)CF_DNS;;
-                                   3)install_Warp;;
+     2)CF_DNS;;
+     3)install_Warp;;
                                esac
-                               wait;;
-                          1)break;;
-                          *)input_error;;
-                        esac;;
+                               wait
  
 7)###### Tor服务 ######
- Tor_menu=(
+ sub_menu=(
     "  1、返回上一级"
     "  2、安装Tor"
     "  3、设置Tor配置（第一次使用需设置）"
     "  4、重启Tor"
     "  0、退出")
-                  Option ${main_menu[$(($get_option - 1))]} "${Tor_menu[@]}" 
-                        case $option in
-                            {2..5})
-                               case $option in
+                 Option ${main_menu[$(($get_option - 1))]} "${sub_menu[@]}" true; then continue; fi #监听输入二级菜单选项，并判断项目内容
+                 if [ $0 == 2 ]]; then break; fi  #如果输入为1，则返回上一级
+                 case $option in
                                    2)install_Tor;;
                                    3)set_tor_config;;
                                    4)restart "tor"
@@ -343,52 +322,45 @@ function main {
                         esac;; 
          
 8)######  Frp服务 ######
-    Frp_menu=(
+    sub_menu=(
     "  1、返回上一级"
     "  2、安装Frp"
     "  3、初始化Frp配置"
     "  4、设置Frp配置"
     "  5、重启Frp"
     "  0、退出")                    
-                  Option ${main_menu[$(($get_option - 1))]} "${Frp_menu[@]}" 
-                        case $option in
-                            {2..5})
-                               case $option in
-                                   2)install_Frp;;
-                                   3)reset_Frp;;
-                                   4)set_tor_config;;
-                                   5)restart "frps";;
-                               esac
-                               wait;;
-                           1)break;;
-                           *)input_error;;
-                        esac;;       
+                 Option ${main_menu[$(($get_option - 1))]} "${sub_menu[@]}" true; then continue; fi #监听输入二级菜单选项，并判断项目内容
+                 if [ $0 == 2 ]]; then break; fi  #如果输入为1，则返回上一级
+                 case $option in
+     2)install_Frp;;
+       3)reset_Frp;;
+       4)set_tor_config;;
+     5)restart "frps";;
+
+                   esac;;       
                                                 
 9)###### Chatgpt ######
-   Chatgpt_menu=(
+   sub_menu=(
     "  1、返回上一级"
     "  2、启动Chatgpt"
     "  3、查看Chatgpt运行状态"
     "  4、Chatgpt更新脚本"
     "  0、退出")                     
-                  Option ${main_menu[$(($get_option - 1))]} "${Chatgpt_menu[@]}" 
-                        case $option in
-                            {2..4})
-                               case $option in
+                 Option ${main_menu[$(($get_option - 1))]} "${sub_menu[@]}" true; then continue; fi #监听输入二级菜单选项，并判断项目内容
+                 if [ $0 == 2 ]]; then break; fi  #如果输入为1，则返回上一级
+                 case $option in
                                    2)if cofirm "是否启动Chatgpt？" "已取消启动Chatgpt"; then continue; fi
                                      cd ~/ChatGPT-Next-Web
                                      pm2 start chat.config.js;;
                                    3)pm2 list;;
                                    4)cd ~/ChatGPT-Next-Web
                                      chatgpt;;
-                               esac
-                               wait;;
-                           1)break;;
-                           *)input_error;;
-                        esac;;  
-                esac
-           done    
-  done   
+                  esac;; 
+            
+esac
+wait
+done    
+done   
 }
 #############################################################################################################################################################################################
 ##############################################################################   4.UI模块  ################################################################################################
@@ -431,10 +403,19 @@ function Option {
   #监听输入
   read option
   clear
-  if [ "$option" == "0" ]; then
-      exit 0
-  fi
-  echo
+  if [[ "$option" =~ ^[0-9]+$ ]]; then #先做数字检查
+      if (( option >= 1 && option <= $((${#2[@]} - 1)) )); then   #如果选中正确
+         echo
+         return 1
+      elif [ "$option" == "0" ]; then             #如果选择零则退出
+         exit 0        
+      elif [ "$option" == "1" ] && [ $3 == "true" ]    #如果二级菜单选择1，则返回上一级
+         return 2
+      if
+   else
+      input_error
+      return 0
+   fi
 }
 #######   输入错误提示  #######    
 function input_error {
