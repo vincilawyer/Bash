@@ -285,7 +285,6 @@ function main1 {
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  if (( $0 == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
-                               case $option in
      2)CF_DNS;;
      3)install_Warp;;
                                esac;; 
@@ -318,8 +317,8 @@ function main1 {
                  if (( $0 == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
      2)install_Frp;;
-       3)reset_Frp;;
-       4)set_tor_config;;
+     3)reset_Frp;;
+     4)set_tor_config;;
      5)restart "frps";;
 
                  esac;;       
