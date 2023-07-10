@@ -222,7 +222,7 @@ function main {
                       5)change_ssh_port
                         change_login_password;;
                       6)update 1;;
-                      7)if confirm "是否重置默认配置参数？" "已取消重置"; then return; fi
+                      7)if confirm "是否重置默认配置参数？" "已取消重置"; then break; fi
                         echo "默认配置已重置！"
                         creat_dat;;
                   esac;;
