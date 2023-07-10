@@ -21,18 +21,12 @@
 ############################
 #!/bin/bash
 
-# 获取当前脚本所在的目录路径
-script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-
-# 获取当前脚本的名称
-script_name="$(basename "${BASH_SOURCE[0]}")"
-
-echo "当前脚本的目录路径是：$script_path"
-echo "当前脚本的名称是：$script_name"
-sleep 100
-####### 版本号 ######
+####### 版本更新相关参数 ######
 Version=2.78  #版本号,不得为空
-Dat_Version=1 #用户配置版本号
+Dat_Version=1 #用户配置模板版本号
+script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #本脚本的运行路径
+script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
+startup="$1"                                                                      #当前脚本的启动方式：用户启动，或由更新程序启动（true） 
 
 ####### 定义颜色 ######
 RED='\033[0;31m'
@@ -51,8 +45,6 @@ old_text=""   #settext函数修改前内容
 new_text=""   #settext函数修改后内容
 
 ####### 定义路径  ######
-#本脚本的运行路径
-script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"    
 #更新检查程序网址
 link_update="https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh"
 #用户数据路径
@@ -108,7 +100,7 @@ Tor_port="50000"              #@Tor监听端口
 
 ####### 脚本更新  ####### 
 function update {
-    clear && current_Version="$Version" download_path_path="$script_path" force="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
+    clear && current_Version="$Version" download_path_path="$script_path" name="$script_name" force="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
     result=$?
     if [ $result == "1" ] ; then        #如果已经更新
         exit 
@@ -131,7 +123,9 @@ update
 
 #######   当脚本错误退出   ####### 
 function handle_error() {
-   exit 1
+   if [ $startup == "true" ]; then exit 1; fi
+   update "true"
+   exit
 }
 #######   当脚本正常退出   ####### 
 function normal_exit() {
