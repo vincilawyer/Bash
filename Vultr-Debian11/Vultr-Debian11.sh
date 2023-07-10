@@ -123,10 +123,8 @@ function update {
 ####### 执行启动前更新检查  ####### 
 update
 
-#######  当用户主动退出  #########
+#######  当用户选择主动退出  #########
 function quit() {
-   clear
-   echo -e "${GREED}已退出vinci脚本！${NC}" 
    exit 0
 }
 
@@ -138,6 +136,8 @@ function handle_error() {
 
 #######   当脚本退出   ####### 
 function normal_exit() {
+   clear
+   echo -e "${GREED}已退出vinci脚本！${NC}" 
    exit 0                                  
 }
 
