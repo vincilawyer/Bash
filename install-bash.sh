@@ -119,5 +119,18 @@ function bar() {
     printf "\033[1A\033[K%s\n" "$3"
     return 1
 }
+#######   倒计时  ####### 
+function countdown {
+    local from=$1
+    tput sc  # Save the current cursor position
+    while [ $from -ge 0 ]; do
+        tput rc  # Restore the saved cursor position
+        tput el  # Clear from cursor to the end of the line
+        printf "%02ds" $from  # Print the countdown
+        if $(read -s -t 1 -n 1); then break; fi
+        ((from--))
+    done
+    echo
+}
 ######  运行主函数  ######
 main
