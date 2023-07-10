@@ -23,7 +23,7 @@
 
 
 ####### 版本更新相关参数 ######
-Version=2.90  #版本号,不得为空
+Version=2.91  #版本号,不得为空
 Dat_Version=0.1 #用户配置模板版本号
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #本脚本的运行路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
@@ -433,7 +433,7 @@ function update_dat {
 }
 #######   修改数据      #######   
 function set_dat { 
-  if [ -n $1 ] ; then  #指定修改配置
+  if [ -n "$1" ] ; then  #指定修改配置
      line=$(search "#@" "" "$1" 1 true false false true "$dat_path" ) 
      IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
      #去除正则表达式的前后空格
@@ -485,7 +485,7 @@ function installed {
 #######   等待函数   #######   
 function wait {
    if [[ -z "$1" ]]; then
-    echo "请按下任意键返回管理系统"
+    echo "请按下任意键返回"
    else
     echo $1
    fi
@@ -1042,6 +1042,7 @@ function install_Xui {
 
 ###### Cf dns配置 ######
 function CF_DNS {
+   while true; do 
    # 获取区域标识符
    zone_identifier=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$Domain" \
      -H "X-Auth-Email: $Email" \
@@ -1171,6 +1172,8 @@ function CF_DNS {
            fi;;    
     *) echo "输入错误，已取消操作！";;
   esac
+  wait
+  done
 }
 ######  获取并显示所有DNS解析记录、CDN代理状态和TTL  ######
 function get_all_dns_records {
