@@ -140,6 +140,7 @@ update
 #######  当用户选择主动退出  #########
 function quit() {
    clear
+   echo -e "${GREED}已退出vinci脚本（V"$Version"）！${NC}" 
    exit 0
 }
 
@@ -152,7 +153,6 @@ function handle_error() {
 
 #######   当脚本退出   ####### 
 function normal_exit() {
-   echo -e "${GREED}已退出vinci脚本（V"$Version"）！${NC}" 
    exit 0                                  
 }
 
@@ -249,7 +249,7 @@ function main {
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  case $option in
                       2)install_Docker;;
-                      3)docker ps $$ echo
+                      3)echo "Docker当前运行状况如下：" && docker ps && echo
                         echo "提示：可使用docker stop 或 docker rm 语句加容器 ID 或者名称来停止容器的运行或者删除容器 ";;
                  esac;;
 4)####  Nginx选项   ######
