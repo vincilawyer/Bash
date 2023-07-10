@@ -1367,13 +1367,13 @@ TIME=\$(date '+%Y-%m-%d %H:%M:%S')
 # 使用curl发送POST请求，这里使用的JSON格式的数据
 curl 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=615a90ac-4d8a-48f1-b396-1f4bfbc650cd' \
      -H 'Content-Type: application/json' \
-     -d '
+     -d "
 {
      \"msgtype\": \"text\",
      \"text\": {
          \"content\": \"\$TIME\n【服务器已开机】\"
      }
-}'
+}"
 EOF
 }
 
