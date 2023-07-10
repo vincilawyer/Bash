@@ -125,37 +125,8 @@ function normal_exit() {
    exit 0
 }
 #######   脚本退出前执行  #######   
-#trap 'update_force' ERR
 trap 'handle_error' ERR
 trap 'normal_exit' EXIT
-
-#######   进度条  ####### 
-function bar() {
-    time=$1 #进度条时间
-    #$2  第一行文本内容
-    #$3  第二行文本内容
-    #$4  是否可退
-    #$5  退出提醒
-    block=""
-    echo -e "\033[1G$block"$2"···"
-    printf "输入任意键退出%02ds" $time
-    for i in $(seq 1 $1); do
-       block=$block$(printf "\e[42m \e[0m")
-       echo -e "\033[1F\033[1G$block"$2"···"
-       printf "输入任意键可退出...%02ds" $time
-       read -t 1 -n 1 input
-           if [ -n "$input" ] && [[ $4 == "true" ]]; then
-               echo "$5"
-               return 0
-           fi  
-           time=$((time-1))
-    done       
-    echo
-    printf "\033[1A\033[K%s\n" $3
-    return 1
-}
-
-
 
 #############################################################################################################################################################################################
 ##############################################################################   3.主函数  ################################################################################################
@@ -387,32 +358,27 @@ function Option {
   echo -n "  请按序号选择操作: "
   #监听输入
   read option
-  
   if [[ "$option" =~ ^[0-9]+$ ]]; then #先做数字检查
       if (( option >= 1 && option <= $(($# - 2)) )); then   #如果选中正确（需要减掉前面2个参数数量）。
          echo
+         clear
          return 1
       elif [ "$option" == "0" ]; then             #如果选择零则退出
          exit 0        
       elif [ "$option" == "1" ] && [ "$2" == "true" ]; then    #如果二级菜单选择1，则返回上一级
          return 2
       else
-         input_error
+         echo -e "${RED}  输入错误，请重新输入${NC}"
+         countdown 1
          return 0
       fi
    else
-      input_error
+      clear
+      echo -e "${RED}  输入错误，请重新输入${NC}"
+      countdown 1
       return 0
    fi
 }
-
-#######   输入错误提示  #######    
-function input_error {
-       echo -e "${RED}输入错误，请重新输入${NC}"
-       countdown 1
-}
-
-    
 
 
 #############################################################################################################################################################################################
