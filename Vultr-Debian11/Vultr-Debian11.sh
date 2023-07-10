@@ -21,7 +21,7 @@
 ############################
 
 ####### 版本号 ######
-Version=2.75  #版本号,不得为空
+Version=2.76  #版本号,不得为空
 Dat_Version=1 #用户配置版本号
 
 ####### 定义颜色 ######
@@ -103,10 +103,10 @@ function update {
     elif [ $result == "2" ]; then      #如果没有更新，则继续执行当前脚本
         :
     elif [ $result == "3" ] ; then      #如果脚本下载失败，则继续执行当前脚本   
-        echo "vinci脚本下载失败，请检查网络！即将返回"
+        echo -n "vinci脚本下载失败，请检查网络！即将返回"
         countdown 5
     else                                  #如果更新失败，则继续执行当前脚本
-        echo "更新程序错误，请检查！即将返回"
+        echo -n "更新程序错误，请检查！即将返回"
         countdown 5
     fi
 } 
@@ -356,7 +356,9 @@ function Option {
   done
   echo
   echo -n "  请按序号选择操作: "
+  tput sc   # 保存当前光标位置
   #监听输入
+  while true; do
   read option
   if [[ "$option" =~ ^[0-9]+$ ]]; then #先做数字检查
       if (( option >= 1 && option <= $(($# - 2)) )); then   #如果选中正确（需要减掉前面2个参数数量）。
@@ -368,15 +370,17 @@ function Option {
       elif [ "$option" == "1" ] && [ "$2" == "true" ]; then    #如果二级菜单选择1，则返回上一级
          return 2
       else
-         echo -e "${RED}  输入错误，请重新输入${NC}"
-         countdown 1
-         return 0
+         echo -ne "${RED}  输入错误，请重新输入${NC}"
+         tput rc  # Restore the saved cursor position
+         #countdown 15
+         #echo 1
+         #return 0
       fi
    else
-      clear
-      echo -e "${RED}  输入错误，请重新输入${NC}"
-      countdown 1
-      return 0
+      echo -ne "${RED}  输入错误，请重新输入${NC}"
+      tput rc  # Restore the saved cursor position
+      #countdown 1
+      #return 0
    fi
 }
 
@@ -449,8 +453,11 @@ function installed {
 #######   倒计时   ####### 
 function countdown {
     local from=$1
+    tput sc  # Save the current cursor position
     while [ $from -ge 0 ]; do
-        echo -ne "\r${from}s \r"
+        tput rc  # Restore the saved cursor position
+        tput el  # Clear from cursor to the end of the line
+        printf "%02ds" $from  # Print the countdown
         if $(read -s -t 1 -n 1); then break; fi
         ((from--))
     done
