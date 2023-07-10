@@ -461,7 +461,7 @@ function set_dat {
 #######  检验程序安装情况   ########
 function installed {
     local name=$1
-    if [ ! -x "$(command -v $name)"]; then return 1; fi
+    if [ ! -x "$(command -v $name)" ]; then return 1; fi
     echo -e "${GREEN}该程序已经安装，当前版本号为 $(docker -v 2>&1)${NC}"
     read -p "是否需要重新安装或更新？（Y/N）:" confirm1
     if [[ $confirm1 =~ ^[Yy]$ ]]; then 
