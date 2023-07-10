@@ -21,7 +21,7 @@
 ############################
 
 ####### 版本号 ######
-Version=2.73  #版本号,不得为空
+Version=2.74  #版本号,不得为空
 Dat_Version=1 #用户配置版本号
 
 ####### 定义颜色 ######
@@ -98,12 +98,15 @@ Tor_port="50000"              #@Tor监听端口
 function update {
     clear && current_Version="$Version" force="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
     result=$?
-    if [ $result -eq "1" ] ; then        #如果已经更新
+    if [ $result == "1" ] ; then        #如果已经更新
         exit 
-    elif [ $result -eq "2" ] ; then      #如果没有更新
+    elif [ $result == "2" ]; then      #如果没有更新
         :
-    else                                 #如果更新失败
-        echo "更新检查错误，请检查网络！"
+    elif [ $result == "3" ] ; then      #如果没有更新   
+        echo "vinci脚本下载失败，请检查网络！"
+        countdown 5
+    else                                  #如果更新失败
+        echo "更新程序错误，请检查！"
         countdown 5
     fi
 } 
@@ -117,6 +120,7 @@ function handle_error() {
 }
 #######   当脚本正常退出   ####### 
 function normal_exit() {
+   clear
    echo -e "${GREED}已退出vinci脚本！${NC}"
    exit 0
 }
@@ -126,9 +130,7 @@ trap 'handle_error' ERR
 trap 'normal_exit' EXIT
 
 function update_force() {
-    echo -e "${RED}############################################${NC}"
-    echo -e "${RED}#####  请注意，当前脚本运行出现错误！ ######${NC}"
-    echo -e "${RED}############################################${NC}"
+
     if bar 60 "即将尝试强制更新" "开始强制更新" true "已取消强制更新！"; then return; fi
     update "true"
     exit
@@ -218,7 +220,7 @@ function main {
     "  7、强制更新脚本"
     "  0、退出" )
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if (( $0 == 2 )); then break; fi  #如果输入为1，则返回上一级
+                 if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
                       2)status;;
                       3)ipinfo;;
@@ -252,7 +254,7 @@ function main {
     "  3、查看Docker容器"
     "  0、退出")
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if (( $0 == 2 )); then break; fi  #如果输入为1，则返回上一级
+                 if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
                                    2)install_Docker;;
                                    3)docker ps
@@ -269,7 +271,7 @@ function main {
     "  6、查看Nginx日志"
     "  0、退出")
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if (( $0 == 2 )); then break; fi  #如果输入为1，则返回上一级
+                 if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
                                    2)install_Nginx;;
                                    3)set_nginx_config;;
@@ -284,7 +286,7 @@ function main {
     "  3、进入Xui面板管理（指令:x-ui）"
     "  0、退出" )
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if (( $0 == 2 )); then break; fi  #如果输入为1，则返回上一级
+                 if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
     2)install_Xui;;
     3)x-ui;;
@@ -296,7 +298,7 @@ function main {
     "  3、下载Warp"
     "  0、退出")
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if (( $0 == 2 )); then break; fi  #如果输入为1，则返回上一级
+                 if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
      2)CF_DNS;;
      3)install_Warp;;
@@ -309,7 +311,7 @@ function main {
     "  4、重启Tor"
     "  0、退出")
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if (( $0 == 2 )); then break; fi  #如果输入为1，则返回上一级
+                 if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
                                    2)install_Tor;;
                                    3)set_tor_config;;
@@ -327,7 +329,7 @@ function main {
     "  5、重启Frp"
     "  0、退出")                    
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if (( $0 == 2 )); then break; fi  #如果输入为1，则返回上一级
+                 if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
      2)install_Frp;;
      3)reset_Frp;;
@@ -344,7 +346,7 @@ function main {
     "  4、Chatgpt更新脚本"
     "  0、退出")                     
                   if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                  if (( $0 == 2 )); then break; fi  #如果输入为1，则返回上一级
+                  if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                   case $option in
                                    2)if cofirm "是否启动Chatgpt？" "已取消启动Chatgpt"; then continue; fi
                                      cd ~/ChatGPT-Next-Web
