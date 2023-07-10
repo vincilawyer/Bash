@@ -23,7 +23,7 @@
 
 
 ####### 版本更新相关参数 ######
-Version=2.93  #版本号,不得为空
+Version=2.94  #版本号,不得为空
 Dat_Version=0.1 #用户配置模板版本号
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #本脚本的运行路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
