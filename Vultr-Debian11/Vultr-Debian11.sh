@@ -21,7 +21,7 @@
 ############################
 
 ####### 版本号 ######
-Version=2.77  #版本号,不得为空
+Version=2.78  #版本号,不得为空
 Dat_Version=1 #用户配置版本号
 
 ####### 定义颜色 ######
@@ -120,7 +120,7 @@ function handle_error() {
 }
 #######   当脚本正常退出   ####### 
 function normal_exit() {
-   clear
+   #clear
    echo -e "${GREED}已退出vinci脚本！${NC}"
    exit 0
 }
@@ -461,6 +461,7 @@ function countdown {
         if $(read -s -t 1 -n 1); then break; fi
         ((from--))
     done
+    echo
 }
 
 #######   等待函数   #######   
