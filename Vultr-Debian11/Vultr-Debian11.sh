@@ -19,10 +19,10 @@
 ###   13.Tor
 ###   14.Frp
 ############################
-#!/bin/bash
+
 
 ####### 版本更新相关参数 ######
-Version=2.81  #版本号,不得为空
+Version=2.82  #版本号,不得为空
 Dat_Version=1 #用户配置模板版本号
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #本脚本的运行路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
@@ -379,11 +379,11 @@ function Option {
   #监听输入
 while true; do
   read opt
-  if [ "$opt" == "0" ]; then             #如果选择零则退出
+  if [ "$option" == "0" ]; then             #如果选择零则退出
       quit      
-  elif [ "$opt" == "1" ] && [ "$2" == "true" ]; then    #如果二级菜单选择1，则返回上一级
+  elif [ "$option" == "1" ] && [ "$2" == "true" ]; then    #如果二级菜单选择1，则返回上一级
       return 2
-  elif [[ "$opt" =~ ^[0-9]+$ ]] && (( $opt >= 1 && $opt <= $(($# - 2)) )); then  #如果选中正确序号（需要减掉本函数前面2个参数数量）。
+  elif [[ "$option" =~ ^[0-9]+$ ]] && (( $option >= 1 && $option <= $(($# - 2)) )); then  #如果选中正确序号（需要减掉本函数前面2个参数数量）。
       clear
       return 1
   else
