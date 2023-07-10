@@ -21,8 +21,8 @@
 ############################
 
 ####### 版本号 ######
-Version=2.72  #版本号,不得为空
-dat_Version=1 #用户配置版本号
+Version=2.73  #版本号,不得为空
+Dat_Version=1 #用户配置版本号
 
 ####### 定义颜色 ######
 RED='\033[0;31m'
@@ -81,11 +81,13 @@ comment_regex="^ *[# ]*"
 ####### 用户配置模板文本 ####### 
 dat_text='# 该文件为vinci用户配置文本
 # "*"表示不可在脚本中修改的常量,变量值需要用双引号包围,"#@"用于分隔变量名称、备注、匹配正则表达式。
-dat_Version1="1"              #@版本号*              
+Dat_Version1="1"              #@版本号*              
 Domain="domain.com"           #@一级域名#@不用加www#@domain_regex
 Email="email@email.com"       #@邮箱#@#@email_regex
 Cloudflare_api_key="abc"      #@Cloudflare Api
 Chatgpt_api_key="abc"         #@Chatgpt Api
+Warp_port="40000"             #@Warp监听端口
+Tor_port="50000"              #@Tor监听端口
 '
 
 #############################################################################################################################################################################################
@@ -111,13 +113,12 @@ update
 
 #######   当脚本错误退出   ####### 
 function handle_error() {
-   echo -e "${RED}脚本执行出错！${NC}"
-   #exit 1
+   exit 1
 }
 #######   当脚本正常退出   ####### 
 function normal_exit() {
    echo -e "${GREED}已退出vinci脚本！${NC}"
-   #exit 0
+   exit 0
 }
 #######   脚本退出前执行  #######   
 #trap 'update_force' ERR
@@ -125,7 +126,7 @@ trap 'handle_error' ERR
 trap 'normal_exit' EXIT
 
 function update_force() {
-    echo -e "${RED}###########################################${NC}"
+    echo -e "${RED}############################################${NC}"
     echo -e "${RED}#####  请注意，当前脚本运行出现错误！ ######${NC}"
     echo -e "${RED}############################################${NC}"
     if bar 60 "即将尝试强制更新" "开始强制更新" true "已取消强制更新！"; then return; fi
@@ -179,7 +180,7 @@ function main {
         set_dat
         echo "已完成配置！"
         wait
-  elif ! [ $dat_Version1 == $dat_Version ] ; then
+  elif ! [ $Dat_Version1 == $Dat_Version ] ; then
         echo "配置文件更新中..."
         update_dat
         echo "更新完成，请重新设置配置参数！"
@@ -238,7 +239,7 @@ function main {
     "  4、查看防火墙规则"
     "  0、退出")                  
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 if (( $0 == 2 )); then break; fi  #如果输入为1，则返回上一级
+                 if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
                                    2)sudo ufw enable;;
                                    3)sudo ufw disable;;
@@ -398,7 +399,7 @@ function Option {
   echo -n "  请按序号选择操作: "
   #监听输入
   read option
-  clear
+  
   if [[ "$option" =~ ^[0-9]+$ ]]; then #先做数字检查
       if (( option >= 1 && option <= $(($# - 2)) )); then   #如果选中正确（需要减掉前面2个参数数量）。
          echo
@@ -754,18 +755,44 @@ function settext {
 
 ###### 查看程序运行状态 ######
 function status {
-systemctl status ufw
-systemctl status warp-cli
-systemctl status tor
+
+#应用列表
+apps=(
+"ufw"
+"warp-svc"
+"tor"
+)
+   for app in "${apps[@]}"; do  
+      cmd="systemctl status $app"
+      i=1
+      while IFS= read -r line; do
+          if (( "$i" == 1 )); then
+              echo -e "${RED}${line}${NC}"
+          else
+              echo "$line"
+          fi
+          i=$((i+1))
+      done < <($cmd)
+   done
 }
 ###### 查看ip信息 ######
 function ipinfo {
   echo "本机IP信息："
   hostname -I
-  echo "Warp IP信息："
-  curl --socks5-hostname localhost:40000 http://api.ipify.org
-  echo "Tor IP信息："
-  curl --socks5-hostname localhost:50000 http://api.ipify.org
+  
+#代理端口列表
+apps=(
+"Warp"
+"Tor"
+)
+   echo "代理IP信息："
+   for app in "${apps[@]}"; do  
+       port_value=$(eval echo \$"${app}_port")
+       echo "$app(端口$port_value)的代理IP地址为："
+       curl --socks5-hostname localhost:$port_value http://api.ipify.org
+      echo
+   done
+
 }
 
 #######  修改SSH端口    #######  
