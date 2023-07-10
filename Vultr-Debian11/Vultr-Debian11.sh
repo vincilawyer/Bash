@@ -28,7 +28,6 @@ Dat_Version=0.1 #用户配置模板版本号
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #本脚本的运行路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
 startnum="$1"                                                                     #当前脚本的启动方式：由更新程序唤醒（1） 
-exitnum=""                                                                        #当前脚本的退出方式：用户退出（1） 
 
 ####### 定义颜色 ######
 RED='\033[0;31m'
@@ -106,7 +105,7 @@ function update {
     clear && current_Version="$Version" download_path_path="$script_path" name="$script_name" force="$wrong_force" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
     result=$?
     if [ $result == "1" ] ; then        #如果已经更新
-        quit  
+        exit 0  
     elif [ $result == "2" ]; then      #如果没有更新，则继续执行当前脚本
         :
     elif [ $result == "3" ] ; then      #如果脚本下载失败，则继续执行当前脚本   
@@ -120,6 +119,20 @@ function update {
         countdown 5
     fi
 } 
+
+#######   倒计时   ####### 
+function countdown {
+    local from=$1
+    tput sc  # Save the current cursor position
+    while [ $from -ge 0 ]; do
+        tput rc  # Restore the saved cursor position
+        tput el  # Clear from cursor to the end of the line
+        printf "%02ds" $from  # Print the countdown
+        if $(read -s -t 1 -n 1); then break; fi
+        ((from--))
+    done
+    echo
+}
 
 ####### 执行启动前更新检查  ####### 
 update
@@ -456,20 +469,6 @@ function installed {
     fi  
        echo "已取消安装！"
     return 0
-}
-
-#######   倒计时   ####### 
-function countdown {
-    local from=$1
-    tput sc  # Save the current cursor position
-    while [ $from -ge 0 ]; do
-        tput rc  # Restore the saved cursor position
-        tput el  # Clear from cursor to the end of the line
-        printf "%02ds" $from  # Print the countdown
-        if $(read -s -t 1 -n 1); then break; fi
-        ((from--))
-    done
-    echo
 }
 
 #######   等待函数   #######   
