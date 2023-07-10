@@ -6,7 +6,7 @@
 ####1、关于脚本返回值：当下载成功并正常运行脚本，脚本返回值为1；当脚本无需更新，返回为2；当脚本下载失败未更新，返回为3 ；当脚本运行出现错误，用户取消更新，返回为4。
 
 ####### 基本参数 ######
-Ver=013           #检本查脚本版本号
+Ver=014           #检本查脚本版本号
 Version=""        #最新版本号
 new_name="vinci"  #新脚本名称
 new_path="/usr/local/bin/$new_name"     #新下载脚本保存路径
@@ -51,7 +51,7 @@ function download {
         echo "当前版本号为：V$current_Version"
         echo "最新版本号为：V$Version，即将更新脚本..."
         echo "旧脚本备份中"
-        if [ ！"$force" == "2" ] ; then cp "$position" "$position"_backup; fi
+        if [ ！"$force" == "2" ] ; then cp -f "$position" "$position"_backup; fi
     else
         echo "最新版本号为：V$Version，即将下载脚本..."
     fi
@@ -82,7 +82,12 @@ function download {
       echo -e "${RED}#######################################################################################${NC}"
       echo -e "${RED}#####  请注意，当前脚本运行出现错误！当前版本号：V$current_Version，最新版本号：V$Version ######${NC}"
       echo -e "${RED}#######################################################################################${NC}"
-      if bar 60 "即将尝试重新更新" "开始重新更新" true "已取消重新更新！"; then exit 4; fi     #脚本运行错误，取消更新的返回值
+      if bar 60 "即将尝试重新更新" "开始重新更新" true "已取消重新更新！"; then 
+           if bar 30 "即将回滚至旧版本" "开始回滚" true "已取消回滚！"; then exit 4； fi 
+           cp -f "$position"_backup "$position" 
+           echo "已回滚至旧版本！"
+           exit 4
+      fi     #脚本运行错误，取消更新的返回值
       clear
       echo "更新程序运行中($Ver)..."
 }
