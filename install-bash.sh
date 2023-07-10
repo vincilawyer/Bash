@@ -4,7 +4,7 @@
 ############################################################################################################################################################################################
 
 ####### 基本参数 ######
-Ver=012           #检本查脚本版本号
+Ver=013           #检本查脚本版本号
 Version=""        #最新版本号
 new_name="vinci"  #新脚本名称
 new_path="/usr/local/bin/$new_name"     #新下载脚本保存路径
@@ -12,7 +12,7 @@ new_path="/usr/local/bin/$new_name"     #新下载脚本保存路径
 #$download_path   为脚本当前的目录路径
 #$name            为脚本名称
 #$force           为强制更新模式，1为用户强制更新，2为自启动程序报错强制更新，由运行本脚本时传递该变量
-position=$( [ -z "$download_path"/"$name" ] && echo "$new_path" || echo "$download_path"/"$name" )     #脚本路径
+position=$( [ -z "$download_path" ] && echo "$new_path" || echo "$download_path"/"$name" )     #脚本路径
 
 ####### 下载网址 ######
 #Vultr-Debian11.sh文件网址
@@ -41,6 +41,8 @@ function main {
 function download {
     clear
     echo "更新程序运行中($Ver)..."
+    echo $position
+    sleep 100
     if [ -e "$position" ]; then 
         echo "当前版本号为：V$current_Version"
         echo "最新版本号为：V$Version，即将更新脚本..."
