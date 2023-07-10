@@ -27,6 +27,8 @@ function main {
     #获取最新版本号
     Version=$(curl -s "$link_Vultr_Debian11" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
     #用户强制更新
+    echo "$force"
+    sleep 10
     if [ "$force" == "1" ]; then
         download
     #自启动程序错误强制更新
