@@ -23,7 +23,7 @@
 
 
 ####### 版本更新相关参数 ######
-Version=2.92  #版本号,不得为空
+Version=2.93  #版本号,不得为空
 Dat_Version=0.1 #用户配置模板版本号
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #本脚本的运行路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
@@ -52,6 +52,8 @@ link_update="https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bas
 dat_path="/usr/local/bin/vinci.dat"
 #ssh配置文件路径(查看配置：nano /etc/ssh/sshd_config)                           
 path_ssh="/etc/ssh/sshd_config"
+#开启消息提醒脚本路径
+path_boot_notifier="/etc/init.d/boot_notifier.sh"
 #nginx配置文件网址
 link_nginx="https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf"
 #nginx配置文件路径 (查看配置：nano /etc/nginx/conf.d/default.conf)                      
