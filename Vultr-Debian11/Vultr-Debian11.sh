@@ -409,6 +409,7 @@ function update_dat {
          if [[ ! $line =~ "=" ]] || [[ $line =~ ^([[:space:]]*[#]+|[#]+) ]] || [[ $line =~ \*([[:space:]]*|$) ]] ; then continue ; fi  #跳过#开头和*结尾的行
          a=()
          IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g')    # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。
+         IFS="=" read -ra b <<< "$line" 
          #去除前后空格
          b[0]="${b[0]#"${b[0]%%[![:space:]]*}"}"  
          b[0]="${b[0]%"${b[0]##*[![:space:]]}"}"
