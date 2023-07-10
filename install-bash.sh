@@ -65,10 +65,10 @@ function download {
             sleep 1
             $name 1      #启动新脚本
             result=$?
-            if [ "$result" == "0" ]; then                          #如果脚本正常运行，则退出
+            if [ "$result" == "1" ]; then                          #如果脚本正常运行，则退出
+               warning                                             #如果脚本运行错误，则强制更新
+            else                                                   
                exit 1                                              #已更新脚本并正常运行的返回值
-            else                                                   #如果脚本运行错误，则强制更新
-               warning
             fi
         else
             echo -n "vinci脚本下载失败，请检查网络！"
