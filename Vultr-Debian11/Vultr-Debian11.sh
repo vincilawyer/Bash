@@ -1373,7 +1373,6 @@ curl "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=615a90ac-4d8a-48f1-b3
          "content": "【服务器已开机】"
      }
 }'
-curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"服务器已开机，开机时间：$TIME\"}" YOUR_WEBHOOK_URL
 EOF
 fi
 
