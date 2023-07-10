@@ -85,6 +85,7 @@ function bar() {
     echo -e "\033[1G$block"$2"···"
     printf "输入任意键退出%02ds" $time
     for i in $(seq 1 $1); do
+       time=$((time-1))
        block=$block$(printf "\e[42m \e[0m")
        echo -e "\033[1F\033[1G$block"$2"···"
        printf "输入任意键可退出...%02ds" $time
@@ -93,7 +94,6 @@ function bar() {
                echo "$5"
                return 0
            fi  
-           time=$((time-1))
     done       
     echo
     printf "\033[1A\033[K%s\n" "$3"
