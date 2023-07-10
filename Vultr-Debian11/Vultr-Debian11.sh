@@ -23,7 +23,7 @@
 
 
 ####### 版本更新相关参数 ######
-Version=2.91  #版本号,不得为空
+Version=2.92  #版本号,不得为空
 Dat_Version=0.1 #用户配置模板版本号
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #本脚本的运行路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
@@ -1358,13 +1358,13 @@ function set_CF_config {
 }
 
 function boot_notifier {
-if ! [ -e "$path_boot_notifier" ]; then
-cat > "$path_boot_notifier" <<EOF
+      if ! [ -e "$path_boot_notifier" ]; then
+      cat > "$path_boot_notifier" <<EOF
 #!/bin/sh
 # 获取当前时间
 TIME=$(date '+%Y-%m-%d %H:%M:%S')
 # 使用curl发送POST请求，这里使用的JSON格式的数据
-curl "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=615a90ac-4d8a-48f1-b396-1f4bfbc650cd" \
+curl 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=615a90ac-4d8a-48f1-b396-1f4bfbc650cd' \
      -H 'Content-Type: application/json' \
      -d '
 {
@@ -1374,7 +1374,8 @@ curl "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=615a90ac-4d8a-48f1-b3
      }
 }'
 EOF
-fi
+       fi
+}
 
 
                                                                           # 一键搭建服务端的函数
