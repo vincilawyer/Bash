@@ -22,7 +22,7 @@
 #!/bin/bash
 
 ####### 版本更新相关参数 ######
-Version=2.78  #版本号,不得为空
+Version=2.80  #版本号,不得为空
 Dat_Version=1 #用户配置模板版本号
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #本脚本的运行路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
@@ -122,18 +122,27 @@ function update {
 ####### 执行启动前更新检查  ####### 
 update
 
+#######  当用户主动退出  #########
+function quit() {
+   clear
+   echo -e "${GREED}已退出vinci脚本！${NC}"
+   exit 0  
+   exit 
+}
+
 #######   当脚本错误退出   ####### 
 function handle_error() {
    if [ $startup == "true" ]; then exit 1; fi
    update 2
    exit
 }
+
 #######   当脚本正常退出   ####### 
 function normal_exit() {
-   #clear
-   echo -e "${GREED}已退出vinci脚本！${NC}"
+   echo -e "${GREED}意外退出！${NC}"
    exit 0
 }
+
 #######   脚本退出前执行  #######   
 trap 'handle_error' ERR
 trap 'normal_exit' EXIT
@@ -356,7 +365,7 @@ EOF
   echo 
 }
 
-###### 显示选项  ######
+###### 显示和选择选项  ######
 function Option {
   Page $1
   #展示选项
@@ -368,30 +377,27 @@ function Option {
   echo -n "  请按序号选择操作: "
   tput sc   # 保存当前光标位置
   #监听输入
-  while true; do
-  read option
-  if [[ "$option" =~ ^[0-9]+$ ]]; then #先做数字检查
-      if (( option >= 1 && option <= $(($# - 2)) )); then   #如果选中正确（需要减掉前面2个参数数量）。
+while true; do
+  read opt
+  if [[ "$opt" =~ ^[0-9]+$ ]]; then #先做数字检查
+  
+      if (( $opt >= 1 && $opt <= $(($# - 2)) )); then   #如果选中正确（需要减掉前面2个参数数量）。
          echo
          clear
          return 1
-      elif [ "$option" == "0" ]; then             #如果选择零则退出
-         exit 0        
-      elif [ "$option" == "1" ] && [ "$2" == "true" ]; then    #如果二级菜单选择1，则返回上一级
+      elif [ "$opt" == "0" ]; then             #如果选择零则退出
+         quit      
+      elif [ "$opt" == "1" ] && [ "$2" == "true" ]; then    #如果二级菜单选择1，则返回上一级
          return 2
       else
          echo -ne "${RED}  输入错误，请重新输入${NC}"
          tput rc  # Restore the saved cursor position
-         #countdown 15
-         #echo 1
-         #return 0
       fi
    else
       echo -ne "${RED}  输入错误，请重新输入${NC}"
       tput rc  # Restore the saved cursor position
-      #countdown 1
-      #return 0
    fi
+done
 }
 
 
