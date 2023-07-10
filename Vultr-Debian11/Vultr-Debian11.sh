@@ -21,7 +21,7 @@
 ############################
 
 ####### 版本号 ######
-Version=2.74  #版本号,不得为空
+Version=2.75  #版本号,不得为空
 Dat_Version=1 #用户配置版本号
 
 ####### 定义颜色 ######
@@ -100,13 +100,13 @@ function update {
     result=$?
     if [ $result == "1" ] ; then        #如果已经更新
         exit 
-    elif [ $result == "2" ]; then      #如果没有更新
+    elif [ $result == "2" ]; then      #如果没有更新，则继续执行当前脚本
         :
-    elif [ $result == "3" ] ; then      #如果没有更新   
-        echo "vinci脚本下载失败，请检查网络！"
+    elif [ $result == "3" ] ; then      #如果脚本下载失败，则继续执行当前脚本   
+        echo "vinci脚本下载失败，请检查网络！即将返回"
         countdown 5
-    else                                  #如果更新失败
-        echo "更新程序错误，请检查！"
+    else                                  #如果更新失败，则继续执行当前脚本
+        echo "更新程序错误，请检查！即将返回"
         countdown 5
     fi
 } 
@@ -129,12 +129,6 @@ function normal_exit() {
 trap 'handle_error' ERR
 trap 'normal_exit' EXIT
 
-function update_force() {
-
-    if bar 60 "即将尝试强制更新" "开始强制更新" true "已取消强制更新！"; then return; fi
-    update "true"
-    exit
-}
 #######   进度条  ####### 
 function bar() {
     time=$1 #进度条时间
@@ -243,10 +237,10 @@ function main {
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
-                                   2)sudo ufw enable;;
-                                   3)sudo ufw disable;;
-                                   4)sudo ufw status verbose;; 
-                               esac;;
+                      2)sudo ufw enable;;
+                      3)sudo ufw disable;;
+                      4)sudo ufw status verbose;; 
+                 esac;;
 3) ###### Docker服务  ###### 
     sub_menu=(
     "  1、返回上一级"
@@ -256,11 +250,10 @@ function main {
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
-                                   2)install_Docker;;
-                                   3)docker ps
-                                   echo
-                                   echo "提示：可使用docker stop 或 docker rm 语句加容器 ID 或者名称来停止容器的运行或者删除容器 ";;
-                               esac;;
+                      2)install_Docker;;
+                      3)docker ps $$ echo
+                        echo "提示：可使用docker stop 或 docker rm 语句加容器 ID 或者名称来停止容器的运行或者删除容器 ";;
+                 esac;;
 4)####  Nginx选项   ######
    sub_menu=(
     "  1、返回上一级"
@@ -273,11 +266,11 @@ function main {
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
-                                   2)install_Nginx;;
-                                   3)set_nginx_config;;
-                                   4)restart "nginx";;
-                                   5)download_nginx_config;;
-                                   6)nano /var/log/nginx/access.log;;
+                      2)install_Nginx;;
+                      3)set_nginx_config;;
+                      4)restart "nginx";;
+                      5)download_nginx_config;;
+                      6)nano /var/log/nginx/access.log;;
                     esac;;
 5)###### Xui服务  ######
      sub_menu=(
@@ -288,8 +281,8 @@ function main {
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
-    2)install_Xui;;
-    3)x-ui;;
+                      2)install_Xui;;
+                      3)x-ui;;
                   esac;;
 6) ###### Cloudflare服务  ######
     sub_menu=(
@@ -300,9 +293,9 @@ function main {
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
-     2)CF_DNS;;
-     3)install_Warp;;
-                               esac;; 
+                     2)CF_DNS;;
+                     3)install_Warp;;
+                 esac;; 
 7)###### Tor服务 ######
  sub_menu=(
     "  1、返回上一级"
@@ -313,12 +306,11 @@ function main {
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
-                                   2)install_Tor;;
-                                   3)set_tor_config;;
-                                   4)restart "tor"
-                                   ip_tor;;
-                                   5)ip_tor;;
-                  esac;; 
+                      2)install_Tor;;
+                      3)set_tor_config;;
+                      4)restart "tor"
+                        ipinfo "Tor";;
+                 esac;; 
          
 8)######  Frp服务 ######
     sub_menu=(
@@ -331,11 +323,10 @@ function main {
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                  case $option in
-     2)install_Frp;;
-     3)reset_Frp;;
-     4)set_tor_config;;
-     5)restart "frps";;
-
+                      2)install_Frp;;
+                      3)reset_Frp;;
+                      4)set_tor_config;;
+                      5)restart "frps";;
                  esac;;       
                                                 
 9)###### Chatgpt ######
@@ -348,12 +339,7 @@ function main {
                   if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                   if (( $? == 2 )); then break; fi  #如果输入为1，则返回上一级
                   case $option in
-                                   2)if cofirm "是否启动Chatgpt？" "已取消启动Chatgpt"; then continue; fi
-                                     cd ~/ChatGPT-Next-Web
-                                     pm2 start chat.config.js;;
-                                   3)pm2 list;;
-                                   4)cd ~/ChatGPT-Next-Web
-                                     chatgpt;;
+                       2)echo 1;;
                   esac;; 
             
 esac
