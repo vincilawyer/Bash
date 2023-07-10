@@ -12,10 +12,10 @@ new_name="vinci"  #新脚本名称
 new_path="/usr/local/bin/$new_name"     #新下载脚本保存路径
 #$current_Version 为旧版本号，由运行本脚本时传递该变量
 #$download_path   为脚本当前的目录路径
-#$name            为脚本名称
+#$name            为脚本当前名称
 #$force           为强制更新模式，1为用户强制更新，2为自启动程序报错强制更新，由运行本脚本时传递该变量
 position=$( [ -z "$download_path" ] && echo "$new_path" || echo "$download_path"/"$name" )     #脚本路径
-
+name=$( [ -z "$name" ] && echo "$new_name" || echo "$name" )                                   #脚本名称
 
 ####### 下载网址 ######
 #Vultr-Debian11.sh文件网址
