@@ -83,7 +83,7 @@ function download {
       echo -e "${RED}#####  请注意，当前脚本运行出现错误！当前版本号：V$current_Version，最新版本号：V$Version ######${NC}"
       echo -e "${RED}#######################################################################################${NC}"
       if bar 60 "即将尝试重新更新" "开始重新更新" true "已取消重新更新！"; then 
-           if bar 30 "即将回滚至旧版本" "开始回滚" true "已取消回滚！"; then exit 4； fi 
+           if bar 30 "即将回滚至旧版本" "开始回滚" true "已取消回滚！"; then exit 4; fi 
            cp -f "$position"_backup "$position" 
            echo "已回滚至旧版本！"
            exit 4
