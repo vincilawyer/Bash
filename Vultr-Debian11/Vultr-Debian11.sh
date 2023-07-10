@@ -711,7 +711,7 @@ function settext {
                  elif [[ "$new_text" =~ $regex ]]; then
                      replace  "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "$comment" "$is_file" "$input" "$new_text"
                      printf "\033[K%s"  # 清除当前行的文本
-                     echo -e "${RED}"$mean"已修改为"$new_text"${NC}"
+                     echo -e "${BLUE}"$mean"已修改为"$new_text"${NC}"
                      return 0
                  else
                      echo -e "${RED}输入的"$mean"不符合要求，请重新输入！${NC}"
