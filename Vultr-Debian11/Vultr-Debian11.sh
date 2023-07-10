@@ -180,8 +180,6 @@ function main {
         echo "已完成配置！"
         wait
   elif ! [ $Dat_Version1 == $Dat_Version ] ; then
-        echo $Dat_Version1
-        echo $Dat_Version
         echo "配置文件更新中..."
         update_dat
         echo "更新完成，请在设置中修改参数！"
@@ -430,7 +428,7 @@ function update_dat {
          lines[$index]=$(replace '"' '"' "" 1 true false false false "$line"  "${!b[0]}")
     done
     printf '%s\n' "${lines[@]}"  > "$dat_path" 
-    replace '"' '"' "" 1 true false false true "$dat_path" "$Dat_Version"  #更新配置版本号
+    replace '"' '"' "Dat_Version1" 1 true false false true "$dat_path" "$Dat_Version"  #更新配置版本号
     source "$dat_path"         #重新载入数据
 }
 #######   修改数据      #######   
