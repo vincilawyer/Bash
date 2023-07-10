@@ -88,13 +88,13 @@ comment_regex="^ *[# ]*"
 ####### 用户配置模板文本 ####### 
 dat_text='# 该文件为vinci用户配置文本
 # "*"表示不可在脚本中修改的常量,变量值需要用双引号包围,"#@"用于分隔变量名称、备注、匹配正则表达式。
-Dat_Version1="1"              #@版本号*              
-Domain="domain.com"           #@一级域名#@不用加www#@domain_regex
-Email="email@email.com"       #@邮箱#@#@email_regex
-Cloudflare_api_key="abc"      #@Cloudflare Api
-Chatgpt_api_key="abc"         #@Chatgpt Api
-Warp_port="40000"             #@Warp监听端口
-Tor_port="50000"              #@Tor监听端口
+Dat_Version1="$Dat_Version"                       #@版本号*              
+Domain="$Domain"                              #@一级域名#@不用加www#@domain_regex
+Email="$Email"                                #@邮箱#@#@email_regex
+Cloudflare_api_key="$Cloudflare_api_key"      #@Cloudflare Api
+Chatgpt_api_key="$Chatgpt_api_key"         #@Chatgpt Api
+Warp_port="$Warp_port"             #@Warp监听端口
+Tor_port="$Tor_port"              #@Tor监听端口
 '
 
 #############################################################################################################################################################################################
@@ -183,7 +183,7 @@ function main {
         wait
   elif ! [ $Dat_Version1 == $Dat_Version ] ; then
         echo "配置文件更新中..."
-        update_dat
+        creat_dat
         echo "更新完成，请在设置中修改参数！"
         wait
   fi
@@ -423,29 +423,6 @@ done
 function creat_dat {
     echo "$dat_text" > "$dat_path"
 }
-#######   用户数据模板更新   #######   
-function update_dat {
-    lines=()
-    while IFS= read -r line; do     
-         lines+=("$line")    #将每行文本转化为数组     
-    done <<< "$dat_text" 
-
-    for index in "${!lines[@]}"; do   
-         line=${lines[$index]}
-         if [[ ! $line =~ "=" ]] || [[ $line =~ ^([[:space:]]*[#]+|[#]+) ]] || [[ $line =~ \*([[:space:]]*|$) ]] ; then continue ; fi  #跳过#开头和*结尾的行
-         a=()
-         IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g')    # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。
-         IFS="=" read -ra b <<< "$line" 
-         #去除变量名的前后空格
-         b[0]="${b[0]#"${b[0]%%[![:space:]]*}"}"  
-         b[0]="${b[0]%"${b[0]##*[![:space:]]}"}"
-         if [ -z "${!b[0]}" ]; then continue; fi #如果变量不存在，则跳过更新
-         lines[$index]=$(replace '"' '"' "" 1 true false false false "$line"  "${!b[0]}")
-    done
-    printf '%s\n' "${lines[@]}"  > "$dat_path" 
-    replace '"' '"' "Dat_Version1" 1 true false false true "$dat_path" "$Dat_Version"  #更新配置版本号
-    source "$dat_path"         #重新载入数据
-}
 #######   修改数据      #######   
 function set_dat { 
   if [ -n "$1" ] ; then  #指定修改配置
@@ -477,6 +454,29 @@ function set_dat {
          settext "${b[0]}=\"" "\"" "" 1 true false false true "$dat_path" "${a[1]}" "${a[2]}"  "$([ -z "${a[3]}" ] && echo "" || echo "${!a[3]}")"
     done
     source "$dat_path"   #重新载入数据
+}
+#######   用户数据模板更新(代码作废)   #######   
+function update_dat {
+    lines=()
+    while IFS= read -r line; do     
+         lines+=("$line")    #将每行文本转化为数组     
+    done <<< "$dat_text" 
+
+    for index in "${!lines[@]}"; do   
+         line=${lines[$index]}
+         if [[ ! $line =~ "=" ]] || [[ $line =~ ^([[:space:]]*[#]+|[#]+) ]] || [[ $line =~ \*([[:space:]]*|$) ]] ; then continue ; fi  #跳过#开头和*结尾的行
+         a=()
+         IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g')    # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。
+         IFS="=" read -ra b <<< "$line" 
+         #去除变量名的前后空格
+         b[0]="${b[0]#"${b[0]%%[![:space:]]*}"}"  
+         b[0]="${b[0]%"${b[0]##*[![:space:]]}"}"
+         if [ -z "${!b[0]}" ]; then continue; fi #如果变量不存在，则跳过更新
+         lines[$index]=$(replace '"' '"' "" 1 true false false false "$line"  "${!b[0]}")
+    done
+    printf '%s\n' "${lines[@]}"  > "$dat_path" 
+    replace '"' '"' "Dat_Version1" 1 true false false true "$dat_path" "$Dat_Version"  #更新配置版本号
+    source "$dat_path"         #重新载入数据
 }
 
 
@@ -1364,15 +1364,15 @@ function boot_notifier {
       cat > "$path_boot_notifier" <<EOF
 #!/bin/sh
 # 获取当前时间
-TIME=$(date '+%Y-%m-%d %H:%M:%S')
+TIME=\$(date '+%Y-%m-%d %H:%M:%S')
 # 使用curl发送POST请求，这里使用的JSON格式的数据
 curl 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=615a90ac-4d8a-48f1-b396-1f4bfbc650cd' \
      -H 'Content-Type: application/json' \
      -d '
 {
-     "msgtype": "text",
-     "text": {
-         "content": "【服务器已开机】"
+     \"msgtype\": \"text\",
+     \"text\": {
+         \"content\": \"\$TIME\n【服务器已开机】\"
      }
 }'
 EOF
