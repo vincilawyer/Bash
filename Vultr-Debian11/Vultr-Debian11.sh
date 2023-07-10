@@ -23,8 +23,8 @@
 
 
 ####### 版本更新相关参数 ######
-Version=2.84  #版本号,不得为空
-Dat_Version=1 #用户配置模板版本号
+Version=2.85  #版本号,不得为空
+Dat_Version=0.1 #用户配置模板版本号
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #本脚本的运行路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
 startnum="$1"                                                                      #当前脚本的启动方式：用户启动，或由更新程序启动（1） 
@@ -206,7 +206,7 @@ function main {
                       2)status;;
                       3)ipinfo;;
                       4)set_dat;;
-                      5)if cofirm "是否重置默认配置参数？" "已取消重置"; then return; fi
+                      5)if confirm "是否重置默认配置参数？" "已取消重置"; then return; fi
                         echo "默认配置已重置！"
                         creat_dat;;
                       6)change_ssh_port
@@ -754,7 +754,7 @@ apps=(
    for app in "${apps[@]}"; do  
        port_value=$(eval echo \$"${app}_port")
        echo "$app(端口$port_value)的代理IP地址为："
-       curl --socks5-hostname localhost:$port_value http://api.ipify.org
+       curl --socks5-hostname localhost:"$port_value" http://api.ipify.org
       echo
    done
 
@@ -845,7 +845,7 @@ function install_Nginx {
 
 ####### 从github下载更新Nginx配置文件 ####### 
 function download_nginx_config {
-      if cofirm "是否从Github下载更新Nginx配置文件？此举动将覆盖原配置文件" "已取消下载更新Nginx配置文件"; then return; fi
+      if confirm "是否从Github下载更新Nginx配置文件？此举动将覆盖原配置文件" "已取消下载更新Nginx配置文件"; then return; fi
       echo -e "${GREEN}正在载入：${NC}"
       if wget $link_nginx -O $path_nginx; then 
          echo -e "${GREEN}载入完毕，第一次使用请设置配置：${NC}"
@@ -888,7 +888,7 @@ function set_nginx_config {
 function download_html {
    echo "维护中..."
    return
-   if cofirm "此操作将从Github的vincilawyer/Bash/nginx/html目录下载入网页文件，并覆盖原网页文件！" "已取消下载更新网页文件"; then return; fi
+   if confirm "此操作将从Github的vincilawyer/Bash/nginx/html目录下载入网页文件，并覆盖原网页文件！" "已取消下载更新网页文件"; then return; fi
     #输入主题名称
     read -p "请输入网页主题名称（例如Moon）：" input
     if [[ -z $input ]]; then 
@@ -1274,7 +1274,7 @@ EOF
    fi
 }
 function reset_Frp {
-if cofirm "是否重置Frp配置" "已取消重置！"; then return; fi 
+if confirm "是否重置Frp配置" "已取消重置！"; then return; fi 
 cat > $path_frp/frps.ini <<EOF
 [common]
 # 服务端监听端口
@@ -1297,7 +1297,7 @@ EOF
 
                                                                           # 安装CF_DNS的函数
 function install_CF_DNS {
-    if cofirm "是否从Github下载更新CF_DNS脚本文件？此举动将覆盖原脚本文件。" "已取消下载更新CF_DNS脚本文件"; then return; fi
+    if confirm "是否从Github下载更新CF_DNS脚本文件？此举动将覆盖原脚本文件。" "已取消下载更新CF_DNS脚本文件"; then return; fi
     #安装jq
     echo "正在安装依赖软件JQ..."
     if [ -x "$(command -v jq)" ]; then
@@ -1327,7 +1327,7 @@ function set_CF_config {
 
                                                                           # 一键搭建服务端的函数
 function one_step {
-   if cofirm "是否一键搭建科学上网服务端？" "已取消一键搭建科学上网服务端"; then return; fi
+   if confirm "是否一键搭建科学上网服务端？" "已取消一键搭建科学上网服务端"; then return; fi
    echo "正在安装X-ui面板"
    install_Xui
    wait "点击任意键安装Nginx"
