@@ -23,7 +23,7 @@
 
 
 ####### 版本更新相关参数 ######
-Version=2.85  #版本号,不得为空
+Version=2.86  #版本号,不得为空
 Dat_Version=0.1 #用户配置模板版本号
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #本脚本的运行路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
@@ -395,11 +395,33 @@ done
 function creat_dat {
     echo "$dat_text" > "$dat_path"
 }
+#######   用户数据模板更新   #######   
+function update_dat {
+    lines=()
+    while IFS= read -r line; do     
+         lines+=("$line")    #将每行文本转化为数组     
+    done <<< "$dat_text" 
+
+    for index in "${!lines[@]}"; do   
+         line=${lines[$index]}
+         if [[ ! $line =~ "=" ]] || [[ $line =~ ^([[:space:]]*[#]+|[#]+) ]] || [[ $line =~ \*([[:space:]]*|$) ]] ; then continue ; fi  #跳过#开头和*结尾的行
+         a=()
+         IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g')    # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。
+         #去除前后空格
+         b[0]="${b[0]#"${b[0]%%[![:space:]]*}"}"  
+         b[0]="${b[0]%"${b[0]##*[![:space:]]}"}"
+         if [ -z "${!b[0]}" ]; then continue; fi #如果变量不存在，则跳过更新
+         lines[$index]=$(replace '"' '"' "" 1 true false false false "$line"  "${!b[0]}")
+    done
+    printf '%s\n' "${lines[@]}"  > "$dat_path" 
+    replace '"' '"' "" 1 true false false true "$dat_path" "$Dat_Version"  #更新配置版本号
+    source $dat_path         #重新载入数据
+}
 #######   修改数据      #######   
 function set_dat { 
     lines=()
     while IFS= read -r line; do   # IFS用于指定分隔符，IFS= read -r line 的含义是：在没有任何字段分隔符的情况下（即将IFS设置为空），读取一整行内容并赋值给变量line。与下面的IFS不同，这个命令在一个 while 循环中执行，每次循环都会读取 line1 中的一行，直到 line1 中的所有行都被读取完毕。
-         if [[ ! $line =~ "=" ]] || [[ $line =~ ^([[:space:]]*[#]+|[#]+) ]] || [[ $line =~ \*([[:space:]]*|$) ]] ; then continue ; fi  #跳过不符合条件的行
+         if [[ ! $line =~ "=" ]] || [[ $line =~ ^([[:space:]]*[#]+|[#]+) ]] || [[ $line =~ \*([[:space:]]*|$) ]] ; then continue ; fi  #跳过#开头和*结尾的行
          lines+=("$line")    #将每行文本转化为数组     
     done < "$dat_path"
     
@@ -415,26 +437,7 @@ function set_dat {
     done                                                                                      
 }
 
-#######   用户数据模板更新   #######   
-function update_dat {
-    lines=()
-    while IFS= read -r line; do     
-         lines+=("$line")    #将每行文本转化为数组     
-    done <<< "$dat_text" 
 
-    for index in "${!lines[@]}"; do   
-         line=${lines[$index]}
-         if [[ ! $line =~ "=" ]] || [[ $line =~ ^([[:space:]]*[#]+|[#]+) ]] || [[ $line =~ \*([[:space:]]*|$) ]] ; then continue ; fi  #跳过不符合条件的行
-         a=()
-         IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g')    # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。
-         #去除前后空格
-         b[0]="${b[0]#"${b[0]%%[![:space:]]*}"}"  
-         b[0]="${b[0]%"${b[0]##*[![:space:]]}"}"
-         if [ -z "${!b[0]}" ]; then continue; fi #如果变量不存在，则跳过更新
-         lines[$index]=$(replace '"' '"' "" 1 true false false false "$line"  "${!b[0]}")
-    done
-    printf '%s\n' "${lines[@]}"  > "$dat_path" 
-}
 #############################################################################################################################################################################################
 ##############################################################################   6.开 发 工 具  ################################################################################################
 ############################################################################################################################################################################################
