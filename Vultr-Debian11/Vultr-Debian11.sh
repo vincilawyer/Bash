@@ -448,7 +448,8 @@ function set_dat {
          a[3]="${a[3]#"${a[3]%%[![:space:]]*}"}"  
          a[3]="${a[3]%"${a[3]##*[![:space:]]}"}"
          settext "${b[0]}=\"" "\"" "" 1 true false false true "$dat_path" "${a[1]}" "${a[2]}"  "$([ -z "${a[3]}" ] && echo "" || echo "${!a[3]}")"
-    done                                                                                      
+    done
+    source "$dat_path"   #重新载入数据
 }
 
 
@@ -546,7 +547,7 @@ function search {
   else   #如果输入的是字符串
     found_text=$(echo "$input" | awk -v start="$start_string" -v end="$end_string" -v location="$location_string"  -v mod="$module" -v exact="$exact_match" -v num="$n" "$awk_script")
   fi
-  
+
   if ! $comment; then found_text=${found_text// (注释行)/}; fi
   echo "$found_text"   # 输出找到的文本
 }
@@ -681,24 +682,24 @@ function settext {
      echo -e "${GREEN}【修改"$mean"】当前的"$mean"为："$old_text1"${NC}"
      while true; do
          #-r选项告诉read命令不要对反斜杠进行转义，避免误解用户输入。-e选项启用反向搜索功能，这样用户在输入时可以通过向左箭头键或Ctrl + B键来移动光标并修改输入。
-         read -r -e -p "$(echo -e ${BLUE}"请设置新的"$mean"（$( [ -n "$mark" ] && echo "$mark,")输入为空则跳过$( [[ $coment == "true" ]] && echo "，输入#则设为注释行")）：${NC}")" new_text
+         read -r -e -p "$(echo -e ${GREEN}"请设置新的"$mean"（$( [ -n "$mark" ] && echo "$mark,")输入为空则跳过$( [[ $coment == "true" ]] && echo "，输入#则设为注释行")）：${NC}")" new_text
          #s/^[[:space:]]*//表示将输入字符串中开头的任何空格字符替换为空字符串；s/[[:space:]]*$//表示将输入字符串结尾的任何空格字符替换为空字符串。
          new_text="$(echo -e "${new_text}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
          if [[ -z "$new_text" ]]; then
              printf "\033[K%s"  # 清除当前行的文本
-             echo -e "${RED}已跳过$mean设置${NC}"
+             echo -e "${GREEN}已跳过$mean设置${NC}"
              return 1
          else    
             if  [[ $is_file == "true" ]]; then   #如果在文件模式下
                  if [[ "$new_text" == "#" ]] && [[ $comment == "true" ]]; then
                      replace "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "$comment" "$is_file" "$input" "$new_text"
                      printf "\033[K%s"  # 清除当前行的文本
-                     echo -e "${GREEN}已将"$mean"参数设为注释行${NC}"
+                     echo -e "${BLUE}已将"$mean"参数设为注释行${NC}"
                      return 0
                  elif [[ "$new_text" =~ $regex ]]; then
                      replace  "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "$comment" "$is_file" "$input" "$new_text"
                      printf "\033[K%s"  # 清除当前行的文本
-                     echo -e "${GREEN}"$mean"已修改为"$new_text"${NC}"
+                     echo -e "${RED}"$mean"已修改为"$new_text"${NC}"
                      return 0
                  else
                      echo -e "${RED}输入的"$mean"不符合要求，请重新输入！${NC}"
@@ -832,7 +833,7 @@ function install_Docker {
 
 ####### 安装Nginx ######
 function install_Nginx {
-       if installed "nginx" ;then return; fi  #检验安装
+        installed "nginx" && return    #检验安装
         echo -e "${GREEN}正在更新包列表${NC}"
         apt-get update
         echo -e "${GREEN}包列表更新完成${NC}"
@@ -860,8 +861,8 @@ function download_nginx_config {
 
 ####### 设置Nginx配置 ####### 
 function set_nginx_config {
-     # echo "维护中，请手动导入配置！"
-     #  return
+     echo "维护中，请手动导入配置！"
+     return
        if ! [ -x "$(command -v nginx)" ]; then
           echo -e "${RED}Nginx尚未安装，请先进行安装！${NC}"
        fi
