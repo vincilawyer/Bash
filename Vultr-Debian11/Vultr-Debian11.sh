@@ -164,12 +164,11 @@ function main {
   fi
 
   #######   检查用户数据文件  #######   
-  if ! source $dat_path; then   #读取用户数据
-        echo "未找到配置文件，正在新建数据..."
+  if ! source $dat_path >/dev/null; then   #读取用户数据
+        echo "系统无用户数据记录。准备新建用户数据...请设置数据"
         creat_dat
-        echo "新建完成，请设置配置参数！"
         set_dat
-        echo "已完成配置！"
+        echo "配置结束！"
         wait
   elif ! [ $Dat_Version1 == $Dat_Version ] ; then
         echo "配置文件更新中..."
