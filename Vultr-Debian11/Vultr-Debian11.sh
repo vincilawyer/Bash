@@ -220,7 +220,6 @@ function main {
     "  4、修改配置参数"
     "  5、修改SSH登录端口和登录密码"
     "  6、强制更新脚本"
-    "  7、重置配置参数"
     "  0、退出" )
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  case $option in
@@ -230,9 +229,6 @@ function main {
                       5)change_ssh_port
                         change_login_password;;
                       6)update 1;;
-                      7)if confirm "是否重置默认配置参数？" "已取消重置"; then break; fi
-                        echo "默认配置已重置！"
-                        creat_dat;;
                   esac;;
 2)###### 工具箱  ###### 
       sub_menu=(
