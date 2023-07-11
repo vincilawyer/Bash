@@ -23,7 +23,7 @@
 
 
 ####### 版本更新相关参数 ######
-Version=2.99  #版本号,不得为空
+Version=3.00  #版本号,不得为空
 Dat_Version=0.3 #用户配置模板版本号
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #本脚本的运行路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
@@ -187,7 +187,7 @@ function main {
         set_dat
         echo "配置结束！"
         wait
-  elif ! [ ${＃Dat_text} == $Dat_num ] ; then
+  elif ! [ ${＃dat_text} == $Dat_num ] ; then
         echo "配置文件更新中..."
         creat_dat
         echo "更新完成，请在设置中修改参数！"
