@@ -133,7 +133,7 @@ function countdown {
     tput sc  # Save the current cursor position
     while [ $from -ge 0 ]; do
         tput rc  # Restore the saved cursor position
-        tput el  # #clear from cursor to the end of the line
+        tput el  # clear from cursor to the end of the line
         printf "%02ds" $from  # Print the countdown
         if $(read -s -t 1 -n 1); then break; fi
         ((from--))
@@ -407,7 +407,7 @@ while true; do
   elif [ "$option" == "1" ] && [ "$2" == "true" ]; then    #如果二级菜单选择1，则返回上一级
       return 2
   elif [[ "$option" =~ ^[0-9]+$ ]] && (( $option >= 1 && $option <= $(($# - 3)) )); then  #如果选中正确序号（需要减掉本函数前面2个参数数量以及序号0）。
-      #clear
+      clear
       return 1
   else
       tput rc  # 回到输入位置
@@ -1084,7 +1084,7 @@ function CF_DNS {
     case $choice in
       1)
         # 删除DNS记录
-        #clear
+        clear
         get_all_dns_records $zone_identifier
         read -p "请输入要删除的DNS记录名称（例如 www）：" record_name
 
@@ -1094,7 +1094,7 @@ function CF_DNS {
              -H "X-Auth-Key: $Cloudflare_api_key" \
              -H "Content-Type: application/json" | jq -r '.result[0].id')
         
-        #clear
+        clear
         # 如果记录标识符为空，则表示未找到该记录
         if [ "$record_identifier" == "null" ]; then
             echo "未找到该DNS记录。"
@@ -1110,7 +1110,7 @@ function CF_DNS {
             get_all_dns_records $zone_identifier
         fi;;
     2)# 修改或增加DNS记录
-        #clear
+        clear
         get_all_dns_records $zone_identifier
         read -p "请输入要修改或增加的DNS记录名称（例如 www）：" record_name
         while true; do
@@ -1133,7 +1133,7 @@ function CF_DNS {
                  -H "X-Auth-Email: $Email" \
                  -H "X-Auth-Key: $Cloudflare_api_key" \
                  -H "Content-Type: application/json" | jq -r '.result[0].id')
-            #clear 
+            clear 
             # 如果记录标识符为空，则创建新记录
             if [ "$record_identifier" == "null" ]; then
                 curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records" \
@@ -1166,7 +1166,7 @@ function CF_DNS {
                  -H "X-Auth-Email: $Email" \
                  -H "X-Auth-Key: $Cloudflare_api_key" \
                  -H "Content-Type: application/json" | jq -r '.result[0].id')
-            #clear 
+            clear 
             # 如果记录标识符为空，则创建新记录
             if [ "$record_identifier" == "null" ]; then
                 curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records" \
