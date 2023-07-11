@@ -23,12 +23,12 @@
 
 
 ####### 版本更新相关参数 ######
-Version=3.03  #版本号,不得为空
-Version1="$Version.${#file_path}"
-script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #获取当前脚本的运行路径
+Version=3.04                                                                      #版本号
+script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #获取当前脚本的目录路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
+file_path="$script_path/$script_name"                                             #获取当前脚本的文件路径
+Version1="$Version.${#file_path}"                                                 #脚本完整版本号
 startnum="$1"                                                                     #当前脚本的启动指令：1、告知本程序由更新程序唤醒；
-
 
 ####### 定义颜色 ######
 RED='\033[0;31m'
@@ -145,7 +145,7 @@ function countdown {
 #######  当用户选择主动退出  #########
 function quit() {
    clear
-   echo -e "${GREED}已退出vinci脚本（V"$Version"）！${NC}" 
+   echo -e "${GREED}已退出vinci脚本（V"$Version1"）！${NC}" 
    exit 0
 }
 
