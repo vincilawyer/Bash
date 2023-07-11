@@ -351,7 +351,7 @@ function main {
                   if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                   case $option in
                        2)pull_gpt;;
-                       2)run_gpt;;
+                       3)run_gpt;;
                   esac;; 
             
 esac
@@ -1390,7 +1390,7 @@ curl 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=615a90ac-4d8a-48f1-b3
      \"text\": {
          \"content\": \"\$TIME\n【服务器已开机】\"
      }
-}"
+} > /dev/null
 EOF
 }
 
