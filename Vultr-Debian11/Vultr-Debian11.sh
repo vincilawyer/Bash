@@ -108,11 +108,11 @@ BASE_URL="$BASE_URL"
 ####### 脚本更新  ####### 
 function update {
     wrong_force="$1"   #用户强制更新为1，程序错误自更新为2
-    clear && current_Version="$Version" download_path_path="$script_path" name="$script_name" force="$wrong_force" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
+    #clear && current_Version="$Version" download_path_path="$script_path" name="$script_name" force="$wrong_force" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
     result=$?
     if [ $result == "1" ] ; then        #如果已经更新
         exit 0  
-    elif [ $result == "2" ]; then      #如果没有更新，则继续执行当前脚本
+    elif [ $result == "2" ]; then       #如果没有更新，则继续执行当前脚本
         :
     elif [ $result == "3" ] ; then      #如果脚本下载失败，则继续执行当前脚本   
         echo -n "即将返回..."
@@ -132,7 +132,7 @@ function countdown {
     tput sc  # Save the current cursor position
     while [ $from -ge 0 ]; do
         tput rc  # Restore the saved cursor position
-        tput el  # Clear from cursor to the end of the line
+        tput el  # #clear from cursor to the end of the line
         printf "%02ds" $from  # Print the countdown
         if $(read -s -t 1 -n 1); then break; fi
         ((from--))
@@ -145,7 +145,7 @@ update
 
 #######  当用户选择主动退出  #########
 function quit() {
-   clear
+   #clear
    echo -e "${GREED}已退出vinci脚本（V"$Version"）！${NC}" 
    exit 0
 }
@@ -365,7 +365,7 @@ done
 
 ######   页面显示   ######
 function Page {
-clear
+#clear
 art=$(cat << "EOF"
   __     __                         _   _           ____                   
   \ \   /"/u          ___          | \ |"|       U /"___|         ___      
@@ -406,7 +406,7 @@ while true; do
   elif [ "$option" == "1" ] && [ "$2" == "true" ]; then    #如果二级菜单选择1，则返回上一级
       return 2
   elif [[ "$option" =~ ^[0-9]+$ ]] && (( $option >= 1 && $option <= $(($# - 3)) )); then  #如果选中正确序号（需要减掉本函数前面2个参数数量以及序号0）。
-      clear
+      #clear
       return 1
   else
       tput rc  # 回到输入位置
@@ -1083,7 +1083,7 @@ function CF_DNS {
     case $choice in
       1)
         # 删除DNS记录
-        clear
+        #clear
         get_all_dns_records $zone_identifier
         read -p "请输入要删除的DNS记录名称（例如 www）：" record_name
 
@@ -1093,7 +1093,7 @@ function CF_DNS {
              -H "X-Auth-Key: $Cloudflare_api_key" \
              -H "Content-Type: application/json" | jq -r '.result[0].id')
         
-        clear
+        #clear
         # 如果记录标识符为空，则表示未找到该记录
         if [ "$record_identifier" == "null" ]; then
             echo "未找到该DNS记录。"
@@ -1109,7 +1109,7 @@ function CF_DNS {
             get_all_dns_records $zone_identifier
         fi;;
     2)# 修改或增加DNS记录
-        clear
+        #clear
         get_all_dns_records $zone_identifier
         read -p "请输入要修改或增加的DNS记录名称（例如 www）：" record_name
         while true; do
@@ -1132,7 +1132,7 @@ function CF_DNS {
                  -H "X-Auth-Email: $Email" \
                  -H "X-Auth-Key: $Cloudflare_api_key" \
                  -H "Content-Type: application/json" | jq -r '.result[0].id')
-            clear 
+            #clear 
             # 如果记录标识符为空，则创建新记录
             if [ "$record_identifier" == "null" ]; then
                 curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records" \
@@ -1165,7 +1165,7 @@ function CF_DNS {
                  -H "X-Auth-Email: $Email" \
                  -H "X-Auth-Key: $Cloudflare_api_key" \
                  -H "Content-Type: application/json" | jq -r '.result[0].id')
-            clear 
+            #clear 
             # 如果记录标识符为空，则创建新记录
             if [ "$record_identifier" == "null" ]; then
                 curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records" \
