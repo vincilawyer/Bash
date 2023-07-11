@@ -112,7 +112,9 @@ function update {
     updatenum="$1"
     clear
     if (( $updatenum == 1 )); then
-    
+  *     cp  
+       echo "即将开始强制更新..."
+ *      exit 1
     elif ((  $updatenum == 2 )); then
     echo "即将开始强制更新..."
     fi
@@ -167,6 +169,7 @@ function handle_error() {
 
 #######   当脚本退出   ####### 
 function normal_exit() {
+
    exit 0                                  
 }
 
