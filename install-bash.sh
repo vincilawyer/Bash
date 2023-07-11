@@ -42,7 +42,7 @@ function main {
              if [ -e "$file_path" ]; then 
                  echo "当前版本号为：V$cur_Version.$(eval echo $num)"
                  echo "最新版本号为：V$Version.${#code}，即将更新脚本..."
-                  [ ! "$wrong" == "1" ] && cp -f "$file_path" "$file_path"_backup $$ echo "已对旧版本进行备份！" 
+                  [ ! "$wrong" == "1" ] && cp -f "$file_path" "$file_path"_backup && echo "已对旧版本进行备份！" 
              else
                  echo "最新版本号为：V$Version.${#code}，即将下载脚本..."
              fi
