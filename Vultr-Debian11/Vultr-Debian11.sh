@@ -23,12 +23,13 @@
 
 
 ####### 版本更新相关参数 ######
-Version=3.04                                                                      #版本号
+Version=3.05                                                                      #版本号
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #获取当前脚本的目录路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
 file_path="$script_path/$script_name"                                             #获取当前脚本的文件路径
-Version1="$Version.${#file_path}"                                                 #脚本完整版本号
+Version1="$Version.$(n="$(cat "$file_path")" &&  echo "${#n}")"                   #脚本完整版本号
 startnum="$1"                                                                     #当前脚本的启动指令：1、告知本程序由更新程序唤醒；
+
 
 ####### 定义颜色 ######
 RED='\033[0;31m'
@@ -1275,11 +1276,11 @@ function install_Frp {
         echo -e "${GREEN}Frp已安装，无需重复安装！${NC}"   
    else
         # 获取最新的 frp 版本
-        version=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | grep 'tag_name' | cut -d\" -f4)
+        frp_version=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | grep 'tag_name' | cut -d\" -f4)
         # 获取Linux amd64版本的tar.gz文件名
         file_name=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r '.assets[] | select(.name | contains("linux_amd64")) | .name')
         # 下载最新版本的 frp
-        wget https://github.com/fatedier/frp/releases/download/$version/$file_name
+        wget https://github.com/fatedier/frp/releases/download/$frp_version/$file_name
         # 解压下载的文件
         tar -xvzf $file_name
         rm $file_name
