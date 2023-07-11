@@ -29,10 +29,10 @@ function main {
          
     #获取最新版本号
     Version=$(curl -s "$link_Vultr_Debian11" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
-    #用户强制更新
+    #程序错误强制自更新
     if [ "$force" == "1" ]; then
         download
-    #自启动程序错误强制更新
+    #用户强制更新
     elif [ "$force" == "2" ]; then
         warning
         download
@@ -54,8 +54,7 @@ function download {
     if [ -e "$position" ]; then 
         echo "当前版本号为：V$current_Version"
         echo "最新版本号为：V$Version，即将更新脚本..."
-        echo "已对旧版本进行备份！"
-        if [ ！"$force" == "2" ] ; then cp -f "$position" "$position"_backup; fi
+        [ ! "$force" == "1" ] && cp -f "$position" "$position"_backup $$ echo "已对旧版本进行备份！"   #只要不是现版本存在错误，都对现版本进行备份
     else
         echo "最新版本号为：V$Version，即将下载脚本..."
     fi
