@@ -415,7 +415,8 @@ Tor_port="$Tor_port"              #@Tor监听端口
 #####Chatgpt-docker######
 Chatgpt_api_key="$Chatgpt_api_key"         #@Chatgpt Api
 Gpt_code="$Gpt_code"                       #@授权码
-BASE_URL="$BASE_URL"
+BASE_URL="$BASE_URL"                       #@OpenAI接口代理URL
+PROXY_URL="$PROXY_URL"                     #@Chatgpt本地代理地址
 EOF
 }
 
@@ -1365,6 +1366,8 @@ docker run -d -p 3000:3000 \
    -e OPENAI_API_KEY="$Chatgpt_api_key" \
    -e CODE="$Gpt_code" \
    -e BASE_URL="$BASE_URL" \
+   --net=host \
+   -e PROXY_URL="$PROXY_URL" \
    yidadaa/chatgpt-next-web
 }
 ###### 消息推送 ######
