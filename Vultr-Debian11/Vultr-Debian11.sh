@@ -23,8 +23,8 @@
 
 
 ####### 版本更新相关参数 ######
-Version=2.97  #版本号,不得为空
-Dat_Version=0.2 #用户配置模板版本号
+Version=2.98  #版本号,不得为空
+Dat_Version=0.3 #用户配置模板版本号
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #本脚本的运行路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
 startnum="$1"                                                                     #当前脚本的启动方式：由更新程序唤醒（1） 
@@ -86,20 +86,20 @@ tel_regex="^1[3-9]\d{9}$"
 comment_regex="^ *[# ]*"
 
 ####### 用户配置模板文本 ####### 
-dat_text='# 该文件为vinci用户配置文本
-# "*"表示不可在脚本中修改的常量,变量值需要用双引号包围,"#@"用于分隔变量名称、备注、匹配正则表达式。
-Dat_Version1="$Dat_Version"                       #@版本号*              
-Domain="$Domain"                              #@一级域名#@不用加www#@domain_regex
-Email="$Email"                                #@邮箱#@#@email_regex
-Cloudflare_api_key="$Cloudflare_api_key"      #@Cloudflare Api
-Warp_port="$Warp_port"             #@Warp监听端口
-Tor_port="$Tor_port"              #@Tor监听端口
+dat_text="# 该文件为vinci用户配置文本
+# * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配正则表达式。
+Dat_Version1=\"$Dat_Version\"                       #@版本号*              
+Domain=\"$Domain\"                              #@一级域名#@不用加www#@domain_regex
+Email=\"$Email\"                                #@邮箱#@#@email_regex
+Cloudflare_api_key=\"$Cloudflare_api_key\"      #@Cloudflare Api
+Warp_port=\"$Warp_port\"             #@Warp监听端口
+Tor_port=\"$Tor_port\"              #@Tor监听端口
 
 #####Chatgpt-docker######
-Chatgpt_api_key="$Chatgpt_api_key"         #@Chatgpt Api
-Gpt_code="$Gpt_code"                       #@授权码
-BASE_URL="$BASE_URL"
-'
+Chatgpt_api_key=\"$Chatgpt_api_key\"         #@Chatgpt Api
+Gpt_code=\"$Gpt_code\"                       #@授权码
+BASE_URL=\"$BASE_URL\"
+"
 
 #############################################################################################################################################################################################
 ##############################################################################   2.脚本启动及退出检查模块  ################################################################################################
