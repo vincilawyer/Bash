@@ -28,6 +28,7 @@ Version=""                                                                      
 
 ####### 主函数 ######
 function main {
+    read -n 1 -p "更新程序测试，点击继续"
     if (( $wrong == 1 )); then warning; fi 
     clear
     if code="$(curl -s "$link_Vultr_Debian11")"; then  
