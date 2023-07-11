@@ -35,9 +35,6 @@ function main {
          if [ -e "$file_path" ] && [ "$code" == "$(cat "$file_path")" ]; then
               [ -z $cur_Version ] && current_Version=$(sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}' "$file_path")
               echo "当前已是最新版本(V$cur_Version.${#file_path})，无需更新！"
-              else
-              当前最新
-              fi
               exit 2    
          else 
              Version=$( echo "$code" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
