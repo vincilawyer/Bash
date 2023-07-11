@@ -49,11 +49,11 @@ new_text=""   #settext函数修改后内容
 #更新检查程序网址
 link_update="https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh"
 #用户数据路径
-dat_path="/usr/local/bin/vinci.dat"
+dat_path="/root/myfile/vinci.dat"
 #ssh配置文件路径(查看配置：nano /etc/ssh/sshd_config)                           
 path_ssh="/etc/ssh/sshd_config"
 #开启消息提醒脚本路径
-path_boot_notifier="/etc/init.d/boot_notifier.sh"
+path_notifier="/root/myfile/notifier.sh"
 #nginx配置文件网址
 link_nginx="https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf"
 #nginx配置文件路径 (查看配置：nano /etc/nginx/conf.d/default.conf)                      
@@ -218,15 +218,11 @@ function main {
 2)###### 工具箱  ###### 
       sub_menu=(
     "  1、返回上一级"
-    "  2、设置开机手机提醒"
-    "  3、关闭防火墙"
-    "  4、查看防火墙规则"
+    "  2、设置微信通知推送"
     "  0、退出")                  
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  case $option in
-                      2)boot_notifier;;
-                      3)sudo ufw disable;;
-                      4)sudo ufw status verbose;; 
+                      2)notifier;;
                  esac;;                    
 3)###### UFW防火墙管理  ###### 
       sub_menu=(
@@ -407,7 +403,7 @@ done
 
 #######   创建\更新用户数据   #######
 function creat_dat {
-cat > "$dat_text" <<EOF
+cat > "$dat_path" <<EOF
 # 该文件为vinci用户配置文本
 # * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配正则表达式。
 Dat_Version1="$Dat_Version"                       #@版本号*              
@@ -1372,9 +1368,9 @@ docker run -d -p 3000:3000 \
    -e BASE_URL="$BASE_URL" \
    yidadaa/chatgpt-next-web
 }
-
-function boot_notifier {
-      cat > "$path_boot_notifier" <<EOF
+###### 消息推送 ######
+function notifier {
+cat > "$path_notifier" <<EOF
 #!/bin/sh
 # 获取当前时间
 TIME=\$(date '+%Y-%m-%d %H:%M:%S')
@@ -1387,8 +1383,22 @@ curl 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=615a90ac-4d8a-48f1-b3
      \"text\": {
          \"content\": \"\$TIME\n【服务器已开机】\"
      }
-} > /dev/null
+}" > /dev/null
 EOF
+chmod +x "$path_notifier"
+#一、编辑文本，把执行脚本notifier.sh写进sudo nano /root/.bashrc中,即可在使用bash登录ssh时自动执行
+#二、创建文件 /etc/systemd/system/notifier.service 并添加如下内容
+#[Unit]
+#Description=Boot Notification Service
+#[Service]
+#ExecStart=$path_notifier       #此次为脚本保存路径
+#[Install]
+#WantedBy=multi-user.target
+#保存以上内容并设置权限sudo chmod 644 /etc/systemd/system/notifier.service
+#输入sudo systemctl daemon-reload
+#sudo systemctl start notifier.service即可启动该服务
+#设置开机自启动sudo systemctl enable notifier.service即可在开机时执行脚本
+#三、关于关机通知，systemd并没有提供一个内置的方式来在关机时运行脚本。一种可行的方式是创建一个服务，在这个服务停止时运行关机通知脚本。
 }
 
 
