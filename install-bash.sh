@@ -25,6 +25,7 @@ RED='\033[0;31m'
 def_name=$( [ -z "$cur_name" ] && echo "$def_name" || echo "$cur_name" )                        #脚本名称
 file_path=$( [ -z "$cur_path" ] && echo "$def_path/$def_name" || echo "$cur_path/$def_name" )     #文件路径
 Version=""                                                                                        #最新版本号
+num='$(n="$(cat "$file_path")" &&  echo "${#n}")'                                           #旧代码数量，调用该变量：$(eval echo $num)
 
 ####### 主函数 ######
 function main {
@@ -34,12 +35,12 @@ function main {
     if code="$(curl -s "$link_Vultr_Debian11")"; then  
          if [ -e "$file_path" ] && [ "$code" == "$(cat "$file_path")" ]; then
               [ -z "$cur_Version" ] && cur_Version=$(sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}' "$file_path")
-              echo "当前已是最新版本(V$cur_Version.${#file_path})，无需更新！"
-              exit 2    $file_path
+              echo "当前已是最新版本(V$cur_Version.$(eval echo $num)))，无需更新！"
+              exit 2 
          else 
              Version=$( echo "$code" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
              if [ -e "$file_path" ]; then 
-                 echo "当前版本号为：V$cur_Version.${#file_path}"
+                 echo "当前版本号为：V$cur_Version.$(eval echo $num)"
                  echo "最新版本号为：V$Version.${#code}，即将更新脚本..."
                   [ ! "$wrong" == "1" ] && cp -f "$file_path" "$file_path"_backup $$ echo "已对旧版本进行备份！" 
              else
@@ -49,7 +50,7 @@ function main {
              while true; do 
                  wget --no-cache "$link_Vultr_Debian11" -O  "$file_path"
                  chmod +x "$file_path"
-                 echo "管理系统V"$Version.${#file_path}"版本已下载\更新完成，即将进入系统！"
+                 echo "管理系统V"$Version.$(eval echo $num)"版本已下载\更新完成，即将进入系统！"
                  countdown 10
                     $def_name 1
                     if [ "$?" == "0" ]; then                       #如果脚本正常运行，则退出
@@ -77,7 +78,7 @@ function main {
             tput rc  # Restore the saved cursor position
             tput el  # Clear from cursor to the end of the line
             echo -e "${RED}########################################################################################${NC}"
-            echo -e "${RED}#####  请注意，当前脚本运行出现错误！当前版本号：V$cur_Version.${#file_path}，最新版本号：V$Version.${#code} #####${NC}"
+            echo -e "${RED}#####  请注意，当前脚本运行出现错误！当前版本号：V$cur_Version.$(eval echo $num)，最新版本号：V$Version.${#code} #####${NC}"
             echo -e "${RED}########$b########${NC}"
             echo -e "${RED}########################################################################################${NC}"
             read -t 1 -n 1 input  #读取输入，在循环中一次1秒
@@ -91,7 +92,7 @@ function main {
             t=$((t + 1))
             if ! ((t % 50 == 0)); then continue; fi  #每隔50s检查一次更新情况
             code="$(curl -s "$link_Vultr_Debian11")" && Version=$( echo "$code" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
-            if [ -z "${#code}" ] && [ "$Version.${#code}" == "$cur_Version.${#file_path}" ]; then
+            if [  "$code" == "$(cat "$file_path")" ]; then
                 echo "已获取到最新版本V$Version.${#code}，即将开始更新！"
                 return
             fi
