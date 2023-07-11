@@ -28,17 +28,12 @@ file_path=$( [ -z "$cur_path" ] && echo "$def_path$def_name" || echo "$cur_path/
 
 ####### 主函数 ######
 function main1 {
-    if code=$(curl -s "$link_Vultr_Debian11"); then
-         code_old="$(cat $file_path)"
-         echo "$code"
-         echo "$code_old"
-         if [ "$code" == "$code_old" ]; then
+    if code=$(curl -s "$link_Vultr_Debian11"); then  
+         if [ "$code" == "$(cat $file_path)" ]; then
          echo "代码一样"
          else      
          echo "不一会"
          fi
-         echo ${#code} 
-         echo ${#code_old} 
     else
         echo -n "vinci脚本下载失败，请检查网络！"
        # exit 3                                                #未更新脚本的返回值       
