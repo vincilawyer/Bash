@@ -112,7 +112,7 @@ function update {
     local updatenum="$1"
     clear
     if (( $startnum == 1 )); then
-         ( "$updatenum" == 2 ) && cp -f "$script_path/$script_name" "$script_path/$script_name"_backup
+         (( $updatenum == 2 )) && cp -f "$script_path/$script_name" "$script_path/$script_name"_backup
          echo "即将开始强制更新..."
          exit 1
     elif (( $startnum == 2 )); then
