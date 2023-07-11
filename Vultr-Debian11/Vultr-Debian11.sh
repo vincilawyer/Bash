@@ -417,7 +417,7 @@ done
 
 #######   创建\更新用户数据   #######
 function creat_dat {
-   eval echo "$dat_text" > $dat_path
+   eval echo "$dat_text" > "$dat_path"
 }
 
 #######   修改数据      #######   
