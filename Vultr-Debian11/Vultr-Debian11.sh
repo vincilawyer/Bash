@@ -89,7 +89,7 @@ comment_regex="^ *[# ]*"
 dat_text='
 # 该文件为vinci用户配置文本
 # * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配正则表达式。
-Dat_num="${＃Dat_text}"                       #@编号*              
+Dat_num="${＃dat_text}"                       #@编号*              
 Domain="$Domain"                              #@一级域名#@不用加www#@domain_regex
 Email="$Email"                                #@邮箱#@#@email_regex
 Cloudflare_api_key="$Cloudflare_api_key"      #@Cloudflare Api
@@ -106,19 +106,21 @@ PROXY_URL="$PROXY_URL"                     #@Chatgpt本地代理地址
 #############################################################################################################################################################################################
 ##############################################################################   2.脚本启动及退出检查模块  ################################################################################################
 ############################################################################################################################################################################################
+###  说明：exit返回值为1，则要求更新检查程序（如有）继续更新本脚本。
 
 ####### 脚本更新  ####### 
 function update {
-    updatenum="$1"
+    local updatenum="$1"
     clear
-    if (( $updatenum == 1 )); then
-  *     cp  
-       echo "即将开始强制更新..."
- *      exit 1
-    elif ((  $updatenum == 2 )); then
-    echo "即将开始强制更新..."
+    if (( $startnum == 1 )); then
+         ( "$updatenum" == 2) && cp -f "$script_path/$script_name" "$script_path/$script_name"_backup
+         echo "即将开始强制更新..."
+         exit 1
+    elif (( $startnum == 2 )); then
+         echo "即将开始强制更新..."
+         updatenum=1
     fi
-    current_Version="$Version" download_path_path="$script_path" name="$script_name" force="$wrong_force" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
+    current_Version="$Version" download_path_path="$script_path" name="$script_name" force="$updatenum" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
     result=$?
     if [ $result == "1" ] ; then        #如果已经更新
         exit 0  
@@ -151,7 +153,7 @@ function countdown {
 }
 
 ####### 执行启动前更新检查  ####### 
-[ "$startnum" == 1 ] || update "$startnum"
+[ "$startnum" == 1 ] || update
 
 #######  当用户选择主动退出  #########
 function quit() {
@@ -163,14 +165,12 @@ function quit() {
 #######   当脚本错误退出时，启动强制更新   ####### 
 function handle_error() {
    [ "$startup" == "1" ] && exit 1              #检查程序更新脚本后的退出（即无需再次启动检查程序），这里的exit不会执行normal_exit函数
-   update 2                                     #程序强制更新
-   exit 0
+   update 1                                     #程序强制更新
 }
 
 #######   当脚本退出   ####### 
 function normal_exit() {
-
-   exit 0                                  
+   :                                  
 }
 
 #######   脚本退出前执行  #######   
@@ -197,7 +197,7 @@ function main {
   elif ! [ "${#dat_text}" == "$Dat_num" ] ; then
         echo "配置文件更新中..."
         creat_dat
-        echo "更新完成，请在设置中修改参数！"
+        echo "更新完成，可在系统设置中修改参数！"
         wait
   fi
   
@@ -236,7 +236,7 @@ function main {
                       4)set_dat;;
                       5)change_ssh_port
                         change_login_password;;
-                      6)update "$startnum";;
+                      6)update 2;;
                   esac;;
 2)###### 工具箱  ###### 
       sub_menu=(
