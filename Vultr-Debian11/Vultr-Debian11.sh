@@ -187,7 +187,7 @@ function main {
         set_dat
         echo "配置结束！"
         wait
-  elif ! [ ${＃dat_text} == $Dat_num ] ; then
+  elif ! [ "${#dat_text}" == "$Dat_num" ] ; then
         echo "配置文件更新中..."
         creat_dat
         echo "更新完成，请在设置中修改参数！"
