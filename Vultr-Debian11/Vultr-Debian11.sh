@@ -108,7 +108,7 @@ BASE_URL="$BASE_URL"
 ####### 脚本更新  ####### 
 function update {
     wrong_force="$1"   #用户强制更新为1，程序错误自更新为2
-    #clear 
+    clear 
     current_Version="$Version" download_path_path="$script_path" name="$script_name" force="$wrong_force" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
     result=$?
     if [ $result == "1" ] ; then        #如果已经更新
@@ -146,7 +146,7 @@ update
 
 #######  当用户选择主动退出  #########
 function quit() {
-   #clear
+   clear
    echo -e "${GREED}已退出vinci脚本（V"$Version"）！${NC}" 
    exit 0
 }
@@ -366,7 +366,7 @@ done
 
 ######   页面显示   ######
 function Page {
-#clear
+clear
 art=$(cat << "EOF"
   __     __                         _   _           ____                   
   \ \   /"/u          ___          | \ |"|       U /"___|         ___      
