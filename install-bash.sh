@@ -8,7 +8,7 @@
 ####### 基本参数 ######
 Ver=3                                   #版本号
 def_name="vinci"                        #默认名称
-def_path="/usr/local/bin/$new_name"     #新下载脚本目录路径
+def_path="/usr/local/bin"     #新下载脚本目录路径
 
 ####### 下载网址 ######
 #Vultr-Debian11.sh文件网址
@@ -23,7 +23,7 @@ RED='\033[0;31m'
 #$cur_Version                       为旧版本号
 #$wrong                                 为错误启动更新模式
 def_name=$( [ -z "$cur_name" ] && echo "$def_name" || echo "$cur_name" )                        #脚本名称
-file_path=$( [ -z "$cur_path" ] && echo "$def_path$def_name" || echo "$cur_path/$def_name" )     #文件路径
+file_path=$( [ -z "$cur_path" ] && echo "$def_path/$def_name" || echo "$cur_path/$def_name" )     #文件路径
 Version=""                                                                                        #最新版本号
 
 ####### 主函数 ######
