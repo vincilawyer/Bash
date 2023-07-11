@@ -23,7 +23,7 @@
 
 
 ####### 版本更新相关参数 ######
-Version=3.01  #版本号,不得为空
+Version=3.02  #版本号,不得为空
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #获取当前脚本的运行路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
 startnum="$1"                                                                     #当前脚本的启动指令：1、告知本程序由更新程序唤醒；2、要求强制更新
