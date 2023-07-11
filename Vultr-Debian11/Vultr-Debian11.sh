@@ -1366,7 +1366,7 @@ function set_CF_config {
 function pull_gpt {
 docker pull yidadaa/chatgpt-next-web
 }
-funtion run_gpt {
+function run_gpt {
 docker stop $(docker ps -aq)
 docker run -d -p 3000:3000 \
    -e OPENAI_API_KEY="$Chatgpt_api_key" \
