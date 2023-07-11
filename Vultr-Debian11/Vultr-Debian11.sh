@@ -711,7 +711,7 @@ function settext {
      old_text1=$(search "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "true" "$is_file" "$input")
      old_text=${old_text1// (注释行)/}
      echo
-     echo -e "${GREEN}【修改"$mean"】当前的"$mean"为："$old_text1"${NC}"
+     echo -e "${BLUE}【"$mean"设置】${NC}${GREEN}当前的"$mean"为："$old_text1"${NC}"
      while true; do
          #-r选项告诉read命令不要对反斜杠进行转义，避免误解用户输入。-e选项启用反向搜索功能，这样用户在输入时可以通过向左箭头键或Ctrl + B键来移动光标并修改输入。
          read -r -e -p "$(echo -e ${GREEN}"请设置新的"$mean"（$( [ -n "$mark" ] && echo "$mark,")输入为空则跳过$( [[ $coment == "true" ]] && echo "，输入#则设为注释行")）：${NC}")" new_text
