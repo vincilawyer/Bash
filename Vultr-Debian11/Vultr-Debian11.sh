@@ -188,7 +188,7 @@ function main {
   fi
 
   #######   检查用户数据文件  #######   
-  if ! source $dat_path >/dev/null; then   #读取用户数据
+  if ! source $dat_path >/dev/null 2>&1; then   #读取用户数据
         echo "系统无用户数据记录。准备新建用户数据...请设置数据"
         set_dat
         echo "配置结束！"
@@ -425,12 +425,12 @@ done
 
 #######   创建\更新用户数据   #######
 function creat_dat {
-   eval echo "$dat_text" 
+   eval echo "$dat_text" > $dat_path
 }
 
 #######   修改数据      #######   
 function set_dat { 
-  eval echo "$dat_text" 
+  eval echo "$dat_text" > $dat_path
   if [ -n "$1" ] ; then  #指定修改配置
      line=$(search "#@" "" "$1" 1 true false false true "$dat_path" ) 
      IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
