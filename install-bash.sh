@@ -33,7 +33,11 @@ function main {
     clear
     if code="$(curl -s "$link_Vultr_Debian11")"; then  
          if [ -e "$file_path" ] && [ "$code" == "$(cat "$file_path")" ]; then
+              [ -z $cur_Version ] && current_Version=$(sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}' "$file_path")
               echo "当前已是最新版本(V$cur_Version.${#file_path})，无需更新！"
+              else
+              当前最新
+              fi
               exit 2    
          else 
              Version=$( echo "$code" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
@@ -67,7 +71,7 @@ function main {
 
 #######   保存提示  ####### 
  function warning {
-      cur_Version=$Version
+      current_Version=$(sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}' "$file_path")
       local t=-1
       tput sc  # Save the current cursor position
       while true; do
@@ -94,7 +98,6 @@ function main {
                 echo "已获取到最新版本V$Version.${#code}，即将开始更新！"
                 return
             fi
-            t=
       done
 }
       
