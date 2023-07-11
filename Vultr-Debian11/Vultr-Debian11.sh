@@ -23,10 +23,10 @@
 
 
 ####### 版本更新相关参数 ######
-Version=3.02  #版本号,不得为空
+Version=3.03  #版本号,不得为空
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #获取当前脚本的运行路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
-startnum="$1"                                                                     #当前脚本的启动指令：1、告知本程序由更新程序唤醒；2、要求强制更新
+startnum="$1"                                                                     #当前脚本的启动指令：1、告知本程序由更新程序唤醒；
 
 ####### 定义颜色 ######
 RED='\033[0;31m'
@@ -109,28 +109,14 @@ PROXY_URL="$PROXY_URL"                     #@Chatgpt本地代理地址
 
 ####### 脚本更新  ####### 
 function update {
-    local updatenum="$1"
     clear
-    if (( $startnum == 1 )); then
-         (( $updatenum == 2 )) && cp -f "$script_path/$script_name" "$script_path/$script_name"_backup
-         echo "即将开始强制更新..."
-         exit 1
-    elif (( $startnum == 2 )); then
-         echo "即将开始强制更新..."
-         updatenum=2
-    fi
-    current_Version="$Version" download_path_path="$script_path" name="$script_name" force="$updatenum" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
+    if (( $startnum == 1 )); then exit 1; fi #返回到更新检查程序继续更新
+    cur_Version="$Version" cur_path="$script_path" cur_name="$script_name" wrong="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
     result=$?
     if [ $result == "1" ] ; then        #如果已经更新
         exit 0  
-    elif [ $result == "2" ]; then       #如果没有更新，则继续执行当前脚本
+    elif [ $result == "2" ]; then       #如果没有更新(已是最新版、脚本下载失败、新脚本运行错误)，则继续执行当前脚本
         :
-    elif [ $result == "3" ] ; then      #如果脚本下载失败，则继续执行当前脚本   
-        echo -n "即将返回..."
-        countdown 5
-    elif [ $result == "4" ] ; then      #如果新脚本运行错误，则继续执行旧版本   
-        echo -n "继续运行旧版本系统"
-        countdown 5
     else                                  #如果更新失败，则继续执行当前脚本
         echo -n "更新程序错误，请检查！即将返回..."
         countdown 5
@@ -152,7 +138,7 @@ function countdown {
 }
 
 ####### 执行启动前更新检查  ####### 
-[ "$startnum" == 1 ] || update
+[ "$startnum" == 1 ] || update     #刚更新的程序无需再次检查更新
 
 #######  当用户选择主动退出  #########
 function quit() {
@@ -161,10 +147,10 @@ function quit() {
    exit 0
 }
 
-#######   当脚本错误退出时，启动强制更新   ####### 
+#######   当脚本错误退出时，启动更新检查   ####### 
 function handle_error() {
    [ "$startup" == "1" ] && exit 1              #检查程序更新脚本后的退出（即无需再次启动检查程序），这里的exit不会执行normal_exit函数
-   update 1                                     #程序强制更新
+   update 1                                     #唤醒程序更新
 }
 
 #######   当脚本退出   ####### 
@@ -226,7 +212,7 @@ function main {
     "  3、本机ip信息"
     "  4、修改配置参数"
     "  5、修改SSH登录端口和登录密码"
-    "  6、强制更新脚本"
+    "  6、更新脚本"
     "  0、退出" )
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  case $option in
@@ -235,7 +221,7 @@ function main {
                       4)set_dat;;
                       5)change_ssh_port
                         change_login_password;;
-                      6)update 2;;
+                      6)update;;
                   esac;;
 2)###### 工具箱  ###### 
       sub_menu=(
