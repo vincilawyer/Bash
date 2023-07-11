@@ -24,10 +24,9 @@
 
 ####### 版本更新相关参数 ######
 Version=3.01  #版本号,不得为空
-Dat_Version=0.3 #用户配置模板版本号
-script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #本脚本的运行路径
+script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #获取当前脚本的运行路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
-startnum="$1"                                                                     #当前脚本的启动方式：由更新程序唤醒（1） 
+startnum="$1"                                                                     #当前脚本的启动指令：1、告知本程序由更新程序唤醒；2、要求强制更新
 
 ####### 定义颜色 ######
 RED='\033[0;31m'
@@ -110,8 +109,13 @@ PROXY_URL="$PROXY_URL"                     #@Chatgpt本地代理地址
 
 ####### 脚本更新  ####### 
 function update {
-    wrong_force="$1"   #用户强制更新为1，程序错误自更新为2
-    clear 
+    updatenum="$1"
+    clear
+    if (( $updatenum == 1 )); then
+    
+    elif ((  $updatenum == 2 )); then
+    echo "即将开始强制更新..."
+    fi
     current_Version="$Version" download_path_path="$script_path" name="$script_name" force="$wrong_force" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
     result=$?
     if [ $result == "1" ] ; then        #如果已经更新
@@ -145,7 +149,7 @@ function countdown {
 }
 
 ####### 执行启动前更新检查  ####### 
-update
+[ "$startnum" == 1 ] || update "$startnum"
 
 #######  当用户选择主动退出  #########
 function quit() {
@@ -229,7 +233,7 @@ function main {
                       4)set_dat;;
                       5)change_ssh_port
                         change_login_password;;
-                      6)update 1;;
+                      6)update "$startnum";;
                   esac;;
 2)###### 工具箱  ###### 
       sub_menu=(
