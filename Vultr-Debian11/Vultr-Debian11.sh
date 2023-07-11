@@ -86,6 +86,24 @@ tel_regex="^1[3-9]\d{9}$"
 comment_regex="^ *[# ]*"
 
 
+＃＃＃＃＃＃  配置数据模板  ＃＃＃＃＃＃
+dat_text='
+# 该文件为vinci用户配置文本
+# * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配正则表达式。
+Dat_num="${＃Dat_text}"                       #@编号*              
+Domain="$Domain"                              #@一级域名#@不用加www#@domain_regex
+Email="$Email"                                #@邮箱#@#@email_regex
+Cloudflare_api_key="$Cloudflare_api_key"      #@Cloudflare Api
+Warp_port="$Warp_port"             #@Warp监听端口
+Tor_port="$Tor_port"              #@Tor监听端口
+
+#####Chatgpt-docker######
+Chatgpt_api_key="$Chatgpt_api_key"         #@Chatgpt Api
+Gpt_code="$Gpt_code"                       #@授权码
+BASE_URL="$BASE_URL"                       #@OpenAI接口代理URL
+PROXY_URL="$PROXY_URL"                     #@Chatgpt本地代理地址
+'
+
 #############################################################################################################################################################################################
 ##############################################################################   2.脚本启动及退出检查模块  ################################################################################################
 ############################################################################################################################################################################################
@@ -166,11 +184,10 @@ function main {
   #######   检查用户数据文件  #######   
   if ! source $dat_path >/dev/null; then   #读取用户数据
         echo "系统无用户数据记录。准备新建用户数据...请设置数据"
-        creat_dat
         set_dat
         echo "配置结束！"
         wait
-  elif ! [ $Dat_Version1 == $Dat_Version ] ; then
+  elif ! [ ${＃Dat_text} == $Dat_num ] ; then
         echo "配置文件更新中..."
         creat_dat
         echo "更新完成，请在设置中修改参数！"
@@ -402,26 +419,12 @@ done
 
 #######   创建\更新用户数据   #######
 function creat_dat {
-cat > "$dat_path" <<EOF
-# 该文件为vinci用户配置文本
-# * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配正则表达式。
-Dat_Version1="$Dat_Version"                       #@版本号*              
-Domain="$Domain"                              #@一级域名#@不用加www#@domain_regex
-Email="$Email"                                #@邮箱#@#@email_regex
-Cloudflare_api_key="$Cloudflare_api_key"      #@Cloudflare Api
-Warp_port="$Warp_port"             #@Warp监听端口
-Tor_port="$Tor_port"              #@Tor监听端口
-
-#####Chatgpt-docker######
-Chatgpt_api_key="$Chatgpt_api_key"         #@Chatgpt Api
-Gpt_code="$Gpt_code"                       #@授权码
-BASE_URL="$BASE_URL"                       #@OpenAI接口代理URL
-PROXY_URL="$PROXY_URL"                     #@Chatgpt本地代理地址
-EOF
+   eval echo "$dat_text" 
 }
 
 #######   修改数据      #######   
 function set_dat { 
+  eval echo "$dat_text" 
   if [ -n "$1" ] ; then  #指定修改配置
      line=$(search "#@" "" "$1" 1 true false false true "$dat_path" ) 
      IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
