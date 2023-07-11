@@ -115,9 +115,9 @@ function update {
     if (( $startnum == 1 )); then exit 1; fi #返回到更新检查程序继续更新
     cur_Version="$Version" cur_path="$script_path" cur_name="$script_name" wrong="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
     result=$?
-    if [ $result == "1" ] ; then        #如果已经更新
+    if [ "$result" == "1" ] ; then        #如果已经更新
         exit 0  
-    elif [ $result == "2" ]; then       #如果没有更新(已是最新版、脚本下载失败、新脚本运行错误)，则继续执行当前脚本
+    elif [ "$result" == "2" ]; then       #如果没有更新(已是最新版、脚本下载失败、新脚本运行错误)，则继续执行当前脚本
         :
     else                                  #如果更新失败，则继续执行当前脚本
         echo -n "更新程序错误，请检查！即将返回..."
@@ -152,6 +152,7 @@ function quit() {
 #######   当脚本错误退出时，启动更新检查   ####### 
 function handle_error() {
    [ "$startup" == "1" ] && exit 1              #检查程序更新脚本后的退出（即无需再次启动检查程序），这里的exit不会执行normal_exit函数
+   echo "脚本出错啦啦啦啦啦！"
    update 1                                     #唤醒程序更新
 }
 
