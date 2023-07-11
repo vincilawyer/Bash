@@ -67,7 +67,7 @@ function main {
 #######   保存提示  ####### 
  function warning {
       cur_Version=$Version
-      local t=0
+      local t=-1
       tput sc  # Save the current cursor position
       while true; do
             [ "$a" == "true" ] && b="              正在等待服务器端版本更新，输入任意键退出...               " || b='                                                                        '
@@ -85,12 +85,14 @@ function main {
                 echo "已回滚至旧版本！即将返回..."
                 exit 2           #脚本运行错误，取消更新的返回值
             fi
+            t=$((t + 1))
             if ! ((t % 50 == 0)); then continue; fi  #每隔50s检查一次更新情况
             code="$(curl -s "$link_Vultr_Debian11")" && Version=$( echo "$code" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
             if [ -z "${#code}" ] && [ "$Version.${#code}" == "$cur_Version.${#file_path}" ]; then
                 echo "已获取到最新版本V$Version.${#code}，即将开始更新！"
                 return
             fi
+            t=
       done
 }
       
