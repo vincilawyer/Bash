@@ -54,7 +54,7 @@ function download {
     if [ -e "$position" ]; then 
         echo "当前版本号为：V$current_Version"
         echo "最新版本号为：V$Version，即将更新脚本..."
-        echo "旧脚本备份中"
+        echo "已对旧版本进行备份！"
         if [ ！"$force" == "2" ] ; then cp -f "$position" "$position"_backup; fi
     else
         echo "最新版本号为：V$Version，即将下载脚本..."
