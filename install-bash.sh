@@ -6,16 +6,9 @@
 ####1、关于脚本返回值：当下载成功并正常运行脚本，脚本返回值为1；当脚本无需更新，返回为2；当脚本下载失败未更新，返回为3 ；当脚本运行出现错误，用户取消更新，返回为4。
 
 ####### 基本参数 ######
-Ver=016           #检本查脚本版本号
-Version=""        #最新版本号
-new_name="vinci"  #新脚本名称
-new_path="/usr/local/bin/$new_name"     #新下载脚本保存路径
-#$current_Version 为旧版本号，由运行本脚本时传递该变量
-#$download_path   为脚本当前的目录路径
-#$name            为脚本当前名称
-#$force           为强制更新模式，1为用户强制更新，2为自启动程序报错强制更新，由运行本脚本时传递该变量
-position=$( [ -z "$download_path" ] && echo "$new_path" || echo "$download_path"/"$name" )     #脚本路径
-name=$( [ -z "$name" ] && echo "$new_name" || echo "$name" )                                   #脚本名称
+Ver=2                                   #版本号
+def_name="vinci"                        #默认名称
+def_path="/usr/local/bin/$new_name"     #新下载脚本目录路径
 
 ####### 下载网址 ######
 #Vultr-Debian11.sh文件网址
@@ -24,9 +17,37 @@ link_Vultr_Debian11="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vul
 ####### 颜色
 RED='\033[0;31m'
 
+#######  其他参数  #######
+#$current_Version                       为旧版本号，由运行本脚本时传递该变量
+#$cur_path                              为旧脚本目录路径
+#$cur_name                              为旧脚名称
+def_name=$( [ -z "$cur_name" ] && echo "$def_name" || echo "$cur_name" )                      #脚本名称
+file_path=$( [ -z "$cur_path" ] && echo "$def_path$def_name" || echo "$cur_path/$def_name" )     #文件路径
+
+
+
 ####### 主函数 ######
+function main1 {
+    if code=$(curl -s "$link_Vultr_Debian11"); then
+         code_old="$(cat $file_path)"
+         echo "$code"
+         echo "$code_old"
+         if [ "$code" == "$code_old" ]; then
+         echo "代码一样"
+         else      
+         echo "不一会"
+         fi
+         echo ${#code} 
+         echo ${#code_old} 
+    else
+        echo -n "vinci脚本下载失败，请检查网络！"
+       # exit 3                                                #未更新脚本的返回值       
+    fi
+ }   
+
+
 function main {
-         
+
     #获取最新版本号
     Version=$(curl -s "$link_Vultr_Debian11" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
     #程序错误强制自更新
