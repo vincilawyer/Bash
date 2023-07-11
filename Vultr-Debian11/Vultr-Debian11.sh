@@ -225,7 +225,8 @@ function main {
                       4)set_dat;;
                       5)change_ssh_port
                         change_login_password;;
-                      6)update;;
+                      6)update
+                      [ "$?" == "2" ] && echo "当前版本为最新版，无需更新！";;
                   esac;;
 2)###### 工具箱  ###### 
       sub_menu=(
