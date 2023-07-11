@@ -108,7 +108,8 @@ BASE_URL="$BASE_URL"
 ####### 脚本更新  ####### 
 function update {
     wrong_force="$1"   #用户强制更新为1，程序错误自更新为2
-    #clear && current_Version="$Version" download_path_path="$script_path" name="$script_name" force="$wrong_force" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
+    #clear 
+    current_Version="$Version" download_path_path="$script_path" name="$script_name" force="$wrong_force" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
     result=$?
     if [ $result == "1" ] ; then        #如果已经更新
         exit 0  
