@@ -84,12 +84,11 @@ tel_regex="^1[3-9]\d{9}$"
 #若干#和空格前置的表达式 
 comment_regex="^ *[# ]*"
 
-
-＃＃＃＃＃＃  配置数据模板  ＃＃＃＃＃＃
+#######  配置数据模板  #######
 dat_text='
 # 该文件为vinci用户配置文本
 # * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配正则表达式。
-Dat_num="${＃dat_text}"                       #@编号*              
+Dat_num="${#dat_text}"                       #@编号*              
 Domain="$Domain"                              #@一级域名#@不用加www#@domain_regex
 Email="$Email"                                #@邮箱#@#@email_regex
 Cloudflare_api_key="$Cloudflare_api_key"      #@Cloudflare Api
@@ -113,12 +112,12 @@ function update {
     local updatenum="$1"
     clear
     if (( $startnum == 1 )); then
-         ( "$updatenum" == 2) && cp -f "$script_path/$script_name" "$script_path/$script_name"_backup
+         ( "$updatenum" == 2 ) && cp -f "$script_path/$script_name" "$script_path/$script_name"_backup
          echo "即将开始强制更新..."
          exit 1
     elif (( $startnum == 2 )); then
          echo "即将开始强制更新..."
-         updatenum=1
+         updatenum=2
     fi
     current_Version="$Version" download_path_path="$script_path" name="$script_name" force="$updatenum" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
     result=$?
