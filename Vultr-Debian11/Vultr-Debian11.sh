@@ -24,9 +24,11 @@
 
 ####### 版本更新相关参数 ######
 Version=3.03  #版本号,不得为空
+Version1="$Version.${#file_path}"
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #获取当前脚本的运行路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
 startnum="$1"                                                                     #当前脚本的启动指令：1、告知本程序由更新程序唤醒；
+
 
 ####### 定义颜色 ######
 RED='\033[0;31m'
@@ -368,7 +370,7 @@ EOF
   echo -e "${RED}${art}${NC}"
   echo
   echo
-  echo "                   欢迎进入Vinci服务器管理系统(版本V$Version)"
+  echo "                   欢迎进入Vinci服务器管理系统(版本V$Version1)"
   echo
   echo "=========================== "$1" =============================="
   echo 
