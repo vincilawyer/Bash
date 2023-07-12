@@ -25,7 +25,7 @@
 
 
 ####### 版本更新相关参数 ######
-Version=3.08  #版本号 
+Version=3.10  #版本号 
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #获取当前脚本的目录路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
 file_path="$script_path/$script_name"                                             #获取当前脚本的文件路径
@@ -234,7 +234,7 @@ function main {
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  case $option in
                       2)install_Docker;;
-                      3)echo "Docker当前运行状况如下：" && docker ps && echo
+                      3)echo "Docker容器状况：" && docker ps -a && echo
                         echo "提示：可使用docker stop 或 docker rm 语句加容器 ID 或者名称来停止容器的运行或者删除容器 ";;
                  esac;;
 5)####  Nginx选项   ######
@@ -338,22 +338,21 @@ function get_moddat {
 # 该文件为vinci用户配置文本
 # * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配正则表达式。
 Dat_num=\"$((( i==1 )) && echo $dat_num)\"      #@版本号*              
-$(pz "Domain" i)                                  #@一级域名#@不用加www#@domain_regex
-$(pz "Email" i)                                   #@邮箱#@#@email_regex
-$(pz "Cloudflare_api_key" i)                      #@Cloudflare Api
-$(pz "Warp_port" i)                               #@Warp监听端口
-$(pz "Tor_port" i)                                #@Tor监听端口
+$(pz "Domain")                                  #@一级域名#@不用加www#@domain_regex
+$(pz "Email")                                   #@邮箱#@#@email_regex
+$(pz "Cloudflare_api_key")                      #@Cloudflare Api
+$(pz "Warp_port")                               #@Warp监听端口
+$(pz "Tor_port")                                #@Tor监听端口
 
 #####Chatgpt-docker######
-$(pz "Chatgpt_api_key" i)                         #@Chatgpt Api
-$(pz "Gpt_code" i)                                #@授权码
-$(pz "BASE_URL" i)                                #@OpenAI接口代理URL
-$(pz "PROXY_URL" i)                               #@Chatgpt本地代理地址
+$(pz "Gpt_port")                                #@Chatgpt端口
+$(pz "Chatgpt_api_key")                         #@Chatgpt Api
+$(pz "Gpt_code")                                #@授权码
+$(pz "BASE_URL")                                #@OpenAI接口代理URL
+$(pz "PROXY_URL")                               #@Chatgpt本地代理地址
 
 
-";(( i==0 )) && dat_num=${#dat_text}; done }
-###### 为数据模板写入数据 ######
-function pz { echo "$1=\"$((($2==1)) && eval echo \$"$1")\""; }
+";(( i==0 )) && dat_num=${#dat_text}; done; function pz { echo "$1=\"$((($i==1)) && eval echo \$"$1")\""; } ; }
 
 ###### 将数据写入数据文件 ######
 function write_dat { echo "$dat_text" > "$dat_path"; }
@@ -843,6 +842,10 @@ function change_login_password {
 #############################################################################################################################################################################################
 ##############################################################################   9.Docker  ################################################################################################
 ############################################################################################################################################################################################
+###   说明：查看容器docker ps -a；下载镜像 docker pull ；删除镜像 docker rmi ； 运行容器 docker run ；停止容器 docker stop container_id ；删除 docker rm container_id ；恢复容器 docker start container_id
+
+
+
 
 #######  安装Docker及依赖包  #######
 function install_Docker {
@@ -1385,8 +1388,9 @@ function pull_gpt {
 docker pull yidadaa/chatgpt-next-web
 }
 function run_gpt {
-docker stop $(docker ps -aq)
-docker run -d --name chatgpt -p 3000:3000 \
+docker stop chatgpt >/dev/null 2>&1
+docker rm chatgpt >/dev/null 2>&1
+docker run -d --name chatgpt -p 3000:$Gpt_port \
    -e OPENAI_API_KEY="$Chatgpt_api_key" \
    -e CODE="$Gpt_code" \
    -e BASE_URL="$BASE_URL" \
