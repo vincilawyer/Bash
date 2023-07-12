@@ -391,6 +391,7 @@ function get_moddat {
     for ((i = 0; i <= 1; i++)); do
     dat_text="
 
+
 # 该文件为vinci用户配置文本
 # * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配正则表达式。
 Dat_num=\"$((( i==1 )) && echo $dat_num)\"      #@版本号*              
@@ -406,8 +407,8 @@ $(pz "Gpt_code" i)                                #@授权码
 $(pz "BASE_URL" i)                                #@OpenAI接口代理URL
 $(pz "PROXY_URL" i)                               #@Chatgpt本地代理地址
 
-";(( i==0 )) && dat_num=${#dat_text};done}
 
+";(( i==0 )) && dat_num=${#dat_text}; done }
 ###### 为数据模板写入数据 ######
 function pz { echo "$1=\"$((($2==1)) && eval echo \$"$1")\""; }
 
