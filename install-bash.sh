@@ -76,7 +76,7 @@ function main {
          else
               wrong=1
               continue
-         if
+         fi
     done  
     
 }
