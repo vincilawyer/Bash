@@ -99,6 +99,7 @@ function main {
             if [ -n "$input" ] ; then
                 if bar 15 "已取消继续更新，即将尝试回滚至旧版本" "开始回滚" true "已取消回滚！即将返回..."; then exit 1; fi 
                 cp -f "$file_path"_backup "$file_path" 
+                echo
                 echo "已回滚至旧版本！即将返回..."
                 countdown 10
                 exit 2   
