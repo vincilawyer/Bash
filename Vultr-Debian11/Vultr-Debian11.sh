@@ -99,7 +99,7 @@ comment_regex="^ *[# ]*"
 function update {
     clear
     if ((startnum == 2)); then exit 2; fi #未出错程序，用户主动要求返回到更新检查程序继续更新 
-    cur_Version="$Version" cur_path="$script_path" cur_name="$script_name" wrong="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
+    cur_path="$script_path" cur_name="$script_name" wrong="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
     result=$?
     if [ "$result" == "1" ] ; then        #如果已经更新或不需要继续执行
         exit 0  
