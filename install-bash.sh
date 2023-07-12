@@ -16,6 +16,7 @@ link_Vultr_Debian11="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vul
 
 ####### 颜色
 RED='\033[0;31m'
+NC='\033[0m'
 
 #######  其他参数  #######
 #$cur_path                              为旧脚本目录路径
@@ -92,7 +93,7 @@ function main {
             t=$((t + 1))
             if ! ((t % 50 == 0)); then continue; fi  #每隔50s检查一次更新情况
             code="$(curl -s "$link_Vultr_Debian11")" && Version=$( echo "$code" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
-            if [  "$code" == "$(cat "$file_path")" ]; then
+            if ! [ "$code" == "$(cat "$file_path")" ]; then
                 echo "已获取到最新版本V$Version.${#code}，即将开始更新！"
                 return
             fi
