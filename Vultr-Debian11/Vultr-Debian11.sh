@@ -1386,7 +1386,7 @@ docker pull yidadaa/chatgpt-next-web
 }
 function run_gpt {
 docker stop $(docker ps -aq)
-docker run -d -p 3000:3000 \
+docker run -d --name chatgpt -p 3000:3000 \
    -e OPENAI_API_KEY="$Chatgpt_api_key" \
    -e CODE="$Gpt_code" \
    -e BASE_URL="$BASE_URL" 
