@@ -123,7 +123,7 @@ function countdown {
 }
 
 ####### 执行启动前更新检查  ####### 
-[ "$startnum" == 1 ] || update $startnum     #刚更新的程序无需再次检查更新
+[ "$startnum" == 2 ] || update $startnum     #刚更新的程序无需再次检查更新
 
 #######  当用户选择主动退出  #########
 function quit() {
