@@ -25,7 +25,7 @@
 
 
 ####### 版本更新相关参数 ######
-Version=3.12  #版本号 
+Version=3.13  #版本号 
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #获取当前脚本的目录路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
 file_path="$script_path/$script_name"                                             #获取当前脚本的文件路径
@@ -313,14 +313,16 @@ function main {
    sub_menu=(
     "  1、返回上一级"
     "  2、下载\更新Chatgpt"
-    "  3、启动Chatgpt"
-    "  4、停止运行Chatgpt"
+    "  3、运行Chatgpt(自启动)"
+    "  4、查看Chatgpt运行状况"
+    "  5、停止运行Chatgpt"
     "  0、退出")                     
                   if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                   case $option in
                        2)pull_gpt;;
                        3)run_gpt;;
-                       4)confirm "是否停止运行Chatgpt？" "已取消！" || docker stop $Chatgpt_name;;
+                       4)docker inspect --format $Chatgpt_name;;
+                       5)confirm "是否停止运行Chatgpt？" "已取消！" || docker stop $Chatgpt_name;;
                   esac;; 
             
 esac
