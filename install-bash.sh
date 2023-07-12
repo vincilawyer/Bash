@@ -70,7 +70,7 @@ function main {
          $def_name 2
          if [ "$?" == "0" ]; then                       #如果脚本正常运行，则退出
               exit 1                                            
-         elif [ "$?" == "2" ]                           #如果用户要求更新，则继续更新
+         elif [ "$?" == "2" ]; then                           #如果用户要求更新，则继续更新
               wrong=0
               continue
          else
