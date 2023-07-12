@@ -428,10 +428,11 @@ function update_dat {
     else
         get_moddat
         if ! [ "$dat_num" == "$Dat_num" ] ; then
-        echo "配置文件更新中..."
-        write_dat
-        echo "更新完成，可在系统设置中修改参数！"
-        wait
+           echo "配置文件更新中..."
+           write_dat
+           echo "更新完成，可在系统设置中修改参数！"
+           wait
+        fi
     fi
 }
 #######   修改数据      #######   
