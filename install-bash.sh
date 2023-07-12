@@ -74,14 +74,14 @@ function main {
       local t=-1
       tput sc  # Save the current cursor position
       while true; do
-            [ "$a" == "true" ] && b="              正在等待服务器端版本更新，输入任意键退出...               " || b='                                                                        '
+            [ "$a" == "true" ] && b="                正在等待服务器端版本更新，输入任意键退出...                 " || b='                                                                            '
             [ "$a" == "true" ] && a="false" || a="true"
             tput rc  # Restore the saved cursor position
             tput el  # Clear from cursor to the end of the line
-            echo -e "${RED}########################################################################################${NC}"
+            echo -e "${RED}###########################################################################################${NC}"
             echo -e "${RED}#####  请注意，当前脚本运行出现错误！当前版本号：V$cur_Version.$(eval echo $num)，最新版本号：V$Version.${#code} #####${NC}"
-            echo -e "${RED}########$b########${NC}"
-            echo -e "${RED}########################################################################################${NC}"
+            echo -e "${RED}#####$b#####${NC}"
+            echo -e "${RED}###########################################################################################${NC}"
             read -t 1 -n 1 input  #读取输入，在循环中一次1秒
             if [ -n "$input" ] ; then
                 if bar 15 "已取消继续更新，即将尝试回滚至旧版本" "开始回滚" true "已取消回滚！即将返回..."; then exit 0; fi 
