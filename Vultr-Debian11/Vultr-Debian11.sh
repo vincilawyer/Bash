@@ -138,7 +138,7 @@ function quit() {
 #######   当脚本错误退出时，启动更新检查   ####### 
 function handle_error() {
    [ "$startnum" == "2" ] && exit 1              #检查程序更新脚本后的退出（即无需再次启动检查程序），这里的exit不会执行normal_exit函数
-   echo "脚本出错啦啦啦啦啦！"
+   echo "脚本运行出现错误！"
    update 1                                     #唤醒程序更新
 }
 
