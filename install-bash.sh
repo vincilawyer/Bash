@@ -106,15 +106,6 @@ function main {
             if ((t % 50 == 0)); then break; fi  #每隔50s检查一次更新情况
       done
 }
-            
-            if ! ((t % 50 == 0)); then continue; fi  #每隔50s检查一次更新情况
-            code="$(curl -s "$link_Vultr_Debian11")" && Version=$( echo "$code" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
-            if ! [ "$code" == "$(cat "$file_path")" ]; then
-                echo "已获取到最新版本V$Version.${#code}，即将开始更新！"
-                return
-            fi
-      done
-}
            
 #######   进度条  ####### 
 function bar() {
