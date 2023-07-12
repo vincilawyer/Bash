@@ -35,7 +35,10 @@ num='$(n="$(cat "$file_path")" &&  echo "${#n}")'                               
 function main {
     (( wrong==1 )) ｜｜ clear
     while true； then
-        if code="$(curl -s "$link_Vultr_Debian11")"; then  
+        if ! (code="$(curl -s "$link_Vultr_Debian11")"); then  
+            echo -n "vinci脚本下载失败，请检查网络！即将返回..."
+            exit 2
+        fi
         
          if [ -e "$file_path" ] && [ "$code" == "$(cat "$file_path")" ]; then
               [ -z "$cur_Version" ] && cur_Version=$(sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}' "$file_path")
@@ -65,11 +68,6 @@ function main {
                     fi
              done
          fi
-    else
-        echo -n "vinci脚本下载失败，请检查网络！即将返回..."
-        countdown 5
-        exit 3                                                     #未更新脚本的返回值       
-    fi
 }
 
 #######   保存提示  ####### 
