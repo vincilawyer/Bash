@@ -89,7 +89,7 @@ comment_regex="^ *[# ]*"
 
 #######   创建\更新用户配置数据模板    #######
 function pz { echo "$1=\"$((($2==1)) && eval echo \$"$1")\""; }
-function creat_dat {for ((i = 0; i <= 1; i++)); do;dat_text="
+function creat_dat {for ((i = 0; i <= 1; i++)); do; dat_text="
 
 # 该文件为vinci用户配置文本
 # * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配正则表达式。
