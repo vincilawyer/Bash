@@ -1389,7 +1389,7 @@ docker stop $(docker ps -aq)
 docker run -d --name chatgpt -p 3000:3000 \
    -e OPENAI_API_KEY="$Chatgpt_api_key" \
    -e CODE="$Gpt_code" \
-   -e BASE_URL="$BASE_URL" 
+   -e BASE_URL="$BASE_URL" \
    yidadaa/chatgpt-next-web
 }
 ###### 消息推送 ######
