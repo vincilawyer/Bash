@@ -85,10 +85,11 @@ function main {
  function warning {
       echo
       tput sc  #保存当前光标位置
-      local t=-1
+      local t=0
       while true; do
             tput rc  #恢复光标位置
             tput el  #清除光标后内容
+            t=$((t + 1)); if ((t % 50 == 0)); then break; fi   #每隔50s检查一次更新情况
             [ "$a" == "true" ] && b="              正在等待服务器端版本更新，输入任意键退出...                " || b='                                                                         '
             [ "$a" == "true" ] && a="false" || a="true"
             echo -e "${RED}###################################################################################${NC}"
@@ -103,8 +104,6 @@ function main {
                 countdown 10
                 exit 2   
             fi
-            t=$((t + 1))
-            if ((t % 50 == 0)); then break; fi  #每隔50s检查一次更新情况
       done
 }
            
