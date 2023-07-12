@@ -23,7 +23,7 @@
 
 
 ####### 版本更新相关参数 ######
-Version=3.05                                                                      #版本号
+Version=3.06  #版本号 
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #获取当前脚本的目录路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
 file_path="$script_path/$script_name"                                             #获取当前脚本的文件路径
@@ -87,6 +87,26 @@ tel_regex="^1[3-9]\d{9}$"
 #若干#和空格前置的表达式 
 comment_regex="^ *[# ]*"
 
+######  用户配置模板  ######
+function pz { echo "$1=\"$((($2==1)) && eval echo \$"$1")\""; }
+for ((i = 0; i <= 1; i++)); do
+dat_text="
+# 该文件为vinci用户配置文本
+# * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配正则表达式。
+Dat_num=\"$(((i==1)) && echo ${#dat_text})\"      #@版本号*              
+$(pz "Domain" i)                                  #@一级域名#@不用加www#@domain_regex
+$(pz "Email" i)                                   #@邮箱#@#@email_regex
+$(pz "Cloudflare_api_key" i)                      #@Cloudflare Api
+$(pz "Warp_port" i)                               #@Warp监听端口
+$(pz "Tor_port" i)                                #@Tor监听端口
+
+#####Chatgpt-docker######
+$(pz "Chatgpt_api_key" i)                         #@Chatgpt Api
+$(pz "Gpt_code" i)                                #@授权码
+$(pz "BASE_URL" i)                                #@OpenAI接口代理URL
+$(pz "PROXY_URL" i)                               #@Chatgpt本地代理地址
+
+"; done
 #############################################################################################################################################################################################
 ##############################################################################   2.脚本启动及退出检查模块  ################################################################################################
 ############################################################################################################################################################################################
@@ -399,28 +419,12 @@ done
 
 #######   创建\更新配置数据模板    #######
 function creat_dat {
-dat_text="
-# 该文件为vinci用户配置文本
-# * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配正则表达式。
-Dat_num="${#dat_text}"                       #@编号*              
-Domain="$Domain"                              #@一级域名#@不用加www#@domain_regex
-Email="$Email"                                #@邮箱#@#@email_regex
-Cloudflare_api_key="$Cloudflare_api_key"      #@Cloudflare Api
-Warp_port="$Warp_port"             #@Warp监听端口
-Tor_port="$Tor_port"              #@Tor监听端口
-
-#####Chatgpt-docker######
-Chatgpt_api_key="$Chatgpt_api_key"         #@Chatgpt Api
-Gpt_code="$Gpt_code"                       #@授权码
-BASE_URL="$BASE_URL"                       #@OpenAI接口代理URL
-PROXY_URL="$PROXY_URL"                     #@Chatgpt本地代理地址
-"
-   eval echo "$dat_text" > "$dat_path"
+   echo "$dat_text" > "$dat_path"
 }
 
 #######   修改数据      #######   
 function set_dat { 
-  eval echo "$dat_text" > $dat_path
+  echo "$dat_text" > $dat_path
   if [ -n "$1" ] ; then  #指定修改配置
      line=$(search "#@" "" "$1" 1 true false false true "$dat_path" ) 
      IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
