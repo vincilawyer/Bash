@@ -351,11 +351,11 @@ $(pz "Warp_port")                               #@Warp监听端口
 $(pz "Tor_port")                                #@Tor监听端口
 
 #####Chatgpt-docker######
-$(pz "Gpt_port")                                #@Chatgpt端口
+$(pz "Gpt_port")                                #@Chatgpt端口#@0-65535
 $(pz "Chatgpt_api_key")                         #@Chatgpt Api
 $(pz "Gpt_code")                                #@授权码
-$(pz "BASE_URL")                                #@OpenAI接口代理URL
-$(pz "PROXY_URL")                               #@Chatgpt本地代理地址
+$(pz "BASE_URL")                                #@OpenAI接口代理URL#@
+$(pz "PROXY_URL")                               #@Chatgpt本地代理地址#@
 Chatgpt_image=\"yidadaa/chatgpt-next-web\"        #Chat镜像名称*
 Chatgpt_name=\"chatgpt\"                          #Chat容器名称*
 
@@ -515,7 +515,7 @@ function installed {
     local name=$1
     if [ ! -x "$(command -v $name)" ]; then return 1; fi
     echo -e "${GREEN}该程序已经安装，当前版本号为 $(docker -v 2>&1)${NC}"
-    if confirm "是否需要重新安装或更新？（Y/N）" "已取消安装！"; then return 0; fi
+    if confirm "是否需要重新安装或更新？" "已取消安装！"; then return 0; fi
     return 1
 }
 
@@ -856,7 +856,7 @@ function change_login_password {
 
 #######  安装Docker及依赖包  #######
 function install_Docker {
-    if installed "docker" ;then return; fi  #检验安装
+     installed "docker" && return
     
     # 安装docker，具体在https://docs.docker.com/engine/install/debian/中查看说明教程
     # 卸载冲突包
@@ -1079,8 +1079,8 @@ function check_ssl_certificate {
 
 ###### 安装X-ui的函数 ######
 function install_Xui {
-   if installed "x-ui"; then return; fi
-        bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
+   installed "x-ui" && return
+   bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
 }
 
 #############################################################################################################################################################################################
@@ -1240,8 +1240,7 @@ function get_all_dns_records {
 
 ###### 安装cf warp套 ######
 function install_Warp {
-
-    if installed "warp-cli"; then return; fi
+     installed "warp-cli" && return
         #先安装WARP仓库GPG密钥：
         echo -e "${GREEN}正在安装WARP仓库GPG 密钥${NC}"
         curl https://pkg.cloudflareclient.com/pubkey.gpg | sudo gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
@@ -1274,40 +1273,30 @@ function install_Warp {
 ##############################################################################   13.Tor模块  ################################################################################################
 ############################################################################################################################################################################################
 
-
-                                                                          # 安装Tor的函数
+###### 安装Tor的函数 ######
 function install_Tor {
-   if [ -x "$(command -v tor)" ]; then
-        echo -e "${GREEN}Tor已安装，无需重复安装！${NC}"      
-   else
-        echo -e "${GREEN}正在更新包列表${NC}"
-        sudo apt update
-        echo -e "${GREEN}开始安装Tor${NC}"
-        apt install tor -y
+    installed "tor" && return 
+    echo -e "${GREEN}正在更新包列表${NC}"
+    sudo apt update
+    echo -e "${GREEN}开始安装Tor${NC}"
+    apt install tor -y
    fi
 }
 
-                                                                     
-                                                                     # 安装Warp并启动Warp的函数
 
                                                                            # 设置Tor配置
 function set_tor_config {
    settext "SocksPort " " " "" 2 false false "true" "true" $path_tor "Tor监听端口" "0-65535，" $port_regex
 }
-                                                                           # 获取Tor ip
-function ip_tor {
-  old_text=$(search "SocksPort " " " "" 2 "false" "false" "false" "true" $path_tor )
-  echo "当前Tor代理IP为："
-  curl --socks5-hostname localhost:$old_text http://ip-api.com/line/?fields=status,country,regionName,city,query
-  echo
-}
+#############################################################################################################################################################################################
+##############################################################################   13.Frp模块  ################################################################################################
+############################################################################################################################################################################################
+
   
   
                                                                           # 安装Frp的函数
 function install_Frp {
-   if [ -x "$(command -v frps)" ]; then 
-        echo -e "${GREEN}Frp已安装，无需重复安装！${NC}"   
-   else
+   installed "frps" && return 
         # 获取最新的 frp 版本
         frp_version=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | grep 'tag_name' | cut -d\" -f4)
         # 获取Linux amd64版本的tar.gz文件名
@@ -1340,6 +1329,7 @@ WantedBy=multi-user.target
 EOF
    fi
 }
+
 function reset_Frp {
 if confirm "是否重置Frp配置" "已取消重置！"; then return; fi 
 cat > $path_frp/frps.ini <<EOF
@@ -1390,6 +1380,10 @@ function set_CF_config {
     set 'api_key="' '"' 1 $path_cfdns true "Cloudfare API密钥"
     chmod +x $path_cfdns
 }
+#############################################################################################################################################################################################
+##############################################################################   Chatgpt—Docker  ################################################################################################
+############################################################################################################################################################################################
+
 ######  下载 chatgpt-next-web 镜像 ######
 function pull_gpt {
 docker pull yidadaa/chatgpt-next-web
@@ -1402,7 +1396,7 @@ function run_gpt {
     if docker run -d --name $Chatgpt_name -p 3000:$Gpt_port \
        -e OPENAI_API_KEY="$Chatgpt_api_key" \
        -e CODE="$Gpt_code" \
-       -e BASE_URL="$BASE_URL" 
+       -e BASE_URL="$BASE_URL" \
        $Chatgpt_image
     then
         echo "Chatgpt启动成功！"
