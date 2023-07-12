@@ -782,6 +782,7 @@ function status {
 #应用列表
 apps=(
 "ufw"
+"docker"
 "warp-svc"
 "tor"
 )
