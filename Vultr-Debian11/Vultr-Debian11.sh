@@ -159,19 +159,8 @@ function main {
   echo "请注意，本脚本是适用于Vulre服务器Debian11系统，用于其他系统或版本时将可能出错！"
   wait
   fi
-
   #######   检查用户数据文件  #######   
-  if ! source $dat_path >/dev/null 2>&1; then   #读取用户数据
-        echo "系统无用户数据记录。准备新建用户数据...请设置数据"
-        set_dat
-        echo "配置结束！"
-        wait
-  elif ! [ "$dat_num" == "$Dat_num" ] ; then
-        echo "配置文件更新中..."
-        creat_dat
-        echo "更新完成，可在系统设置中修改参数！"
-        wait
-  fi
+  update_dat
   
   while true; do     #显示页面及选项
   #######   主菜单选项  ######
@@ -398,8 +387,22 @@ done
 ############################################################################################################################################################################################
 
 #######   创建\更新用户配置数据模板    #######
-function creat_dat { 
-source $dat_path; for ((i = 0; i <= 1; i++)); do; dat_text="
+function update_dat { 
+    if ! source $dat_path >/dev/null 2>&1; then   #读取用户数据
+        echo "系统无用户数据记录。准备新建用户数据...请设置数据"
+        set_dat
+        echo "配置结束！"
+        wait
+    elif ! [ "$dat_num" == "$Dat_num" ] ; then
+        echo "配置文件更新中..."
+        write_dat
+        echo "更新完成，可在系统设置中修改参数！"
+        wait
+    fi
+}
+######   写入用户数据  ######
+function write_dat {
+for ((i = 0; i <= 1; i++)); do; dat_text="
 
 # 该文件为vinci用户配置文本
 # * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配正则表达式。
@@ -423,17 +426,18 @@ function pz { echo "$1=\"$((($2==1)) && eval echo \$"$1")\""; }
 
 #######   修改数据      #######   
 function set_dat { 
-  creat_dat
-  if [ -n "$1" ] ; then  #指定修改配置
-     line=$(search "#@" "" "$1" 1 true false false true "$dat_path" ) 
-     IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
-     #去除正则表达式的前后空格
-     a[2]="${a[2]#"${a[2]%%[![:space:]]*}"}"  
-     a[2]="${a[2]%"${a[2]##*[![:space:]]}"}"
-     settext "\"" "\"" "$1" 1 true false false true "$dat_path" "${a[0]}" "${a[1]}"  "$([ -z "${a[2]}" ] && echo "" || echo "${!a[2]}")"
-     return
-     #还需手动载入变量
-  fi
+  write_dat
+  #如果指定配置，则指定修改
+    if [ -n "$1" ] ; then  
+         line=$(search "#@" "" "$1" 1 true false false true "$dat_path" ) 
+         IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
+         #去除正则表达式的前后空格
+         a[2]="${a[2]#"${a[2]%%[![:space:]]*}"}"  
+         a[2]="${a[2]%"${a[2]##*[![:space:]]}"}"
+         settext "\"" "\"" "$1" 1 true false false true "$dat_path" "${a[0]}" "${a[1]}"  "$([ -z "${a[2]}" ] && echo "" || echo "${!a[2]}")"
+         return
+         #还需手动载入变量
+    fi
     
     #如果没有指定配置，则全文修改
     lines=()
