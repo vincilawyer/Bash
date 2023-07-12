@@ -314,11 +314,13 @@ function main {
     "  1、返回上一级"
     "  2、下载\更新Chatgpt"
     "  3、启动Chatgpt"
+    "  4、停止运行Chatgpt"
     "  0、退出")                     
                   if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                   case $option in
                        2)pull_gpt;;
                        3)run_gpt;;
+                       4)confirm "是否停止运行Chatgpt？" "已取消！" || docker stop $Chatgpt_name;;
                   esac;; 
             
 esac
@@ -371,7 +373,6 @@ function update_dat {
         write_dat
         echo "新建数据完成，第一次使用请先设置数据..."
         set_dat
-        echo "配置结束！"
         wait
     else
         get_moddat
@@ -386,16 +387,16 @@ function update_dat {
 #######   修改数据      #######   
 function set_dat { 
   #如果指定配置，则指定修改
-    if [ -n "$1" ] ; then  
-         line=$(search "#@" "" "$1" 1 true false false true "$dat_path" ) 
-         IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
-         #去除正则表达式的前后空格
-         a[2]="${a[2]#"${a[2]%%[![:space:]]*}"}"  
-         a[2]="${a[2]%"${a[2]##*[![:space:]]}"}"
-         settext "\"" "\"" "$1" 1 true false false true "$dat_path" "${a[0]}" "${a[1]}"  "$([ -z "${a[2]}" ] && echo "" || echo "${!a[2]}")"
-         return
-         #还需手动载入变量
-    fi
+    if [ $# -eq 0 ]; then
+         for arg in "$@"; do
+             line=$(search "#@" "" "$arg" 1 true false false true "$dat_path" ) 
+             IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
+             #去除正则表达式的前后空格
+             a[2]="${a[2]#"${a[2]%%[![:space:]]*}"}"  
+             a[2]="${a[2]%"${a[2]##*[![:space:]]}"}"
+             settext "\"" "\"" "$arg" 1 true false false true "$dat_path" "${a[0]}" "${a[1]}"  "$([ -z "${a[2]}" ] && echo "" || echo "${!a[2]}")"
+         done         
+    else
     
     #如果没有指定配置，则全文修改
     lines=()
@@ -414,7 +415,9 @@ function set_dat {
          a[3]="${a[3]%"${a[3]##*[![:space:]]}"}"
          settext "${b[0]}=\"" "\"" "" 1 true false false true "$dat_path" "${a[1]}" "${a[2]}"  "$([ -z "${a[3]}" ] && echo "" || echo "${!a[3]}")"
     done
+    fi
     source "$dat_path"   #重新载入数据
+    echo "已配置结束！"
 }
 
 #######   用户数据模板更新(代码作废)   #######   
@@ -1393,18 +1396,26 @@ docker pull yidadaa/chatgpt-next-web
 
 ######  运行chatgpt-next-web 镜像 ######
 function run_gpt {
-docker stop $chatgpt_name >/dev/null 2>&1 $$ echo echo "正在重置chatgpt容器"
-docker rm $chatgpt_name >/dev/null 2>&1
-if docker run -d --name $Chatgpt_name -p 3000:$Gpt_port \
-   -e OPENAI_API_KEY="$Chatgpt_api_key" \
-   -e CODE="$Gpt_code" \
-   -e BASE_URL="$BASE_URL" \
-   $Chatgpt_image
-then
-echo "启动成功！"
-else 
-echo "启动失败，请重新设置参数配置"
-set_dat "Gpt_code"
+    docker stop $Chatgpt_name >/dev/null 2>&1 $$ echo echo "正在重置chatgpt容器"
+    docker rm $Chatgpt_name >/dev/null 2>&1
+    if docker run -d --name $Chatgpt_name -p 3000:$Gpt_port \
+       -e OPENAI_API_KEY="$Chatgpt_api_key" \
+       -e CODE="$Gpt_code" \
+       -e BASE_URL="$BASE_URL" 
+       $Chatgpt_image
+    then
+        echo "Chatgpt启动成功！"
+    else 
+    echo "启动失败，请重新设置参数配置"
+arg={
+"Gpt_code"
+"Chatgpt_api_key"
+"Gpt_port"
+"BASE_URL"
+"PROXY_URL" 
+}
+    set_dat ${arg[@]}
+    echo "请尝试再次启动！"
 fi
 }
 
