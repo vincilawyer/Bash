@@ -53,7 +53,7 @@ function main {
                  chmod +x "$file_path"
                  echo "管理系统V"$Version.$(eval echo $num)"版本已下载\更新完成，即将进入系统！"
                  countdown 10
-                    $def_name 1
+                    $def_name 2
                     if [ "$?" == "0" ]; then                       #如果脚本正常运行，则退出
                            exit 1                                            
                     else                                           #如果脚本运行错误，则强制更新
