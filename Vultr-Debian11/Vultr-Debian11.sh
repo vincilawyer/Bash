@@ -17,6 +17,7 @@
 ###   12.Cloudflare
 ###   13.Tor
 ###   14.Frp
+###   15.Chatgpt
 ############################################################################################################################################################################################
 ############################################################################################################################################################################################
 ###   说明:
@@ -47,7 +48,7 @@ NC='\033[0m'
 ####### 定义全局变量  ######                                  
 option=""     #用户选择序号 
 old_text=""   #settext函数修改前内容
-new_text=""   #settext函数修改后内容
+new_text=""   #inp函数输入的内容
 
 ####### 定义路径  ######
 #更新检查程序网址
@@ -724,9 +725,8 @@ function settext {
      echo -e "${BLUE}【"$mean"设置】${NC}${GREEN}当前的"$mean"为："$old_text1"${NC}"
      while true; do
          #-r选项告诉read命令不要对反斜杠进行转义，避免误解用户输入。-e选项启用反向搜索功能，这样用户在输入时可以通过向左箭头键或Ctrl + B键来移动光标并修改输入。
-         read -r -e -p "$(echo -e ${GREEN}"请设置新的"$mean"（$( [ -n "$mark" ] && echo "$mark,")输入为空则跳过$( [[ $coment == "true" ]] && echo "，输入#则设为注释行")）：${NC}")" new_text
-         #s/^[[:space:]]*//表示将输入字符串中开头的任何空格字符替换为空字符串；s/[[:space:]]*$//表示将输入字符串结尾的任何空格字符替换为空字符串。
-         new_text="$(echo -e "${new_text}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+         echo -ne "${GREEN}请设置新的$mean（$( [ -n "$mark" ] && echo "$mark,")输入为空则跳过$( [[ $coment == "true" ]] && echo "，输入#则设为注释行")）：${NC}"
+         inp $regex "#"  
          if [[ -z "$new_text" ]]; then
              printf "\033[K%s"  # 清除当前行的文本
              echo -e "${GREEN}已跳过$mean设置${NC}"
@@ -738,31 +738,41 @@ function settext {
                      printf "\033[K%s"  # 清除当前行的文本
                      echo -e "${BLUE}已将"$mean"参数设为注释行${NC}"
                      return 0
-                 elif [[ "$new_text" =~ $regex ]]; then
+                 else
                      replace  "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "$comment" "$is_file" "$input" "$new_text"
                      printf "\033[K%s"  # 清除当前行的文本
                      echo -e "${BLUE}"$mean"已修改为"$new_text"${NC}"
                      return 0
-                 else
-                     echo -e "${RED}输入的"$mean"不符合要求，请重新输入！${NC}"
-                     printf "\033[2A\033[K%s"
                  fi
             else                           #如果在文本模式下
-                 if [[ "$new_text" =~ $regex ]]; then
-                 printf "\033[K%s"  # 清除当前行的文本
-                 return 0
-                 else
-                 echo -e "${RED}输入的"$mean"不符合要求，请重新输入！${NC}"
-                 printf "\033[2A\033[K%s"
-                 fi
+
+               :
             fi
          fi
      done  
 }     
 function inp {
     tput sc
-    read inptext
+    while true; do
+        read newtext
+        [[ -z "$newtext" ]] && echo "" && return
+        newtext="$(echo -e "${newtext}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"        #s/^[[:space:]]*//表示将输入字符串中开头的任何空格字符替换为空字符串；s/[[:space:]]*$//表示将输入字符串结尾的任何空格字符替换为空字符串。
+        for arg in "$@"; do
+            #如果规则为正则表达式
+            if [[ $arg =~ $arg ]]; then
+                [[ $newtext =~ $arg ]] && tput el &&  return
+            else
+               [[ "$newtext" == "$inptext" ]] && tput el && return
+            fi
+       done
+       tput rc
+       tput el
+       echo
+       echo -e "${RED}输入不正确，请重新输入${NC}！"
+       tput rc
+   done
 }
+inp 1 3
 
 #######   输入确认    #######   
 function confirm {
@@ -853,9 +863,6 @@ function change_login_password {
 ############################################################################################################################################################################################
 ###   说明：查看容器docker ps -a；下载镜像 docker pull ；删除镜像 docker rmi ； 运行容器 docker run ；停止容器 docker stop container_id ；删除 docker rm container_id ；恢复容器 docker start container_id
 
-
-
-
 #######  安装Docker及依赖包  #######
 function install_Docker {
      installed "docker" && return
@@ -883,8 +890,6 @@ function install_Docker {
     sudo apt-get update
     #安装最新版本 Docker 引擎、containerd 和 Docker Compose。
     sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-    #通过运行镜像来验证Docker Engine安装是否成功。
-    if docker run hello-world; then echo "Docker安装成功！" ; fi
 }
 
 #############################################################################################################################################################################################
@@ -1091,9 +1096,10 @@ function install_Xui {
 
 ###### Cf dns配置 ######
 function CF_DNS {
-   while true; do 
-   # 获取区域标识符
-   zone_identifier=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$Domain" \
+    installed "jq" || ( echo "正在安装依赖软件JQ..." && apt update && apt install jq -y )
+    while true; do 
+     # 获取区域标识符
+    zone_identifier=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$Domain" \
      -H "X-Auth-Email: $Email" \
      -H "X-Auth-Key: $Cloudflare_api_key" \
      -H "Content-Type: application/json" | jq -r '.result[0].id')
@@ -1282,7 +1288,6 @@ function install_Tor {
     sudo apt update
     echo -e "${GREEN}开始安装Tor${NC}"
     apt install tor -y
-   fi
 }
 
 
@@ -1329,7 +1334,6 @@ ExecStart=/usr/bin/frps -c /etc/frp/frps.ini
 [Install]
 WantedBy=multi-user.target
 EOF
-   fi
 }
 
 function reset_Frp {
@@ -1371,19 +1375,9 @@ function install_CF_DNS {
 
 }
                                                                           # 修改CF_DNS配置的函数
-function set_CF_config {
-#维护中
-    if ! [ -e "$path_cfdns" ]; then
-        echo "CF_DNS脚本尚未安装，请先安装！"
-        return
-    fi
-    set 'email="' '"' 1 $path_cfdns "true" "true" "Cloudfare账户邮箱" "" true "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-    set 'domain="' '"' 1 $path_cfdns true "Cloudfare绑定域名" "不加www等前缀，" true "^[a-z0-9]+(-[a-z0-9]+)*\.[a-z]{2,}$"
-    set 'api_key="' '"' 1 $path_cfdns true "Cloudfare API密钥"
-    chmod +x $path_cfdns
-}
+
 #############################################################################################################################################################################################
-##############################################################################   Chatgpt—Docker  ################################################################################################
+##############################################################################   15.Chatgpt—Docker  ################################################################################################
 ############################################################################################################################################################################################
 
 ######  下载 chatgpt-next-web 镜像 ######
