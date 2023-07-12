@@ -63,22 +63,22 @@ function main {
              fi
          fi 
          #开始下载
-         while true; do 
-             wget --no-cache "$link_Vultr_Debian11" -O  "$file_path"
-             chmod +x "$file_path"
-             echo "管理系统V"$Version.$(eval echo $num)"版本已下载\更新完成，即将进入系统！"
-             countdown 10
-             $def_name 2
-             if [ "$?" == "0" ]; then                       #如果脚本正常运行，则退出
-                   exit 1                                            
-             elif [ "$?" == "2" ]                           #如果用户要求更新，则继续更新
-                   wrong=0
-                   break
-             else
-                   wrong=1
-                   break
-             if
-         done  
+         wget --no-cache "$link_Vultr_Debian11" -O  "$file_path"
+         chmod +x "$file_path"
+         echo "管理系统V"$Version.$(eval echo $num)"版本已下载\更新完成，即将进入系统！"
+         countdown 10
+         $def_name 2
+         if [ "$?" == "0" ]; then                       #如果脚本正常运行，则退出
+              exit 1                                            
+         elif [ "$?" == "2" ]                           #如果用户要求更新，则继续更新
+              wrong=0
+              continue
+         else
+              wrong=1
+              continue
+         if
+    done  
+    
 }
 
 #######   保存提示  ####### 
