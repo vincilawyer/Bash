@@ -331,8 +331,10 @@ done
 
 ######   获取配置模板 ######
 function get_moddat {
-    for ((i = 0; i <= 1; i++)); do
-    dat_text="
+#用于为模板写入数据的内建函数
+function pz { echo "$1=\"$((($i==1)) && eval echo \$"$1")\""; } 
+for ((i = 0; i <= 1; i++)); do
+dat_text="
 
 
 # 该文件为vinci用户配置文本
@@ -352,7 +354,7 @@ $(pz "BASE_URL")                                #@OpenAI接口代理URL
 $(pz "PROXY_URL")                               #@Chatgpt本地代理地址
 
 
-";(( i==0 )) && dat_num=${#dat_text}; done; function pz { echo "$1=\"$((($i==1)) && eval echo \$"$1")\""; } ; }
+";(( i==0 )) && dat_num=${#dat_text}; done; }
 
 ###### 将数据写入数据文件 ######
 function write_dat { echo "$dat_text" > "$dat_path"; }
