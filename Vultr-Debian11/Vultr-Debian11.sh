@@ -1393,7 +1393,7 @@ docker pull yidadaa/chatgpt-next-web
 function run_gpt {
     docker stop $Chatgpt_name >/dev/null 2>&1 $$ echo echo "正在重置chatgpt容器"
     docker rm $Chatgpt_name >/dev/null 2>&1
-    if docker run -d --name $Chatgpt_name -p 3000:$Gpt_port \
+    if docker run -d --name $Chatgpt_name --restart=always -p 3000:$Gpt_port \
        -e OPENAI_API_KEY="$Chatgpt_api_key" \
        -e CODE="$Gpt_code" \
        -e BASE_URL="$BASE_URL" \
