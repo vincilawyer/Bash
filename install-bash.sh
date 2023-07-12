@@ -74,7 +74,7 @@ function main {
       local t=-1
       tput sc  # Save the current cursor position
       while true; do
-            [ "$a" == "true" ] && b="                正在等待服务器端版本更新，输入任意键退出...                 " || b='                                                                            '
+            [ "$a" == "true" ] && b="                  正在等待服务器端版本更新，输入任意键退出...                    " || b='                                                                                 '
             [ "$a" == "true" ] && a="false" || a="true"
             tput rc  # Restore the saved cursor position
             tput el  # Clear from cursor to the end of the line
