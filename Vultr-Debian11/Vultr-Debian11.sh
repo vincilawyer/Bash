@@ -341,7 +341,7 @@ dat_text="
 
 # 该文件为vinci用户配置文本
 # * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配正则表达式。
-Dat_num=\"$((( i==1 )) && echo $dat_num)\"      #@版本号*              
+Dat_num=\"$((( i==1 )) && echo $dat_num)\"      #版本号*              
 $(pz "Domain")                                  #@一级域名#@不用加www#@domain_regex
 $(pz "Email")                                   #@邮箱#@#@email_regex
 $(pz "Cloudflare_api_key")                      #@Cloudflare Api
@@ -354,6 +354,8 @@ $(pz "Chatgpt_api_key")                         #@Chatgpt Api
 $(pz "Gpt_code")                                #@授权码
 $(pz "BASE_URL")                                #@OpenAI接口代理URL
 $(pz "PROXY_URL")                               #@Chatgpt本地代理地址
+Chatgpt_image="yidadaa/chatgpt-next-web"        #Chat镜像名称*
+Chatgpt_name="chatgpt"                          #Chat容器名称*
 
 
 ";(( i==0 )) && dat_num=${#dat_text}; done; }
@@ -1389,13 +1391,13 @@ function pull_gpt {
 docker pull yidadaa/chatgpt-next-web
 }
 function run_gpt {
-docker stop chatgpt >/dev/null 2>&1
-docker rm chatgpt >/dev/null 2>&1
-docker run -d --name chatgpt -p 3000:$Gpt_port \
+docker stop $chatgpt_name >/dev/null 2>&1
+docker rm $chatgpt_name >/dev/null 2>&1
+docker run -d --name $chatgpt_name -p 3000:$Gpt_port \
    -e OPENAI_API_KEY="$Chatgpt_api_key" \
    -e CODE="$Gpt_code" \
    -e BASE_URL="$BASE_URL" \
-   yidadaa/chatgpt-next-web
+   $chatgpt_image
 }
 ###### 消息推送 ######
 function notifier {
