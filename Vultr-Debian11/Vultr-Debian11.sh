@@ -23,7 +23,7 @@
 
 
 ####### 版本更新相关参数 ######
-Version=3.06  #版本号 
+Version=3.07  #版本号 
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #获取当前脚本的目录路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
 file_path="$script_path/$script_name"                                             #获取当前脚本的文件路径
@@ -386,22 +386,8 @@ done
 ##############################################################################   5.用户数据管理模块  ################################################################################################
 ############################################################################################################################################################################################
 
-#######   创建\更新用户配置数据模板    #######
-function update_dat { 
-    if ! source $dat_path >/dev/null 2>&1; then   #读取用户数据
-        echo "系统无用户数据记录。准备新建用户数据...请设置数据"
-        set_dat
-        echo "配置结束！"
-        wait
-    elif ! [ "$dat_num" == "$Dat_num" ] ; then
-        echo "配置文件更新中..."
-        write_dat
-        echo "更新完成，可在系统设置中修改参数！"
-        wait
-    fi
-}
-######   写入用户数据  ######
-function write_dat {
+######   获取配置模板 ######
+function get_moddat {
     for ((i = 0; i <= 1; i++)); do
     dat_text="
 
@@ -420,14 +406,35 @@ $(pz "Gpt_code" i)                                #@授权码
 $(pz "BASE_URL" i)                                #@OpenAI接口代理URL
 $(pz "PROXY_URL" i)                               #@Chatgpt本地代理地址
 
-    ";(( i==0 )) && dat_num=${#dat_text};done;echo "$dat_text" > "$dat_path";}
+";(( i==0 )) && dat_num=${#dat_text};done}
 
-###### 为用户配置模板写入数据 ######
+###### 为数据模板写入数据 ######
 function pz { echo "$1=\"$((($2==1)) && eval echo \$"$1")\""; }
 
+###### 将数据写入数据文件 ######
+function write_dat { echo "$dat_text" > "$dat_path"; }
+
+#######   创建\更新用户配置数据模板    #######
+function update_dat { 
+    if ! source $dat_path >/dev/null 2>&1; then   #读取用户数据
+        echo "系统无用户数据记录。准备新建用户数据..."
+        get_moddat
+        write_dat
+        echo "新建数据完成，第一次使用请先设置数据..."
+        set_dat
+        echo "配置结束！"
+        wait
+    else
+        get_moddat
+        if ! [ "$dat_num" == "$Dat_num" ] ; then
+        echo "配置文件更新中..."
+        write_dat
+        echo "更新完成，可在系统设置中修改参数！"
+        wait
+    fi
+}
 #######   修改数据      #######   
 function set_dat { 
-  write_dat
   #如果指定配置，则指定修改
     if [ -n "$1" ] ; then  
          line=$(search "#@" "" "$1" 1 true false false true "$dat_path" ) 
