@@ -25,7 +25,7 @@
 
 
 ####### 版本更新相关参数 ######
-Version=3.10  #版本号 
+Version=3.11  #版本号 
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #获取当前脚本的目录路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
 file_path="$script_path/$script_name"                                             #获取当前脚本的文件路径
@@ -1407,13 +1407,13 @@ function run_gpt {
         echo "Chatgpt启动成功！"
     else 
     echo "启动失败，请重新设置参数配置"
-arg={
+arg=(
 "Gpt_code"
 "Chatgpt_api_key"
 "Gpt_port"
 "BASE_URL"
 "PROXY_URL" 
-}
+)
     set_dat ${arg[@]}
     echo "请尝试再次启动！"
 fi
