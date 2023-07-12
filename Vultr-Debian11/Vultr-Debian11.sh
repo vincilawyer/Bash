@@ -115,7 +115,7 @@ $(pz "PROXY_URL" i)                               #@Chatgpt本地代理地址
 ####### 脚本更新  ####### 
 function update {
     clear
-    if ((startnum == 1)); then exit 1; fi #返回到更新检查程序继续更新
+    if ((startnum == 1)); then exit 1; fi #返回到更新检查程序继续更新 
     cur_Version="$Version" cur_path="$script_path" cur_name="$script_name" wrong="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
     result=$?
     if [ "$result" == "1" ] ; then        #如果已经更新
