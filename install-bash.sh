@@ -33,8 +33,10 @@ num='$(n="$(cat "$file_path")" &&  echo "${#n}")'                               
 
 ####### 主函数 ######
 function main {
-    (( wrong==1)) ｜｜ clear
-    if code="$(curl -s "$link_Vultr_Debian11")"; then  
+    (( wrong==1 )) ｜｜ clear
+    while true； then
+        if code="$(curl -s "$link_Vultr_Debian11")"; then  
+        
          if [ -e "$file_path" ] && [ "$code" == "$(cat "$file_path")" ]; then
               [ -z "$cur_Version" ] && cur_Version=$(sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}' "$file_path")
               echo "当前已是最新版本(V$cur_Version.$(eval echo $num))，无需更新！"
