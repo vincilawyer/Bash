@@ -460,7 +460,7 @@ function set_dat {
 }
 
 #######   用户数据模板更新(代码作废)   #######   
-function update_dat {
+function xupdate_datx {
     lines=()
     while IFS= read -r line; do     
          lines+=("$line")    #将每行文本转化为数组     
