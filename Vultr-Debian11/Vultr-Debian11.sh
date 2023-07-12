@@ -322,7 +322,7 @@ function main {
                   case $option in
                        2)pull_gpt;;
                        3)run_gpt;;
-                       4)docker inspect --format $Chatgpt_name;;
+                       4)echo 0;;
                        5)confirm "是否停止运行Chatgpt？" "已取消！" || docker stop $Chatgpt_name;;
                   esac;; 
             
@@ -517,7 +517,7 @@ done
 function installed {
     local name=$1
     if [ ! -x "$(command -v $name)" ]; then return 1; fi
-    echo -e "${GREEN}该程序已经安装，当前版本号为 $(docker -v 2>&1)${NC}"
+    echo -e "${GREEN}该程序已经安装，当前版本号为 $($name -v 2>&1)${NC}"
     if confirm "是否需要重新安装或更新？" "已取消安装！"; then return 0; fi
     return 1
 }
