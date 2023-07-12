@@ -83,6 +83,7 @@ function main {
 
 #######   保存提示  ####### 
  function warning {
+      echo
       tput sc  #保存当前光标位置
       local t=-1
       while true; do
