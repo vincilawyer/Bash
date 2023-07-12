@@ -34,7 +34,7 @@ Version=""                                                                      
 ####### 主函数 ######
 function main {
     (( wrong==1 )) || clear
-    while true； then
+    while true; then
          #如果未获取到新版本文件
         if ! code="$(curl -s "$link_Vultr_Debian11")"; then  
             echo -n "vinci脚本下载失败，请检查网络！即将返回..."
@@ -63,19 +63,22 @@ function main {
              fi
          fi 
          #开始下载
-             while true; do 
-                 wget --no-cache "$link_Vultr_Debian11" -O  "$file_path"
-                 chmod +x "$file_path"
-                 echo "管理系统V"$Version.$(eval echo $num)"版本已下载\更新完成，即将进入系统！"
-                 countdown 10
-                    $def_name 2
-                    if [ "$?" == "0" ]; then                       #如果脚本正常运行，则退出
-                           exit 1                                            
-                    else                                           #如果脚本运行错误，则强制更新
-                           warning                                 #已更新脚本并正常运行的返回值
-                    fi
-             done
-         fi
+         while true; do 
+             wget --no-cache "$link_Vultr_Debian11" -O  "$file_path"
+             chmod +x "$file_path"
+             echo "管理系统V"$Version.$(eval echo $num)"版本已下载\更新完成，即将进入系统！"
+             countdown 10
+             $def_name 2
+             if [ "$?" == "0" ]; then                       #如果脚本正常运行，则退出
+                   exit 1                                            
+             elif [ "$?" == "2" ]                           #如果用户要求更新，则继续更新
+                   wrong=0
+                   break
+             else
+                   wrong=1
+                   break
+             if
+         done  
 }
 
 #######   保存提示  ####### 
