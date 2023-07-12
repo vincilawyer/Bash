@@ -37,7 +37,7 @@ function main {
     while true； then
         if ! (code="$(curl -s "$link_Vultr_Debian11")"); then  
             echo -n "vinci脚本下载失败，请检查网络！即将返回..."
-            exit 2
+            exit 3
         fi
         
          if [ -e "$file_path" ] && [ "$code" == "$(cat "$file_path")" ]; then
