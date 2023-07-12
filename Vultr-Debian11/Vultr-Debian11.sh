@@ -354,8 +354,8 @@ $(pz "Chatgpt_api_key")                         #@Chatgpt Api
 $(pz "Gpt_code")                                #@授权码
 $(pz "BASE_URL")                                #@OpenAI接口代理URL
 $(pz "PROXY_URL")                               #@Chatgpt本地代理地址
-Chatgpt_image="yidadaa/chatgpt-next-web"        #Chat镜像名称*
-Chatgpt_name="chatgpt"                          #Chat容器名称*
+Chatgpt_image=\"yidadaa/chatgpt-next-web\"        #Chat镜像名称*
+Chatgpt_name=\"chatgpt\"                          #Chat容器名称*
 
 
 ";(( i==0 )) && dat_num=${#dat_text}; done; }
@@ -1386,19 +1386,29 @@ function set_CF_config {
     set 'api_key="' '"' 1 $path_cfdns true "Cloudfare API密钥"
     chmod +x $path_cfdns
 }
-
+######  下载 chatgpt-next-web 镜像 ######
 function pull_gpt {
 docker pull yidadaa/chatgpt-next-web
 }
+
+######  运行chatgpt-next-web 镜像 ######
 function run_gpt {
-docker stop $chatgpt_name >/dev/null 2>&1
+docker stop $chatgpt_name >/dev/null 2>&1 $$ echo echo "正在重置chatgpt容器"
 docker rm $chatgpt_name >/dev/null 2>&1
-docker run -d --name $chatgpt_name -p 3000:$Gpt_port \
+if docker run -d --name $Chatgpt_name -p 3000:$Gpt_port \
    -e OPENAI_API_KEY="$Chatgpt_api_key" \
    -e CODE="$Gpt_code" \
    -e BASE_URL="$BASE_URL" \
-   $chatgpt_image
+   $Chatgpt_image
+then
+echo "启动成功！"
+else 
+echo "启动失败，请重新设置参数配置"
+set_dat "Gpt_code"
+fi
 }
+
+
 ###### 消息推送 ######
 function notifier {
 cat > "$path_notifier" <<EOF
