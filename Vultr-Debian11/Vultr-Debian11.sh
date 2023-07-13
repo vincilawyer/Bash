@@ -755,7 +755,7 @@ function inp {
         read newtext
         [[ -z $2 ]] && return
         [ $1 = true ] && [[ -z "$newtext" ]] && tput el && return
-        ＃newtext="$(echo -e "${newtext}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"        #s/^[[:space:]]*//表示将输入字符串中开头的任何空格字符替换为空字符串；s/[[:space:]]*$//表示将输入字符串结尾的任何空格字符替换为空字符串。
+        #newtext="$(echo -e "${newtext}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"        #s/^[[:space:]]*//表示将输入字符串中开头的任何空格字符替换为空字符串；s/[[:space:]]*$//表示将输入字符串结尾的任何空格字符替换为空字符串。
         for arg in "${@:2}"; do
             #如果规则为正则表达式
             if [[ $arg =~ $arg ]]; then
