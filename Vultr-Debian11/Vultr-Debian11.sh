@@ -418,6 +418,7 @@ function set_dat {
          IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
          IFS="=" read -ra b <<< "$line" 
          rule="$(echo -e "${a[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"   #去除规则前后的空格
+         echo 1
          if [ -z $rule ]; then
              :      #如果是空的，则无需进行判断句的判断
          elif ! [[ "${rule:0:1}" == '"' && "${rule: -1}" == '"' ]]; then   #判断rule是正则表达式变量名还是条件语句,如果是正则表达式变量名则转换为条件语句
@@ -734,7 +735,7 @@ function settext {
      old_text1=$(search "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "true" "$is_file" "$input")
      old_text=${old_text1// (注释行)/}
      echo
-     echo -e "${BLUE}【"$mean"设置】${NC}${GREEN}当前的"$mean"为$([ -z "$old_text1" ] && echo "空" || echo "为：$old_text1")${NC}"
+     echo -e "${BLUE}【"$mean"设置】${NC}${GREEN}当前的"$mean"为$([ -z "$old_text1" ] && echo "空" || echo "：$old_text1")${NC}"
      while true; do
          #-r选项告诉read命令不要对反斜杠进行转义，避免误解用户输入。-e选项启用反向搜索功能，这样用户在输入时可以通过向左箭头键或Ctrl + B键来移动光标并修改输入。
          echo -ne "${GREEN}请设置新的$mean（$( [ -n "$mark" ] && echo "$mark,")输入为空则跳过$( [[ $coment == "true" ]] && echo "，输入#则设为注释行")）：${NC}"
