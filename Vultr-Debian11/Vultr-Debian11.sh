@@ -747,22 +747,28 @@ function settext {
             fi
          fi
      done  
-}     
+}    
+
+#######   输入框    ####### 
+#说明：传入的第一个参数为true则能接受回车输入，第一个参数为false则不能回车输入。参数带有""号字符，则将参数视为条件语句。
 function inp {
     tput sc
     while true; do
         read new_text
-        [[ -z $2 ]] && return
-        [ $1 = true ] && [[ -z "$new_text" ]] && tput el && return
+        [[ -z $2 ]] && return                                        #如果参数为空，则接受任何输入
+        [ $1 = true ] && [[ -z "$new_text" ]] && tput el && return   #如果$1为true，且输入为空，则完成输入
         # new_text="$(echo -e "${new_text}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"        #s/^[[:space:]]*//表示将输入字符串中开头的任何空格字符替换为空字符串；s/[[:space:]]*$//表示将输入字符串结尾的任何空格字符替换为空字符串。
         for arg in "${@:2}"; do
-            #如果规则为正则表达式
-            if [[ $arg =~ $arg ]]; then
-                [[ $new_text =~ $arg ]] && tput el &&  return 
-            #如果规则为普通字符串
-            else
-                [[ "$new_text" == "$inptext" ]] && tput el && return
-            fi
+           # 检查参数是否为条件语句
+           if [[ "${arg:0:1}" == '"' && "${arg: -1}" == '"' ]]; then
+                echo
+                echo 1:$(eval echo $arg)
+                echo 
+                if $(eval echo $arg); then tput el &&  return ; fi
+           # 如果参数为普通字符串
+           else
+               [[ "$new_text" == "$arg" ]] && tput el && return
+           fi
        done
        tput rc
        tput el
@@ -771,7 +777,8 @@ function inp {
        tput rc
    done
 }
-
+inp false '"[[ $new_text =~ $domain_regex ]]"'
+'"$domain_regex"'
 #######   输入确认    #######   
 function confirm {
    read -p "$1（Y/N）:" confirm1
