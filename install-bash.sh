@@ -123,7 +123,7 @@ function bar() {
        echo -e "\033[1F\033[1G$block"$2"···"
        printf "输入任意键可退出...%02ds" $time
        read -t 1 -n 1 input
-           if [ -n "$input" ] || [ $？ -eq 142 ] && [[ $4 == "true" ]]; then
+           if [ -n "$input" ] || [ $? -eq 142 ] && [[ $4 == "true" ]]; then
                echo "$5"
                return 0 
            fi  
