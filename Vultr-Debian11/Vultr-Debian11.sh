@@ -696,7 +696,8 @@ function replace() {
         }  
       }  else {
            print $0;
-    }'
+      }
+}'
 
   if [ "$is_file" = "true" ]; then    #如果输入的是文件
       awk -v start="$start_string" -v end="$end_string" -v location="$location_string"  -v mod="$module" -v exact="$exact_match" -v new="$input_text" -v comment="$comment" -v num="$n" "$awk_script" "$input" > "$temp_file"
