@@ -399,7 +399,9 @@ function set_dat {
              elif ! [[ "${rule:0:1}" == '"' && "${rule: -1}" == '"' ]]; then   #判断rule是正则表达式变量名还是条件语句,如果是正则表达式变量名则转换为条件语句
                  rule="\"[[ \$new_text =~ \$$rule ]]\""    
              fi
+             cat "$dat_path"
              settext "\"" "\"" "$arg" 1 true false false true "$dat_path" "${a[0]}" "${a[1]}" "$rule"  
+             cat "$dat_path"
          done         
     else
     
@@ -738,7 +740,9 @@ function settext {
          else    
             if  [[ $is_file == "true" ]]; then   #如果在文件模式下
                  if [[ "$new_text" == "#" ]] && [[ $comment == "true" ]]; then
+                     cat "$dat_path"
                      replace "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "$comment" "$is_file" "$input" "$new_text"
+                     cat "$dat_path"
                      echo -e "${BLUE}已将"$mean"参数设为注释行${NC}"
                      return 0
                  else
