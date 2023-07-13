@@ -1116,8 +1116,12 @@ function install_Xui {
 
 ###### Cf dns配置 ######
 function cfdns {
-    #安装依赖件
-    installed "jq" || ( echo "正在安装依赖软件JQ..." && apt update && apt install jq -y )
+    if [ ! -x "$(command -v $name)" ]; then 
+      echo "正在安装依赖软件JQ..."
+      apt update
+      apt install jq -y
+    fi
+
     while true; do 
     # 获取区域标识符
     zone_identifier=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$Domain" \
@@ -1137,7 +1141,7 @@ function cfdns {
     echo "3. 退出"
     echo -n "请选择要进行的操作：" 
     inp false 2 1 2 3
-    case $choice in
+    case $new_text in
     
 1)#删除DNS记录
         
@@ -1233,7 +1237,15 @@ function get_all_dns_records {
        echo
 }
 
-
+######  设置cfDNS配置 ######
+function set_gpt {
+local config=(
+"Domain"
+"Email"
+"Cloudflare_api_key"
+)
+    set_dat ${config[@]}
+}
 ###### 安装cf warp套 ######
 function install_Warp {
      installed "warp-cli" && return
