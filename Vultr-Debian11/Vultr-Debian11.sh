@@ -726,7 +726,7 @@ function settext {
   local input="$9"                # 要替换的内容
   local mean="${10}"              # 显示搜索和修改内容的含义
   local mark="${11}"              # 修改内容备注
-  local rule="${12}"              # 匹配规则
+  #          ${@:12}              # 匹配规则，参照inp函数
   local temp_file="$(mktemp)"
   old_text=""                     # 设置搜中的旧文本作为全局变量（不含“注释行”字样）
   new_text=""                     # 设置输入的新文本作为全局变量（不含前后空格）
@@ -738,7 +738,7 @@ function settext {
      while true; do
          #-r选项告诉read命令不要对反斜杠进行转义，避免误解用户输入。-e选项启用反向搜索功能，这样用户在输入时可以通过向左箭头键或Ctrl + B键来移动光标并修改输入。
          echo -ne "${GREEN}请设置新的$mean（$( [ -n "$mark" ] && echo "$mark,")输入为空则跳过$( [[ $coment == "true" ]] && echo "，输入#则设为注释行")）：${NC}"
-         inp true "$rule" "#"  
+         inp true ${@:12} $( [ -n "${12}" ] && echo "#" )  
          if [[ -z "$new_text" ]]; then
              echo -e "${GREEN}已跳过$mean设置${NC}"
              return 1
@@ -762,7 +762,8 @@ function settext {
 }    
 
 #######   输入框    ####### 
-#说明：传入的第一个参数为true则能接受回车输入，第一个参数为false则不能回车输入。参数带有""号字符，则将参数视为条件语句，没有""则为普通比较。
+#说明：1、传入的第一个参数为true则能接受回车输入，第一个参数为false则不能回车输入。参数带有""号字符，则将参数视为具体条件语句，没有""则为普通比较。
+#     2、传入的第二个参数为比较模式，1为正则表达式匹配，2为字符串普通匹配。两种模式下，都可以使用条件语句。
 function inp {
     tput sc
     while true; do
@@ -770,13 +771,17 @@ function inp {
         read new_text
         [[ -z $2 ]] && return                                        #如果参数为空，则接受任何输入
         [ $1 = true ] && [[ -z "$new_text" ]] && tput el && return   #如果$1为true，且输入为空，则完成输入
-        for Condition in "${@:2}"; do
+        for Condition in "${@:3}"; do
            # 检查参数是否为条件语句
            if [[ "${Condition:0:1}" == '"' && "${Condition: -1}" == '"' ]]; then   #注意-1前面有空格
                 if eval ${Condition:1:-1}; then tput el && return; fi
            # 如果参数为普通字符串
            else
-               [[ "$new_text" == "$Condition" ]] && tput el && return
+               if [ "$2" == "1" ]; then
+                  [[  $new_text =~ $Condition ]] && tput el && return
+               elif [ "$2" == "2" ]; then
+                  [[ "$new_text" == "$Condition" ]] && tput el && return
+               fi
            fi
        done
        tput rc
@@ -846,7 +851,7 @@ apps=(
 
 #######  修改SSH端口    #######  
 function change_ssh_port {
-    if settext "Port " " " "" 1 false false true true $path_ssh "SSH端口" "0-65535，" $port_regex; then
+    if settext "Port " " " "" 1 false false true true $path_ssh "SSH端口" "0-65535，" 1 $port_regex; then
           echo -e "${GREEN}已正从防火墙规则中删除原SSH端口号：$old_text${NC}"
           ufw delete allow $old_text/tcp   
           echo -e "${GREEN}正在将新端口"$new_text"添加进防火墙规则中。${NC}"
@@ -1109,32 +1114,35 @@ function install_Xui {
 
 ###### Cf dns配置 ######
 function CF_DNS {
+    #安装依赖件
     installed "jq" || ( echo "正在安装依赖软件JQ..." && apt update && apt install jq -y )
     while true; do 
-     # 获取区域标识符
+    # 获取区域标识符
     zone_identifier=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$Domain" \
      -H "X-Auth-Email: $Email" \
      -H "X-Auth-Key: $Cloudflare_api_key" \
      -H "Content-Type: application/json" | jq -r '.result[0].id')
-     
-   if [ "$zone_identifier" == "null" ]; then
+    #如果账户不存在则退出
+    if [ "$zone_identifier" == "null" ]; then
        echo "未找到您的Cloudflare账户\域名，请检查配置。"
-       set_dat "Domain"
        return
-   fi
+    fi
     get_all_dns_records $zone_identifier
     # 询问用户要进行的操作
     echo "操作选项："
     echo "1. 删除DNS记录"
     echo "2. 修改或增加DNS记录"
-    echo "3、www域名一键绑定本机ip（开启CDN）"
-    read -p "请选择要进行的操作：" choice
+    echo "3. 退出"
+    echo -n "请选择要进行的操作：" 
+    inp false 2 1 2 3
     case $choice in
-      1)
-        # 删除DNS记录
+    
+1)#删除DNS记录
+        
         clear
         get_all_dns_records $zone_identifier
-        read -p "请输入要删除的DNS记录名称（例如 www）：" record_name
+        echo -n "请输入要删除的DNS记录名称（例如 www）："
+        inp true 1 "/^([a-z0-9]+)/i"
 
         # 获取记录标识符
         record_identifier=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records?type=A&name=$record_name.$Domain" \
