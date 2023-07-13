@@ -96,7 +96,7 @@ function main {
             echo -e "${RED}#####$b#####${NC}"
             echo -e "${RED}###################################################################################${NC}"
             read -t 1 -n 1 input  #读取输入，在循环中一次1秒
-            if [ $？ -eq 142 ] || [ -n "$input" ]; then
+            if [ -n "$input" ] || [ $? -eq 142 ] ; then
                 if bar 15 "已取消继续更新，即将尝试回滚至旧版本" "开始回滚" true "已取消回滚！即将返回..."; then exit 1; fi 
                 cp -f "$file_path"_backup "$file_path" 
                 echo
