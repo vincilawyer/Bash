@@ -345,7 +345,7 @@ for ((i = 0; i <= 1; i++)); do
 dat_text="
 
 # 该文件为vinci用户配置文本
-# * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配规则（条件规则和比较规则）。
+# * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配规则（条件规则和比较规则）。比较规则即为正则表达式的变量名，条件规则为判断\$new_text变量是否符合规则条件，条件需用两个""包裹
 Dat_num=\"$((( i==1 )) && echo $dat_num)\"      #版本号*              
 $(pz "Domain")                                  #@一级域名#@不用加www#@domain_regex
 $(pz "Email")                                   #@邮箱#@#@email_regex
@@ -357,7 +357,7 @@ $(pz "Tor_port")                                #@Tor监听端口#@0-65535#@port
 $(pz "Gpt_port")                                #@Chatgpt本地端口#@0-65535#@port_regex 
 $(pz "Chatgpt_api_key")                         #@Chatgpt Api
 $(pz "Gpt_code")                                #@授权码
-$(pz "Proxy_model")                             #@接口代理模式#@1为正向代理、2为反向代理#@
+$(pz "Proxy_model")                             #@接口代理模式#@1为正向代理、2为反向代理#@\"[[ \$new_text =~ \"^(1|2)\$" ]]\"
 $(pz "BASE_URL")                                #@OpenAI接口代理URL#@
 $(pz "PROXY_URL")                               #@Chatgpt本地代理地址#@
 Chatgpt_image=\"yidadaa/chatgpt-next-web\"        #Chat镜像名称*
@@ -416,10 +416,8 @@ function set_dat {
          a=()
          IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
          IFS="=" read -ra b <<< "$line" 
-         #去除正则表达式的前后空格${]
-         a[3]="${a[3]#"${a[3]%%[![:space:]]*}"}"  
-         a[3]="${a[3]%"${a[3]##*[![:space:]]}"}"
-         settext "${b[0]}=\"" "\"" "" 1 true false false true "$dat_path" "${a[1]}" "${a[2]}"  "$([ -z "${a[3]}" ] && echo "" || echo "${!a[3]}")"
+         rule="$(echo -e "${a[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"   #去除规则前后的空格
+         settext "${b[0]}=\"" "\"" "" 1 true false false true "$dat_path" "${a[1]}" "${a[2]}"  "$rule" 
     done
     fi
     source "$dat_path"   #重新载入数据
