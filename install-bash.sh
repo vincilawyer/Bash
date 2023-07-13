@@ -73,7 +73,8 @@ function main {
          elif [ "$?" == "2" ]; then                           #如果用户要求更新，则继续更新
               wrong=0
               continue
-         else
+         else 
+echo $？
               wrong=1
               continue
          fi
