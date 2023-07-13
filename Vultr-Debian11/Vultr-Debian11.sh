@@ -767,13 +767,15 @@ function inp {
         [[ -z $2 ]] && return                                        #如果参数为空，则接受任何输入
         [ $1 = true ] && [[ -z "$new_text" ]] && tput el && return   #如果$1为true，且输入为空，则完成输入
         for Condition in "${@:2}"; do
+           echo 
+           echo 1:$Condition
            # 检查参数是否为条件语句
            if [[ "${Condition:0:1}" == '"' && "${Condition:-1}" == '"' ]]; then
-                echo 
-                echo ${Condition:1:-1}
+                echo 2:${Condition:1:-1}
                 if eval ${Condition:1:-1}; then tput el && return; fi
            # 如果参数为普通字符串
            else
+               echo 3:$Condition
                [[ "$new_text" == "$Condition" ]] && tput el && return
            fi
        done
