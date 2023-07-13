@@ -398,7 +398,6 @@ function set_dat {
              if [ -z $rule ]; then
              :      #如果是空的，则无需进行判断句的判断
              elif ! [[ "${rule:0:1}" == '"' && "${rule: -1}" == '"' ]]; then   #判断rule是正则表达式变量名还是条件语句,如果是正则表达式变量名则转换为条件语句
-                 echo 规则2$rule
                  rule="\"[[ \$new_text =~ \$$rule ]]\""    
              fi
              settext "\"" "\"" "$arg" 1 true false false true "$dat_path" "${a[0]}" "${a[1]}" "$rule"  
@@ -772,7 +771,7 @@ function inp {
            echo 
            echo 1:$Condition
            # 检查参数是否为条件语句
-           if [[ "${Condition:0:1}" == '"' && "${Condition:-1}" == '"' ]]; then
+           if [[ "${Condition:0:1}" == '"' && "${Condition: -1}" == '"' ]]; then   #注意-1前面有空格
                 echo 2:${Condition:1:-1}
                 if eval ${Condition:1:-1}; then tput el && return; fi
            # 如果参数为普通字符串
