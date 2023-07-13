@@ -761,10 +761,7 @@ function inp {
         for arg in "${@:2}"; do
            # 检查参数是否为条件语句
            if [[ "${arg:0:1}" == '"' && "${arg: -1}" == '"' ]]; then
-                echo
-                echo 1:$(eval echo $arg)
-                echo 
-                if $(eval echo $arg); then tput el &&  return ; fi
+                if eval ${arg:1:-1}; then tput el &&  return ; fi
            # 如果参数为普通字符串
            else
                [[ "$new_text" == "$arg" ]] && tput el && return
@@ -777,8 +774,7 @@ function inp {
        tput rc
    done
 }
-inp false '"[[ $new_text =~ $domain_regex ]]"'
-'"$domain_regex"'
+
 #######   输入确认    #######   
 function confirm {
    read -p "$1（Y/N）:" confirm1
