@@ -394,7 +394,6 @@ function set_dat {
   #如果指定配置，则指定修改
     if ! [ $# -eq 0 ]; then
          for arg in "$@"; do
-             echo $arg 0
              line=$(search "#@" ' ' "$arg" 1 false false false true "$dat_path" ) 
              IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
              rule="$(echo -e "${a[2]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"   #去除规则前后的空格
@@ -763,6 +762,7 @@ function inp {
         for Condition in "${@:2}"; do
            # 检查参数是否为条件语句
            if [[ "${Condition:0:1}" == '"' && "${Condition: -1}" == '"' ]]; then
+                echo 
                 echo ${Condition:1:-1}
                 if eval ${Condition:1:-1}; then tput el &&  return ; fi
            # 如果参数为普通字符串
