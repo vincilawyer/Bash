@@ -742,16 +742,17 @@ function settext {
          else    
             if  [[ $is_file == "true" ]]; then   #如果在文件模式下
                  if [[ "$new_text" == "#" ]] && [[ $comment == "true" ]]; then
-                     echo 2
-                     cat "$dat_path"
                      replace "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "$comment" "$is_file" "$input" "$new_text"
-                     echo 3
-                     cat "$dat_path"
+
                      echo -e "${BLUE}已将"$mean"参数设为注释行${NC}"
                      return 0
                  else
+                                      echo 2
+                     cat "$dat_path"
                      replace  "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "$comment" "$is_file" "$input" "$new_text"
                      echo -e "${BLUE}"$mean"已修改为"$new_text"${NC}"
+                                          echo 3
+                     cat "$dat_path"
                      return 0
                  fi
             else                           #如果在文本模式下
