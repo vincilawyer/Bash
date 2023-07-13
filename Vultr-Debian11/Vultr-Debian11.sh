@@ -315,15 +315,16 @@ function main {
     "  1、返回上一级"
     "  2、下载\更新Chatgpt"
     "  3、运行Chatgpt(自启动)"
-    "  4、查看Chatgpt运行状况"
-    "  5、停止运行Chatgpt"
+    "  4、修改Chatgpt配置"
+    "  5、查看Chatgpt运行状况"
+    "  6、停止运行Chatgpt"
     "  0、退出")                     
                   if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                   case $option in
                        2)pull_gpt;;
                        3)run_gpt;;
-                       4)echo 0;;
-                       5)confirm "是否停止运行Chatgpt？" "已取消！" || docker stop $Chatgpt_name;;
+                       4)set_gpt;;
+                       6)confirm "是否停止运行Chatgpt？" "已取消！" || docker stop $Chatgpt_name;;
                   esac;; 
             
 esac
@@ -1414,7 +1415,7 @@ arg=(
 "PROXY_URL" 
 )
     set_dat ${arg[@]}
-    echo "请尝试再次启动！"
+    if confirm "是否启动Chatgpt并适用最新配置？" "已取消启动"; then return; fi
     run_gpt
 }
 
