@@ -272,11 +272,13 @@ function main {
     sub_menu=(
     "  1、返回上一级"
     "  2、Cloudflare DNS配置（账户信息在默认配置中设置）"
-    "  3、下载Warp"
+    "  3、修改CF账户配置"
+    "  4、下载CFWarp"
     "  0、退出")
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  case $option in
-                     2)CF_DNS;;
+                     2)cfdns;;
+                     3)set_cfdns;;
                      3)install_Warp;;
                  esac;; 
 8)###### Tor服务 ######
@@ -423,9 +425,7 @@ function set_dat {
          elif ! [[ "${rule:0:1}" == '"' && "${rule: -1}" == '"' ]]; then   #判断rule是正则表达式变量名还是条件语句,如果是正则表达式变量名则转换为条件语句
              rule=${!rule}   
          fi
-         echo 1
          settext '${b[0]}="' '"' "" 1 true false false true "$dat_path" "${a[1]}" "${a[2]}" 1 "$rule" 
-         echo 8
     done
     fi
     source "$dat_path"   #重新载入数据
@@ -1115,7 +1115,7 @@ function install_Xui {
 ############################################################################################################################################################################################
 
 ###### Cf dns配置 ######
-function CF_DNS {
+function cfdns {
     #安装依赖件
     installed "jq" || ( echo "正在安装依赖软件JQ..." && apt update && apt install jq -y )
     while true; do 
@@ -1143,9 +1143,10 @@ function CF_DNS {
         
         clear
         get_all_dns_records $zone_identifier
-        echo -n "请输入要删除的DNS记录名称（例如 www）："
-        inp true 1 "/^([a-z0-9]+)/i"
-
+        echo -n "请输入要删除的DNS记录名称（例如 www,输入为空则跳过）："
+        inp true 1 "/^([a-z0-9]+)/i" 
+        [ -z $new_text ] $$ continue 
+        record_name=$new_text
         # 获取记录标识符
         record_identifier=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records?type=A&name=$record_name.$Domain" \
              -H "X-Auth-Email: $Email" \
@@ -1156,6 +1157,7 @@ function CF_DNS {
         # 如果记录标识符为空，则表示未找到该记录
         if [ "$record_identifier" == "null" ]; then
             echo "未找到该DNS记录。"
+            continue
         else
             # 删除记录
             curl -s -X DELETE "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records/$record_identifier" \
@@ -1164,28 +1166,27 @@ function CF_DNS {
                  -H "Content-Type: application/json"
             echo
             echo "已成功删除DNS记录: $record_name.$Domain"
-            echo
-            get_all_dns_records $zone_identifier
         fi;;
-    2)# 修改或增加DNS记录
+2)# 修改或增加DNS记录
         clear
         get_all_dns_records $zone_identifier
-        read -p "请输入要修改或增加的DNS记录名称（例如 www）：" record_name
-        while true; do
-            read -p "请输入IP地址：" record_content
-            if [[ $record_content =~ $ipv4_regex ]]; then
-                break
-            else
-                echo "无效的IP地址，请重试。"
-            fi
-        done
+        echo -n "请输入要修改或增加的DNS记录名称（例如 www，输入空则跳过,输入#则为本机IP）："
+        inp true 1 "/^([a-z0-9]+)/i"
+        [ -z $new_text ] $$ continue 
+        record_name=$new_text
+        inp true 1 "$ipv4_regex" '\"[ \"\$new_text\" == \"#\" ]\"'
+        if [ "$new_text" == "#" ]; then
+           record_content=$(ip addr | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v 127.0.0.1)
+        else
+           record_content= [ "$new_text" == "#" ] 
+        fi
         read -p "是否启用Cloudflare CDN代理？（Y/N）" enable_proxy
         if [[ $enable_proxy =~ ^[Yy]$ ]]; then
             proxy="true"
         else
             proxy="false"
         fi
-
+          
             # 获取记录标识符
             record_identifier=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records?type=A&name=$record_name.$Domain" \
                  -H "X-Auth-Email: $Email" \
@@ -1201,8 +1202,6 @@ function CF_DNS {
                      --data '{"type":"A","name":"'"$record_name"'","content":"'"$record_content"'","proxied":'"$proxy"'}'
                 echo
                 echo "已成功添加记录 $record_name.$Domain"
-                echo
-                get_all_dns_records $zone_identifier
             else
                 # 如果记录标识符不为空，则更新现有记录
                 curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records/$record_identifier" \
@@ -1212,47 +1211,13 @@ function CF_DNS {
                      --data '{"type":"A","name":"'"$record_name"'","content":"'"$record_content"'","proxied":'"$proxy"'}'
                 echo
                 echo "已成功更新记录 $record_name.$Domain"
-                echo
-                get_all_dns_records $zone_identifier
            fi;;
-     3)
-          record_name="www"
-          record_content=$(ip addr | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v 127.0.0.1)
-          proxy="true"
-           # 获取记录标识符
-            record_identifier=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records?type=A&name=$record_name.$Domain" \
-                 -H "X-Auth-Email: $Email" \
-                 -H "X-Auth-Key: $Cloudflare_api_key" \
-                 -H "Content-Type: application/json" | jq -r '.result[0].id')
-            clear 
-            # 如果记录标识符为空，则创建新记录
-            if [ "$record_identifier" == "null" ]; then
-                curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records" \
-                     -H "X-Auth-Email: $Email" \
-                     -H "X-Auth-Key: $Cloudflare_api_key" \
-                     -H "Content-Type: application/json" \
-                     --data '{"type":"A","name":"'"$record_name"'","content":"'"$record_content"'","proxied":'"$proxy"'}'
-                echo
-                echo "已成功添加记录 $record_name.$domain"
-                echo
-                get_all_dns_records $zone_identifier
-            else
-                # 如果记录标识符不为空，则更新现有记录
-                curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records/$record_identifier" \
-                     -H "X-Auth-Email: $Email" \
-                     -H "X-Auth-Key: $Cloudflare_api_key" \
-                     -H "Content-Type: application/json" \
-                     --data '{"type":"A","name":"'"$record_name"'","content":"'"$record_content"'","proxied":'"$proxy"'}'
-                echo
-                echo "已成功更新记录 $record_name.$Domain"
-                echo
-                get_all_dns_records $zone_identifier
-           fi;;    
-    *) echo "输入错误，已取消操作！";;
+     3) exit;;
   esac
   wait
   done
 }
+
 ######  获取并显示所有DNS解析记录、CDN代理状态和TTL  ######
 function get_all_dns_records {
     dns_records=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$1/dns_records?type=A" \
