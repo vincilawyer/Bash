@@ -85,6 +85,7 @@ function main {
  function warning {
       tput sc  #保存当前光标位置
       local t=0
+      n=$((n + 1)）
       while true; do
             tput rc  #恢复光标位置
             tput el  #清除光标后内容
@@ -92,7 +93,7 @@ function main {
             [ "$a" == "true" ] && b="              正在等待服务器端版本更新，输入任意键退出...                " || b='                                                                         '
             [ "$a" == "true" ] && a="false" || a="true"
             echo -e "${RED}###################################################################################${NC}"
-            echo -e "${RED}#####    脚本运行出现错误！当前运行版本为：V$cur_Version.$num，检查程序版本为：V$Ver    #####${NC}"
+            echo -e "${RED}####   脚本运行出现错误！当前运行版本为：V$cur_Version.$num，检查程序版本为：V$Ver,第$n次检查   ####${NC}"
             echo -e "${RED}#####$b#####${NC}"
             echo -e "${RED}###################################################################################${NC}"
             read -t 1 -n 1 input  #读取输入，在循环中一次1秒
