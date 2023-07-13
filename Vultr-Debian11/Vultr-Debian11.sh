@@ -26,7 +26,7 @@
 
 
 ####### 版本更新相关参数 ######
-Version=3.13  #版本号 
+Version=3.14  #版本号 
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #获取当前脚本的目录路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
 file_path="$script_path/$script_name"                                             #获取当前脚本的文件路径
@@ -238,7 +238,7 @@ function main {
                       2)install_Docker;;
                       3)echo "Docker容器状况：" && docker ps -a && echo
                         echo "提示：可使用docker stop 或 docker rm 语句加容器 ID 或者名称来停止容器的运行或者删除容器 ";;
-                      4)confirm "是否删除所有Docker容器？" "已取消删除容器" || ( docker rm $(docker ps -a -q) && echo "已删除所有容器" );;
+                      4)confirm "是否删除所有Docker容器？" "已取消删除容器" || ( docker stop $(docker ps -a -q) &&  docker rm $(docker ps -a -q) && echo "已删除所有容器" );;
                  esac;;
 5)####  Nginx选项   ######
    sub_menu=(
@@ -345,18 +345,19 @@ dat_text="
 
 
 # 该文件为vinci用户配置文本
-# * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配正则表达式。
+# * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配规则（条件规则和比较规则）。
 Dat_num=\"$((( i==1 )) && echo $dat_num)\"      #版本号*              
 $(pz "Domain")                                  #@一级域名#@不用加www#@domain_regex
 $(pz "Email")                                   #@邮箱#@#@email_regex
 $(pz "Cloudflare_api_key")                      #@Cloudflare Api
-$(pz "Warp_port")                               #@Warp监听端口
-$(pz "Tor_port")                                #@Tor监听端口
+$(pz "Warp_port")                               #@Warp监听端口#@0-65535#@port_regex
+$(pz "Tor_port")                                #@Tor监听端口#@0-65535#@port_regex
 
 #####Chatgpt-docker######
-$(pz "Gpt_port")                                #@Chatgpt端口#@0-65535
+$(pz "Gpt_port")                                #@Chatgpt本地端口#@0-65535#@port_regex
 $(pz "Chatgpt_api_key")                         #@Chatgpt Api
 $(pz "Gpt_code")                                #@授权码
+$(pz "Proxy_model")                             #@接口代理模式#@1为正向代理、2为反向代理#@
 $(pz "BASE_URL")                                #@OpenAI接口代理URL#@
 $(pz "PROXY_URL")                               #@Chatgpt本地代理地址#@
 Chatgpt_image=\"yidadaa/chatgpt-next-web\"        #Chat镜像名称*
@@ -394,10 +395,11 @@ function set_dat {
          for arg in "$@"; do
              line=$(search "#@" "" "$arg" 1 true false false true "$dat_path" ) 
              IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
-             #去除正则表达式的前后空格
-             a[2]="${a[2]#"${a[2]%%[![:space:]]*}"}"  
-             a[2]="${a[2]%"${a[2]##*[![:space:]]}"}"
-             settext "\"" "\"" "$arg" 1 true false false true "$dat_path" "${a[0]}" "${a[1]}"  "$([ -z "${a[2]}" ] && echo "" || echo "${!a[2]}")"
+             rule="$(echo -e "${a[2]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"   #去除规则前后的空格
+             if ! [[ "${rule:0:1}" == '"' && "${rule: -1}" == '"' ]]; then   #判断rule是正则表达式变量名还是条件语句,如果是正则表达式变量名则转换为条件语句
+                 rule= "\"[ \$new_text =~ \$$rule ]\""    
+             fi
+             settext "\"" "\"" "$arg" 1 true false false true "$dat_path" "${a[0]}" "$rule"  
          done         
     else
     
@@ -413,7 +415,7 @@ function set_dat {
          a=()
          IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
          IFS="=" read -ra b <<< "$line" 
-         #去除正则表达式的前后空格
+         #去除正则表达式的前后空格${]
          a[3]="${a[3]#"${a[3]%%[![:space:]]*}"}"  
          a[3]="${a[3]%"${a[3]##*[![:space:]]}"}"
          settext "${b[0]}=\"" "\"" "" 1 true false false true "$dat_path" "${a[1]}" "${a[2]}"  "$([ -z "${a[3]}" ] && echo "" || echo "${!a[3]}")"
@@ -713,8 +715,7 @@ function settext {
   local input="$9"                # 要替换的内容
   local mean="${10}"              # 显示搜索和修改内容的含义
   local mark="${11}"              # 修改内容备注
-  local regex="${12}"             # 正则表达式
-  local regex1="${13:-fasle}"     # 内容与正则表达式的真假匹配
+  local rule="${12}"              # 匹配规则
   local temp_file="$(mktemp)"
   old_text=""                     # 设置搜中的旧文本作为全局变量（不含“注释行”字样）
   new_text=""                     # 设置输入的新文本作为全局变量（不含前后空格）
@@ -726,7 +727,7 @@ function settext {
      while true; do
          #-r选项告诉read命令不要对反斜杠进行转义，避免误解用户输入。-e选项启用反向搜索功能，这样用户在输入时可以通过向左箭头键或Ctrl + B键来移动光标并修改输入。
          echo -ne "${GREEN}请设置新的$mean（$( [ -n "$mark" ] && echo "$mark,")输入为空则跳过$( [[ $coment == "true" ]] && echo "，输入#则设为注释行")）：${NC}"
-         inp true "$regex" "#"  
+         inp true "$rule" "#"  
          if [[ -z "$new_text" ]]; then
              echo -e "${GREEN}已跳过$mean设置${NC}"
              return 1
@@ -750,14 +751,13 @@ function settext {
 }    
 
 #######   输入框    ####### 
-#说明：传入的第一个参数为true则能接受回车输入，第一个参数为false则不能回车输入。参数带有""号字符，则将参数视为条件语句。
+#说明：传入的第一个参数为true则能接受回车输入，第一个参数为false则不能回车输入。参数带有""号字符，则将参数视为条件语句，没有""则为普通比较。
 function inp {
     tput sc
     while true; do
         read new_text
         [[ -z $2 ]] && return                                        #如果参数为空，则接受任何输入
         [ $1 = true ] && [[ -z "$new_text" ]] && tput el && return   #如果$1为true，且输入为空，则完成输入
-        # new_text="$(echo -e "${new_text}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"        #s/^[[:space:]]*//表示将输入字符串中开头的任何空格字符替换为空字符串；s/[[:space:]]*$//表示将输入字符串结尾的任何空格字符替换为空字符串。
         for arg in "${@:2}"; do
            # 检查参数是否为条件语句
            if [[ "${arg:0:1}" == '"' && "${arg: -1}" == '"' ]]; then
@@ -1388,12 +1388,14 @@ docker pull yidadaa/chatgpt-next-web
 
 ######  运行chatgpt-next-web 镜像 ######
 function run_gpt {
-    docker stop $Chatgpt_name >/dev/null 2>&1 $$ echo echo "正在重置chatgpt容器"
+    docker stop $Chatgpt_name >/dev/null 2>&1 && echo "正在重置chatgpt容器..."
     docker rm $Chatgpt_name >/dev/null 2>&1
-    if docker run -d --name $Chatgpt_name --restart=always -p 3000:$Gpt_port \
+    if docker run -d  --restart=always -p 3000 \
        -e OPENAI_API_KEY="$Chatgpt_api_key" \
        -e CODE="$Gpt_code" \
-       -e BASE_URL="$BASE_URL" \
+       
+       --net=host \
+       -e PROXY_URL="http://127.0.0.1:40000" \
        $Chatgpt_image
     then
         echo "Chatgpt启动成功！"
