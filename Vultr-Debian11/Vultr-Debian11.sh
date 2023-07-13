@@ -425,7 +425,7 @@ function set_dat {
          elif ! [[ "${rule:0:1}" == '"' && "${rule: -1}" == '"' ]]; then   #判断rule是正则表达式变量名还是条件语句,如果是正则表达式变量名则转换为条件语句
              rule=${!rule}   
          fi
-         settext '${b[0]}="' '"' "" 1 true false false true "$dat_path" "${a[1]}" "${a[2]}" 1 "$rule" 
+         settext "${b[0]}=\"" '"' "" 1 true false false true "$dat_path" "${a[1]}" "${a[2]}" 1 "$rule" 
     done
     fi
     source "$dat_path"   #重新载入数据
