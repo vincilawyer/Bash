@@ -1417,14 +1417,14 @@ function run_gpt {
 
 ######  设置chatgpt配置 ######
 function set_gpt {
-arg=(
+local config=(
 "Gpt_code"
 "Chatgpt_api_key"
 "Gpt_port"
 "BASE_URL"
 "PROXY_URL" 
 )
-    set_dat ${arg[@]}
+    set_dat ${config[@]}
     if confirm "是否启动Chatgpt并适用最新配置？" "已取消启动"; then return; fi
     run_gpt
 }
