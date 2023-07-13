@@ -398,9 +398,10 @@ function set_dat {
              if [ -z $rule ]; then
              :      #如果是空的，则无需进行判断句的判断
              elif ! [[ "${rule:0:1}" == '"' && "${rule: -1}" == '"' ]]; then   #判断rule是正则表达式变量名还是条件语句,如果是正则表达式变量名则转换为条件语句
-                 rule="\"[[ \$new_text =~ \$$rule ]]\""    
+                 rule=${!rule}
+                 #rule="\"[[ \$new_text =~ \$$rule ]]\""    
              fi
-             settext "\"" "\"" "$arg" 1 true false false true "$dat_path" "${a[0]}" "${a[1]}" "$rule"  
+             settext "\"" "\"" "$arg" 1 true false false true "$dat_path" "${a[0]}" "${a[1]}" 1 "$rule"  
          done         
     else
     
@@ -417,13 +418,12 @@ function set_dat {
          IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
          IFS="=" read -ra b <<< "$line" 
          rule="$(echo -e "${a[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"   #去除规则前后的空格
-         echo $rule
          if [ -z $rule ]; then
              :      #如果是空的，则无需进行判断句的判断
          elif ! [[ "${rule:0:1}" == '"' && "${rule: -1}" == '"' ]]; then   #判断rule是正则表达式变量名还是条件语句,如果是正则表达式变量名则转换为条件语句
-             rule="\"[[ \$new_text =~ \$$rule ]]\""    
+             rule=${!rule}   
          fi
-         settext "${b[0]}=\"" "\"" "" 1 true false false true "$dat_path" "${a[1]}" "${a[2]}"  "$rule" 
+         settext "${b[0]}=\"" "\"" "" 1 true false false true "$dat_path" "${a[1]}" "${a[2]}" 1 "$rule" 
     done
     fi
     source "$dat_path"   #重新载入数据
@@ -738,7 +738,7 @@ function settext {
      while true; do
          #-r选项告诉read命令不要对反斜杠进行转义，避免误解用户输入。-e选项启用反向搜索功能，这样用户在输入时可以通过向左箭头键或Ctrl + B键来移动光标并修改输入。
          echo -ne "${GREEN}请设置新的$mean（$( [ -n "$mark" ] && echo "$mark,")输入为空则跳过$( [[ $coment == "true" ]] && echo "，输入#则设为注释行")）：${NC}"
-         inp true ${@:12} $( [ -n "${12}" ] && echo "#" )  
+         inp true ${@:12} $( [ -n "${13}" ] && echo "#" )  
          if [[ -z "$new_text" ]]; then
              echo -e "${GREEN}已跳过$mean设置${NC}"
              return 1
@@ -769,7 +769,7 @@ function inp {
     while true; do
         new_text=""
         read new_text
-        [[ -z $2 ]] && return                                        #如果参数为空，则接受任何输入
+        [[ -z $3 ]] && return                                        #如果参数为空，则接受任何输入
         [ $1 = true ] && [[ -z "$new_text" ]] && tput el && return   #如果$1为true，且输入为空，则完成输入
         for Condition in "${@:3}"; do
            # 检查参数是否为条件语句
@@ -851,7 +851,7 @@ apps=(
 
 #######  修改SSH端口    #######  
 function change_ssh_port {
-    if settext "Port " " " "" 1 false false true true $path_ssh "SSH端口" "0-65535，" 1 $port_regex; then
+    if settext "Port " " " "" 1 false false true true $path_ssh "SSH端口" "0-65535" 1 $port_regex; then
           echo -e "${GREEN}已正从防火墙规则中删除原SSH端口号：$old_text${NC}"
           ufw delete allow $old_text/tcp   
           echo -e "${GREEN}正在将新端口"$new_text"添加进防火墙规则中。${NC}"
@@ -865,7 +865,7 @@ function change_ssh_port {
 #######  修改登录密码    ####### 
 function change_login_password {
     # 询问账户密码 
-    if settext "@" "@" "" "" "" "" "" false "@********@" "SSH登录密码" "至少8位" ".{8,}"; then 
+    if settext "@" "@" "" "" "" "" "" false "@********@" "SSH登录密码" "至少8位" 1 ".{8,}"; then 
          #修改账户密码
          chpasswd_output=$(echo "root:$new_text" | chpasswd 2>&1)
          if echo "$chpasswd_output" | grep -q "BAD PASSWORD" >/dev/null 2>&1; then
@@ -1314,7 +1314,7 @@ function install_Tor {
 
                                                                            # 设置Tor配置
 function set_tor_config {
-   settext "SocksPort " " " "" 2 false false "true" "true" $path_tor "Tor监听端口" "0-65535，" $port_regex
+   settext "SocksPort " " " "" 2 false false "true" "true" $path_tor "Tor监听端口" "0-65535" 1 $port_regex
 }
 #############################################################################################################################################################################################
 ##############################################################################   13.Frp模块  ################################################################################################
