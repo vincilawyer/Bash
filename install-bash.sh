@@ -85,7 +85,7 @@ function main {
  function warning {
       tput sc  #保存当前光标位置
       local t=0
-      n=$((n + 1)）
+      n=$((n + 1))
       while true; do
             tput rc  #恢复光标位置
             tput el  #清除光标后内容
