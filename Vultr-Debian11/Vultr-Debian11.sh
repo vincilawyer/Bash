@@ -26,7 +26,7 @@
 
 
 ####### 版本更新相关参数 ######
-Version=3.15  #版本号 
+Version=3.16  #版本号 
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #获取当前脚本的目录路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
 file_path="$script_path/$script_name"                                             #获取当前脚本的文件路径
@@ -575,7 +575,7 @@ function search {
               endPos = index(substr($0, startPos + length(start)), end);
               if (endPos > 0) {
                   if (++count == num) {
-                      if (end == "" ){
+                      if (end == "" ) {
                          print substr($0, startPos + length(start)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
                       } else {
                          print substr($0, startPos + length(start), endPos - 1) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
@@ -769,7 +769,7 @@ function inp {
            if [[ "${Condition:0:1}" == '"' && "${Condition:-1}" == '"' ]]; then
                 echo 
                 echo ${Condition:1:-1}
-                if eval ${Condition:1:-1}; then tput el &&  return ; fi
+                if eval ${Condition:1:-1}; then tput el && return; fi
            # 如果参数为普通字符串
            else
                [[ "$new_text" == "$Condition" ]] && tput el && return
