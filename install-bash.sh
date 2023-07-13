@@ -77,6 +77,7 @@ function main {
               wrong=1
               continue
          fi
+         echo "错误代码$wrong"
     done  
     
 }
