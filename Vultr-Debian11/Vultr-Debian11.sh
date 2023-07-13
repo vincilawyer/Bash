@@ -726,7 +726,7 @@ function settext {
      while true; do
          #-r选项告诉read命令不要对反斜杠进行转义，避免误解用户输入。-e选项启用反向搜索功能，这样用户在输入时可以通过向左箭头键或Ctrl + B键来移动光标并修改输入。
          echo -ne "${GREEN}请设置新的$mean（$( [ -n "$mark" ] && echo "$mark,")输入为空则跳过$( [[ $coment == "true" ]] && echo "，输入#则设为注释行")）：${NC}"
-         inp $regex "#"  
+         inp true "$regex" "#"  
          if [[ -z "$new_text" ]]; then
              printf "\033[K%s"  # 清除当前行的文本
              echo -e "${GREEN}已跳过$mean设置${NC}"
@@ -735,12 +735,10 @@ function settext {
             if  [[ $is_file == "true" ]]; then   #如果在文件模式下
                  if [[ "$new_text" == "#" ]] && [[ $comment == "true" ]]; then
                      replace "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "$comment" "$is_file" "$input" "$new_text"
-                     printf "\033[K%s"  # 清除当前行的文本
                      echo -e "${BLUE}已将"$mean"参数设为注释行${NC}"
                      return 0
                  else
                      replace  "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "$comment" "$is_file" "$input" "$new_text"
-                     printf "\033[K%s"  # 清除当前行的文本
                      echo -e "${BLUE}"$mean"已修改为"$new_text"${NC}"
                      return 0
                  fi
@@ -755,12 +753,14 @@ function inp {
     tput sc
     while true; do
         read newtext
-        [[ -z "$newtext" ]] && tput el && return
-        newtext="$(echo -e "${newtext}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"        #s/^[[:space:]]*//表示将输入字符串中开头的任何空格字符替换为空字符串；s/[[:space:]]*$//表示将输入字符串结尾的任何空格字符替换为空字符串。
-        for arg in "$@"; do
+        [[ -z $2 ]] && return
+        [ $1 = true ] && [[ -z "$newtext" ]] && tput el && return
+        ＃newtext="$(echo -e "${newtext}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"        #s/^[[:space:]]*//表示将输入字符串中开头的任何空格字符替换为空字符串；s/[[:space:]]*$//表示将输入字符串结尾的任何空格字符替换为空字符串。
+        for arg in "${@:2}"; do
             #如果规则为正则表达式
             if [[ $arg =~ $arg ]]; then
-                [[ $newtext =~ $arg ]] && tput el &&  return
+                [[ $newtext =~ $arg ]] && tput el &&  return 
+            #如果规则为普通字符串
             else
                [[ "$newtext" == "$inptext" ]] && tput el && return
             fi
