@@ -399,7 +399,7 @@ function set_dat {
              rule="$(echo -e "${a[2]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"   #去除规则前后的空格
              if [[ -z $rule ]]; then : ;     #如果是空的，则无效进行判断句的判断
              elif ! [[ "${rule:0:1}" == '"' && "${rule: -1}" == '"' ]]; then   #判断rule是正则表达式变量名还是条件语句,如果是正则表达式变量名则转换为条件语句
-                 rule="\"[ \$new_text =~ \$$rule ]\""    
+                 rule="\"[[ \$new_text =~ \$$rule ]]\""    
              fi
              settext "\"" "\"" "$arg" 1 true false false true "$dat_path" "${a[0]}" "${a[1]}" "$rule"  
          done         
