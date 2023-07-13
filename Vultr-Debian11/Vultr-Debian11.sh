@@ -345,7 +345,7 @@ for ((i = 0; i <= 1; i++)); do
 dat_text="
 
 # 该文件为vinci用户配置文本
-# * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配规则（条件规则和比较规则）。比较规则即为正则表达式的变量名，条件规则为判断\$new_text变量是否符合规则条件，条件需用两个""包裹
+# * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配规则（条件规则和比较规则）。比较规则即为正则表达式的变量名，条件规则为判断\$new_text变量是否符合规则条件，条件需用两个\"\"包裹
 Dat_num=\"$((( i==1 )) && echo $dat_num)\"      #版本号*              
 $(pz "Domain")                                  #@一级域名#@不用加www#@domain_regex
 $(pz "Email")                                   #@邮箱#@#@email_regex
@@ -357,7 +357,7 @@ $(pz "Tor_port")                                #@Tor监听端口#@0-65535#@port
 $(pz "Gpt_port")                                #@Chatgpt本地端口#@0-65535#@port_regex 
 $(pz "Chatgpt_api_key")                         #@Chatgpt Api
 $(pz "Gpt_code")                                #@授权码
-$(pz "Proxy_model")                             #@接口代理模式#@1为正向代理、2为反向代理#@\"[[ \$new_text =~ \"^(1|2)\$" ]]\"
+$(pz "Proxy_model")                             #@接口代理模式#@1为正向代理、2为反向代理#@\"[[ \$new_text =~ ^(1|2)\$ ]]\"
 $(pz "BASE_URL")                                #@OpenAI接口代理URL#@
 $(pz "PROXY_URL")                               #@Chatgpt本地代理地址#@
 Chatgpt_image=\"yidadaa/chatgpt-next-web\"        #Chat镜像名称*
@@ -766,15 +766,11 @@ function inp {
         [[ -z $2 ]] && return                                        #如果参数为空，则接受任何输入
         [ $1 = true ] && [[ -z "$new_text" ]] && tput el && return   #如果$1为true，且输入为空，则完成输入
         for Condition in "${@:2}"; do
-           echo 
-           echo 1:$Condition
            # 检查参数是否为条件语句
            if [[ "${Condition:0:1}" == '"' && "${Condition: -1}" == '"' ]]; then   #注意-1前面有空格
-                echo 2:${Condition:1:-1}
                 if eval ${Condition:1:-1}; then tput el && return; fi
            # 如果参数为普通字符串
            else
-               echo 3:$Condition
                [[ "$new_text" == "$Condition" ]] && tput el && return
            fi
        done
