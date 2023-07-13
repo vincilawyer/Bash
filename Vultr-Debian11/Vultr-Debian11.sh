@@ -727,9 +727,6 @@ function settext {
          #-r选项告诉read命令不要对反斜杠进行转义，避免误解用户输入。-e选项启用反向搜索功能，这样用户在输入时可以通过向左箭头键或Ctrl + B键来移动光标并修改输入。
          echo -ne "${GREEN}请设置新的$mean（$( [ -n "$mark" ] && echo "$mark,")输入为空则跳过$( [[ $coment == "true" ]] && echo "，输入#则设为注释行")）：${NC}"
          inp true "$regex" "#"  
-         echo 
-         echo 
-         echo 【$new_text】
          if [[ -z "$new_text" ]]; then
              echo -e "${GREEN}已跳过$mean设置${NC}"
              return 1
@@ -754,17 +751,17 @@ function settext {
 function inp {
     tput sc
     while true; do
-        read newtext
+        read new_text
         [[ -z $2 ]] && return
-        [ $1 = true ] && [[ -z "$newtext" ]] && tput el && return
-        # newtext="$(echo -e "${newtext}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"        #s/^[[:space:]]*//表示将输入字符串中开头的任何空格字符替换为空字符串；s/[[:space:]]*$//表示将输入字符串结尾的任何空格字符替换为空字符串。
+        [ $1 = true ] && [[ -z "$new_text" ]] && tput el && return
+        # new_text="$(echo -e "${new_text}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"        #s/^[[:space:]]*//表示将输入字符串中开头的任何空格字符替换为空字符串；s/[[:space:]]*$//表示将输入字符串结尾的任何空格字符替换为空字符串。
         for arg in "${@:2}"; do
             #如果规则为正则表达式
             if [[ $arg =~ $arg ]]; then
-                [[ $newtext =~ $arg ]] && tput el &&  return 
+                [[ $new_text =~ $arg ]] && tput el &&  return 
             #如果规则为普通字符串
             else
-                [[ "$newtext" == "$inptext" ]] && tput el && return
+                [[ "$new_text" == "$inptext" ]] && tput el && return
             fi
        done
        tput rc
