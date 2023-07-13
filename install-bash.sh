@@ -126,9 +126,6 @@ function bar() {
                echo "$5"
                return 0 
            fi  
-if [ $？ -eq 142 ]; then
-
-
     done       
     echo
     printf "\033[1A\033[K%s\n" "$3"
