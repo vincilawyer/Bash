@@ -69,15 +69,17 @@ function main {
          countdown 10
          $def_name 2
          wrong=$?
+          echo "错误代码$wrong"
          if [ "$wrong" == "0" ]; then                       #如果脚本正常运行，则退出
               exit 1                                            
          elif [ "$wrong" == "2" ]; then                           #如果用户要求更新，则继续更新
               continue
          else 
+         
               wrong=1
               continue
          fi
-         echo "错误代码$wrong"
+        
     done  
     
 }
