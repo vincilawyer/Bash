@@ -74,6 +74,7 @@ function main {
          elif [ "$wrong" == "2" ]; then                           #如果用户要求更新，则继续更新
               continue
          else 
+              wrong=1
               continue
          fi
     done  
