@@ -418,13 +418,14 @@ function set_dat {
          IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
          IFS="=" read -ra b <<< "$line" 
          rule="$(echo -e "${a[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"   #去除规则前后的空格
-         echo 1
-         if [ -z $rule ]; then
-             :      #如果是空的，则无需进行判断句的判断
+         if [ -z "$rule" ]; then   #如果是空的，则无需进行判断句的判断
+             :      
          elif ! [[ "${rule:0:1}" == '"' && "${rule: -1}" == '"' ]]; then   #判断rule是正则表达式变量名还是条件语句,如果是正则表达式变量名则转换为条件语句
              rule=${!rule}   
          fi
-         settext "${b[0]}=\"" "\"" "" 1 true false false true "$dat_path" "${a[1]}" "${a[2]}" 1 "$rule" 
+         echo 1
+         settext '${b[0]}="' '"' "" 1 true false false true "$dat_path" "${a[1]}" "${a[2]}" 1 "$rule" 
+         echo 8
     done
     fi
     source "$dat_path"   #重新载入数据
@@ -731,7 +732,7 @@ function settext {
   local temp_file="$(mktemp)"
   old_text=""                     # 设置搜中的旧文本作为全局变量（不含“注释行”字样）
   new_text=""                     # 设置输入的新文本作为全局变量（不含前后空格）
-  
+
      old_text1=$(search "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "true" "$is_file" "$input")
      old_text=${old_text1// (注释行)/}
      echo
