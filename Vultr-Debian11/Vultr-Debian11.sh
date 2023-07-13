@@ -344,7 +344,6 @@ function pz { echo "$1=\"$((($i==1)) && eval echo \$"$1")\""; }
 for ((i = 0; i <= 1; i++)); do
 dat_text="
 
-
 # 该文件为vinci用户配置文本
 # * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配规则（条件规则和比较规则）。
 Dat_num=\"$((( i==1 )) && echo $dat_num)\"      #版本号*              
@@ -363,7 +362,6 @@ $(pz "BASE_URL")                                #@OpenAI接口代理URL#@
 $(pz "PROXY_URL")                               #@Chatgpt本地代理地址#@
 Chatgpt_image=\"yidadaa/chatgpt-next-web\"        #Chat镜像名称*
 Chatgpt_name=\"chatgpt\"                          #Chat容器名称*
-
 
 ";(( i==0 )) && dat_num=${#dat_text}; done; }
 
@@ -401,7 +399,10 @@ function set_dat {
              elif ! [[ "${rule:0:1}" == '"' && "${rule: -1}" == '"' ]]; then   #判断rule是正则表达式变量名还是条件语句,如果是正则表达式变量名则转换为条件语句
                  rule="\"[[ \$new_text =~ \$$rule ]]\""    
              fi
+             echo $arg
+             cat $dat_path
              settext "\"" "\"" "$arg" 1 true false false true "$dat_path" "${a[0]}" "${a[1]}" "$rule"  
+             cat $dat_path
          done         
     else
     
