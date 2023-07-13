@@ -400,7 +400,7 @@ function set_dat {
              if ! [[ "${rule:0:1}" == '"' && "${rule: -1}" == '"' ]]; then   #判断rule是正则表达式变量名还是条件语句,如果是正则表达式变量名则转换为条件语句
                  rule="\"[ \$new_text =~ \$$rule ]\""    
              fi
-             settext "\"" "\"" "$arg" 1 true false false true "$dat_path" "${a[0]}" "$rule"  
+             settext "\"" "\"" "$arg" 1 true false false true "$dat_path" "${a[0]}" "${a[1]}" "$rule"  
          done         
     else
     
@@ -759,13 +759,13 @@ function inp {
         read new_text
         [[ -z $2 ]] && return                                        #如果参数为空，则接受任何输入
         [ $1 = true ] && [[ -z "$new_text" ]] && tput el && return   #如果$1为true，且输入为空，则完成输入
-        for arg in "${@:2}"; do
+        for Condition in "${@:2}"; do
            # 检查参数是否为条件语句
-           if [[ "${arg:0:1}" == '"' && "${arg: -1}" == '"' ]]; then
-                if eval ${arg:1:-1}; then tput el &&  return ; fi
+           if [[ "${Condition:0:1}" == '"' && "${Condition: -1}" == '"' ]]; then
+                if eval ${Condition:1:-1}; then tput el &&  return ; fi
            # 如果参数为普通字符串
            else
-               [[ "$new_text" == "$arg" ]] && tput el && return
+               [[ "$new_text" == "$Condition" ]] && tput el && return
            fi
        done
        tput rc
