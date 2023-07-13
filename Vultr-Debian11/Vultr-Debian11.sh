@@ -399,11 +399,7 @@ function set_dat {
              elif ! [[ "${rule:0:1}" == '"' && "${rule: -1}" == '"' ]]; then   #判断rule是正则表达式变量名还是条件语句,如果是正则表达式变量名则转换为条件语句
                  rule="\"[[ \$new_text =~ \$$rule ]]\""    
              fi
-             echo 1
-             cat "$dat_path"
              settext "\"" "\"" "$arg" 1 true false false true "$dat_path" "${a[0]}" "${a[1]}" "$rule"  
-             echo 4
-             cat "$dat_path"
          done         
     else
     
@@ -698,7 +694,8 @@ function replace() {
                  print $0;
              }        
         }  
-      } 
+      }  else {
+           print $0;
     }'
 
   if [ "$is_file" = "true" ]; then    #如果输入的是文件
@@ -768,6 +765,7 @@ function settext {
 function inp {
     tput sc
     while true; do
+        new_text=""
         read new_text
         [[ -z $2 ]] && return                                        #如果参数为空，则接受任何输入
         [ $1 = true ] && [[ -z "$new_text" ]] && tput el && return   #如果$1为true，且输入为空，则完成输入
