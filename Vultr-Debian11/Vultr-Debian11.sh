@@ -355,7 +355,7 @@ $(pz "Warp_port")                               #@Warp监听端口#@0-65535#@por
 $(pz "Tor_port")                                #@Tor监听端口#@0-65535#@port_regex
 
 #####Chatgpt-docker######
-$(pz "Gpt_port")                                #@Chatgpt本地端口#@0-65535#@port_regex
+$(pz "Gpt_port")                                #@Chatgpt本地端口 
 $(pz "Chatgpt_api_key")                         #@Chatgpt Api
 $(pz "Gpt_code")                                #@授权码
 $(pz "Proxy_model")                             #@接口代理模式#@1为正向代理、2为反向代理#@
@@ -394,7 +394,7 @@ function set_dat {
   #如果指定配置，则指定修改
     if ! [ $# -eq 0 ]; then
          for arg in "$@"; do
-             line=$(search "#@" ' ' "$arg" 1 false false false true "$dat_path" ) 
+             line=$(search "#@" '' "$arg" 1 false false false true "$dat_path" ) 
              IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
              rule="$(echo -e "${a[2]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"   #去除规则前后的空格
              if [[ -z $rule ]]; then : ;     #如果是空的，则无效进行判断句的判断
@@ -575,7 +575,11 @@ function search {
               endPos = index(substr($0, startPos + length(start)), end);
               if (endPos > 0) {
                   if (++count == num) {
-                      print substr($0, startPos + length(start), endPos - 1) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
+                      if (end == "" ){
+                         print substr($0, startPos + length(start)) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
+                      } else {
+                         print substr($0, startPos + length(start), endPos - 1) ((match($0, /^[[:space:]]*#/) ? " (注释行)" : ""));
+                      }
                       exit;
                   }    
               } else {  
