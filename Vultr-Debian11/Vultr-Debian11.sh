@@ -96,7 +96,7 @@ comment_regex="^ *[# ]*"
 ###  说明：exit返回值为1，则为程序错误，要求更新检查程序继续更新本脚本。返回值为3，则用户要求更新检查程序继续更新本脚本。
 
 ####### 脚本更新  ####### 
-#。说明：输入参数为1则为用户报错或程序自检错误更新
+#  说明：输入参数为1则为用户报错或程序自检错误更新
 function update {
     clear
     if ((startnum == 2)); then exit 3; fi #未出错程序，用户主动要求返回到更新检查程序继续更新 
@@ -400,8 +400,7 @@ function set_dat {
              if [ -z $rule ]; then
              :      #如果是空的，则无需进行判断句的判断
              elif ! [[ "${rule:0:1}" == '"' && "${rule: -1}" == '"' ]]; then   #判断rule是正则表达式变量名还是条件语句,如果是正则表达式变量名则转换为条件语句
-                 rule=${!rule}
-                 #rule="\"[[ \$new_text =~ \$$rule ]]\""    
+                 rule=${!rule} 
              fi
              settext "\"" "\"" "$arg" 1 true false false true "$dat_path" "${a[0]}" "${a[1]}" 1 "$rule"  
          done         
@@ -771,6 +770,7 @@ function settext {
 #     2、传入的第二个参数为比较模式，1为正则表达式匹配，2为字符串普通匹配。两种模式下，都可以使用条件语句。
 function inp {
     tput sc
+    local k="true" #判断参数是否全部为空
     while true; do
         new_text=""
         read new_text
@@ -781,13 +781,15 @@ function inp {
                 if eval ${Condition:1:-1}; then tput el && return; fi
            # 如果参数为普通字符串
            else
-               [ -z $Condition ] && continue   #如果参数为空进入下一次判断
+               [[ -z $Condition ]] && continue   #如果参数为空进入下一次判断
+               k="false"
                if [ "$2" == "1" ]; then
                   [[  $new_text =~ $Condition ]] && tput el && return
                elif [ "$2" == "2" ]; then
                   [[ "$new_text" == "$Condition" ]] && tput el && return
                fi
            fi
+           [ $k == "true"] && tput el && return
         done
         tput rc
         tput el
@@ -1156,7 +1158,7 @@ function cfdns {
         get_all_dns_records $zone_identifier
         echo -n "请输入要删除的DNS记录名称（例如 www,输入为空则跳过）："
         inp true
-        [ -z $new_text ] && continue 
+        [ -z $new_text ] && clear && continue 
         record_name=$new_text
         # 获取记录标识符
         record_identifier=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records?type=A&name=$record_name.$Domain" \
@@ -1183,10 +1185,10 @@ function cfdns {
         clear
         get_all_dns_records $zone_identifier
         echo -n "请输入要修改或增加的DNS记录名称（例如 www，输入空则跳过）："
-        inp true &&[ -z $new_text ] && continue 
+        inp true &&[ -z $new_text ] && clear && continue 
         record_name="$new_text"
         echo -n "请输入要绑定ip地址（输入空则跳过,输入#则为本机IP）："
-        inp true 1 "$ipv4_regex" '\"[ \"\$new_text\" == \"#\" ]\"' && [ -z $new_text ] && continue 
+        inp true 1 "$ipv4_regex" '[ "$new_text" == "#" ]' && [ -z $new_text ] && clear && continue 
         if [ "$new_text" == "#" ]; then
            record_content=$(ip addr | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v 127.0.0.1)
         else
