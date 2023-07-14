@@ -26,7 +26,7 @@
 
 
 ####### 版本更新相关参数 ######
-Version=3.19  #版本号 
+Version=3.20  #版本号 
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #获取当前脚本的目录路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
 file_path="$script_path/$script_name"                                             #获取当前脚本的文件路径
@@ -789,8 +789,8 @@ function inp {
                   [[ "$new_text" == "$Condition" ]] && tput el && return
                fi
            fi
-           [ $k == "true"] && tput el && return
         done
+        [ $k == "true"] && tput el && return
         tput rc
         tput el
         echo
