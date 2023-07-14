@@ -90,6 +90,19 @@ tel_regex="^1[3-9]\d{9}$"
 #若干#和空格前置的表达式 
 comment_regex="^ *[# ]*"
 
+####### 登录logo样式 ####### 
+art=$(cat << "EOF"
+  __     __                         _   _           ____                   
+  \ \   /"/u          ___          | \ |"|       U /"___|         ___      
+    \ \ / //          |_"_|        <|  \| |>      \| | u          |_"_|     
+    /\ V /_,-.         | |         U| |\  |u       | |/__          | |      
+   U  \_/-(_/        U/| |\u        |_| \_|         \____|       U/| |\u    
+     //           .-,_|___|_,-.     ||   \\,-.     _// \\     .-,_|___|_,-. 
+    (__)           \_)-' '-(_/      (_")  (_/     (__)(__)     \_)-' '-(_/ 
+EOF
+)
+
+
 #############################################################################################################################################################################################
 ##############################################################################   2.脚本启动及退出检查模块  ################################################################################################
 ############################################################################################################################################################################################
@@ -166,7 +179,6 @@ function main {
   #######   检查用户数据文件  #######   
   update_dat
   
-  while true; do     #显示页面及选项
   #######   主菜单选项  ######
     main_menu=(
     "  1、系统设置"
@@ -180,30 +192,21 @@ function main {
     "  9、Frp服务"
     "  10、Chatgpt-Docker服务"
     "  0、退出")
-    if Option "请选择以下操作选项" false "${main_menu[@]}" ; then continue; fi   #监听输入一级菜单选项，并判断项目内容
-    get_option=$option #记住一级选项
+    page "请选择以下操作选项" 1 "${main_menu[@]}" 
+    get_option=$new_text #记住一级选项
+    sub_menu=""
     while true; do
-          sub_menu=""
           case $get_option in               
 1)###### 1、系统设置  ######
     sub_menu=(
-    "  1、返回上一级"
-    "  2、查看所有重要程序运行状态"
-    "  3、本机ip信息"
-    "  4、修改配置参数"
-    "  5、修改SSH登录端口和登录密码"
-    "  6、更新脚本"
+    "  1、返回上一级"               ""
+    "  2、查看所有重要程序运行状态"   "status"
+    "  3、本机ip信息"              "ipinfo"
+    "  4、修改配置参数"             "set_dat"
+    "  5、修改SSH登录端口和登录密码"  "change_ssh_port; change_login_password"
+    "  6、更新脚本"                'update; [ "$?" == "2" ] && echo "当前版本为最新版，无需更新！"'
     "  0、退出" )
-                 if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 case $option in
-                      2)status;;
-                      3)ipinfo;;
-                      4)set_dat;;
-                      5)change_ssh_port
-                        change_login_password;;
-                      6)update
-                      [ "$?" == "2" ] && echo "当前版本为最新版，无需更新！";;
-                  esac;;
+                 page ${main_menu[$(($get_option - 1))]} 2 "${sub_menu[@]}" && continue ;;
 2)###### 工具箱  ###### 
       sub_menu=(
     "  1、返回上一级"
@@ -250,7 +253,7 @@ function main {
     "  2、安装Nginx" 
     "  3、重启Nginx"
     "  4、设置Nginx配置"
-    "  5、从github下载\更新配置文件"
+    "  5、查看Nginx运行状况"
     "  6、查看Nginx日志"
     "  7、停止Nginx"
     "  0、退出")
@@ -259,9 +262,8 @@ function main {
                       2)install_Nginx;;
                       3)restart "nginx";;
                       4)echo 0;;
-                      5)download_nginx_config;;
-                      6)nano /var/log/nginx/access.log;;
-                      7)stop nginx;;
+                      5)nano /var/log/nginx/access.log;;
+                      6)stop nginx;;
                     esac;;
 6)###### Xui服务  ######
      sub_menu=(
@@ -277,11 +279,12 @@ function main {
 7) ###### Cloudflare服务  ######
     sub_menu=(
     "  1、返回上一级"
-    "  2、Cloudflare DNS配置（账户信息在默认配置中设置）"
+    "  2、Cloudflare DNS配置"
     "  3、修改CF账户配置"
     "  4、下载CFWarp"
     "  5、启动\重启CFWarp"
-    "  6、停用CFWarp"
+    "  6、查看CFWarp运行状况"
+    "  7、停用CFWarp"
     "  0、退出")
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  case $option in
@@ -297,14 +300,16 @@ function main {
     "  1、返回上一级"
     "  2、安装Tor"
     "  3、启动\重启Tor"
-    "  4、设置Tor配置（第一次使用需设置）"
-    "  5、停用Tor"
+    "  4、设置Tor配置"
+    "  5、查看Tor运行状况"
+    "  6、停用Tor"
     "  0、退出")
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  case $option in
                       2)install_Tor;;
                       3)restart tor
-                        ipinfo "Tor";;
+                        echo
+                        ipinfo;;
                       3)set_tor_config;;
                       4)stop tor;;
                  esac;; 
@@ -314,9 +319,9 @@ function main {
     "  1、返回上一级"
     "  2、安装Frp"
     "  3、启动\重启Frp"
-    "  3、初始化Frp配置"
     "  4、设置Frp配置"
-    "  5、重启Frp"
+    "  5、查看Frp运行状况"
+    "  6、停用Frp"
     "  0、退出")                    
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  case $option in
@@ -330,10 +335,11 @@ function main {
    sub_menu=(
     "  1、返回上一级"
     "  2、下载\更新Chatgpt"
-    "  3、运行Chatgpt(自启动)"
-    "  4、修改Chatgpt配置"
-    "  5、查看Chatgpt运行状况"
-    "  6、停止运行Chatgpt"
+    "  3、启动\重启动Chatgpt"
+    "  4、运行\重运行Chatgpt容器"
+    "  5、设置Chatgpt配置"
+    "  6、查看Chatgpt运行状况"
+    "  7、停用Chatgpt"
     "  0、退出")                     
                   if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                   case $option in
@@ -349,6 +355,48 @@ wait
 done    
 done   
 }
+
+######   页面显示   ######
+function page {
+#$1 页面小标题
+#$2 1为一级菜单模式，二为二级菜单模式（可返回上一级，并执行指令）
+#其余参数为显示内容及对应指令
+
+    clear
+    echo
+    echo -e "${RED}${art}${NC}"
+    echo
+    echo
+    echo "                   欢迎进入Vinci服务器管理系统(版本V$Version1)"
+    echo
+    echo "=========================== "$1" =============================="
+    echo
+    if [ "$2" == 1 ]; then
+       menu=("${@:3}")
+    else
+       array=("${@:3}")
+       menu=()
+       cmd=()
+   
+       # 分配元素
+       for (( i=0; i<${#array[@]}; i++ )); do
+           (( i % 2 == 0 )) && cmd+=("${array[$i]}") || menu+=("${array[$i]}")
+       done
+    fi   
+    option "  请按序号选择操作: " 3 false 1 '"[[ "$new_text" =~ ^[0-9]+$ ]] && (( $new_text >= 0 && $new_text <= '$(($# - 3))' ))"' "${menu[@]}"
+     #如果选择零则退出
+    if [ "$new_text" == "0" ]; then            
+       quit
+    #如果二级菜单选择1，则返回上一级
+    elif [ "$new_text" == "1" ] && [ "$2" == "2" ]; then   
+      return true
+    #执行指令
+    else
+       [ "$2" == "2" ] && eval ${cmd[$new_text]}
+       return fasle
+    fi
+}
+      
 #############################################################################################################################################################################################
 ##############################################################################   4.用户数据管理模块  ################################################################################################
 ############################################################################################################################################################################################
@@ -467,69 +515,7 @@ function xupdate_datx {
     printf '%s\n' "${lines[@]}"  > "$dat_path" 
     replace '"' '"' "Dat_Version1" 1 true false false true "$dat_path" "$Dat_Version"  #更新配置版本号
     source "$dat_path"         #重新载入数据
-}
-
-#############################################################################################################################################################################################
-##############################################################################   5.UI模块  ################################################################################################
-############################################################################################################################################################################################
-
-######   页面显示   ######
-function Page {
-clear
-art=$(cat << "EOF"
-  __     __                         _   _           ____                   
-  \ \   /"/u          ___          | \ |"|       U /"___|         ___      
-    \ \ / //          |_"_|        <|  \| |>      \| | u          |_"_|     
-    /\ V /_,-.         | |         U| |\  |u       | |/__          | |      
-   U  \_/-(_/        U/| |\u        |_| \_|         \____|       U/| |\u    
-     //           .-,_|___|_,-.     ||   \\,-.     _// \\     .-,_|___|_,-. 
-    (__)           \_)-' '-(_/      (_")  (_/     (__)(__)     \_)-' '-(_/ 
-EOF
-)
-
-  echo
-  echo -e "${RED}${art}${NC}"
-  echo
-  echo
-  echo "                   欢迎进入Vinci服务器管理系统(版本V$Version1)"
-  echo
-  echo "=========================== "$1" =============================="
-  echo 
-}
-
-###### 显示和选择选项  ######
-function Option {
-  Page $1
-  #展示选项
-  for menu in "${@:3}"   #需要跳过前面2个参数元素
-  do 
-    echo "$menu"
-  done
-  echo
-  echo -n "  请按序号选择操作: "
-  tput sc   # 保存当前光标位置
-  #监听输入
-while true; do
-  read option
-  if [ "$option" == "0" ]; then             #如果选择零则退出
-      quit      
-  elif [ "$option" == "1" ] && [ "$2" == "true" ]; then    #如果二级菜单选择1，则返回上一级
-      return 2
-  elif [[ "$option" =~ ^[0-9]+$ ]] && (( $option >= 1 && $option <= $(($# - 3)) )); then  #如果选中正确序号（需要减掉本函数前面2个参数数量以及序号0）。
-      clear
-      return 1
-  else
-      tput rc  # 回到输入位置
-      tput el  # 清空光标后面内容
-      echo
-      echo -e "${RED}  输入错误，请重新输入${NC}"
-      tput rc  # 再次回到输入位置
-   fi
-done
-}
-
-
-
+} 
 
 #############################################################################################################################################################################################
 ##############################################################################   6.开 发 工 具  ################################################################################################
@@ -782,6 +768,7 @@ function settext {
 #######   输入框    ####### 
 #说明：1、传入的第一个参数为true则能接受回车输入，第一个参数为false则不能回车输入。参数带有""号字符，则将参数视为具体条件语句，没有""则为普通比较。
 #     2、传入的第二个参数为比较模式，1为正则表达式匹配，2为字符串普通匹配。两种模式下，都可以使用条件语句。
+#     其余参数均为比较参数
 function inp {
     tput sc
     local k="true" #判断参数是否全部为空
@@ -790,12 +777,16 @@ function inp {
         read new_text
         [ $1 = true ] && [[ -z "$new_text" ]] && tput el && return   #如果$1为true，且输入为空，则完成输入
         for Condition in "${@:3}"; do
+          
+           #如果参数为空则继续下一个参数
+           [[ -z $Condition ]] && continue   
+           
            # 检查参数是否为条件语句
            if [[ "${Condition:0:1}" == '"' && "${Condition: -1}" == '"' ]]; then   #注意-1前面有空格
                 if eval ${Condition:1:-1}; then tput el && return; fi
+           
            # 如果参数为普通字符串
            else
-               [[ -z $Condition ]] && continue   #如果参数为空进入下一次判断
                k="false"
                if [ "$2" == "1" ]; then
                   [[  $new_text =~ $Condition ]] && tput el && return
@@ -804,16 +795,31 @@ function inp {
                fi
            fi
         done
-        [ $k == "true" ] && tput el && return
+        [ "$k" == "true" ] && tput el && return
         tput rc
         tput el
         echo
-        echo -e "${RED}输入不正确，请重新输入${NC}！"
+        echo -e "${RED} 输入不正确，请重新输入${NC}！"
         tput rc
    done
 }
 
-#######   输入确认    #######   
+###### 选项和输入框  ######
+function option {
+# $1为   #输入选择提示   
+local ign=$2 #使用inp配置的参数数量
+# 第$3开始到第ign+2为ipt参数
+# 第ign+3开始为显示内容
+
+    for menu in "${@:$((ign + 3))}"; do   #需要跳过前面ign+2个参数元素，从+3开始输出
+       echo "$menu"
+    done
+    echo
+    echo -n "$1"
+    inp "${@:3:$((ign + 2))}"
+}
+
+#######   是否确认框    #######   
 function confirm {
    read -p "$1（Y/N）:" confirm1
    if [[ $confirm1 =~ ^[Yy]$ ]]; then 
@@ -837,7 +843,7 @@ apps=(
 "tor"
 )
    for app in "${apps[@]}"; do  
-      cmd="systemctl status $app"
+      zl="systemctl status $app"
       i=1
       while IFS= read -r line; do
           if (( "$i" == 1 )); then
@@ -846,7 +852,7 @@ apps=(
               echo "$line"
           fi
           i=$((i+1))
-      done < <($cmd)
+      done < <($zl)
    done
 }
 
@@ -860,6 +866,7 @@ apps=(
 "Warp"
 "Tor"
 )
+   echo "网络状况"
    echo "代理IP信息："
    for app in "${apps[@]}"; do  
        port_value=$(eval echo \$"${app}_port")
@@ -1155,7 +1162,7 @@ function cfdns {
        echo "未找到您的Cloudflare账户\域名，请检查配置。"
        return
     fi
-    dns_records=$(get_all_dns_records $zone_identifier)
+    dns_records="$(get_all_dns_records $zone_identifier)"
     echo $dns_records
     # 询问用户要进行的操作
     echo "操作选项："
@@ -1316,6 +1323,7 @@ function install_Tor {
     sudo apt update
     echo -e "${GREEN}开始安装Tor${NC}"
     apt install tor -y
+    ipinfo
 }
 
 
