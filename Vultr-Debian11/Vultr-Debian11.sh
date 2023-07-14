@@ -524,11 +524,14 @@ done
 
 #######  检验程序安装情况   ########
 function installed {
-    local name=$1
-    if [ ! -x "$(command -v $name)" ]; then return 1; fi
-    echo -e "${GREEN}该程序已经安装，当前版本号为 $($name -v 2>&1)${NC}"
-    if confirm "是否需要重新安装或更新？" "已取消安装！"; then return 0; fi
-    return 1
+    local software_name=$1
+    if which "$software_name" >/dev/null 2>&1; then
+       echo -e "${GREEN}该程序已经安装，当前版本号为 $($software_name -v 2>&1)${NC}" 
+       if confirm "是否需要重新安装或更新？" "已取消安装！"; then return 0; fi
+       return 1
+    else
+      return 1
+    fi
 }
 
 #######   等待函数   #######   
@@ -1106,8 +1109,11 @@ function check_ssl_certificate {
 
 ###### 安装X-ui的函数 ######
 function install_Xui {
-   installed "x-ui" && return
-   bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
+   if which "x-ui" >/dev/null 2>&1; then
+      echo "Xui面板已经安装！"
+   else
+      bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
+   fi
 }
 
 #############################################################################################################################################################################################
@@ -1116,7 +1122,7 @@ function install_Xui {
 
 ###### Cf dns配置 ######
 function cfdns {
-    if [ ! -x "$(command -v $name)" ]; then 
+    if ! which "jq" >/dev/null 2>&1; then
       echo "正在安装依赖软件JQ..."
       apt update
       apt install jq -y
