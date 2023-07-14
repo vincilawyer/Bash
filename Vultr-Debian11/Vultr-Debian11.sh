@@ -1157,7 +1157,7 @@ function cfdns {
         clear
         get_all_dns_records $zone_identifier
         echo -n "请输入要删除的DNS记录名称（例如 www,输入为空则跳过）："
-        inp true
+        inp true 1 '^[a-zA-Z0-9]+'
         [ -z $new_text ] && clear && continue 
         record_name=$new_text
         # 获取记录标识符
@@ -1185,14 +1185,14 @@ function cfdns {
         clear
         get_all_dns_records $zone_identifier
         echo -n "请输入要修改或增加的DNS记录名称（例如 www，输入空则跳过）："
-        inp true &&[ -z $new_text ] && clear && continue 
+        inp true 1 '^[a-zA-Z0-9]+' &&[ -z $new_text ] && clear && continue 
         record_name="$new_text"
         echo -n "请输入要绑定ip地址（输入空则跳过,输入#则为本机IP）："
         inp true 1 "$ipv4_regex" '[ "$new_text" == "#" ]' && [ -z $new_text ] && clear && continue 
         if [ "$new_text" == "#" ]; then
            record_content=$(ip addr | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v 127.0.0.1)
         else
-           record_content= "$new_text"
+           record_content="$new_text"
         fi
         read -p "是否启用Cloudflare CDN代理？（Y/N）" enable_proxy
         if [[ $enable_proxy =~ ^[Yy]$ ]]; then
