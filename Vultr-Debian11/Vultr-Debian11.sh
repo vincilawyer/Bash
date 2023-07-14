@@ -216,15 +216,19 @@ function main {
 3)###### UFW防火墙管理  ###### 
       sub_menu=(
     "  1、返回上一级"
-    "  2、启动防火墙"
-    "  3、关闭防火墙"
-    "  4、查看防火墙规则"
+    "  2、启动\重启防火墙"
+    "  3、启用防火墙规则" 
+    "  4、停用防火墙规则"
+    "  5、查看防火墙规则"
+    "  6、停止防火墙"
     "  0、退出")                  
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  case $option in
-                      2)sudo ufw enable;;
-                      3)sudo ufw disable;;
-                      4)sudo ufw status verbose;; 
+                      2)restart ufw;;
+                      3)sudo ufw enable;;
+                      4)sudo ufw disable;;
+                      5)sudo ufw status verbose;; 
+                      6)stop ufw;;
                  esac;;
 4) ###### Docker服务  ###### 
     sub_menu=(
@@ -243,19 +247,21 @@ function main {
 5)####  Nginx选项   ######
    sub_menu=(
     "  1、返回上一级"
-    "  2、安装Nginx"
-    "  3、设置Nginx配置"
-    "  4、重启Nginx"
+    "  2、安装Nginx" 
+    "  3、重启Nginx"
+    "  4、设置Nginx配置"
     "  5、从github下载\更新配置文件"
     "  6、查看Nginx日志"
+    "  7、停止Nginx"
     "  0、退出")
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  case $option in
                       2)install_Nginx;;
-                      3)set_nginx_config;;
-                      4)restart "nginx";;
+                      3)restart "nginx";;
+                      4)echo 0
                       5)download_nginx_config;;
                       6)nano /var/log/nginx/access.log;;
+                      7)stop nginx
                     esac;;
 6)###### Xui服务  ######
      sub_menu=(
@@ -274,33 +280,40 @@ function main {
     "  2、Cloudflare DNS配置（账户信息在默认配置中设置）"
     "  3、修改CF账户配置"
     "  4、下载CFWarp"
+    "  5、启动\重启CFWarp"
+    "  6、停用CFWarp"
     "  0、退出")
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  case $option in
                      2)cfdns
                        continue;;
                      3)set_cfdns;;
-                     3)install_Warp;;
+                     4)install_Warp;;
+                     5)restart warp-svc;;
+                     6)stop warp-svc;;
                  esac;; 
 8)###### Tor服务 ######
  sub_menu=(
     "  1、返回上一级"
     "  2、安装Tor"
-    "  3、设置Tor配置（第一次使用需设置）"
-    "  4、重启Tor"
+    "  3、启动\重启Tor"
+    "  4、设置Tor配置（第一次使用需设置）"
+    "  5、停用Tor"
     "  0、退出")
                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  case $option in
                       2)install_Tor;;
-                      3)set_tor_config;;
-                      4)restart "tor"
+                      3)restart tor
                         ipinfo "Tor";;
+                      3)set_tor_config;;
+                      4)stop tor;;
                  esac;; 
          
 9)######  Frp服务 ######
     sub_menu=(
     "  1、返回上一级"
     "  2、安装Frp"
+    "  3、启动\重启Frp"
     "  3、初始化Frp配置"
     "  4、设置Frp配置"
     "  5、重启Frp"
@@ -815,8 +828,10 @@ function confirm {
 ############################################################################################################################################################################################
 
 ###### 查看程序运行状态 ######
-function status {
+function start {
 
+}
+function status {
 #应用列表
 apps=(
 "ufw"
@@ -837,6 +852,7 @@ apps=(
       done < <($cmd)
    done
 }
+
 ###### 查看ip信息 ######
 function ipinfo {
   echo "本机IP信息："
@@ -854,7 +870,6 @@ apps=(
        curl --socks5-hostname localhost:"$port_value" http://api.ipify.org
       echo
    done
-
 }
 
 #######  修改SSH端口    #######  
@@ -1311,6 +1326,7 @@ function install_Tor {
 function set_tor_config {
    settext "SocksPort " " " "" 2 false false "true" "true" $path_tor "Tor监听端口" "0-65535" 1 $port_regex
 }
+
 #############################################################################################################################################################################################
 ##############################################################################   13.Frp模块  ################################################################################################
 ############################################################################################################################################################################################
@@ -1374,22 +1390,7 @@ EOF
 
 
 
-                                                                          # 安装CF_DNS的函数
-function install_CF_DNS {
-    if confirm "是否从Github下载更新CF_DNS脚本文件？此举动将覆盖原脚本文件。" "已取消下载更新CF_DNS脚本文件"; then return; fi
-    #安装jq
-    echo "正在安装依赖软件JQ..."
-    if [ -x "$(command -v jq)" ]; then
-        echo -e "${GREEN}JQ已安装，无需重复安装！${NC}"      
-    else
-        apt update
-        apt install jq -y
-    fi
-    echo -e "${GREEN}正在下载CF_DNS脚本文件：${NC}"
-    wget $link_cfdns -O $path_cfdns
-    chmod +x $path_cfdns 
-
-}
+                                                                
                                                                           # 修改CF_DNS配置的函数
 
 #############################################################################################################################################################################################
@@ -1487,6 +1488,10 @@ function one_step {
 function restart {
    echo "正在重启$1..."
    systemctl restart "$1"
+}
+function stop {
+   echo "已停止$1运行！"
+   systemctl stop "$1"
 }
 
 #############################################################################################################################################################################################
