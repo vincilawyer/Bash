@@ -1155,7 +1155,8 @@ function cfdns {
        echo "未找到您的Cloudflare账户\域名，请检查配置。"
        return
     fi
-    get_all_dns_records $zone_identifier
+    dns_records=$(get_all_dns_records $zone_identifier)
+    echo $dns_records
     # 询问用户要进行的操作
     echo "操作选项："
     echo "1. 删除DNS记录修改或增加DNS记录"
@@ -1168,7 +1169,7 @@ function cfdns {
 1)#删除DNS记录
         
         clear
-        get_all_dns_records $zone_identifier
+        echo $dns_records
         echo -n "请输入要删除的DNS记录名称（例如 www,输入为空则跳过）："
         inp true 1 '^[a-zA-Z0-9]+'
         [ -z $new_text ] && clear && continue 
@@ -1196,7 +1197,7 @@ function cfdns {
         fi;;
 2)# 修改或增加DNS记录
         clear
-        get_all_dns_records $zone_identifier
+        echo $dns_records
         echo -n "请输入要修改或增加的DNS记录名称（例如 www，输入空则跳过）："
         inp true 1 '^[a-zA-Z0-9]+' &&[ -z $new_text ] && clear && continue 
         record_name="$new_text"
@@ -1255,10 +1256,10 @@ function get_all_dns_records {
          -H "X-Auth-Email: $Email" \
          -H "X-Auth-Key: $Cloudflare_api_key" \
          -H "Content-Type: application/json" | jq -r '.result[] | [.name, .content, .proxied, .ttl] | @tsv')
-       echo "——————————DNS解析编辑器v2————————————"
+       echo "——————————Cloudflare DNS解析编辑器V3————————————"
        echo "以下为$Domain域名当前的所有DNS解析记录："
        echo
-       echo "域名                                    ip            CDN状态    TTL"
+       echo "            域名                                    ip        CDN状态  TTL"
        echo "$dns_records"
        echo
        echo
