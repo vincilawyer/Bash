@@ -352,8 +352,7 @@ function main {
 esac
 if [ "$option" == "1" ]; then break; fi  #如果在二级菜单中输出为1，则返回上一级
 wait
-done    
-done   
+done      
 }
 
 ######   页面显示   ######
