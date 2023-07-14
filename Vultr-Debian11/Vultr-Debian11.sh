@@ -774,7 +774,6 @@ function inp {
     while true; do
         new_text=""
         read new_text
-        echo 1$3
         [[ -z "$3" ]] && return                                        #如果参数为空，则接受任何输入
         [ $1 = true ] && [[ -z "$new_text" ]] && tput el && return   #如果$1为true，且输入为空，则完成输入
         for Condition in "${@:3}"; do
@@ -1156,7 +1155,7 @@ function cfdns {
         clear
         get_all_dns_records $zone_identifier
         echo -n "请输入要删除的DNS记录名称（例如 www,输入为空则跳过）："
-        inp true 1 "/^([a-z0-9]+)/i" 
+        inp true
         [ -z $new_text ] && continue 
         record_name=$new_text
         # 获取记录标识符
@@ -1182,11 +1181,11 @@ function cfdns {
 2)# 修改或增加DNS记录
         clear
         get_all_dns_records $zone_identifier
-        echo -n "请输入要修改或增加的DNS记录名称（例如 www，输入空则跳过,输入#则为本机IP）："
-        inp true
-        [ -z $new_text ] && continue 
+        echo -n "请输入要修改或增加的DNS记录名称（例如 www，输入空则跳过）："
+        inp true &&[ -z $new_text ] && continue 
         record_name=$new_text
-        inp true 1 "$ipv4_regex" '\"[ \"\$new_text\" == \"#\" ]\"'
+        echo -n "请输入要绑定ip地址（输入空则跳过,输入#则为本机IP）："
+        inp true 1 "$ipv4_regex" '\"[ \"\$new_text\" == \"#\" ]\"' && [ -z $new_text ] && continue 
         if [ "$new_text" == "#" ]; then
            record_content=$(ip addr | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v 127.0.0.1)
         else
