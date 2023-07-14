@@ -1181,7 +1181,7 @@ function cfdns {
         clear
         get_all_dns_records $zone_identifier
         echo -n "请输入要修改或增加的DNS记录名称（例如 www，输入空则跳过,输入#则为本机IP）："
-        inp true 1 "/^([a-z0-9]+)/i"
+        inp true
         [ -z $new_text ] $$ continue 
         record_name=$new_text
         inp true 1 "$ipv4_regex" '\"[ \"\$new_text\" == \"#\" ]\"'
@@ -1222,7 +1222,8 @@ function cfdns {
                 echo
                 echo "已成功更新记录 $record_name.$Domain"
            fi;;
-     3) exit;;
+     3) return
+        echo "已退出！" ;;
   esac
   wait
   done
@@ -1237,7 +1238,7 @@ function get_all_dns_records {
        echo "——————————DNS解析编辑器v2————————————"
        echo "以下为$Domain域名当前的所有DNS解析记录："
        echo
-       echo "域名                      ip        CDN状态      TTL"
+       echo "域名                               ip            CDN状态    TTL"
        echo "$dns_records"
        echo
        echo
