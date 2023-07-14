@@ -365,18 +365,14 @@ function page {
 function update_dat { 
     if ! source $dat_path >/dev/null 2>&1; then   #读取用户数据
         echo "系统无用户数据记录。准备新建用户数据..."
-        eval dat_all="\"$dat_mod\""      #创建数据模板并更新
+        if ! eval dat_all="\"$dat_mod\""; then echo "数据模板配置失败，为确保数据不丢失，系统将主动退出。请返回代码检查！" && exit 1; fi
         echo "$dat_all" > "$dat_path"  #写入数据文件
         echo "初始化数据完成"
         wait
     else
         if ! [ "$Dat_num" == "${#dat_mod}" ] ; then
            echo "配置文件更新中..."
-                   if eval dat_all="\"$dat_mod\""; then   #创建数据模板并更新
-          echo "成功"
-          else
-           echo "失败"
-           fi
+           if ! eval dat_all="\"$dat_mod\""; then echo "数据模板配置失败，为确保数据不丢失，系统将主动退出。请返回代码检查！" && exit 1; fi
            echo "$dat_all" > "$dat_path" #写入数据文件
            echo "更新完成，可在系统设置中修改参数！"
            wait
