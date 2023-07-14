@@ -210,150 +210,111 @@ function main {
     "  5、修改SSH登录端口和登录密码"  "change_ssh_port; change_login_password"
     "  6、更新脚本"                'update; [ "$?" == "2" ] && echo "当前版本为最新版，无需更新！"'
     "  0、退出" )
-         
+  
           page "${main_menu[$(($get_option - 1))]}" 2 "${sub_menu[@]}";;
     
 2)###### 工具箱  ###### 
     sub_menu=(
     "  1、返回上一级"
-    "  2、设置微信通知推送"
+    "  2、设置微信通知推送" "notifier"
     "  0、退出")                  
-          if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 case $option in
-                      2)notifier;;
-                 esac;;                    
+    
+          page "${main_menu[$(($get_option - 1))]}" 2 "${sub_menu[@]}";;                    
+          
 3)###### UFW防火墙管理  ###### 
       sub_menu=(
-    "  1、返回上一级"
-    "  2、启动\重启防火墙"
-    "  3、启用防火墙规则" 
-    "  4、停用防火墙规则"
-    "  5、查看防火墙规则"
-    "  6、停止防火墙"
+    "  1、返回上一级"            ""
+    "  2、启动\重启防火墙"        "restart ufw"
+    "  3、启用防火墙规则"         "ufw enable"
+    "  4、停用防火墙规则"         "ufw disable"
+    "  5、查看防火墙规则"         "ufw status verbose"
+    "  6、停止防火墙"            "stop ufw"
     "  0、退出")                  
-                 if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 case $option in
-                      2)restart ufw;;
-                      3)sudo ufw enable;;
-                      4)sudo ufw disable;;
-                      5)sudo ufw status verbose;; 
-                      6)stop ufw;;
-                 esac;;
+           
+          page "${main_menu[$(($get_option - 1))]}" 2 "${sub_menu[@]}";;  
+          
 4) ###### Docker服务  ###### 
     sub_menu=(
-    "  1、返回上一级"
-    "  2、安装Docker"
-    "  3、查看Docker容器"
-    "  4、删除所有容器"
+    "  1、返回上一级"            ""
+    "  2、安装Docker"           "install_Docker"
+    "  3、查看Docker容器"        'echo "Docker容器状况：" && docker ps -a && echo; echo "提示：可使用docker stop 或 docker rm 语句加容器 ID 或者名称来停止容器的运行或者删除容器 "'
+    "  4、删除所有容器"          'confirm "是否删除所有Docker容器？" "已取消删除容器" || ( docker stop $(docker ps -a -q) &&  docker rm $(docker ps -a -q) && echo "已删除所有容器" )'
     "  0、退出")
-                 if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 case $option in
-                      2)install_Docker;;
-                      3)echo "Docker容器状况：" && docker ps -a && echo
-                        echo "提示：可使用docker stop 或 docker rm 语句加容器 ID 或者名称来停止容器的运行或者删除容器 ";;
-                      4)confirm "是否删除所有Docker容器？" "已取消删除容器" || ( docker stop $(docker ps -a -q) &&  docker rm $(docker ps -a -q) && echo "已删除所有容器" );;
-                 esac;;
+
+           page "${main_menu[$(($get_option - 1))]}" 2 "${sub_menu[@]}";;  
+
 5)####  Nginx选项   ######
    sub_menu=(
     "  1、返回上一级"
-    "  2、安装Nginx" 
-    "  3、重启Nginx"
-    "  4、设置Nginx配置"
-    "  5、查看Nginx运行状况"
-    "  6、查看Nginx日志"
-    "  7、停止Nginx"
+    "  2、安装Nginx"              "install_Nginx"
+    "  3、重启Nginx"              "restart "nginx""
+    "  4、设置Nginx配置"           "echo 0"
+    "  5、查看Nginx运行状况"        "n"
+    "  6、查看Nginx日志"            "nano /var/log/nginx/access.log"
+    "  7、停止Nginx"               "stop nginx"
     "  0、退出")
-                 if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 case $option in
-                      2)install_Nginx;;
-                      3)restart "nginx";;
-                      4)echo 0;;
-                      5)nano /var/log/nginx/access.log;;
-                      6)stop nginx;;
-                    esac;;
+
+         page "${main_menu[$(($get_option - 1))]}" 2 "${sub_menu[@]}";;  
+
 6)###### Xui服务  ######
      sub_menu=(
-    "  1、返回上一级"
-    "  2、安装\更新Xui面板"
-    "  3、进入Xui面板管理（指令:x-ui）"
+    "  1、返回上一级"                    ""
+    "  2、安装\更新Xui面板"               "install_Xui"
+    "  3、进入Xui面板管理（指令:x-ui）"    "x-ui"
     "  0、退出" )
-                 if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 case $option in
-                      2)install_Xui;;
-                      3)x-ui;;
-                  esac;;
+
+         page "${main_menu[$(($get_option - 1))]}" 2 "${sub_menu[@]}";;  
+       
 7) ###### Cloudflare服务  ######
     sub_menu=(
-    "  1、返回上一级"
-    "  2、Cloudflare DNS配置"
-    "  3、修改CF账户配置"
-    "  4、下载CFWarp"
-    "  5、启动\重启CFWarp"
-    "  6、查看CFWarp运行状况"
-    "  7、停用CFWarp"
+    "  1、返回上一级"               ""
+    "  2、Cloudflare DNS配置"      "cfdns; continue"
+    "  3、修改CF账户配置"           "set_cfdns"
+    "  4、下载CFWarp"              "install_Warp"
+    "  5、启动\重启CFWarp"          "restart warp-svc"
+    "  6、查看CFWarp运行状况"        ""
+    "  7、停用CFWarp"              "stop warp-svc"
     "  0、退出")
-                 if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 case $option in
-                     2)cfdns
-                       continue;;
-                     3)set_cfdns;;
-                     4)install_Warp;;
-                     5)restart warp-svc;;
-                     6)stop warp-svc;;
-                 esac;; 
+
+         page "${main_menu[$(($get_option - 1))]}" 2 "${sub_menu[@]}";;  
+                 
 8)###### Tor服务 ######
  sub_menu=(
-    "  1、返回上一级"
-    "  2、安装Tor"
-    "  3、启动\重启Tor"
-    "  4、设置Tor配置"
-    "  5、查看Tor运行状况"
-    "  6、停用Tor"
+    "  1、返回上一级"                  ""
+    "  2、安装Tor"                   "install_Tor"
+    "  3、启动\重启Tor"               "restart tor; echo;  ipinfo"
+    "  4、设置Tor配置"                "set_tor_config"
+    "  5、查看Tor运行状况"            ""
+    "  6、停用Tor"                    "stop tor"
     "  0、退出")
-                 if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 case $option in
-                      2)install_Tor;;
-                      3)restart tor
-                        echo
-                        ipinfo;;
-                      3)set_tor_config;;
-                      4)stop tor;;
-                 esac;; 
+
+          page "${main_menu[$(($get_option - 1))]}" 2 "${sub_menu[@]}";;  
          
 9)######  Frp服务 ######
     sub_menu=(
-    "  1、返回上一级"
-    "  2、安装Frp"
-    "  3、启动\重启Frp"
-    "  4、设置Frp配置"
-    "  5、查看Frp运行状况"
-    "  6、停用Frp"
+    "  1、返回上一级"                    ""
+    "  2、安装Frp"                     "install_Frp"
+    "  3、启动\重启Frp"                 "restart frps"
+    "  4、设置Frp配置"                  "set_tor_config"
+    "  5、查看Frp运行状况"               ""
+    "  6、停用Frp"                      "stop frps"
     "  0、退出")                    
-                 if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                 case $option in
-                      2)install_Frp;;
-                      3)reset_Frp;;
-                      4)set_tor_config;;
-                      5)restart "frps";;
-                 esac;;       
+
+              page "${main_menu[$(($get_option - 1))]}" 2 "${sub_menu[@]}";;  
                                                 
 10)###### Chatgpt ######
    sub_menu=(
-    "  1、返回上一级"
-    "  2、下载\更新Chatgpt"
-    "  3、启动\重启动Chatgpt"
-    "  4、运行\重运行Chatgpt容器"
-    "  5、设置Chatgpt配置"
-    "  6、查看Chatgpt运行状况"
-    "  7、停用Chatgpt"
+    "  1、返回上一级"                        ""
+    "  2、下载\更新Chatgpt"                 "pull_gpt"
+    "  3、启动\重启动Chatgpt"               "run_gpt"
+    "  4、运行\重运行Chatgpt容器"             ""
+    "  5、设置Chatgpt配置"                  "set_gpt"
+    "  6、查看Chatgpt运行状况"               ""
+    "  7、停用Chatgpt"                     'confirm "是否停止运行Chatgpt？" "已取消！" || docker stop $Chatgpt_name'
     "  0、退出")                     
-                  if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
-                  case $option in
-                       2)pull_gpt;;
-                       3)run_gpt;;
-                       4)set_gpt;;
-                       6)confirm "是否停止运行Chatgpt？" "已取消！" || docker stop $Chatgpt_name;;
-                  esac;;            
+               
+               page "${main_menu[$(($get_option - 1))]}" 2 "${sub_menu[@]}";;  
+                                                 
 esac
 [ "$new_text" == "1" ] && break; wait
 done      
@@ -391,7 +352,7 @@ function page {
      #如果选择零则退出
      [ "$new_text" == "0" ] && quit           
      #二级菜单模式下，执行菜单指令
-     [ ! "$new_text" == "1" ] && [ "$2" == "2" ] && eval ${cmd[$((new_text+1))]}
+     [ ! "$new_text" == "1" ] && [ "$2" == "2" ] && eval ${cmd[$((new_text-1))]}
 }
       
 #############################################################################################################################################################################################
