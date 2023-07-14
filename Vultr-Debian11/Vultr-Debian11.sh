@@ -1191,7 +1191,7 @@ function cfdns {
         echo -n "请输入要绑定ip地址（输入空则跳过,输入#则为本机IP）："
         inp true 1 "$ipv4_regex" '[ "$new_text" == "#" ]' && [ -z $new_text ] && clear && continue 
         if [ "$new_text" == "#" ]; then
-           record_content=$(curl ifconfig.me)
+           record_content=$(curl -s https://ipinfo.io/ip)
         else
            record_content="$new_text"
         fi
