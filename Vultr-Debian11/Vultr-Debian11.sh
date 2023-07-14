@@ -107,7 +107,7 @@ dat_mod='# 该文件为vinci用户配置文本
 # * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配规则（条件规则和比较规则）。比较规则即为正则表达式的变量名，条件规则为判断\$new_text变量是否符合规则条件，条件需用两个\"\"包裹
 Dat_num="\"${#dat_mod}\""                         #版本号*              
 $(pz "Domain")                                    #@一级域名#@不用加www#@domain_regex
-$(pz "Email")                                     #@邮箱#@#@email_regex
+$(pz "Email)                                     #@邮箱#@#@email_regex
 $(pz "Cloudflare_api_key")                        #@Cloudflare Api
 $(pz "Warp_port")                                 #@Warp监听端口#@0-65535#@port_regex
 $(pz "Tor_port")                                  #@Tor监听端口#@0-65535#@port_regex
@@ -365,7 +365,11 @@ function page {
 function update_dat { 
     if ! source $dat_path >/dev/null 2>&1; then   #读取用户数据
         echo "系统无用户数据记录。准备新建用户数据..."
-        eval dat_all="\"$dat_mod\""   #创建数据模板并更新
+        if eval dat_all="\"$dat_mod\""; then   #创建数据模板并更新
+          echo "成功"
+          else
+           echo "失败"
+          fi
         echo "$dat_all" > "$dat_path"  #写入数据文件
         echo "初始化数据完成"
         wait
@@ -1334,13 +1338,13 @@ EOF
 dat_mod+='
 #####Chatgpt-docker######
 $(pz "Gpt_port")                              #@Chatgpt本地端口#@0-65535#@port_regex 
-$(pz "Chatgpt_api_key)                        #@Chatgpt Api
-$(pz "Gpt_code)                               #@授权码
-$(pz "Proxy_model)"                           #@接口代理模式#@1为正向代理、2为反向代理#@\"[[ \$new_text =~ ^(1|2)\$ ]]\"
-$(pz "BASE_URL)                               #@OpenAI接口代理URL#@
-$(pz "PROXY_URL)                              #@Chatgpt本地代理地址#@
-$(pz "Chatgpt_image)                          #Chat镜像名称*
-$(pz "Chatgpt_name)                           #Chat容器名称*
+$(pz "Chatgpt_api_key")                        #@Chatgpt Api
+$(pz "Gpt_code")                               #@授权码
+$(pz "Proxy_model")                           #@接口代理模式#@1为正向代理、2为反向代理#@\"[[ \$new_text =~ ^(1|2)\$ ]]\"
+$(pz "BASE_URL")                               #@OpenAI接口代理URL#@
+$(pz "PROXY_URL")                              #@Chatgpt本地代理地址#@
+$(pz "Chatgpt_image")                          #Chat镜像名称*
+$(pz "Chatgpt_name")                           #Chat容器名称*
 '
 
 ######  下载 chatgpt-next-web 镜像 ######
