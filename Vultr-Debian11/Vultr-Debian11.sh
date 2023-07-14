@@ -215,7 +215,7 @@ function main {
     
 2)###### 工具箱  ###### 
     sub_menu=(
-    "  1、返回上一级"
+    "  1、返回上一级"      ""
     "  2、设置微信通知推送" "notifier"
     "  0、退出")                  
     
@@ -245,7 +245,7 @@ function main {
 
 5)####  Nginx选项   ######
    sub_menu=(
-    "  1、返回上一级"
+    "  1、返回上一级"              ""
     "  2、安装Nginx"              "install_Nginx"
     "  3、重启Nginx"              "restart "nginx""
     "  4、设置Nginx配置"           "echo 0"
@@ -1123,7 +1123,7 @@ function cfdns {
        return
     fi
     dns_records="$(get_all_dns_records $zone_identifier)"
-    echo $dns_records
+    echo "$dns_records"
     # 询问用户要进行的操作
     echo "操作选项："
     echo "1. 删除DNS记录修改或增加DNS记录"
@@ -1133,8 +1133,7 @@ function cfdns {
     echo -n "请选择要进行的操作：" 
     inp false 2 {0..3}
     case $new_text in  
-1)#删除DNS记录
-        
+1)#删除DNS记录 
         clear
         echo $dns_records
         echo -n "请输入要删除的DNS记录名称（例如 www,输入为空则跳过）："
@@ -1239,7 +1238,7 @@ local config=(
 "Email"
 "Cloudflare_api_key"
 )
-    set_dat ${config[@]}
+    set_dat "${config[@]}"
 }
 ###### 安装cf warp套 ######
 function install_Warp {
