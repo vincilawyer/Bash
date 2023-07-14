@@ -1126,8 +1126,9 @@ function cfdns {
       echo "正在安装依赖软件JQ..."
       apt update
       apt install jq -y
+      echo "依赖件JQ已安装完成！"
+      wait
     fi
-
     while true; do 
     # 获取区域标识符
     zone_identifier=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$Domain" \
@@ -1155,7 +1156,7 @@ function cfdns {
         get_all_dns_records $zone_identifier
         echo -n "请输入要删除的DNS记录名称（例如 www,输入为空则跳过）："
         inp true 1 "/^([a-z0-9]+)/i" 
-        [ -z $new_text ] $$ continue 
+        [ -z $new_text ] && continue 
         record_name=$new_text
         # 获取记录标识符
         record_identifier=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records?type=A&name=$record_name.$Domain" \
@@ -1166,7 +1167,7 @@ function cfdns {
         clear
         # 如果记录标识符为空，则表示未找到该记录
         if [ "$record_identifier" == "null" ]; then
-            echo "未找到该DNS记录。"
+            echo -e "${RED}未找到该DNS记录，请重新操作。${NC}"
             continue
         else
             # 删除记录
@@ -1182,7 +1183,7 @@ function cfdns {
         get_all_dns_records $zone_identifier
         echo -n "请输入要修改或增加的DNS记录名称（例如 www，输入空则跳过,输入#则为本机IP）："
         inp true
-        [ -z $new_text ] $$ continue 
+        [ -z $new_text ] && continue 
         record_name=$new_text
         inp true 1 "$ipv4_regex" '\"[ \"\$new_text\" == \"#\" ]\"'
         if [ "$new_text" == "#" ]; then
