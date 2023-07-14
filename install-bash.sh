@@ -33,6 +33,7 @@ Version=""                                                                      
 
 ####### 主函数 ######
 function main {
+     read -n 1 -p "等待"
     (( wrong==1 )) || clear
     while true; do
          #如果未获取到新版本文件
