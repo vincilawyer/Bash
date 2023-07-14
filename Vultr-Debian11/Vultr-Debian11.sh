@@ -359,20 +359,18 @@ function page {
 ##############################################################################   4.用户数据管理模块  ################################################################################################
 ############################################################################################################################################################################################
 
-eval dat_all="\"$dat_text\""
-
 #######   创建\更新用户配置数据模板    #######
 function update_dat { 
     if ! source $dat_path >/dev/null 2>&1; then   #读取用户数据
         echo "系统无用户数据记录。准备新建用户数据..."
-        eval dat_all="\"$dat_text\""   #创建数据模板并更新
+        eval dat_all="\"$dat_mod\""   #创建数据模板并更新
         echo "$dat_all" > "$dat_path"  #写入数据文件
         echo "初始化数据完成"
         wait
     else
         if ! [ "$Dat_num" == "${#dat_mod}" ] ; then
            echo "配置文件更新中..."
-           eval dat_all="\"$dat_text\""  #创建数据模板并更新
+           eval dat_all="\"$dat_mod\""  #创建数据模板并更新
            echo "$dat_all" > "$dat_path" #写入数据文件
            echo "更新完成，可在系统设置中修改参数！"
            wait
@@ -1344,7 +1342,7 @@ PROXY_URL="$PROXY_URL"                              #@Chatgpt本地代理地址#
 Chatgpt_image="$Chatgpt_image"                      #Chat镜像名称*
 Chatgpt_name="$Chatgpt_name"                        #Chat容器名称*
 
-'; dat_text="$dat_mod$dat_new"
+'; dat_mod="$dat_mod$dat_new"
 
 ######  下载 chatgpt-next-web 镜像 ######
 function pull_gpt {
