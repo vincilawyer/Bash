@@ -1149,9 +1149,9 @@ function cfdns {
     echo "1. 删除DNS记录修改或增加DNS记录"
     echo "2. 修改或增加DNS记录"
     echo "3. 返回"
-    echo "4. 退出"
+    echo "0. 退出"
     echo -n "请选择要进行的操作：" 
-    inp false 2 {1..4}
+    inp false 2 {0..3}
     case $new_text in  
 1)#删除DNS记录
         
@@ -1191,10 +1191,11 @@ function cfdns {
         echo -n "请输入要绑定ip地址（输入空则跳过,输入#则为本机IP）："
         inp true 1 "$ipv4_regex" '[ "$new_text" == "#" ]' && [ -z $new_text ] && clear && continue 
         if [ "$new_text" == "#" ]; then
-           record_content=$(ip addr | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v 127.0.0.1)
+           record_content=$(curl ifconfig.me)
         else
            record_content="$new_text"
         fi
+        echo $record_content
         read -p "是否启用Cloudflare CDN代理？（Y/N）" enable_proxy
         if [[ $enable_proxy =~ ^[Yy]$ ]]; then
             proxy="true"
@@ -1230,7 +1231,7 @@ function cfdns {
                 continue
            fi;;
      3) return;;
-     4) exit
+     0) exit
         clear;;
   esac
   wait
@@ -1246,7 +1247,7 @@ function get_all_dns_records {
        echo "——————————DNS解析编辑器v2————————————"
        echo "以下为$Domain域名当前的所有DNS解析记录："
        echo
-       echo "域名                               ip            CDN状态    TTL"
+       echo "域名                                    ip            CDN状态    TTL"
        echo "$dns_records"
        echo
        echo
