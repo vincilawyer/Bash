@@ -385,7 +385,7 @@ function page {
    
        # 分配元素
        for (( i=0; i<${#array[@]}; i++ )); do
-           (( i % 2 == 0 )) && menucmd+=("${array[$i]}") || cmd+=("${array[$i]}")
+           (( i % 2 == 0 )) && menu+=("${array[$i]}") || cmd+=("${array[$i]}")
        done
     fi
       echo ${menu[1]}
