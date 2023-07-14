@@ -179,6 +179,7 @@ function main {
   #######   检查用户数据文件  #######   
   update_dat
   
+  while true; do
   #######   主菜单选项  ######
     main_menu=(
     "  1、系统设置"
@@ -347,12 +348,11 @@ function main {
                        3)run_gpt;;
                        4)set_gpt;;
                        6)confirm "是否停止运行Chatgpt？" "已取消！" || docker stop $Chatgpt_name;;
-                  esac;; 
-            
+                  esac;;            
 esac
-if [ "$option" == "1" ]; then break; fi  #如果在二级菜单中输出为1，则返回上一级
-wait
+[ "$new_text" == "1" ] && break; wait
 done      
+done
 }
 
 ######   页面显示   ######
@@ -384,16 +384,9 @@ function page {
     fi   
     option "  请按序号选择操作: " 3 false 1 '"[[ "$new_text" =~ ^[0-9]+$ ]] && (( $new_text >= 0 && $new_text <= '$(($# - 3))' ))"' "${menu[@]}"
      #如果选择零则退出
-    if [ "$new_text" == "0" ]; then            
-       quit
-    #如果二级菜单选择1，则返回上一级
-    elif [ "$new_text" == "1" ] && [ "$2" == "2" ]; then   
-      return true
-    #执行指令
-    else
-       [ "$2" == "2" ] && eval ${cmd[$new_text]}
-       return fasle
-    fi
+     [ "$new_text" == "0" ] && quit           
+     #二级菜单模式下，执行菜单指令
+     [ ! "$new_text" == "1" ] && [ "$2" == "2" ] && eval ${cmd[$new_text]}
 }
       
 #############################################################################################################################################################################################
