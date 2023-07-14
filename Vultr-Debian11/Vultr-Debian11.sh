@@ -107,7 +107,7 @@ dat_mod='# 该文件为vinci用户配置文本
 # * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配规则（条件规则和比较规则）。比较规则即为正则表达式的变量名，条件规则为判断\$new_text变量是否符合规则条件，条件需用两个\"\"包裹
 Dat_num="\"${#dat_mod}\""                         #版本号*              
 $(pz "Domain")                                    #@一级域名#@不用加www#@domain_regex
-$(pz "Email)                                     #@邮箱#@#@email_regex
+$(pz "Email")                                     #@邮箱#@#@email_regex
 $(pz "Cloudflare_api_key")                        #@Cloudflare Api
 $(pz "Warp_port")                                 #@Warp监听端口#@0-65535#@port_regex
 $(pz "Tor_port")                                  #@Tor监听端口#@0-65535#@port_regex
