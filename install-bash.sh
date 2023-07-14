@@ -85,19 +85,20 @@ function main {
 
 #######   保存提示  ####### 
  function warning {
+      check_time=35
       tput sc  #保存当前光标位置
       local t=0
       n=$((n + 1))
       while true; do
             tput rc  #恢复光标位置
             tput el  #清除光标后内容
-            t=$((t + 1)); if ((t % 35 == 0)); then break; fi   #每隔50s检查一次更新情况
+            t=$((t + 1)); if ((t % $ == 0)); then break; fi   #每隔50s检查一次更新情况
             [ "$a" == "true" ] && b="               正在等待服务器端版本更新，输入任意键退出...                " || b='                                                                          '
             [ "$a" == "true" ] && a="false" || a="true"
             echo -e "${RED}##################################################################################${NC}"
             echo -e "${RED}##################################################################################${NC}"
             echo -e "${RED}####                                                                          ####${NC}"
-            echo -e "${RED}####   脚本运行错误！当前运行版本为：V$cur_Version.$num，检查程序版本V$Ver，第$n次检查   ####${NC}"
+            echo -e "${RED}####   脚本运行错误！当前运行版本为V$cur_Version.$num，检查程序版本V$Ver，第$n次检查$((35-$check_time)s   ####${NC}"
             echo -e "${RED}####                                                                          ####${NC}"
             echo -e "${RED}####$b####${NC}"
             echo -e "${RED}####                                                                          ####${NC}"
