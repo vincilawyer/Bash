@@ -361,11 +361,46 @@ function page {
 ############################################################################################################################################################################################
 
 ######   获取配置模板 ######
+dat_text='
+
+# 该文件为vinci用户配置文本
+# * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配规则（条件规则和比较规则）。比较规则即为正则表达式的变量名，条件规则为判断\$new_text变量是否符合规则条件，条件需用两个\"\"包裹
+Dat_num="z"      #版本号*              
+Domain="$Domain"                              #@一级域名#@不用加www#@domain_regex
+Email="$Email"                              #@邮箱#@#@email_regex
+Cloudflare_api_key="Cloudflare_api_key"                     #@Cloudflare Api
+Warp_port="Warp_port"                               #@Warp监听端口#@0-65535#@port_regex
+Tor_port="Tor_port"                               #@Tor监听端口#@0-65535#@port_regex
+
+
+#####Chatgpt-docker######
+Gpt_port="Gpt_port"                                #@Chatgpt本地端口#@0-65535#@port_regex 
+Chatgpt_api_key="Chatgpt_api_key"                         #@Chatgpt Api
+Gpt_code="Gpt_code"                                #@授权码
+Proxy_model="Proxy_model"                             #@接口代理模式#@1为正向代理、2为反向代理#@\"[[ \$new_text =~ ^(1|2)\$ ]]\"
+BASE_URL="BASE_URL"                               #@OpenAI接口代理URL#@
+PROXY_URL="PROXY_URL"                               #@Chatgpt本地代理地址#@
+Chatgpt_image="Chatgpt_image"                #Chat镜像名称*
+Chatgpt_name="Chatgpt_name"                          #Chat容器名称*
+
+'
+
+;(( i==0 )) && dat_num=${#dat_text}; done; }
+
+AAAA=HELLO WORD
+BBBB=HAIL HYDRY
+a='
+$(pz "AAAA")                                #@授权码'
+$(pz "BBBB")                                #@OpenAI接口代理URL#@'
+'
+
+
+
 function get_moddat {
 #用于为模板写入数据的内建函数
 function pz { echo "$1=\"$((($i==1)) && eval echo \$"$1")\""; } 
 for ((i = 0; i <= 1; i++)); do
-dat_text="
+dat_text='
 
 # 该文件为vinci用户配置文本
 # * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配规则（条件规则和比较规则）。比较规则即为正则表达式的变量名，条件规则为判断\$new_text变量是否符合规则条件，条件需用两个\"\"包裹
@@ -386,7 +421,7 @@ $(pz "PROXY_URL")                               #@Chatgpt本地代理地址#@
 Chatgpt_image=\"yidadaa/chatgpt-next-web\"        #Chat镜像名称*
 Chatgpt_name=\"chatgpt\"                          #Chat容器名称*
 
-";(( i==0 )) && dat_num=${#dat_text}; done; }
+';(( i==0 )) && dat_num=${#dat_text}; done; }
 
 ###### 将数据写入数据文件 ######
 function write_dat { echo "$dat_text" > "$dat_path"; }
