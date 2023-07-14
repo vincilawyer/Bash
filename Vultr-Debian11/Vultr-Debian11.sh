@@ -1207,7 +1207,6 @@ function cfdns {
         else
            record_content="$new_text"
         fi
-        echo $record_content
         read -p "是否启用Cloudflare CDN代理？（Y/N）" enable_proxy
         if [[ $enable_proxy =~ ^[Yy]$ ]]; then
             proxy="true"
