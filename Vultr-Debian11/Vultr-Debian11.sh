@@ -386,8 +386,11 @@ function page {
        for (( i=0; i<${#array[@]}; i++ )); do
            (( i % 2 == 0 )) && cmd+=("${array[$i]}") || menu+=("${array[$i]}")
        done
-       echo $array[1]
-    fi   
+    fi
+      echo ${menu[1]}
+      echo ${menu[2]}
+      echo ${menu[3]}
+      echo ${menu[4]}
     option "  请按序号选择操作: " 3 false 1 '"[[ "$new_text" =~ ^[0-9]+$ ]] && (( $new_text >= 0 && $new_text <= '$(($# - 3))' ))"' "${menu[@]}"
      #如果选择零则退出
      [ "$new_text" == "0" ] && quit           
