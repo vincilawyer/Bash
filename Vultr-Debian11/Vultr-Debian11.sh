@@ -180,6 +180,7 @@ function main {
   update_dat
   
   while true; do
+  
   #######   主菜单选项  ######
     main_menu=(
     "  1、系统设置"
@@ -194,10 +195,12 @@ function main {
     "  10、Chatgpt-Docker服务"
     "  0、退出")
     page "请选择以下操作选项" 1 "${main_menu[@]}" 
-    get_option=$new_text #记住一级选项
-    sub_menu=""
-    while true; do
-          case $get_option in               
+    
+          get_option=$new_text #记住一级选项
+          sub_menu=""
+          while true; do
+          case $get_option in   
+          
 1)###### 1、系统设置  ######
     sub_menu=(
     "  1、返回上一级"               ""
@@ -207,13 +210,15 @@ function main {
     "  5、修改SSH登录端口和登录密码"  "change_ssh_port; change_login_password"
     "  6、更新脚本"                'update; [ "$?" == "2" ] && echo "当前版本为最新版，无需更新！"'
     "  0、退出" )
-                 page ${main_menu[$(($get_option - 1))]} 2 "${sub_menu[@]}" && continue ;;
+         
+          page "${main_menu[$(($get_option - 1))]}" 2 "${sub_menu[@]}";;
+    
 2)###### 工具箱  ###### 
-      sub_menu=(
+    sub_menu=(
     "  1、返回上一级"
     "  2、设置微信通知推送"
     "  0、退出")                  
-                 if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
+          if Option ${main_menu[$(($get_option - 1))]} "true" "${sub_menu[@]}"; then continue; fi #监听输入二级菜单选项，并判断项目内容
                  case $option in
                       2)notifier;;
                  esac;;                    
@@ -381,6 +386,7 @@ function page {
        for (( i=0; i<${#array[@]}; i++ )); do
            (( i % 2 == 0 )) && cmd+=("${array[$i]}") || menu+=("${array[$i]}")
        done
+       echo $array[1]
     fi   
     option "  请按序号选择操作: " 3 false 1 '"[[ "$new_text" =~ ^[0-9]+$ ]] && (( $new_text >= 0 && $new_text <= '$(($# - 3))' ))"' "${menu[@]}"
      #如果选择零则退出
