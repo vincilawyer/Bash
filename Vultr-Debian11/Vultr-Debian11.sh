@@ -212,12 +212,12 @@ function main {
           
 1)###### 1、系统设置  ######
     sub_menu=(
-    "  1、返回上一级"               ""
-    "  2、查看所有重要程序运行状态"   "status"
-    "  3、本机ip信息"              "ipinfo"
-    "  4、修改配置参数"             "set_dat"
-    "  5、修改SSH登录端口和登录密码"  "change_ssh_port; change_login_password"
-    "  6、更新脚本"                'update; [ "$?" == "2" ] && echo "当前版本为最新版，无需更新！"'
+    "  1、返回上一级"                ""
+    "  2、查看所有重要程序运行状态"    "status"
+    "  3、本机ip信息"               "ipinfo"
+    "  4、修改配置参数"              "set_dat"
+    "  5、修改SSH登录端口和登录密码"   "change_ssh_port; change_login_password"
+    "  6、更新脚本"                  'update; [ "$?" == "2" ] && echo "当前版本为最新版，无需更新！"'
     "  0、退出" )
   
           page "${main_menu[$(($get_option - 1))]}" 2 "${sub_menu[@]}";;
@@ -734,6 +734,19 @@ function inp {
         echo -e "${RED} 输入不正确，请重新输入${NC}！"
         tput rc
    done
+}
+
+#######  插入文本 ######
+function insert {
+    local string="$1"
+    local newstring="$2"
+    local file="$3" 
+    local temp_file=""
+    local awk_script='{
+        if($0 ~ location 
+    
+    awk -v string="$string" -v new="$newstring" -v file="$file" "$awk_script" > "$temp_file"
+    mv "$temp_file" "$file"    
 }
 
 ###### 选项和输入框  ######
