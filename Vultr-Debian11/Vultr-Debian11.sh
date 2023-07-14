@@ -1145,14 +1145,15 @@ function cfdns {
     get_all_dns_records $zone_identifier
     # 询问用户要进行的操作
     echo "操作选项："
-    echo "1. 删除DNS记录"
-    echo "2. 修改或增加DNS记录"
-    echo "3. 退出"
+    echo "1. 返回"
+    echo "2. 删除DNS记录修改或增加DNS记录"
+    echo "3. 修改或增加DNS记录"
+    echo "4. 退出"
     echo -n "请选择要进行的操作：" 
-    inp false 2 1 2 3
+    inp false 2 {1..4}
     case $new_text in
-    
-1)#删除DNS记录
+1)return;;    
+2)#删除DNS记录
         
         clear
         get_all_dns_records $zone_identifier
@@ -1228,8 +1229,7 @@ function cfdns {
                 echo "已成功更新记录 $record_name.$Domain"
                 continue
            fi;;
-     3) return
-        echo "已退出！" ;;
+     3) exit;;
   esac
   wait
   done
