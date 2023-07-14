@@ -684,7 +684,7 @@ function settext {
   local n="${4:-1}"               # 匹配结果的索引            
   local exact_match="${5:-True}"  # 是否精确匹配结束文本字符串
   local module="${6:-True}"       # 是否在一段代码内寻找定位字符串，false为行内寻找
-  local comment="${7:-fasle}"     # 是否修改注释行
+  local comment="${7:-fasle}"     # 是否修改注释行,false模式下，输入#则内容替换为空字符。输入为"#"，则为#
   local is_file="${8:-True}"      # 是否为文件
   local input="$9"                # 要替换的内容
   local mean="${10}"              # 显示搜索和修改内容的含义
@@ -712,6 +712,7 @@ function settext {
                      echo -e "${BLUE}已将"$mean"参数设为注释行${NC}"
                      return 0
                  else
+                     [[ "$new_text" == "#" ]] && new_text=""
                      replace  "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "$comment" "$is_file" "$input" "$new_text"
                      echo -e "${BLUE}"$mean"已修改为"$new_text"${NC}"
                      return 0
