@@ -1331,7 +1331,7 @@ EOF
 ############################################################################################################################################################################################
 
 ######   参数配置   ######
-dat_mod='
+dat_mod+='
 #####Chatgpt-docker######
 Gpt_port="$Gpt_port"                                #@Chatgpt本地端口#@0-65535#@port_regex 
 Chatgpt_api_key="$Chatgpt_api_key"                  #@Chatgpt Api
@@ -1341,8 +1341,7 @@ BASE_URL="$BASE_URL"                                #@OpenAI接口代理URL#@
 PROXY_URL="$PROXY_URL"                              #@Chatgpt本地代理地址#@
 Chatgpt_image="$Chatgpt_image"                      #Chat镜像名称*
 Chatgpt_name="$Chatgpt_name"                        #Chat容器名称*
-
-'; dat_mod="$dat_mod$dat_new"
+'
 
 ######  下载 chatgpt-next-web 镜像 ######
 function pull_gpt {
