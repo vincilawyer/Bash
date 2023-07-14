@@ -258,10 +258,10 @@ function main {
                  case $option in
                       2)install_Nginx;;
                       3)restart "nginx";;
-                      4)echo 0
+                      4)echo 0;;
                       5)download_nginx_config;;
                       6)nano /var/log/nginx/access.log;;
-                      7)stop nginx
+                      7)stop nginx;;
                     esac;;
 6)###### Xui服务  ######
      sub_menu=(
