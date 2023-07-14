@@ -93,13 +93,13 @@ function main {
             tput rc  #恢复光标位置
             tput el  #清除光标后内容
             t=$((t + 1)); if ((t % $check_time == 0 )); then break; fi   #每隔50s检查一次更新情况
-            t1=$((( $((check_time-t)) > 10)) && echo "$((check_time-t))" || echo "0$((check_time-t))")
+            ti=$((( $((check_time-t)) > 10)) && echo "$((check_time-t))" || echo "0$((check_time-t))")s
             [ "$a" == "true" ] && b="               正在等待服务器端版本更新，输入任意键退出...                " || b='                                                                          '
             [ "$a" == "true" ] && a="false" || a="true"
             echo -e "${RED}##################################################################################${NC}"
             echo -e "${RED}##################################################################################${NC}"
             echo -e "${RED}####                                                                          ####${NC}"
-            echo -e "${RED}####   脚本运行错误！当前运行版本V$cur_Version.$num，检查程序版本V$Ver，第$n次检查$t1s   ####${NC}"
+            echo -e "${RED}####   脚本运行错误！当前运行版本V$cur_Version.$num，检查程序版本V$Ver，第$n次检查$ti   ####${NC}"
             echo -e "${RED}####                                                                          ####${NC}"
             echo -e "${RED}####$b####${NC}"
             echo -e "${RED}####                                                                          ####${NC}"
