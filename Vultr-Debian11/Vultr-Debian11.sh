@@ -389,8 +389,8 @@ function page {
     fi
       echo ${menu[1]}
       echo ${menu[2]}
-      echo ${menu[3]}
-      echo ${menu[4]}
+      echo ${cmd[0]}
+      echo ${cmd[1]}
     option "  请按序号选择操作: " 3 false 1 '"[[ "$new_text" =~ ^[0-9]+$ ]] && (( $new_text >= 0 && $new_text <= '$(($# - 3))' ))"' "${menu[@]}"
      #如果选择零则退出
      [ "$new_text" == "0" ] && quit           
