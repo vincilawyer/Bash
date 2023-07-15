@@ -706,6 +706,7 @@ function insert {
     local file="$3"                #文件位置
     local findloc=0                #文件中是否找到一个带注释符的匹配内容    
     local lineno=0                 #行号
+    local lines=()
     while IFS= read -r line;do
          ((lineno++)) #记住行号
          if [[ $line =~ $location_string ]]; then
@@ -825,35 +826,41 @@ function set_dat {
     echo "已配置结束！"
 }
 
-###### 插入配置 #####
-function insert_config {
-     
-}
-
-
+    insert "SocksPort $tor_port          @*@#@Tor监听端口#@SocksPort #@ #@tor_port" "SocksPort " "$path_tor"
 
 #######   用户数据模板更新(代码作废)   #######   
-function xupdate_datx {
+function update_config {
     lines=()
+    a=0      #已修改配置的数量
     while IFS= read -r line; do     
          lines+=("$line")    #将每行文本转化为数组     
-    done <<< "$dat_text" 
+    done <<< "$1" 
 
     for index in "${!lines[@]}"; do   
          line=${lines[$index]}
-         if [[ ! $line =~ "=" ]] || [[ $line =~ ^([[:space:]]*[#]+|[#]+) ]] || [[ $line =~ \*([[:space:]]*|$) ]] ; then continue ; fi  #跳过#开头和*结尾的行
+         [[ "$line" == *'@*@#@'* ]] || continue      #如果没有找到配置行，则继续查找
          a=()
          IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g')    # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。
-         IFS="=" read -ra b <<< "$line" 
-         #去除变量名的前后空格
-         b[0]="${b[0]#"${b[0]%%[![:space:]]*}"}"  
-         b[0]="${b[0]%"${b[0]##*[![:space:]]}"}"
-         if [ -z "${!b[0]}" ]; then continue; fi #如果变量不存在，则跳过更新
-         lines[$index]=$(replace '"' '"' "" 1 true false false false "$line"  "${!b[0]}")
+         varname="$(echo -e "${a[4]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"   #去除变量名的前后空格
+         #如果变量存在
+         if [ -v variable_name ]; then
+            echo "已将配置由$line"
+            line=$(replace "${a[2]}" "${a[3]}" "" 1 true false false false "$line"  "${!varname}")
+            echo "更新为$line"
+            echo
+            a=$((a+1))
+         #如果变量不存在
+         else
+            echo -e "${RED}配置修改失败：$line${NC}"
+            echo -e "${RED}用户数据中未找到"${a[1]}"变量${NC}"
+         fi
     done
-    printf '%s\n' "${lines[@]}"  > "$dat_path" 
-    replace '"' '"' "Dat_Version1" 1 true false false true "$dat_path" "$Dat_Version"  #更新配置版本号
-    source "$dat_path"         #重新载入数据
+        if ((a>0)); then
+           printf '%s\n' "${lines[@]}"  > "$1" 
+           echo "已完成$a条配置的修改更新"
+        else
+           echo -e "${RED}配置更新失败，未找到配置行或配置值！${NC}"
+        fi
 } 
 
 
@@ -1373,7 +1380,7 @@ function install_Warp {
 path_tor="/etc/tor/torrc"
 adddat '
 $(pz "Tor_port")                                  #@Tor监听端口#@0-65535#@port_regex
-
+'
 
 ###### 安装Tor的函数 ######
 function install_Tor {
@@ -1383,14 +1390,21 @@ function install_Tor {
     echo -e "${GREEN}开始安装Tor${NC}"
     apt install tor -y
     ipinfo
+    #初始化tor配置
+    insert "SocksPort $tor_port          @*@#@Tor监听端口#@SocksPort #@ #@tor_port" "SocksPort " "$path_tor"
 }
 
 ###### 设置Tor配置 ######
 function set_tor_config {
-   settext "SocksPort " " " "" 2 false false "true" "true" $path_tor "Tor监听端口" "0-65535" 1 $port_regex
+local conf=(
+"Tor_port"
+)
+    set_dat ${conf[@]}
+    update_config $path_tor
+
 }
 
-insert_config "SocksPort $tor_port     @*@#@tor监听端口#@SocksPort #@ #@tor_port"
+
 
 #############################################################################################################################################################################################
 ##############################################################################   13.Frp模块  ################################################################################################
