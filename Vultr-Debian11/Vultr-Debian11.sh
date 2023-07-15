@@ -657,12 +657,6 @@ function settext {
 #     2、传入的第二个参数为比较模式，1为正则表达式匹配，2为字符串普通匹配。两种模式下，都可以使用条件语句。
 #     其余参数均为比较参数
 function inp {
-
-echo $1
-echo $2
-echo $3
-echo $4
-echo $5
     tput sc
     local k="true" #判断参数是否全部为空
     while true; do
