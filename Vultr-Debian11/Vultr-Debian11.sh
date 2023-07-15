@@ -662,6 +662,8 @@ function set_dat {
              elif ! [[ "${rule:0:1}" == '"' && "${rule: -1}" == '"' ]]; then   #判断rule是正则表达式变量名还是条件语句,如果是正则表达式变量名则转换为条件语句
                  rule=${!rule} 
              fi
+             echo
+             echo $rule
              settext "\"" "\"" "$arg" 1 true false false true "$dat_path" "${a[0]}" "${a[1]}" 1 "$rule"  
          done         
     else
@@ -905,6 +907,8 @@ function install_Docker {
     "  6、查看Nginx日志"            "nano /var/log/nginx/access.log"
     "  7、停止Nginx"               "stop nginx"
     "  0、退出")
+
+### 路径 ###
 #nginx配置文件网址
 link_nginx="https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf"
 #nginx配置文件路径 (查看配置：nano /etc/nginx/conf.d/default.conf)                      
