@@ -1160,6 +1160,8 @@ function cfdns {
     fi
     dns_records="$(get_all_dns_records $zone_identifier)"
     echo "$dns_records"
+    echo
+    echo
     # 询问用户要进行的操作
     echo "操作选项："
     echo "1. 删除DNS记录修改或增加DNS记录"
@@ -1167,12 +1169,13 @@ function cfdns {
     echo "3. 返回"
     echo "0. 退出"
     echo -n "请选择要进行的操作：" 
-wait
     inp false 2 {0..3}
     case $new_text in  
 1)#删除DNS记录 
         clear
         echo "$dns_records"
+        echo
+        echo
         echo -n "请输入要删除的DNS记录名称（例如 www,输入为空则跳过）："
         inp true 1 '^[a-zA-Z0-9]+'
         [ -z $new_text ] && clear && continue 
@@ -1201,6 +1204,8 @@ wait
 2)# 修改或增加DNS记录
         clear
         echo "$dns_records"
+        echo
+        echo
         echo -n "请输入要修改或增加的DNS记录名称（例如 www，输入空则跳过）："
         inp true 1 '^[a-zA-Z0-9]+' &&[ -z $new_text ] && clear && continue 
         record_name="$new_text"
@@ -1262,10 +1267,8 @@ function get_all_dns_records {
        echo "——————————Cloudflare DNS解析编辑器V3————————————"
        echo "以下为$Domain域名当前的所有DNS解析记录："
        echo
-       echo "            域名                                ip        CDN状态  TTL"
+       echo "            域名                             ip        CDN状态  TTL"
        echo "$dns_records"
-       echo ""
-       echo ""
 }
 
 ######  设置cfDNS配置 ######
