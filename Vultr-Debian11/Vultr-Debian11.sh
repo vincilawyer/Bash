@@ -25,7 +25,7 @@
 
 
 ####### 版本更新相关参数 ######
-Version=3.24  #版本号 
+Version=3.25  #版本号 
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #获取当前脚本的目录路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
 file_path="$script_path/$script_name"                                             #获取当前脚本的文件路径
@@ -248,7 +248,7 @@ while true; do
     inp false 1 '"[[ "$new_text" =~ ^[0-9]+$ ]] && (( $new_text >= 0 && $new_text <= '$((menunum-1))' ))"'
     [ "$new_text" == "0" ] && quit               #如果选择零则退出
     clear && eval ${cmd[$((new_text-1))]}
-    [ "$1" == "true"] && wait
+    [ "$1" == "true" ] && wait
 done
 
 }
