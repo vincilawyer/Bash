@@ -361,8 +361,10 @@ function page {
 
 ###### 查看程序运行状态 ######
 function status {
-
-    [ -n "$1" ] && ( systemctl status "$1"; return )
+    if [ -n "$1" ]; then
+      systemctl status "$1"
+      return
+    fi
 
 #如果没有指定则按应用列表输出
 apps=(
@@ -1396,8 +1398,11 @@ function install_Tor {
     sudo apt update
     echo -e "${GREEN}开始安装Tor${NC}"
     apt install tor -y
-    #初始化
+    #设置开机自启动
+    systemctl enable tor
+    #配置初始化
     initialize_tor
+    sleep 2
     ipinfo
 }
 
@@ -1413,9 +1418,8 @@ local conf=(
 )
     set_dat ${conf[@]}
     if update_config "$path_tor"; then
-       confirm "是否重启tor并适用新配置？" "已取消重启！" || (restart tor && ipinfo)
+       confirm "是否重启tor并适用新配置？" "已取消重启！" || (restart tor && sleep 3 && ipinfo)
     fi  
-    Tor_port=50000
 }
 
 #############################################################################################################################################################################################
