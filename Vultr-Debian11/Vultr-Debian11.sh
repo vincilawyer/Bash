@@ -825,6 +825,7 @@ function update_config {
          a=()
          IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g')    # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。
          varname="$(echo -e "${a[4]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"   #去除变量名的前后空格
+         echo 
          #如果变量存在
          if [ -v variable_name ]; then
             echo "已将配置由：$line"
@@ -836,9 +837,10 @@ function update_config {
          else
             echo -e "${RED}配置修改失败：$line${NC}"
             echo -e "${RED}用户数据中未找到"${a[1]}"变量${NC}"
+            echo
          fi
     done
-        if ((a>0)); then
+        if ((a > 0)); then
            printf '%s\n' "${lines[@]}"  > "$1" 
            echo "已完成$a条配置的修改更新"
            return 0
@@ -1398,7 +1400,7 @@ function install_Tor {
 
 ##### 初始化tor配置 ######
 function initialize_tor {
-    insert "SocksPort $tor_port          @*@#@Tor监听端口#@SocksPort #@ #@tor_port" "SocksPort " "$path_tor"
+    insert "SocksPort $Tor_port          @*@#@Tor监听端口#@SocksPort #@ #@Tor_port" "SocksPort " "$path_tor"
 }
 
 ###### 设置Tor配置 ######
