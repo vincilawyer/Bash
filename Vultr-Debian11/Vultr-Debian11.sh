@@ -611,7 +611,6 @@ function insert {
        sed -i "${findloc}a\\$config" "$file"
        return
     fi
-    echo 1
     #如果没找到匹配内容或唯一带有注释匹配内容
     sed -i "1i\\$config" "$file"
 }
@@ -1365,7 +1364,7 @@ local conf=(
 ######   参数配置   ######
 adddat '
 #####Frps######
-$(pz "bind_port")                              #@服务端监听端口#@#@0-65535#@port_regex 
+$(pz "bind_port")                              #@服务端监听端口#@0-65535#@port_regex 
 $(pz "vhost_http_port")                        #@HTTPS监听的端口#@0-65535#@port_regex 
 $(pz "token")                                   #@授权码#@数字
 $(pz "dashboard_port")                           #@服务端仪表板端口#@0-65535#@port_regex 
@@ -1435,7 +1434,6 @@ function initialize_frp {
 
 ######  ######
 function set_Frp {
-initialize_frp
 local conf=(
 "bind_port"
 "vhost_http_port"
