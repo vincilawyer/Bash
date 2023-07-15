@@ -25,7 +25,7 @@
 
 
 ####### 版本更新相关参数 ######
-Version=3.25  #版本号 
+Version=3.26  #版本号 
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #获取当前脚本的目录路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
 file_path="$script_path/$script_name"                                             #获取当前脚本的文件路径
@@ -1381,7 +1381,7 @@ path_frp="/etc/frp"
     "  1、返回上一级"                    "return"
     "  2、安装Frp"                     "install_Frp"
     "  3、启动\重启Frp"                 "restart frps"
-    "  4、设置Frp配置"                  "set_tor_config"
+    "  4、设置Frp配置"                  "set_Frp"
     "  5、查看Frp运行状况"               "status frps"
     "  6、停用Frp"                      "stop frps"
     "  0、退出")
