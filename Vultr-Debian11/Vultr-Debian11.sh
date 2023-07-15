@@ -673,8 +673,12 @@ function inp {
            else
                k="false"
                if [ "$2" == "1" ]; then
+               echo "$Condition" && "$new_text  1"
+               wait
                   [[  $new_text =~ $Condition ]] && tput el && return
                elif [ "$2" == "2" ]; then
+                   echo "$Condition" && "$new_text  2"
+                   wait
                   [[ "$new_text" == "$Condition" ]] && tput el && return
                fi
            fi
