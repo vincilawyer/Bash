@@ -62,21 +62,23 @@ path_notifier="/root/myfile/notifier.sh"
 
 ####### 定义正则表达式 ####### 
 #一级域名表达式
-domain_regex="^[a-zA-Z0-9-]{1,63}(\.[a-zA-Z]{2,})$"
+domain_regex='^[a-zA-Z0-9-]{1,63}(\.[a-zA-Z]{2,})$'
 #二级域名表达式
-subdomain_regex="^[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+$"
+subdomain_regex='^[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+$'
+#网址域名
+web_regex='^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$'
 #邮箱表表达式
-email_regex="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+email_regex='^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
 #IPV4表达式
-ipv4_regex="^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
+ipv4_regex='^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
 #IPV6表达式
-ipv6_regex="^([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])$"
+ipv6_regex='^([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])$'
 #ip端口号表达式
-port_regex="^([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"
+port_regex='^([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$'
 #大陆手机11位手机号表达式
-tel_regex="^1[3-9]\d{9}$"
+tel_regex='^1[3-9]\d{9}$'
 #若干#和空格前置的表达式 
-comment_regex="^ *[# ]*"
+comment_regex='^ *[# ]*'
 
 ####### 登录logo样式 ####### 
 art=$(cat << "EOF"
@@ -265,9 +267,9 @@ function main {
 
 6)###### Xui服务  ######
      sub_menu=(
-    "  1、返回上一级"                    ""
+    "  1、返回上一级"                     ""
     "  2、安装\更新Xui面板"               "install_Xui"
-    "  3、进入Xui面板管理（指令:x-ui）"    "x-ui"
+    "  3、进入Xui面板管理（指令:x-ui）"     "x-ui"
     "  0、退出" )
 
          page "${main_menu[$(($get_option - 1))]}" 2 "${sub_menu[@]}";;  
@@ -313,10 +315,10 @@ function main {
    sub_menu=(
     "  1、返回上一级"                        ""
     "  2、下载\更新Chatgpt"                 "pull_gpt"
-    "  3、启动\重启动Chatgpt"               "run_gpt"
-    "  4、运行\重运行Chatgpt容器"             "run_gpt"
+    "  3、启动\重启动Chatgpt"               "docker start $Chatgpt_name"
+    "  4、运行\重运行Chatgpt容器"            "run_gpt"
     "  5、设置Chatgpt配置"                  "set_gpt"
-    "  6、查看Chatgpt运行状况"               ""
+    "  6、查看Chatgpt运行状况"               "docker inspect $Chatgpt_name"
     "  7、停用Chatgpt"                     'confirm "是否停止运行Chatgpt？" "已取消！" || docker stop $Chatgpt_name'
     "  0、退出")                     
                
@@ -1500,7 +1502,7 @@ $(pz "Gpt_port")                              #@Chatgpt本地端口#@0-65535#@po
 $(pz "Chatgpt_api_key")                        #@Chatgpt Api
 $(pz "Gpt_code")                               #@授权码
 $(pz "Proxy_model")                           #@接口代理模式#@1为正向代理、2为反向代理#@\"[[ \$new_text =~ ^(1|2)\$ ]]\"
-$(pz "BASE_URL")                               #@OpenAI接口代理URL#@
+$(pz "BASE_URL")                               #@OpenAI接口代理URL#@默认接口为https://api.openai.com
 $(pz "PROXY_URL")                              #@Chatgpt本地代理地址#@
 $(pz "Chatgpt_image")                          #Chat镜像名称*
 $(pz "Chatgpt_name")                           #Chat容器名称*
@@ -1516,18 +1518,7 @@ function run_gpt {
     docker stop $Chatgpt_name >/dev/null 2>&1 && echo "正在重置chatgpt容器..."
     docker rm $Chatgpt_name >/dev/null 2>&1
     if (( Proxy_model==1 )); then 
-       if docker run -d  --restart=always -p 3000:$Gpt_port \
-           -e OPENAI_API_KEY="$Chatgpt_api_key" \
-           -e CODE="$Gpt_code" \
-           -e BASE_URL="$BASE_URL" \
-           $Chatgpt_image
-       then
-           echo "Chatgpt启动成功！"
-       else 
-        echo "启动失败，请重新设置参数配置"
-       fi      
-    elif (( Proxy_model==2 )); then 
-       if docker run -d  --restart=always -p 3000:$Gpt_port \
+        if docker run -d  --restart=always -p 3000:$Gpt_port \
            -e OPENAI_API_KEY="$Chatgpt_api_key" \
            -e CODE="$Gpt_code" \
            --net=host \
@@ -1538,6 +1529,18 @@ function run_gpt {
        else 
         echo "启动失败，请重新设置参数配置"
        fi  
+    elif (( Proxy_model==2 )); then 
+        if docker run -d  --restart=always -p 3000:$Gpt_port \
+           -e OPENAI_API_KEY="$Chatgpt_api_key" \
+           -e CODE="$Gpt_code" \
+           -e BASE_URL="$BASE_URL" \
+           $Chatgpt_image
+       then
+           echo "Chatgpt启动成功！"
+       else 
+        echo "启动失败，请重新设置参数配置"
+       fi  
+
     fi
 }
 
