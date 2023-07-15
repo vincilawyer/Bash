@@ -147,7 +147,7 @@ function countdown {
 #######  当用户选择主动退出  #########
 function quit() {
    if [ "$1" == "0" ]; then
-         clear;
+         clear
          echo -e "${GREED}已退出vinci脚本（V"$Version1"）！${NC}"
          exit 0
    elif [ "$1" == "1" ]; then
