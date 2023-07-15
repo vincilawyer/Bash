@@ -1367,8 +1367,7 @@ adddat '
 #####Frps######
 $(pz "bind_port")                              #@服务端监听端口#@#@0-65535#@port_regex 
 $(pz "vhost_http_port")                        #@HTTPS监听的端口#@0-65535#@port_regex 
-$(pz "vhost_https_port")                        #@HTTP监听的端口#@0-65535#@port_regex 
-$(pz "token")                                   #@鉴权token值
+$(pz "token")                                   #@授权码#@数字
 $(pz "dashboard_port")                           #@服务端仪表板端口#@0-65535#@port_regex 
 $(pz "dashboard_user")                             #@仪表板登录用户名
 $(pz "dashboard_pwd")                              #@仪表板登录密码
@@ -1425,9 +1424,8 @@ EOF
 
 
 function initialize_frp {
-    insert "bind_port = 8888              #￥#@服务端监听端口#@= #@ #@bind_port" "bind_port " "$path_frp"
-    insert "vhost_http_port = 10080        #￥#@HTTP监听的端口#@= #@ #@vhost_http_port" "vhost_http_port " "$path_frp"
-    insert "vhost_https_port = 10443        #￥#@HTTPS监听的端口#@= #@ #@vhost_https_port" "vhost_https_port " "$path_frp"
+    insert "bind_port = 27277              #￥#@服务端监听端口#@= #@ #@bind_port" "bind_port " "$path_frp"
+    insert "vhost_http_port = 15678        #￥#@HTTP监听的端口#@= #@ #@vhost_http_port" "vhost_http_port " "$path_frp"
     insert "token = 88888888                #￥#@鉴权token值#@= #@ #@token" "token " "$path_frp"
     insert "dashboard_port = 21211          #￥#@服务端仪表板端口#@= #@ #@dashboard_port" "dashboard_port " "$path_frp"
     insert "dashboard_user = admin          #￥#@仪表板登录用户名#@= #@ #@dashboard_user" "dashboard_user" "$path_frp"
