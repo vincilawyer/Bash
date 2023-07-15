@@ -1262,10 +1262,10 @@ function get_all_dns_records {
        echo "——————————Cloudflare DNS解析编辑器V3————————————"
        echo "以下为$Domain域名当前的所有DNS解析记录："
        echo
-       echo "            域名                                    ip        CDN状态  TTL"
+       echo "            域名                                ip        CDN状态  TTL"
        echo "$dns_records"
-       echo
-       echo
+       echo ""
+       echo ""
 }
 
 ######  设置cfDNS配置 ######
