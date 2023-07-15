@@ -830,8 +830,8 @@ function update_config {
          #如果变量存在
          if [ -v $varname ]; then
             echo "已将配置由：$line"
-            line=$(replace "${a[2]}" "${a[3]}" "" 1 true false false false "$line"  "${!varname}")
-            echo "更新为：$line"
+            ${lines[$index]}=$(replace "${a[2]}" "${a[3]}" "" 1 true false false false "$line"  "${!varname}")
+            echo "更新为：${lines[$index]}"
             echo
             ct=$(( ct + 1 ))
             
