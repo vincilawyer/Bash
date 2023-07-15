@@ -245,7 +245,7 @@ function page {
     echo
     echo -n "  请按序号选择操作: "
     inp false 1 '"[[ "$new_text" =~ ^[0-9]+$ ]] && (( $new_text >= 0 && $new_text <= '$((menunum-1))' ))"'
-    [ "$new_text" == "0" ] && quit 0              #如果选择零则退出
+    [ "$new_text" == "0" ] && exit 0              #如果选择零则退出
     clear && eval ${cmd[$((new_text-1))]}
     [ "$1" == "true" ] && wait
 done
