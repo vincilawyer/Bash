@@ -676,10 +676,10 @@ function inp {
            fi
         done
         [ "$k" == "true" ] && tput el && return
-        #tput rc
+        tput rc
         tput el
         echo
-        echo -e "${RED} 输入不正确，请重新输入${NC}！"
+        echo -e "${RED} 输入不正确，请重新输入！${NC}"
         tput rc
    done
 }
@@ -814,13 +814,14 @@ function set_dat {
 #######   用户数据模板更新(代码作废)   #######   
 function update_config {
     lines=()
-    a=0      #已修改配置的数量
+    ct=      #已修改配置的数量
     while IFS= read -r line; do     
          lines+=("$line")    #将每行文本转化为数组     
     done < "$1" 
 
     for index in "${!lines[@]}"; do   
          line=${lines[$index]}
+        
          [[ "$line" == *'#￥#@'* ]] || continue      #如果没有找到配置行，则继续查找
          a=()
          IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g')    # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。
@@ -832,7 +833,7 @@ function update_config {
             line=$(replace "${a[2]}" "${a[3]}" "" 1 true false false false "$line"  "${!varname}")
             echo "更新为：$line"
             echo
-            a=$(( a + 1 ))
+            ct=$(( ct + 1 ))
             
          #如果变量不存在
          else
@@ -842,7 +843,6 @@ function update_config {
          fi
     done
         if (( a > 0 )); then
-           echo 开始
            printf "%s\n" "${lines[@]}" > "$1"
            echo "已完成$a条配置的修改更新"
            return 0
@@ -1414,7 +1414,7 @@ local conf=(
     if update_config "$path_tor"; then
        choose "是否重启tor并适用新配置？" "已取消重启！" || (restart tor && ipinfo)
     fi  
-    
+    Tor_port=50000
 }
 
 #############################################################################################################################################################################################
