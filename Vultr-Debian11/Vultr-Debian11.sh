@@ -654,16 +654,13 @@ function set_dat {
   #如果指定配置，则指定修改
     if ! [ $# -eq 0 ]; then
          for arg in "$@"; do
-             line=$(search "#@" '' "$arg" 1 false false false true "$dat_path" ) 
-                          echo 故障位置1
+             line=$(search "#@" '' "$arg" 1 false false false true "$dat_path" )            
              IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
-                          echo 故障位置2
              rule="$(echo -e "${a[2]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"   #去除规则前后的空格
-                          echo 故障位置3
-             if [ -z $rule ]; then
+             if [ -z "$rule" ]; then
              :      #如果是空的，则无需进行判断句的判断
              elif ! [[ "${rule:0:1}" == '"' && "${rule: -1}" == '"' ]]; then   #判断rule是正则表达式变量名还是条件语句,如果是正则表达式变量名则转换为条件语句
-                 rule=${!rule} 
+                 rule="${!rule}" 
              fi 
              settext "\"" "\"" "$arg" 1 true false false true "$dat_path" "${a[0]}" "${a[1]}" 1 "$rule" 
          done         
@@ -1348,7 +1345,7 @@ function install_Tor {
 
 ##### 初始化tor配置 ######
 function initialize_tor {
-    insert "SocksPort $Tor_port          #￥#@Tor监听端口#@SocksPort #@ #@Tor_port" "SocksPort " "$path_tor"
+    insert "SocksPort 50000          #￥#@Tor监听端口#@SocksPort #@ #@Tor_port" "SocksPort " "$path_tor"
 }
 
 ###### 设置Tor配置 ######
@@ -1365,7 +1362,18 @@ local conf=(
 #############################################################################################################################################################################################
 ##############################################################################   13.Frp模块  ################################################################################################
 ############################################################################################################################################################################################
-### 参数配置  ####
+######   参数配置   ######
+adddat '
+#####Frps######
+$(pz "bind_port")                              #@服务端监听端口#@#@0-65535#@port_regex 
+$(pz "vhost_http_port")                        #@HTTPS监听的端口#@0-65535#@port_regex 
+$(pz "vhost_https_port")                        #@HTTP监听的端口#@0-65535#@port_regex 
+$(pz "token")                                   #@鉴权token值
+$(pz "dashboard_port")                           #@服务端仪表板端口#@0-65535#@port_regex 
+$(pz "dashboard_user")                             #@仪表板登录用户名
+$(pz "dashboard_pwd")                              #@仪表板登录密码
+'
+
 #frp配置文件路径（查看配置：nano /etc/frp/frps.ini）  
 path_frp="/etc/frp"
 ##### 菜单栏 #####
@@ -1396,6 +1404,7 @@ function install_Frp {
         mkdir -p $path_frp
         mv $(echo $file_name | sed 's/.tar.gz//')/frps.ini $path_frp
         rm -r $(echo $file_name | sed 's/.tar.gz//')
+        # 注意文件中的路径
         cat > /usr/lib/systemd/system/frps.service <<EOF
 [Unit]
 Description=Frp Server Service
@@ -1411,27 +1420,35 @@ ExecStart=/usr/bin/frps -c /etc/frp/frps.ini
 [Install]
 WantedBy=multi-user.target
 EOF
+        initialize_frp
+}
+
+
+function initialize_frp {
+    insert "bind_port = 8888              #￥#@服务端监听端口#@= #@ #@bind_port" "bind_port " "$path_frp"
+    insert "vhost_http_port = 10080        #￥#@HTTP监听的端口#@= #@ #@vhost_http_port" "vhost_http_port " "$path_frp"
+    insert "vhost_https_port = 10443        #￥#@HTTPS监听的端口#@= #@ #@vhost_https_port" "vhost_https_port " "$path_frp"
+    insert "token = 88888888                #￥#@鉴权token值#@= #@ #@token" "token " "$path_frp"
+    insert "dashboard_port = 21211          #￥#@服务端仪表板端口#@= #@ #@dashboard_port" "dashboard_port " "$path_frp"
+    insert "dashboard_user = admin          #￥#@仪表板登录用户名#@= #@ #@dashboard_user" "dashboard_user" "$path_frp"
+    insert "dashboard_pwd = admin          #￥#@仪表板登录密码#@= #@ #@dashboard_pwd" "dashboard_pwd " "$path_frp"
 }
 
 ######  ######
-function reset_Frp {
-if confirm "是否重置Frp配置" "已取消重置！"; then return; fi 
-cat > $path_frp/frps.ini <<EOF
-[common]
-# 服务端监听端口
-bind_port = 8888
-# HTTP 类型代理监听的端口（给Nginx反向代理用）
-vhost_http_port = 10080
-vhost_https_port = 10443
-# 鉴权使用的 token 值
-token = 88888888
-#服务端仪表板端口
-dashboard_port = 21211
-#仪表板登录用户名
-dashboard_user = admin
-#仪表板登录密码
-dashboard_pwd = admin
-EOF
+function set_Frp {
+initialize_frp
+local conf=(
+"bind_port"
+"vhost_http_port"
+"vhost_https_port"
+"token"
+"dashboard_port"
+"dashboard_user" 
+"dashboard_pwd"
+)
+    set_dat ${conf[@]}
+    if confirm "是否启动Frp并适用最新配置？" "已取消启动"; then return; fi
+    restart frps
 }
 
 
