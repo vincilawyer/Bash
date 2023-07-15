@@ -1131,7 +1131,7 @@ $(pz "Warp_port")                                 #@Warp监听端口#@0-65535#@p
 #### 菜单栏
 cf_menu=(
     "  1、返回上一级"               "return"
-    "  2、Cloudflare DNS配置"      'cfdns; continue'
+    "  2、Cloudflare DNS配置"      "cfdns"
     "  3、修改CF账户配置"           "set_cfdns"
     "  4、下载CFWarp"              "install_Warp"
     "  5、启动\重启CFWarp"          "restart warp-svc"
@@ -1491,7 +1491,7 @@ function run_gpt {
     docker stop $Chatgpt_name >/dev/null 2>&1 && echo "正在重置chatgpt容器..."
     docker rm $Chatgpt_name >/dev/null 2>&1
     if (( Proxy_model==1 )); then 
-        if docker run -d  --restart=always -p 3000:$Gpt_port \
+        if docker run -d --name $Chatgpt_name --restart=always -p 3000:$Gpt_port \
            -e OPENAI_API_KEY="$Chatgpt_api_key" \
            -e CODE="$Gpt_code" \
            --net=host \
@@ -1503,7 +1503,7 @@ function run_gpt {
         echo "启动失败，请重新设置参数配置"
        fi  
     elif (( Proxy_model==2 )); then 
-        if docker run -d  --restart=always -p 3000:$Gpt_port \
+        if docker run -d  --name $Chatgpt_name --restart=always -p 3000:$Gpt_port \
            -e OPENAI_API_KEY="$Chatgpt_api_key" \
            -e CODE="$Gpt_code" \
            -e BASE_URL="$BASE_URL" \
