@@ -209,8 +209,9 @@ function main {
     "  2、查看所有重要程序运行状态"    "status"
     "  3、本机ip信息"               "ipinfo"
     "  4、修改配置参数"              "set_dat"
-    "  5、修改SSH登录端口和登录密码"   "change_ssh_port; change_login_password"
-    "  6、更新脚本"                  'update; [ "$?" == "2" ] && echo "当前版本为最新版，无需更新！"'
+    "  5、查看配置参数文件"           "nano /root/myfile/vinci.dat"
+    "  6、修改SSH登录端口和登录密码"   "change_ssh_port; change_login_password"
+    "  7、更新脚本"                  'update; [ "$?" == "2" ] && echo "当前版本为最新版，无需更新！"'
     "  0、退出" )
   
           page "${main_menu[$(($get_option - 1))]}" 2 "${sub_menu[@]}";;
@@ -1199,6 +1200,7 @@ function install_Xui {
 ############################################################################################################################################################################################
 ######   参数配置   ######
 adddat '
+##### Cloudflare ######
 $(pz "Cloudflare_api_key")                        #@Cloudflare Api
 $(pz "Warp_port")                                 #@Warp监听端口#@0-65535#@port_regex
 '
@@ -1378,6 +1380,7 @@ function install_Warp {
 ######   参数配置   ######
 path_tor="/etc/tor/torrc"
 adddat '
+##### Tor ######
 $(pz "Tor_port")                                  #@Tor监听端口#@0-65535#@port_regex
 '
 
