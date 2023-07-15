@@ -808,7 +808,7 @@ function set_dat {
     done
     fi
     source "$dat_path"   #重新载入数据
-    echo "已配置结束！"
+    echo "已修改配置！"
 }
 
 #######   用户数据模板更新(代码作废)   #######   
@@ -817,7 +817,7 @@ function update_config {
     a=0      #已修改配置的数量
     while IFS= read -r line; do     
          lines+=("$line")    #将每行文本转化为数组     
-    done <<< "$1" 
+    done < "$1" 
 
     for index in "${!lines[@]}"; do   
          line=${lines[$index]}
@@ -827,9 +827,9 @@ function update_config {
          varname="$(echo -e "${a[4]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"   #去除变量名的前后空格
          #如果变量存在
          if [ -v variable_name ]; then
-            echo "已将配置由$line"
+            echo "已将配置由：$line"
             line=$(replace "${a[2]}" "${a[3]}" "" 1 true false false false "$line"  "${!varname}")
-            echo "更新为$line"
+            echo "更新为：$line"
             echo
             a=$((a+1))
          #如果变量不存在
@@ -1398,7 +1398,7 @@ function install_Tor {
 
 ##### 初始化tor配置 ######
 function initialize_tor {
-insert "SocksPort $tor_port          @*@#@Tor监听端口#@SocksPort #@ #@tor_port" "SocksPort " "$path_tor"
+    insert "SocksPort $tor_port          @*@#@Tor监听端口#@SocksPort #@ #@tor_port" "SocksPort " "$path_tor"
 }
 
 ###### 设置Tor配置 ######
@@ -1407,7 +1407,7 @@ local conf=(
 "Tor_port"
 )
     set_dat ${conf[@]}
-    if update_config $path_tor; then
+    if update_config "$path_tor"; then
        choose "是否重启tor并适用新配置？" "已取消重启！" || (restart tor && ipinfo)
     fi  
     
