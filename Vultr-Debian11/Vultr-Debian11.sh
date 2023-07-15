@@ -1504,8 +1504,8 @@ $(pz "Gpt_port")                              #@Chatgpt本地端口#@0-65535#@po
 $(pz "Chatgpt_api_key")                        #@Chatgpt Api
 $(pz "Gpt_code")                               #@授权码
 $(pz "Proxy_model")                           #@接口代理模式#@1为正向代理、2为反向代理#@\"[[ \$new_text =~ ^(1|2)\$ ]]\"
-$(pz "BASE_URL")                               #@OpenAI接口代理URL#@默认接口为https://api.openai.com
-$(pz "PROXY_URL")                              #@Chatgpt本地代理地址#@
+$(pz "BASE_URL")                               #@OpenAI接口代理URL#@默认接口为https://api.openai.com#@web_regex
+$(pz "PROXY_URL")                              #@Chatgpt本地代理地址#@需要加http前缀#@web_regex
 $(pz "Chatgpt_image")                          #Chat镜像名称*
 $(pz "Chatgpt_name")                           #Chat容器名称*
 '
