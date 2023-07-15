@@ -314,7 +314,7 @@ function main {
     "  1、返回上一级"                        ""
     "  2、下载\更新Chatgpt"                 "pull_gpt"
     "  3、启动\重启动Chatgpt"               "run_gpt"
-    "  4、运行\重运行Chatgpt容器"             ""
+    "  4、运行\重运行Chatgpt容器"             "run_gpt"
     "  5、设置Chatgpt配置"                  "set_gpt"
     "  6、查看Chatgpt运行状况"               ""
     "  7、停用Chatgpt"                     'confirm "是否停止运行Chatgpt？" "已取消！" || docker stop $Chatgpt_name'
@@ -1510,17 +1510,29 @@ docker pull yidadaa/chatgpt-next-web
 function run_gpt {
     docker stop $Chatgpt_name >/dev/null 2>&1 && echo "正在重置chatgpt容器..."
     docker rm $Chatgpt_name >/dev/null 2>&1
-    if docker run -d  --restart=always -p 3000 \
-       -e OPENAI_API_KEY="$Chatgpt_api_key" \
-       -e CODE="$Gpt_code" \
-       
-       --net=host \
-       -e PROXY_URL="http://127.0.0.1:40000" \
-       $Chatgpt_image
-    then
-        echo "Chatgpt启动成功！"
-    else 
+    if (( Proxy_model==1 )); then 
+       if docker run -d  --restart=always -p 3000:$Gpt_port \
+           -e OPENAI_API_KEY="$Chatgpt_api_key" \
+           -e CODE="$Gpt_code" \
+           -e BASE_URL="$BASE_URL" \
+           $Chatgpt_image
+       then
+           echo "Chatgpt启动成功！"
+       else 
         echo "启动失败，请重新设置参数配置"
+       fi      
+    elif (( Proxy_model==2 )); then 
+       if docker run -d  --restart=always -p 3000:$Gpt_port \
+           -e OPENAI_API_KEY="$Chatgpt_api_key" \
+           -e CODE="$Gpt_code" \
+           --net=host \
+           -e PROXY_URL="$PROXY_URL" \
+           $Chatgpt_image
+       then
+           echo "Chatgpt启动成功！"
+       else 
+        echo "启动失败，请重新设置参数配置"
+       fi  
     fi
 }
 
