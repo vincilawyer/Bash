@@ -178,16 +178,16 @@ trap 'normal_exit' EXIT
 ############################################################################################################################################################################################
 #######   主菜单选项  ######
 main_menu=(
-    "  1、系统设置"              'page " 系 统 设 置 " "${system_menu[@]}"'
-    "  2、工具箱"                'page " 工 具 箱 " "${toolbox_menu[@]}"'   
-    "  3、UFW防火墙管理"          'page " UFW 防 火 墙" "${ufw_menu[@]}"'
-    "  4、Docker服务"            'page "Docker" "${docker_menu[@]}"'
-    "  5、Nginx服务"             'page "Nginx "${nginx_menu[@]}"'
-    "  6、X-ui服务"              'page "X-UI" "${xui_menu[@]}"'
-    "  7、Cloudflare服务"        'page "Cloudflare" "${cf_menu[@]}"'
-    "  8、Tor服务"               'page "Tor" "${tor_menu[@]}"'
-    "  9、Frp服务"               'page "Frp" "${frp_menu[@]}"'
-    "  10、Chatgpt-Docker服务"   'page "Chatgpt-Docker" "${gpt_menu[@]}"'
+    "  1、系统设置"              'page true " 系 统 设 置 " "${system_menu[@]}"'
+    "  2、工具箱"                'page true " 工 具 箱 " "${toolbox_menu[@]}"'   
+    "  3、UFW防火墙管理"          'page true " UFW 防 火 墙" "${ufw_menu[@]}"'
+    "  4、Docker服务"            'page true "Docker" "${docker_menu[@]}"'
+    "  5、Nginx服务"             'page true "Nginx "${nginx_menu[@]}"'
+    "  6、X-ui服务"              'page true "X-UI" "${xui_menu[@]}"'
+    "  7、Cloudflare服务"        'page true "Cloudflare" "${cf_menu[@]}"'
+    "  8、Tor服务"               'page true "Tor" "${tor_menu[@]}"'
+    "  9、Frp服务"               'page true "Frp" "${frp_menu[@]}"'
+    "  10、Chatgpt-Docker服务"   'page true "Chatgpt-Docker" "${gpt_menu[@]}"'
     "  0、退出")
 
 ufw_menu=(
@@ -213,22 +213,22 @@ function main {
   update_dat 
   
   #显示一级菜单主页面
-  page " 主 菜 单 " "${main_menu[@]}" 
+  page false " 主 菜 单 " "${main_menu[@]}" 
           
 }
 
 ######   页面显示   ######
 function page {
-   local title=$1 页面标题
+   local title=$2 页面标题
    #其余参数为显示内容及对应指令
  
 while true; do
     # 清除和显示页面样式
     clear
     echo; echo -e "${RED}${art}${NC}"; echo; echo; echo "                   欢迎进入Vinci服务器管理系统(版本V$Version1)"
-    echo; echo "=========================== "$1" =============================="; echo
+    echo; echo "=========================== "$2" =============================="; echo
     
-    array=("${@:2}")
+    array=("${@:3}")
     menu=()
     cmd=()
     
@@ -248,6 +248,7 @@ while true; do
     inp false 1 '"[[ "$new_text" =~ ^[0-9]+$ ]] && (( $new_text >= 0 && $new_text <= '$((menunum-1))' ))"'
     [ "$new_text" == "0" ] && quit               #如果选择零则退出
     clear && eval ${cmd[$((new_text-1))]}
+    [ "$1" == "true"] && wait
 done
 
 }
