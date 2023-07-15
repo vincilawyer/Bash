@@ -350,8 +350,6 @@ function page {
            (( i % 2 == 0 )) && menu+=("${array[$i]}") || cmd+=("${array[$i]}")
        done
        menunum=${#menu[@]}
-       echo $menu[0]
-       echo $menu[1]
     fi
     
     option "  请按序号选择操作: " 3 false 1 '"[[ "$new_text" =~ ^[0-9]+$ ]] && (( $new_text >= 0 && $new_text <= '$menunum' ))"' "${menu[@]}"
