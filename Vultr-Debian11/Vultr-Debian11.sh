@@ -220,9 +220,8 @@ function main {
 ######   页面显示   ######
 function page {
    local title=$2 页面标题
-   #其余参数为显示内容及对应指令
  
-while true; do
+    while true; do
     # 清除和显示页面样式
     clear
     echo; echo -e "${RED}${art}${NC}"; echo; echo; echo "                   欢迎进入Vinci服务器管理系统(版本V$Version1)"
@@ -246,6 +245,7 @@ while true; do
     echo
     echo -n "  请按序号选择操作: "
     inp false 1 '"[[ "$new_text" =~ ^[0-9]+$ ]] && (( $new_text >= 0 && $new_text <= '$((menunum-1))' ))"'
+    echo "$new_text"
     [ "$new_text" == "0" ] && quit               #如果选择零则退出
     clear && eval ${cmd[$((new_text-1))]}
     [ "$1" == "true" ] && wait
