@@ -1446,8 +1446,8 @@ $(pz "Gpt_code")                               #@授权码
 $(pz "Proxy_model")                           #@接口代理模式#@1为正向代理、2为反向代理#@\"[[ \$new_text =~ ^(1|2)\$ ]]\"
 $(pz "BASE_URL")                               #@OpenAI接口代理URL#@默认接口为https://api.openai.com#@web_regex
 $(pz "PROXY_URL")                              #@Chatgpt本地代理地址#@需要加http前缀#@web_regex
-$(pz "Chatgpt_image")                          #Chat镜像名称*
-$(pz "Chatgpt_name")                           #Chat容器名称*
+Chatgpt_image=\"yidadaa/chatgpt-next-web\"       #Chat镜像名称*
+Chatgpt_name=\"chatgpt\"                                    #Chat容器名称*
 '
 ##### 菜单栏 #####
 gpt_menu=(
@@ -1503,6 +1503,7 @@ local conf=(
 "Gpt_code"
 "Chatgpt_api_key"
 "Gpt_port"
+"Proxy_model"
 "BASE_URL"
 "PROXY_URL" 
 )
