@@ -842,9 +842,9 @@ function update_config {
             echo
          fi
     done
-        if (( a > 0 )); then
+        if (( ct > 0 )); then
            printf "%s\n" "${lines[@]}" > "$1"
-           echo "已完成$a条配置的修改更新"
+           echo "已完成$ct条配置的修改更新"
            return 0
         else
            echo -e "${RED}配置更新失败，未找到配置行或配置值！${NC}"
