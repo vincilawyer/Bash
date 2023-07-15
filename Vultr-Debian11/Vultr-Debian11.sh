@@ -362,7 +362,7 @@ function page {
 ###### 查看程序运行状态 ######
 function status {
 
-    [ -z $1] && systemctl status "$1" && return
+    [ -n $1 ] && ( systemctl status "$1"; return )
 
 #如果没有指定则按应用列表输出
 apps=(
@@ -1412,7 +1412,7 @@ local conf=(
 )
     set_dat ${conf[@]}
     if update_config "$path_tor"; then
-       choose "是否重启tor并适用新配置？" "已取消重启！" || (restart tor && ipinfo)
+       confirm "是否重启tor并适用新配置？" "已取消重启！" || (restart tor && ipinfo)
     fi  
     Tor_port=50000
 }
