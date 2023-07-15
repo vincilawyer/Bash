@@ -827,12 +827,13 @@ function update_config {
          varname="$(echo -e "${a[4]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"   #去除变量名的前后空格
          echo 
          #如果变量存在
-         if [ -v variable_name ]; then
+         if [ -v $varname ]; then
             echo "已将配置由：$line"
             line=$(replace "${a[2]}" "${a[3]}" "" 1 true false false false "$line"  "${!varname}")
             echo "更新为：$line"
             echo
             a=$((a+1))
+            
          #如果变量不存在
          else
             echo -e "${RED}配置修改失败：$line${NC}"
