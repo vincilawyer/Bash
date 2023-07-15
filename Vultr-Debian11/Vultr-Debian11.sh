@@ -808,7 +808,8 @@ function set_dat {
     done
     fi
     source "$dat_path"   #重新载入数据
-    echo "已修改配置！"
+    echo
+    echo "已修改配置完毕！"
 }
 
 #######  应用配置更新   #######   
@@ -821,7 +822,7 @@ function update_config {
 
     for index in "${!lines[@]}"; do   
          line=${lines[$index]}
-        
+         [[ $line =~ ^[[:space:]]*# ]] && continue      #如果是注释行，则继续查找
          [[ "$line" == *'#￥#@'* ]] || continue      #如果没有找到配置行，则继续查找
          a=()
          IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g')    # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。
