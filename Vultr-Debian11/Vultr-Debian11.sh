@@ -1476,7 +1476,7 @@ gpt_menu=(
     "  3、启动\重启动Chatgpt"               "docker start $Chatgpt_name"
     "  4、运行\重运行Chatgpt容器"            "run_gpt"
     "  5、设置Chatgpt配置"                  "set_gpt"
-    "  6、查看Chatgpt运行状况"               "docker inspect $Chatgpt_name"
+    "  6、查看Chatgpt运行状况"               'docker inspect $Chatgpt_name'
     "  7、停用Chatgpt"                     'confirm "是否停止运行Chatgpt？" "已取消！" || docker stop $Chatgpt_name'
     "  0、退出")                     
 
