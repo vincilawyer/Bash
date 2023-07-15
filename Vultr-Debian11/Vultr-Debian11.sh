@@ -1168,6 +1168,7 @@ function cfdns {
     echo "3. 返回"
     echo "0. 退出"
     echo -n "请选择要进行的操作：" 
+wait
     inp false 2 {0..3}
     case $new_text in  
 1)#删除DNS记录 
@@ -1269,7 +1270,7 @@ function get_all_dns_records {
 }
 
 ######  设置cfDNS配置 ######
-function set_gpt {
+function set_cfdns {
 local config=(
 "Domain"
 "Email"
