@@ -68,8 +68,8 @@ function main {
          echo "管理系统V"$Version.$(eval echo $num)"版本已下载\更新完成，即将进入系统！"
          countdown 10
          $def_name 2
-         n=0
          wrong=$?
+         n=0
          if [ "$wrong" == "0" ]; then                       #如果脚本正常运行，则退出
               exit 1                                            
          elif [ "$wrong" == "3" ]; then                           #如果用户要求更新，则继续更新
