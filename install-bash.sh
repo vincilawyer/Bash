@@ -86,15 +86,14 @@ function main {
 #######   保存提示  ####### 
  function warning {
       check_time=35    #检查更新时长
-      reload_time=1.5 #页面刷新时长
       tput sc  #保存当前光标位置
       local t=0
       n=$((n + 1))
       while true; do
+            t=$((t + 1)); if ((t > $check_time)); then break; fi   #每隔50s检查一次更新情况
+            ti=$((( $((check_time-t)) > 9 )) && echo "$((check_time-t))" || echo "0$((check_time-t))")s
             tput rc  #恢复光标位置
             tput el  #清除光标后内容
-            t=$((t + reload_time)); if ((t > $check_time)); then break; fi   #每隔50s检查一次更新情况
-            ti=$((( $((check_time-t)) > 9 )) && echo "$((check_time-t))" || echo "0$((check_time-t))")s
             [ "$a" == "true" ] && b="               正在等待服务器端版本更新，输入任意键退出...               " || b='                                                                         '
             [ "$a" == "true" ] && a="false" || a="true"
             echo -e "${RED}#################################################################################${NC}"
@@ -106,7 +105,7 @@ function main {
             echo -e "${RED}####                                                                         ####${NC}"
             echo -e "${RED}#################################################################################${NC}"
             echo -e "${RED}#################################################################################${NC}"
-            read -t $reload_time -n 1 input  #读取输入，在循环中一次1秒
+            read -t 1 -n 1 input  #读取输入，在循环中一次1秒
             if [ -n "$input" ] || [ $? -eq 142 ] ; then
                 if bar 15 "已取消继续更新，即将尝试回滚至旧版本" "开始回滚" true "已取消回滚！即将返回..."; then exit 1; fi 
                 cp -f "$file_path"_backup "$file_path" 
