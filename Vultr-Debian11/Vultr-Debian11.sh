@@ -836,11 +836,11 @@ function update_config {
          #如果变量不存在
          else
             echo -e "${RED}配置修改失败：$line${NC}"
-            echo -e "${RED}用户数据中未找到"${a[1]}"变量${NC}"
+            echo -e "${RED}用户数据中未找到${a[1]}变量${NC}"
             echo
          fi
     done
-        if ((a > 0)); then
+        if (( a > 0 )); then
            printf '%s\n' "${lines[@]}"  > "$1" 
            echo "已完成$a条配置的修改更新"
            return 0
