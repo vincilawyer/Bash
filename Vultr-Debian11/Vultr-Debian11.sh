@@ -105,7 +105,7 @@ EOF
 
 ######   配置模板 ######
 function pz { echo "$1=\"$(eval echo $"$1")\"" ; }
-function adddat { dat_mod+="$1"; }
+function adddat { ([ -z $1 ] || (( $# > 1 ))) && quit 1 || dat_mod+="$1"; }
 adddat '
 # 该文件为vinci用户配置文本
 # * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配规则（条件规则和比较规则）。比较规则即为正则表达式的变量名，条件规则为判断\$new_text变量是否符合规则条件，条件需用两个\"\"包裹
@@ -116,6 +116,7 @@ $(pz "Cloudflare_api_key")                        #@Cloudflare Api
 $(pz "Warp_port")                                 #@Warp监听端口#@0-65535#@port_regex
 $(pz "Tor_port")                                  #@Tor监听端口#@0-65535#@port_regex
 ' 
+
 
 #############################################################################################################################################################################################
 ##############################################################################   2.脚本启动及退出检查模块  ################################################################################################
@@ -158,13 +159,19 @@ function countdown {
 
 #######  当用户选择主动退出  #########
 function quit() {
-   clear; echo -e "${GREED}已退出vinci脚本（V"$Version1"）！${NC}"; exit 0
+   if [ "$1" == "1" ]; then
+       echo "数据模板配置失败，为确保数据不丢失，系统将主动退出。请返回代码检查！"
+       [ "$startnum" == "2" ] && exit 1              #检查程序更新脚本后的退出（即无需再次启动检查程序），这里的exit不会执行normal_exit函数
+       update 1    
+   else
+       clear; echo -e "${GREED}已退出vinci脚本（V"$Version1"）！${NC}"; exit 0
+   fi
 }
 
 #######   当脚本错误退出时，启动更新检查   ####### 
 function handle_error() {
+    echo "脚本运行出现错误！"
    [ "$startnum" == "2" ] && exit 1              #检查程序更新脚本后的退出（即无需再次启动检查程序），这里的exit不会执行normal_exit函数
-   echo "脚本运行出现错误！"
    update 1                                     #唤醒程序更新
 }
 
@@ -182,7 +189,7 @@ trap 'normal_exit' EXIT
 function main {
   clear
   
-  eval echo"\"$dat_mod\""
+  eval echo "\"$dat_mod\""
   wait
   
   #######   判断系统适配     #######   
@@ -371,14 +378,14 @@ function page {
 function update_dat { 
     if ! source $dat_path >/dev/null 2>&1; then   #读取用户数据
         echo "系统无用户数据记录。准备新建用户数据..."
-        if ! eval dat_all="\"$dat_mod\""; then echo "数据模板配置失败，为确保数据不丢失，系统将主动退出。请返回代码检查！" && exit 1; fi
+        eval dat_all="\"$dat_mod\"" || quit 1  #更新数据配置模板
         echo "$dat_all" > "$dat_path"  #写入数据文件
         echo "初始化数据完成"
         wait
     else
         if ! [ "$Dat_num" == "${#dat_mod}" ] ; then
            echo "配置文件更新中..."
-           if ! eval dat_all="\"$dat_mod\""; then echo "数据模板配置失败，为确保数据不丢失，系统将主动退出。请返回代码检查！" && exit 1; fi
+           eval dat_all="\"$dat_mod\"" || quit 1  #更新数据配置模板 
            echo "$dat_all" > "$dat_path" #写入数据文件
            echo "更新完成，可在系统设置中修改参数！"
            wait
@@ -744,19 +751,20 @@ function inp {
 #######  插入文本 ######
 function insert {
     local string="$1"
-    local newstring="$2"
+    local location_string="$2"
     local file="$3" 
-    local temp_file=""
-    local awk_script='{
-       if($0 ~ location || (mod && mat) ) {
-       
-       } else {
-       
-       }  
-    }'
-    
-    awk -v string="$string" -v new="$newstring" -v file="$file" "$awk_script" > "$temp_file"
-    mv "$temp_file" "$file"    
+    while IFS= read -r line;do
+         ((lineno++)) #记住行号
+         if [[ $line =~ $location_string ]]; then
+              check_comment "$line"
+              if [[ $? -eq 0 ]]; then
+              # 插入注释符，并插入新字符串到下一行
+              sed -i "${lineno}s/^/# /" $file
+              sed -i "${lineno}s/$/\n$new_string/" $file
+      exit
+    fi
+  fi
+done < "$file"    
 }
 
 ###### 选项和输入框  ######
@@ -1204,7 +1212,7 @@ function cfdns {
                 continue
            fi;;
      3) return;;
-     0) exit
+     0) quit
         clear;;
   esac
   wait
