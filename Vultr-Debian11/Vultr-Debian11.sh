@@ -173,10 +173,6 @@ trap 'normal_exit' EXIT
 
 function main {
   clear
-  
-  eval echo "\"$dat_mod\""
-  wait
-  
   #######   判断系统适配     #######   
   if [ ! $(lsb_release -rs) = "11" ]; then 
   echo "请注意，本脚本是适用于Vulre服务器Debian11系统，用于其他系统或版本时将可能出错！"
@@ -762,6 +758,9 @@ function update_dat {
         echo "初始化数据完成"
         wait
     else
+      eval echo "\"$dat_mod\""
+     wait
+  
         if ! [ "$Dat_num" == "${#dat_mod}" ] ; then
            echo "配置文件更新中..."
            eval dat_all="\"$dat_mod\"" || quit 1  "更新数据配置模板出错" #更新数据配置模板 
