@@ -676,7 +676,7 @@ function inp {
            fi
         done
         [ "$k" == "true" ] && tput el && return
-        tput rc
+        #tput rc
         tput el
         echo
         echo -e "${RED} 输入不正确，请重新输入${NC}！"
