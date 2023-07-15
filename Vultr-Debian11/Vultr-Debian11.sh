@@ -1172,7 +1172,7 @@ wait
     case $new_text in  
 1)#删除DNS记录 
         clear
-        echo $dns_records
+        echo "$dns_records"
         echo -n "请输入要删除的DNS记录名称（例如 www,输入为空则跳过）："
         inp true 1 '^[a-zA-Z0-9]+'
         [ -z $new_text ] && clear && continue 
@@ -1200,7 +1200,7 @@ wait
         fi;;
 2)# 修改或增加DNS记录
         clear
-        echo $dns_records
+        echo "$dns_records"
         echo -n "请输入要修改或增加的DNS记录名称（例如 www，输入空则跳过）："
         inp true 1 '^[a-zA-Z0-9]+' &&[ -z $new_text ] && clear && continue 
         record_name="$new_text"
