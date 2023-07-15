@@ -350,8 +350,11 @@ function page {
            (( i % 2 == 0 )) && menu+=("${array[$i]}") || cmd+=("${array[$i]}")
        done
        menunum=${#menu[@]}
+       echo $menu[0]
+       echo $menu[1]
     fi
-    option "  请按序号选择操作: " 3 false 1 '"[[ "$new_text" =~ ^[0-9]+$ ]] && (( $new_text >= 0 && $new_text <= '$((menunum-1))' ))"' "${menu[@]}"
+    
+    option "  请按序号选择操作: " 3 false 1 '"[[ "$new_text" =~ ^[0-9]+$ ]] && (( $new_text >= 0 && $new_text <= '$menunum' ))"' "${menu[@]}"
      #如果选择零则退出
      [ "$new_text" == "0" ] && quit           
      #二级菜单模式下，执行菜单指令
@@ -654,6 +657,12 @@ function settext {
 #     2、传入的第二个参数为比较模式，1为正则表达式匹配，2为字符串普通匹配。两种模式下，都可以使用条件语句。
 #     其余参数均为比较参数
 function inp {
+
+echo $1
+echo $2
+echo $3
+echo $4
+echo $5
     tput sc
     local k="true" #判断参数是否全部为空
     while true; do
@@ -673,12 +682,8 @@ function inp {
            else
                k="false"
                if [ "$2" == "1" ]; then
-               echo "$Condition" && "$new_text  1"
-               wait
                   [[  $new_text =~ $Condition ]] && tput el && return
                elif [ "$2" == "2" ]; then
-                   echo "$Condition" && "$new_text  2"
-                   wait
                   [[ "$new_text" == "$Condition" ]] && tput el && return
                fi
            fi
@@ -735,13 +740,12 @@ function option {
 local ign=$2 #使用inp配置的参数数量
 # 第$3开始到第ign+2为ipt参数
 # 第ign+3开始为显示内容
-
     for menu in "${@:$((ign + 3))}"; do   #需要跳过前面ign+2个参数元素，从+3开始输出
        echo "$menu"
     done
     echo
     echo -n "$1"
-    inp "${@:3:$((ign + 2))}"
+    inp "${@:3:$ign}"
 }
 
 #######   是否确认框    #######   
