@@ -362,7 +362,7 @@ function page {
 ###### 查看程序运行状态 ######
 function status {
 
-    [ -n $1 ] && ( systemctl status "$1"; return )
+    [ -n "$1" ] && ( systemctl status "$1"; return )
 
 #如果没有指定则按应用列表输出
 apps=(
