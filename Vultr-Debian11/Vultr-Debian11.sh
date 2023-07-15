@@ -105,8 +105,9 @@ EOF
 
 ######   配置模板 ######
 function pz { echo "$1=\"$(eval echo $"$1")\"" ; }
-dat_mod=
-'# 该文件为vinci用户配置文本
+function adddat { dat_mod+="$1"; }
+adddat '
+# 该文件为vinci用户配置文本
 # * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配规则（条件规则和比较规则）。比较规则即为正则表达式的变量名，条件规则为判断\$new_text变量是否符合规则条件，条件需用两个\"\"包裹
 Dat_num="\"${#dat_mod}\""                         #版本号*              
 $(pz "Domain")                                    #@一级域名#@不用加www#@domain_regex
@@ -114,7 +115,7 @@ $(pz "Email")                                     #@邮箱#@#@email_regex
 $(pz "Cloudflare_api_key")                        #@Cloudflare Api
 $(pz "Warp_port")                                 #@Warp监听端口#@0-65535#@port_regex
 $(pz "Tor_port")                                  #@Tor监听端口#@0-65535#@port_regex
-'
+' 
 
 #############################################################################################################################################################################################
 ##############################################################################   2.脚本启动及退出检查模块  ################################################################################################
@@ -180,13 +181,15 @@ trap 'normal_exit' EXIT
 
 function main {
   clear
+  
+  eval echo"\"$dat_mod\""
+  wait
+  
   #######   判断系统适配     #######   
   if [ ! $(lsb_release -rs) = "11" ]; then 
   echo "请注意，本脚本是适用于Vulre服务器Debian11系统，用于其他系统或版本时将可能出错！"
   wait
   fi
-  eval echo "\"$dat_mod\""
-  wait
   #######   检查用户数据文件  #######   
   update_dat
   
@@ -744,8 +747,13 @@ function insert {
     local newstring="$2"
     local file="$3" 
     local temp_file=""
-   # local awk_script='{
-  #       if($0 ~ location 
+    local awk_script='{
+       if($0 ~ location || (mod && mat) ) {
+       
+       } else {
+       
+       }  
+    }'
     
     awk -v string="$string" -v new="$newstring" -v file="$file" "$awk_script" > "$temp_file"
     mv "$temp_file" "$file"    
@@ -1347,7 +1355,7 @@ EOF
 ############################################################################################################################################################################################
 
 ######   参数配置   ######
-dat_mod+='
+adddat '
 #####Chatgpt-docker######
 $(pz "Gpt_port")                              #@Chatgpt本地端口#@0-65535#@port_regex 
 $(pz "Chatgpt_api_key")                        #@Chatgpt Api
