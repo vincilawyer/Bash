@@ -248,7 +248,8 @@ function main {
     "  3、启用防火墙规则"         "ufw enable"
     "  4、停用防火墙规则"         "ufw disable"
     "  5、查看防火墙规则"         "ufw status verbose"
-    "  6、停止防火墙"            "stop ufw"
+    "  6、查看防火墙运行状况"     "status ufw"
+    "  7、停止防火墙"            "stop ufw"
     "  0、退出")                  
            
           page "${main_menu[$(($get_option - 1))]}" 2 "${sub_menu[@]}";;  
@@ -257,8 +258,11 @@ function main {
     sub_menu=(
     "  1、返回上一级"            ""
     "  2、安装Docker"           "install_Docker"
-    "  3、查看Docker容器"        'echo "Docker容器状况：" && docker ps -a && echo; echo "提示：可使用docker stop 或 docker rm 语句加容器 ID 或者名称来停止容器的运行或者删除容器 "'
-    "  4、删除所有容器"          'confirm "是否删除所有Docker容器？" "已取消删除容器" || ( docker stop $(docker ps -a -q) &&  docker rm $(docker ps -a -q) && echo "已删除所有容器" )'
+    "  3、启动\重启Docker"       "restart docker"
+    "  4、查看Docker容器"        'echo "Docker容器状况：" && docker ps -a && echo; echo "提示：可使用docker stop 或 docker rm 语句加容器 ID 或者名称来停止容器的运行或者删除容器 "'
+    "  5、查看Docker运行状况"     "status docker"
+    "  6、停止Docker运行"        "stop docker"
+    "  7、删除所有容器"          'confirm "是否删除所有Docker容器？" "已取消删除容器" || ( docker stop $(docker ps -a -q) &&  docker rm $(docker ps -a -q) && echo "已删除所有容器" )'
     "  0、退出")
 
            page "${main_menu[$(($get_option - 1))]}" 2 "${sub_menu[@]}";;  
@@ -267,9 +271,9 @@ function main {
    sub_menu=(
     "  1、返回上一级"              ""
     "  2、安装Nginx"              "install_Nginx"
-    "  3、重启Nginx"              "restart "nginx""
+    "  3、启动\重启Nginx"          "restart "nginx""
     "  4、设置Nginx配置"           "echo 0"
-    "  5、查看Nginx运行状况"        "n"
+    "  5、查看Nginx运行状况"        "status nginx"
     "  6、查看Nginx日志"            "nano /var/log/nginx/access.log"
     "  7、停止Nginx"               "stop nginx"
     "  0、退出")
@@ -292,7 +296,7 @@ function main {
     "  3、修改CF账户配置"           "set_cfdns"
     "  4、下载CFWarp"              "install_Warp"
     "  5、启动\重启CFWarp"          "restart warp-svc"
-    "  6、查看CFWarp运行状况"        ""
+    "  6、查看CFWarp运行状况"        "status warp-svc"
     "  7、停用CFWarp"              "stop warp-svc"
     "  0、退出")
 
@@ -304,7 +308,7 @@ function main {
     "  2、安装Tor"                   "install_Tor"
     "  3、启动\重启Tor"               "restart tor; echo;  ipinfo"
     "  4、设置Tor配置"                "set_tor_config"
-    "  5、查看Tor运行状况"            ""
+    "  5、查看Tor运行状况"             "status tor"
     "  6、停用Tor"                    "stop tor"
     "  0、退出")
 
@@ -316,7 +320,7 @@ function main {
     "  2、安装Frp"                     "install_Frp"
     "  3、启动\重启Frp"                 "restart frps"
     "  4、设置Frp配置"                  "set_tor_config"
-    "  5、查看Frp运行状况"               ""
+    "  5、查看Frp运行状况"               "status frps"
     "  6、停用Frp"                      "stop frps"
     "  0、退出")                    
 
