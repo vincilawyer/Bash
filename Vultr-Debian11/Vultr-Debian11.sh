@@ -662,17 +662,14 @@ function inp {
         read new_text
         [ $1 = true ] && [[ -z "$new_text" ]] && tput el && return   #如果$1为true，且输入为空，则完成输入
         for Condition in "${@:3}"; do
-          
            #如果参数为空则继续下一个参数
            [[ -z $Condition ]] && continue   
-           
+           k="false"
            # 检查参数是否为条件语句
            if [[ "${Condition:0:1}" == '"' && "${Condition: -1}" == '"' ]]; then   #注意-1前面有空格
                 if eval ${Condition:1:-1}; then tput el && return; fi
-           
            # 如果参数为普通字符串
            else
-               k="false"
                if [ "$2" == "1" ]; then
                   [[  $new_text =~ $Condition ]] && tput el && return
                elif [ "$2" == "2" ]; then
