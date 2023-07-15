@@ -706,36 +706,37 @@ function insert {
     local config="$1"              # 新配置的内容
     local location_string="$2"     #匹配的内容
     local file="$3"                #文件位置
-    local findloc=0                #文件中是否找到一个带注释符的匹配内容
+    local findloc=0                #文件中是否找到一个带注释符的匹配内容    
+    local lineno=0                 #行号
     while IFS= read -r line;do
          ((lineno++)) #记住行号
          if [[ $line =~ $location_string ]]; then
               #如果行首不是注释符
-              if check_comment "$line"; then
+              if ! [[ $line =~ ^[[:space:]]*# ]]; then
                   # 插入注释符，并插入新字符串到下一行
-                  sed -i "${lineno}s/^/#该行系由vinci脚本修改，原内容为： /" $file
-                  sed -i "${lineno}s/$/\n$config/" $file
+                  sed -i "${lineno}s/^/#该行系由vinci脚本修改，原内容为： /" "$file"
+                  sed -i "${lineno}a\\$config" "$file"
                   return
                   
               #如果行首是注释符
               else
-                  ! ((findloc==0)) && return  #如果这不是唯一一行的注释符
+                  ! ((findloc==0)) && ( findloc=0; break )  #如果这不是唯一一行的注释符
                   findloc=$lineno
               fi
          fi
     done < "$file"    
     if ! ((findloc==0)); then
-       sed -i "${findloc}s/^/#该行系由vinci脚本修改，原内容为： /" $file
-       sed -i "${findloc}s/$/\n$new_string/" $file
+       sed -i "${findloc}s/^/#该行系由vinci脚本修改，原内容为： /" "$file"
+       sed -i "${findloc}a\\$config" "$file"
        return
     fi
+    echo 1
     #如果没找到匹配内容或唯一带有注释匹配内容
-   # sed -i "1i$config" $file
-    sed -i "1i\\
-        $config" $file
+    sed -i "1i\\$config" "$file"
 }
-insert "hello world" "hello" "/root/1.dat"
-
+insert "12122312" "原内容" "/root/1.dat"
+ sed -i "4s/^/#该行系由vinci脚本修改，原内容为：/" "/root/1.dat"
+ sed -i "3a\我是a的"  "/root/1.dat"
 ###### 选项和输入框  ######
 function option {
 # $1为   #输入选择提示   
