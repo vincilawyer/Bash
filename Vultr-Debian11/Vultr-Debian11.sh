@@ -118,7 +118,7 @@ function update {
     cur_path="$script_path" cur_name="$script_name" wrong="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
     result=$?
     if [ "$result" == "1" ] ; then        #如果已经更新或不需要继续执行
-        quit 0  
+        exit   
     elif [ "$result" == "2" ]; then       #如果没有更新(已是最新版、脚本下载失败、新脚本运行错误)，则继续执行当前脚本
         :
     else                                  #如果更新失败，则继续执行当前脚本
@@ -245,7 +245,7 @@ function page {
     echo
     echo -n "  请按序号选择操作: "
     inp false 1 '"[[ "$new_text" =~ ^[0-9]+$ ]] && (( $new_text >= 0 && $new_text <= '$((menunum-1))' ))"'
-    [ "$new_text" == "0" ] && exit 0              #如果选择零则退出
+    [ "$new_text" == "0" ] && quit 0              #如果选择零则退出
     clear && eval ${cmd[$((new_text-1))]}
     [ "$1" == "true" ] && wait
 done
