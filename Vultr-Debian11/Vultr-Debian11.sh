@@ -92,7 +92,7 @@ EOF
 )
 
 ######   配置模板 ######
-function pz { echo "$1=\"$(eval echo $"$1")\"" ; }
+function pz { echo "$1=\"$(eval echo \$"$1")\"" ; }
 function adddat { ([ -z "$1" ] || (( $# > 1 ))) && quit 1 "添加配置模板错误，请检查是否可能遗漏单引号！" || dat_mod+="$1"; }
 adddat '
 # 该文件为vinci用户配置文本
@@ -758,9 +758,6 @@ function update_dat {
         echo "初始化数据完成"
         wait
     else
-      eval echo "\"$dat_mod\""
-     wait
-  
         if ! [ "$Dat_num" == "${#dat_mod}" ] ; then
            echo "配置文件更新中..."
            eval dat_all="\"$dat_mod\"" || quit 1  "更新数据配置模板出错" #更新数据配置模板 
