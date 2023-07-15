@@ -821,7 +821,7 @@ function update_config {
 
     for index in "${!lines[@]}"; do   
          line=${lines[$index]}
-         [[ "$line" == *'@*@#@'* ]] || continue      #如果没有找到配置行，则继续查找
+         [[ "$line" == *'#￥#@'* ]] || continue      #如果没有找到配置行，则继续查找
          a=()
          IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g')    # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。
          varname="$(echo -e "${a[4]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"   #去除变量名的前后空格
@@ -832,7 +832,7 @@ function update_config {
             line=$(replace "${a[2]}" "${a[3]}" "" 1 true false false false "$line"  "${!varname}")
             echo "更新为：$line"
             echo
-            a=$((a+1))
+            a=$(( a + 1 ))
             
          #如果变量不存在
          else
@@ -842,7 +842,8 @@ function update_config {
          fi
     done
         if (( a > 0 )); then
-           printf '%s\n' "${lines[@]}"  > "$1" 
+           echo 开始
+           printf "%s\n" "${lines[@]}" > "$1"
            echo "已完成$a条配置的修改更新"
            return 0
         else
@@ -1401,7 +1402,7 @@ function install_Tor {
 
 ##### 初始化tor配置 ######
 function initialize_tor {
-    insert "SocksPort $Tor_port          @*@#@Tor监听端口#@SocksPort #@ #@Tor_port" "SocksPort " "$path_tor"
+    insert "SocksPort $Tor_port          #￥#@Tor监听端口#@SocksPort #@ #@Tor_port" "SocksPort " "$path_tor"
 }
 
 ###### 设置Tor配置 ######
