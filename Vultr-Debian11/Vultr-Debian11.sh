@@ -1131,7 +1131,7 @@ $(pz "Warp_port")                                 #@Warp监听端口#@0-65535#@p
 #### 菜单栏
 cf_menu=(
     "  1、返回上一级"               "return"
-    "  2、Cloudflare DNS配置"      "cfdns; continue"
+    "  2、Cloudflare DNS配置"      'cfdns; continue'
     "  3、修改CF账户配置"           "set_cfdns"
     "  4、下载CFWarp"              "install_Warp"
     "  5、启动\重启CFWarp"          "restart warp-svc"
@@ -1146,7 +1146,6 @@ function cfdns {
       apt update
       apt install jq -y
       echo "依赖件JQ已安装完成！"
-      wait
     fi
     while true; do 
     # 获取区域标识符
@@ -1438,7 +1437,6 @@ function set_Frp {
 local conf=(
 "bind_port"
 "vhost_http_port"
-"vhost_https_port"
 "token"
 "dashboard_port"
 "dashboard_user" 
