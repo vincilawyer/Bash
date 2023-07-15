@@ -1375,6 +1375,7 @@ $(pz "dashboard_pwd")                              #@仪表板登录密码
 
 #frp配置文件路径（查看配置：nano /etc/frp/frps.ini）  
 path_frp="/etc/frp"
+path_frp="/etc/frp/frps.ini"
 ##### 菜单栏 #####
   frp_menu=(
     "  1、返回上一级"                    "return"
