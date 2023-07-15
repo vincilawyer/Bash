@@ -858,8 +858,10 @@ function update_config {
         if ((a>0)); then
            printf '%s\n' "${lines[@]}"  > "$1" 
            echo "已完成$a条配置的修改更新"
+           return 0
         else
            echo -e "${RED}配置更新失败，未找到配置行或配置值！${NC}"
+           return 1
         fi
 } 
 
@@ -1389,9 +1391,14 @@ function install_Tor {
     sudo apt update
     echo -e "${GREEN}开始安装Tor${NC}"
     apt install tor -y
+    #初始化
+    initialize_tor
     ipinfo
-    #初始化tor配置
-    insert "SocksPort $tor_port          @*@#@Tor监听端口#@SocksPort #@ #@tor_port" "SocksPort " "$path_tor"
+}
+
+##### 初始化tor配置 ######
+function initialize_tor {
+insert "SocksPort $tor_port          @*@#@Tor监听端口#@SocksPort #@ #@tor_port" "SocksPort " "$path_tor"
 }
 
 ###### 设置Tor配置 ######
@@ -1400,11 +1407,11 @@ local conf=(
 "Tor_port"
 )
     set_dat ${conf[@]}
-    update_config $path_tor
-
+    if update_config $path_tor  then
+       choose "是否重启tor并适用新配置？" "已取消重启！" || (restart tor && ipinfo)
+    fi  
+    
 }
-
-
 
 #############################################################################################################################################################################################
 ##############################################################################   13.Frp模块  ################################################################################################
