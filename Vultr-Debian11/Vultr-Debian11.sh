@@ -826,8 +826,6 @@ function set_dat {
     echo "已配置结束！"
 }
 
-    insert "SocksPort $tor_port          @*@#@Tor监听端口#@SocksPort #@ #@tor_port" "SocksPort " "$path_tor"
-
 #######   用户数据模板更新(代码作废)   #######   
 function update_config {
     lines=()
