@@ -93,7 +93,7 @@ EOF
 
 ######   配置模板 ######
 function pz { echo "$1=\"$(eval echo \$"$1")\"" ; }
-function adddat { ([ -z "$1" ] || (( $# > 1 ))) && quit 1 "添加配置模板错误，请检查是否可能遗漏单引号！" || dat_mod+="$1"; }
+function adddat { tn=$#; ([ -z "$1" ] || (( tn > 1 ))) && quit 1 "添加配置模板错误，请检查是否可能遗漏单引号！" || dat_mod+="$1"; }
 adddat '
 # 该文件为vinci用户配置文本
 # * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配规则（条件规则和比较规则）。比较规则即为正则表达式的变量名，条件规则为判断\$new_text变量是否符合规则条件，条件需用两个\"\"包裹
@@ -811,7 +811,7 @@ function set_dat {
     echo "已修改配置！"
 }
 
-#######   用户数据模板更新(代码作废)   #######   
+#######  应用配置更新   #######   
 function update_config {
     lines=()
     ct=      #已修改配置的数量
@@ -830,7 +830,7 @@ function update_config {
          #如果变量存在
          if [ -v $varname ]; then
             echo "已将配置由：$line"
-            ${lines[$index]}=$(replace "${a[2]}" "${a[3]}" "" 1 true false false false "$line"  "${!varname}")
+            lines[$index]=$(replace "${a[2]}" "${a[3]}" "" 1 true false false false "$line"  "${!varname}")
             echo "更新为：${lines[$index]}"
             echo
             ct=$(( ct + 1 ))
