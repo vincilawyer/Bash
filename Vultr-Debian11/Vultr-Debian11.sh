@@ -1374,7 +1374,7 @@ $(pz "dashboard_pwd")                              #@仪表板登录密码
 
 #frp配置文件路径（查看配置：nano /etc/frp/frps.ini）  
 path_frp="/etc/frp"
-path_frp="/etc/frp/frps.ini"
+path_frps="/etc/frp/frps.ini"
 ##### 菜单栏 #####
   frp_menu=(
     "  1、返回上一级"                    "return"
@@ -1424,12 +1424,12 @@ EOF
 
 
 function initialize_frp {
-    insert "bind_port = 27277              #￥#@服务端监听端口#@= #@ #@bind_port" "bind_port " "$path_frp"
-    insert "vhost_http_port = 15678        #￥#@HTTP监听的端口#@= #@ #@vhost_http_port" "vhost_http_port " "$path_frp"
-    insert "token = 88888888                #￥#@鉴权token值#@= #@ #@token" "token " "$path_frp"
-    insert "dashboard_port = 21211          #￥#@服务端仪表板端口#@= #@ #@dashboard_port" "dashboard_port " "$path_frp"
-    insert "dashboard_user = admin          #￥#@仪表板登录用户名#@= #@ #@dashboard_user" "dashboard_user" "$path_frp"
-    insert "dashboard_pwd = admin          #￥#@仪表板登录密码#@= #@ #@dashboard_pwd" "dashboard_pwd " "$path_frp"
+    insert "bind_port = 27277              #￥#@服务端监听端口#@= #@ #@bind_port" "bind_port " "$path_frps"
+    insert "vhost_http_port = 15678        #￥#@HTTP监听的端口#@= #@ #@vhost_http_port" "vhost_http_port " "$path_frps"
+    insert "token = 88888888                #￥#@鉴权token值#@= #@ #@token" "token " "$path_frps"
+    insert "dashboard_port = 21211          #￥#@服务端仪表板端口#@= #@ #@dashboard_port" "dashboard_port " "$path_frps"
+    insert "dashboard_user = admin          #￥#@仪表板登录用户名#@= #@ #@dashboard_user" "dashboard_user" "$path_frps"
+    insert "dashboard_pwd = admin          #￥#@仪表板登录密码#@= #@ #@dashboard_pwd" "dashboard_pwd " "$path_frps"
 }
 
 ######  ######
@@ -1444,8 +1444,10 @@ local conf=(
 "dashboard_pwd"
 )
     set_dat ${conf[@]}
-    if confirm "是否启动Frp并适用最新配置？" "已取消启动"; then return; fi
-    restart frps
+    if update_config "$path_frps"; then
+       confirm "是否重启Frps并适用新配置？" "已取消重启！" || (restart frps && sleep 3 && ipinfo)
+    fi  
+  
 }
 
 
