@@ -25,7 +25,7 @@
 
 
 ####### 版本更新相关参数 ######
-Version=3.28  #版本号 
+Version=3.29  #版本号 
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #获取当前脚本的目录路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
 file_path="$script_path/$script_name"                                             #获取当前脚本的文件路径
@@ -1443,7 +1443,7 @@ EOF
         initialize_frp
 }
 
-
+###### 初始化Frp配置 ######
 function initialize_frp {
 cat > "$path_frp/frps.ini" <<EOF
 [common]
@@ -1462,7 +1462,7 @@ dashboard_pwd = admin
 EOF
 }
 
-######  ######
+###### 设置frp ######
 function set_Frp {
 local conf=(
 "bind_port"
