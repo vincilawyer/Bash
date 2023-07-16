@@ -268,8 +268,10 @@ function status {
 apps=(
 "ufw"
 "docker"
+"nginx"
 "warp-svc"
 "tor"
+"frp"
 )
    for app in "${apps[@]}"; do  
       zl="systemctl status $app"
