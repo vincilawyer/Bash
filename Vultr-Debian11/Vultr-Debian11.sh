@@ -735,7 +735,7 @@ function update_config {
         if (( ct > 0 )); then
            printf "%s\n" "${lines[@]}" > "$1"
            echo -e "${BLUE}已完成$ct条配置的修改更新${NC}"
-           echo -e "${RED}有$ct条配置更新失败${NC}"
+           echo -e "${RED}有$ft条配置更新失败${NC}"
            return 0
         else
            echo -e "${RED}配置更新失败，未找到配置行或配置值！${NC}"
