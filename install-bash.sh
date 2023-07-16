@@ -6,7 +6,7 @@
 ####1、检查程序的启动方式：1、脚本启动更新；2、脚本返回更新。
 ####2、当脚本启动更新时，输入值为1.为程序报错或用户报错更新。
 ####3、当脚本返回更新时，获取返回值1.则为程序报错,要求返回更新检查程序继续更新。2.程序暂无错，用户自主要求返回程序检查更新。
-####4、输出返回值：1、退出旧版本；2、要求继续执行旧版本。
+####4、输出返回值：0、退出旧版本；1、要求继续执行旧版本。
 
 ####### 基本参数 ######
 Ver=4                                   #版本号
@@ -39,7 +39,7 @@ function main {
         if ! code="$(curl -s "$link_Vultr_Debian11")"; then  
             echo -n "vinci脚本下载失败，请检查网络！即将返回..."
             countdown 10
-            exit 2
+            exit 1
         fi
         
         #如果脚本已经存在，则开始检查更新。如果脚本不存在，则跳过检查直接开始下载。
@@ -54,7 +54,7 @@ function main {
              if [ "$code" == "$(cat "$file_path")" ]; then
                   (( wrong==1 )) && continue   #如果是报错更新，现显示错误提醒，并重新检测更新
                   echo "当前已是最新版本V$cur_Version.$num！"
-                  exit 2 
+                  exit 1 
              else 
                   (( wrong==1 )) && echo "${RED} 当前脚本运行出现错误！即将开始更新${NC}" 
                        echo "当前版本号为：V$cur_Version.$num"
@@ -71,7 +71,7 @@ function main {
          wrong=$?
          n=0
          if [ "$wrong" == "0" ]; then                       #如果脚本正常运行，则退出
-              exit 1                                            
+              exit 0                                            
          elif [ "$wrong" == "3" ]; then                           #如果用户要求更新，则继续更新
               continue
          else 
@@ -112,7 +112,7 @@ function main {
                 echo
                 echo "已回滚至旧版本！即将返回..."
                 countdown 10
-                exit 2   
+                exit 1   
             fi
       done
 }
