@@ -718,7 +718,6 @@ function update_config {
          #如果变量存在
          if [ -v $varname ]; then
             echo "已将配置由：$line2"
-            echo ${a[2]} ${a[3]}
             lines[$linenum]=$(replace "${a[2]}" "${a[3]}" "" 1 false false false false "${line2}"  "${!varname}")
             echo "更新为：${lines[$linenum]}"
             echo
