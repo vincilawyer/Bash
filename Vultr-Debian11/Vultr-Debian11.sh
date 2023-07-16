@@ -182,7 +182,7 @@ main_menu=(
     "  2、工具箱"                'page true " 工 具 箱 " "${toolbox_menu[@]}"'   
     "  3、UFW防火墙管理"          'page true " UFW 防 火 墙" "${ufw_menu[@]}"'
     "  4、Docker服务"            'page true "Docker" "${docker_menu[@]}"'
-    "  5、Nginx服务"             'page true "Nginx "${nginx_menu[@]}"'
+    "  5、Nginx服务"             'page true "Nginx" "${nginx_menu[@]}"'
     "  6、X-ui服务"              'page true "X-UI" "${xui_menu[@]}"'
     "  7、Cloudflare服务"        'page true "Cloudflare" "${cf_menu[@]}"'
     "  8、Tor服务"               'page true "Tor" "${tor_menu[@]}"'
@@ -253,7 +253,6 @@ function page {
     clear 
     eval ${cmd[$((new_text-1))]}  || ( echo "指令执行失败，请检查！"; wait )
     [ "$1" == "true" ] && wait
-    wait
 done
 
 }
