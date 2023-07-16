@@ -25,7 +25,7 @@
 
 
 ####### 版本更新相关参数 ######
-Version=3.26  #版本号 
+Version=3.27  #版本号 
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #获取当前脚本的目录路径
 script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
 file_path="$script_path/$script_name"                                             #获取当前脚本的文件路径
@@ -117,9 +117,9 @@ function update {
     if ((startnum == 2)); then exit 3; fi #未出错程序，用户主动要求返回到更新检查程序继续更新 
     cur_path="$script_path" cur_name="$script_name" wrong="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
     result=$?
-    if [ "$result" == "1" ] ; then        #如果已经更新或不需要继续执行
+    if [ "$result" == "0" ] ; then        #如果已经更新或不需要继续执行
         exit   
-    elif [ "$result" == "2" ]; then       #如果没有更新(已是最新版、脚本下载失败、新脚本运行错误)，则继续执行当前脚本
+    elif [ "$result" == "1" ]; then       #如果没有更新(已是最新版、脚本下载失败、新脚本运行错误)，则继续执行当前脚本
         :
     else                                  #如果更新失败，则继续执行当前脚本
         echo -n "未知错误，请检查！即将返回..."
