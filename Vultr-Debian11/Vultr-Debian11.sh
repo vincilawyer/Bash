@@ -223,8 +223,8 @@ function main {
 
 ######   页面显示   ######
 function page {
-   local title=$2 页面标题
- 
+   local title="$2"    #页面标题
+   local waitcon=$1    #确认是否等待
     while true; do
     # 清除和显示页面样式
     clear
@@ -251,8 +251,8 @@ function page {
     inp false 1 '"[[ "$new_text" =~ ^[0-9]+$ ]] && (( $new_text >= 0 && $new_text <= '$((menunum-1))' ))"'
     [ "$new_text" == "0" ] && quit 0              #如果选择零则退出
     clear 
-    eval ${cmd[$((new_text-1))]}  || ( echo "指令执行失败，请检查！"; wait )
-    [ "$1" == "true" ] && wait
+    eval ${cmd[$((new_text-1))]}  || ( echo "指令执行可能失败，请检查！"; waitcon="true" )
+    [ "$waitcon" == "true" ] && wait
 done
 
 }
