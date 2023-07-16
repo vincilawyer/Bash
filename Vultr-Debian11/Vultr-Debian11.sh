@@ -1450,7 +1450,7 @@ bind_port = 27277
 #￥#@HTTP监听的端口#@= #@ #@vhost_http_port" "vhost_http_port " "$path_frps"
 vhost_http_port = 15678
 #￥#@授权值#@= #@ #@token" "token " "$path_frps"
-token = 88888888
+token = 58451920
 #￥#@服务端仪表板端口#@= #@ #@dashboard_port" "dashboard_port " "$path_frps"
 dashboard_port = 21211          
 #￥#@仪表板登录用户名#@= #@ #@dashboard_user" "dashboard_user" "$path_frps"
@@ -1471,7 +1471,7 @@ local conf=(
 "dashboard_pwd"
 )
     set_dat ${conf[@]}
-    if update_config "$path_frps"; then
+    if update_config "$path_frp/frps.ini""; then
        confirm "是否重启Frps并适用新配置？" "已取消重启！" || (restart frps && sleep 3 && ipinfo)
     fi  
   
