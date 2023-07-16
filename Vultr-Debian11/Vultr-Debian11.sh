@@ -117,7 +117,6 @@ function update {
     if ((startnum == 2)); then exit 3; fi #未出错程序，用户主动要求返回到更新检查程序继续更新 
     cur_path="$script_path" cur_name="$script_name" wrong="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
     result=$?
-    echo $result
     if [ "$result" == "1" ] ; then        #如果已经更新或不需要继续执行
         exit 0   
     elif [ "$result" == "0" ]; then       #如果没有更新(已是最新版、脚本下载失败、新脚本运行错误)，则继续执行当前脚本
@@ -719,8 +718,8 @@ function update_config {
          #如果变量存在
          if [ -v $varname ]; then
             echo "已将配置由：$line2"
-            lines[$linenum]=1212
-            #lines[$linenum]=$(replace "${a[2]}" "${a[3]}" "" 1 true false false false "${line2}"  "${!varname}")
+            echo ${a[2]} ${a[3]}
+            lines[$linenum]=$(replace "${a[2]}" "${a[3]}" "" 1 false false false false "${line2}"  "${!varname}")
             echo "更新为：${lines[$linenum]}"
             echo
             ct=$(( ct + 1 ))
@@ -1365,7 +1364,7 @@ function install_Tor {
 
 ##### 初始化tor配置 ######
 function initialize_tor {
-    insert "#￥#@Tor监听端口#@SocksPort #@ #@Tor_port" "SocksPort 50000" "SocksPort " "$path_tor"
+    insert "#￥#@Tor监听端口#@SocksPort #@ #@Tor_port" "SocksPort 50000 " "SocksPort " "$path_tor"
 }
 
 ###### 设置Tor配置 ######
