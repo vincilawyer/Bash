@@ -726,7 +726,7 @@ function update_config {
          #如果变量不存在
          else
             echo -e "${RED}配置修改失败：$line2${NC}"
-            echo -e "${RED}用户数据中未找到${a[1]}变量${NC}"
+            echo -e "${RED}用户数据中未找到${a[1]}的变量名：$varname${NC}"
             echo
          fi
     done
@@ -1446,17 +1446,17 @@ EOF
 function initialize_frp {
 cat > "$path_frp/frps.ini" <<EOF
 [common]
-#￥#@服务端监听端口#@= #@ #@bind_port" "bind_port " "$path_frps"
+#￥#@服务端监听端口#@= #@ #@bind_port"
 bind_port = 27277
-#￥#@HTTP监听的端口#@= #@ #@vhost_http_port" "vhost_http_port " "$path_frps"
+#￥#@HTTP监听端口#@= #@ #@vhost_http_port"
 vhost_http_port = 15678
-#￥#@授权值#@= #@ #@token" "token " "$path_frps"
+#￥#@授权值#@= #@ #@token"
 token = 58451920
-#￥#@服务端仪表板端口#@= #@ #@dashboard_port" "dashboard_port " "$path_frps"
+#￥#@服务端仪表板端口#@= #@ #@dashboard_port"
 dashboard_port = 21211          
-#￥#@仪表板登录用户名#@= #@ #@dashboard_user" "dashboard_user" "$path_frps"
+#￥#@仪表板登录用户名#@= #@ #@dashboard_user"
 dashboard_user = admin          
-#￥#@仪表板登录密码#@= #@ #@dashboard_pwd" "dashboard_pwd " "$path_frps"
+#￥#@仪表板登录密码#@= #@ #@dashboard_pwd"
 dashboard_pwd = admin          
 EOF
 }
