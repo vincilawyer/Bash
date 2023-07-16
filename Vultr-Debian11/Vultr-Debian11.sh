@@ -708,9 +708,9 @@ function update_config {
 
     for index in "${!lines[@]}"; do   
          line1=${lines[$index]}
-         line2=${lines[$((index+1))]}
+         linenum=$((index+1))            #配置行号
+         line2=${lines[$linenum]}
          [[ "$line1" == *'#￥#@'* ]] || continue      #如果没有找到参数行，则继续查找
-         echo $line2
          [[ "$line2" =~ ^[[:space:]]*# ]] && continue      #如果配置行是注释行，则继续查找
          a=()
          IFS=$'\n' readarray -t a <<< $(echo "$line1" | sed 's/#@/\n/g')    # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。
@@ -719,8 +719,8 @@ function update_config {
          #如果变量存在
          if [ -v $varname ]; then
             echo "已将配置由：$line2"
-            lines[$((index+1))]=$(replace "${a[2]}" "${a[3]}" "" 1 true false false false "$line2"  "${!varname}")
-            echo "更新为：${lines[$((index+1))]}"
+            lines[$linenum]=$(replace "${a[2]}" "${a[3]}" "" 1 true false false false "${line2}"  "${!varname}")
+            echo "更新为：${lines[$linenum]}"
             echo
             ct=$(( ct + 1 ))
             
