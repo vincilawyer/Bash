@@ -117,6 +117,7 @@ function update {
     if ((startnum == 2)); then exit 3; fi #未出错程序，用户主动要求返回到更新检查程序继续更新 
     cur_path="$script_path" cur_name="$script_name" wrong="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
     result=$?
+    echo $result
     if [ "$result" == "0" ] ; then        #如果已经更新或不需要继续执行
         exit 0   
     elif [ "$result" == "1" ]; then       #如果没有更新(已是最新版、脚本下载失败、新脚本运行错误)，则继续执行当前脚本
