@@ -1182,12 +1182,13 @@ function cfdns {
     echo
     echo
     # 询问用户要进行的操作
-    echo "操作选项："
-    echo "1. 删除DNS记录修改或增加DNS记录"
-    echo "2. 修改或增加DNS记录"
-    echo "3. 返回"
-    echo "0. 退出"
-    echo -n "请选择要进行的操作：" 
+    echo "  操作选项："
+    echo "  1. 删除DNS记录修改或增加DNS记录"
+    echo "  2. 修改或增加DNS记录"
+    echo "  3. 返回"
+    echo "  0. 退出"
+    echo ""
+    echo -n "  请选择要进行的操作：" 
     inp false 2 {0..3}
     case $new_text in  
 1)#删除DNS记录 
