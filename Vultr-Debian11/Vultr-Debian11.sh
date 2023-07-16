@@ -583,9 +583,10 @@ function inp {
 
 #######  插入文本 ######
 function insert {
-    local config="$1"              # 新配置的内容
-    local location_string="$2"     #匹配的内容
-    local file="$3"                #文件位置
+    local argtext="$1"           # 参数内容
+    local config="$2"           # 配置内容
+    local location_string="$3"     #匹配的内容
+    local file="$4"                #文件位置
     local findloc=0                #文件中是否找到一个带注释符的匹配内容    
     local lineno=0                 #行号
     local lines=()
@@ -597,6 +598,7 @@ function insert {
                   # 插入注释符，并插入新字符串到下一行
                   sed -i "${lineno}s/^/#该行系由vinci脚本修改，原内容为： /" "$file"
                   sed -i "${lineno}a\\$config" "$file"
+                  sed -i "${lineno}a\\$argtext" "$file"
                   return
                   
               #如果行首是注释符
@@ -611,10 +613,12 @@ function insert {
     if ! ((findloc==0)); then
        sed -i "${findloc}s/^/#该行系由vinci脚本修改，原内容为： /" "$file"
        sed -i "${findloc}a\\$config" "$file"
+       sed -i "${findloc}a\\$argtext" "$file"
        return
     fi
     #如果没找到匹配内容或唯一带有注释匹配内容
-    sed -i "1i\\$config" "$file"
+    sed -i "${lineno}a\\$config" "$file"
+    sed -i "${lineno}a\\$argtext" "$file"
 }
 
 #######   是否确认框    #######   
@@ -702,24 +706,25 @@ function update_config {
     done < "$1" 
 
     for index in "${!lines[@]}"; do   
-         line=${lines[$index]}
-         [[ $line =~ ^[[:space:]]*# ]] && continue      #如果是注释行，则继续查找
-         [[ "$line" == *'#￥#@'* ]] || continue      #如果没有找到配置行，则继续查找
+         line1=${lines[$index]}
+         line2=${lines[$((index+1))]}
+         [[ "$line1" == *'#￥#@'* ]] || continue      #如果没有找到参数行，则继续查找
+         [[ "$line2" =~ ^[[:space:]]*# ]] && continue      #如果配置行是注释行，则继续查找
          a=()
-         IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g')    # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。
+         IFS=$'\n' readarray -t a <<< $(echo "$line1" | sed 's/#@/\n/g')    # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。
          varname="$(echo -e "${a[4]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"   #去除变量名的前后空格
          echo 
          #如果变量存在
          if [ -v $varname ]; then
-            echo "已将配置由：$line"
-            lines[$index]=$(replace "${a[2]}" "${a[3]}" "" 1 true false false false "$line"  "${!varname}")
-            echo "更新为：${lines[$index]}"
+            echo "已将配置由：$line2"
+            lines[$((index+1))]=$(replace "${a[2]}" "${a[3]}" "" 1 true false false false "$line2"  "${!varname}")
+            echo "更新为：${lines[$((index+1))]}"
             echo
             ct=$(( ct + 1 ))
             
          #如果变量不存在
          else
-            echo -e "${RED}配置修改失败：$line${NC}"
+            echo -e "${RED}配置修改失败：$line2${NC}"
             echo -e "${RED}用户数据中未找到${a[1]}变量${NC}"
             echo
          fi
@@ -1357,7 +1362,7 @@ function install_Tor {
 
 ##### 初始化tor配置 ######
 function initialize_tor {
-    insert "SocksPort 50000          #￥#@Tor监听端口#@SocksPort #@ #@Tor_port" "SocksPort " "$path_tor"
+    insert "#￥#@Tor监听端口#@SocksPort #@ #@Tor_port" "SocksPort 50000" "SocksPort " "$path_tor"
 }
 
 ###### 设置Tor配置 ######
@@ -1397,7 +1402,6 @@ $(pz "dashboard_pwd")                              #@仪表板登录密码
 
 #frp配置文件路径（查看配置：nano /etc/frp/frps.ini）  
 path_frp="/etc/frp"
-path_frps="/etc/frp/frps.ini"
 
 
 ###### 安装Frp的函数 ######
@@ -1439,12 +1443,21 @@ EOF
 
 
 function initialize_frp {
-    insert "bind_port = 27277              #￥#@服务端监听端口#@= #@ #@bind_port" "bind_port " "$path_frps"
-    insert "vhost_http_port = 15678        #￥#@HTTP监听的端口#@= #@ #@vhost_http_port" "vhost_http_port " "$path_frps"
-    insert "token = 88888888                #￥#@鉴权token值#@= #@ #@token" "token " "$path_frps"
-    insert "dashboard_port = 21211          #￥#@服务端仪表板端口#@= #@ #@dashboard_port" "dashboard_port " "$path_frps"
-    insert "dashboard_user = admin          #￥#@仪表板登录用户名#@= #@ #@dashboard_user" "dashboard_user" "$path_frps"
-    insert "dashboard_pwd = admin          #￥#@仪表板登录密码#@= #@ #@dashboard_pwd" "dashboard_pwd " "$path_frps"
+cat > "$path_frp/frps.ini" <<EOF
+[common]
+#￥#@服务端监听端口#@= #@ #@bind_port" "bind_port " "$path_frps"
+bind_port = 27277
+#￥#@HTTP监听的端口#@= #@ #@vhost_http_port" "vhost_http_port " "$path_frps"
+vhost_http_port = 15678
+#￥#@授权值#@= #@ #@token" "token " "$path_frps"
+token = 88888888
+#￥#@服务端仪表板端口#@= #@ #@dashboard_port" "dashboard_port " "$path_frps"
+dashboard_port = 21211          
+#￥#@仪表板登录用户名#@= #@ #@dashboard_user" "dashboard_user" "$path_frps"
+dashboard_user = admin          
+#￥#@仪表板登录密码#@= #@ #@dashboard_pwd" "dashboard_pwd " "$path_frps"
+dashboard_pwd = admin          
+EOF
 }
 
 ######  ######
