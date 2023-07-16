@@ -701,7 +701,7 @@ function set_dat {
 #######  应用配置更新   #######   
 function update_config {
     lines=()
-    ct=      #已修改配置的数量
+    local ct=0      #已修改配置的数量
     while IFS= read -r line; do     
          lines+=("$line")    #将每行文本转化为数组     
     done < "$1" 
@@ -710,6 +710,7 @@ function update_config {
          line1=${lines[$index]}
          line2=${lines[$((index+1))]}
          [[ "$line1" == *'#￥#@'* ]] || continue      #如果没有找到参数行，则继续查找
+         echo $line2
          [[ "$line2" =~ ^[[:space:]]*# ]] && continue      #如果配置行是注释行，则继续查找
          a=()
          IFS=$'\n' readarray -t a <<< $(echo "$line1" | sed 's/#@/\n/g')    # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。
