@@ -271,7 +271,7 @@ apps=(
 "nginx"
 "warp-svc"
 "tor"
-"frp"
+"frps"
 )
    for app in "${apps[@]}"; do  
       zl="systemctl status $app"
