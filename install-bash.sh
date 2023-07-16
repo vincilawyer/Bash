@@ -39,7 +39,7 @@ function main {
         if ! code="$(curl -s "$link_Vultr_Debian11")"; then  
             echo -n "vinci脚本下载失败，请检查网络！即将返回..."
             countdown 10
-            exit 1
+            exit 0
         fi
         
         #如果脚本已经存在，则开始检查更新。如果脚本不存在，则跳过检查直接开始下载。
@@ -54,7 +54,7 @@ function main {
              if [ "$code" == "$(cat "$file_path")" ]; then
                   (( wrong==1 )) && continue   #如果是报错更新，现显示错误提醒，并重新检测更新
                   echo "当前已是最新版本V$cur_Version.$num！"
-                  exit 1 
+                  exit 0 
              else 
                   (( wrong==1 )) && echo "${RED} 当前脚本运行出现错误！即将开始更新${NC}" 
                        echo "当前版本号为：V$cur_Version.$num"
@@ -70,8 +70,8 @@ function main {
          $def_name 2   
          wrong=$?  #脚本语法错误，返回值可能为2
          n=0
-         if [ "$wrong" == "0" ]; then                       #如果脚本正常运行，则退出
-              exit 0                                            
+         if [ "$wrong" == "0" ]; then                       #如果脚本正常更新，则退出
+              exit 1                                            
          elif [ "$wrong" == "3" ]; then                           #如果用户要求更新，则继续更新
               continue
          else 
@@ -107,12 +107,12 @@ function main {
             echo -e "${RED}#################################################################################${NC}"
             read -t 1 -n 1 input  #读取输入，在循环中一次1秒
             if [ -n "$input" ] || [ $? -eq 142 ] ; then
-                if bar 15 "已取消继续更新，即将尝试回滚至旧版本" "开始回滚" true "已取消回滚！即将返回..."; then exit 0; fi 
+                if bar 15 "已取消继续更新，即将尝试回滚至旧版本" "开始回滚" true "已取消回滚！即将返回..."; then exit 1; fi 
                 cp -f "$file_path"_backup "$file_path" 
                 echo
                 echo "已回滚至旧版本！即将返回..."
                 countdown 10
-                exit 1   
+                exit 0   
             fi
       done
 }
