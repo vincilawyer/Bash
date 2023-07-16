@@ -1471,7 +1471,7 @@ local conf=(
 "dashboard_pwd"
 )
     set_dat ${conf[@]}
-    if update_config "$path_frp/frps.ini""; then
+    if update_config "$path_frp/frps.ini"; then
        confirm "是否重启Frps并适用新配置？" "已取消重启！" || (restart frps && sleep 3 && ipinfo)
     fi  
   
