@@ -54,7 +54,7 @@ function main {
              if [ "$code" == "$(cat "$file_path")" ]; then
                   (( wrong==1 )) && continue   #如果是报错更新，现显示错误提醒，并重新检测更新
                   echo "当前已是最新版本V$cur_Version.$num！"
-                  exit 1 
+                  exit 0 
              else 
                   (( wrong==1 )) && echo "${RED} 当前脚本运行出现错误！即将开始更新${NC}" 
                        echo "当前版本号为：V$cur_Version.$num"
