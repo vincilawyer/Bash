@@ -701,6 +701,7 @@ function set_dat {
 function update_config {
     lines=()
     local ct=0      #已修改配置的数量
+    local ft=0      #修改失败的数量
     while IFS= read -r line; do     
          lines+=("$line")    #将每行文本转化为数组     
     done < "$1" 
@@ -719,7 +720,7 @@ function update_config {
          if [ -v $varname ]; then
             echo "已将配置由：$line2"
             lines[$linenum]=$(replace "${a[2]}" "${a[3]}" "" 1 false false false false "${line2}"  "${!varname}")
-            echo "更新为：${lines[$linenum]}"
+            echo -e "更新为：${BLUE}${lines[$linenum]}${NC}"
             echo
             ct=$(( ct + 1 ))
             
@@ -728,11 +729,13 @@ function update_config {
             echo -e "${RED}配置修改失败：$line2${NC}"
             echo -e "${RED}用户数据中未找到${a[1]}的变量名：$varname${NC}"
             echo
+            ft=$(( ft + 1 ))
          fi
     done
         if (( ct > 0 )); then
            printf "%s\n" "${lines[@]}" > "$1"
-           echo "已完成$ct条配置的修改更新"
+           echo -e "${BLUE}已完成$ct条配置的修改更新${NC}"
+           echo -e "${RED}有$ct条配置更新失败${NC}"
            return 0
         else
            echo -e "${RED}配置更新失败，未找到配置行或配置值！${NC}"
@@ -1446,17 +1449,17 @@ EOF
 function initialize_frp {
 cat > "$path_frp/frps.ini" <<EOF
 [common]
-#￥#@服务端监听端口#@= #@ #@bind_port"
+#￥#@服务端监听端口#@= #@ #@bind_port
 bind_port = 27277
-#￥#@HTTP监听端口#@= #@ #@vhost_http_port"
+#￥#@HTTP监听端口#@= #@ #@vhost_http_port
 vhost_http_port = 15678
-#￥#@授权值#@= #@ #@token"
+#￥#@授权值#@= #@ #@token
 token = 58451920
-#￥#@服务端仪表板端口#@= #@ #@dashboard_port"
+#￥#@服务端仪表板端口#@= #@ #@dashboard_port
 dashboard_port = 21211          
-#￥#@仪表板登录用户名#@= #@ #@dashboard_user"
+#￥#@仪表板登录用户名#@= #@ #@dashboard_user
 dashboard_user = admin          
-#￥#@仪表板登录密码#@= #@ #@dashboard_pwd"
+#￥#@仪表板登录密码#@= #@ #@dashboard_pwd
 dashboard_pwd = admin          
 EOF
 }
@@ -1473,7 +1476,7 @@ local conf=(
 )
     set_dat ${conf[@]}
     if update_config "$path_frp/frps.ini"; then
-       confirm "是否重启Frps并适用新配置？" "已取消重启！" || (restart frps && sleep 3 && ipinfo)
+       confirm "是否重启Frps并适用新配置？" "已取消重启！" || restart frps
     fi  
   
 }
