@@ -1588,22 +1588,54 @@ rclone_menu=(
     "  1、返回上一级"            "return"
     "  2、安装Rclone"            'curl https://rclone.org/install.sh | sudo bash'
     "  3、Rclone配置"            'rclone config'
-    "  4、将Baidu网盘书库更新至Onedrive"            'rclone config'
-    "  5、将Onedrive书库更新至Baidu网盘"            'rclone config'
-    "  6、将Baidu网盘指定文件更新至Onedrive"            'rclone config'
-    "  7、将Onedrive指定文件更新至Baidu网盘"            'rclone config'
+    "  4、将Baidu网盘书库更新至Onedrive"            'baidutoonebook'
+    "  5、将Onedrive书库更新至Baidu网盘"            'onetobaidubook'
+    "  6、将Baidu网盘指定文件更新至Onedrive"            'baidutoone'
+    "  7、将Onedrive指定文件更新至Baidu网盘"            'onetobaidu'
     "  8、Rclone使用指引"                       'echo "指令指引";echo "列出文件夹: rclone lsd onedrive:";echo "复制文件：rclone copy";echo "同步文件：rclone sync"'
     "  0、退出")
+### 配置 ####
+bdbook="共享文件夹/法律电子书（持续更新）"   #百度网盘书库位置
+onebook="法律书库"   #onedrive书库位置
 
 ### 将baidu同步给onedrive ###
 function baidutoone {
    echo "正在清除alist文件目录缓存..."
    systemctl restart alist; sleep 15
-   read -p "请输入要同步给Onedrive网盘的Baidu网盘文件夹路径" bdname
-   read -p "请输入Onedrive网盘保存位置路径" onename
+   read -p "请输入要同步给Onedrive的Baidu网盘文件夹路径" bdname
+   read -p "请输入Onedrive保存位置路径" onename
+   echo "同步中..."
    rclone sync baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onename
+   echo "同步完成..."
 }
 
+### 将onedrive同步给baidu ###
+function onetobaidu {
+   echo "正在清除alist文件目录缓存..."
+   systemctl restart alist; sleep 15
+   read -p "请输入要同步给Baidu网盘的Onedrive文件夹路径" bdname
+   read -p "请输入Baidu网盘保存位置路径" onename
+   echo "同步中..."
+   rclone sync onedrive:$onename baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" 
+   echo "同步完成..."
+}
+### 将baidu书库给onedrive ###
+function baidutoonebook {
+   echo "正在清除alist文件目录缓存..."
+   systemctl restart alist; sleep 15
+   echo "同步中..."
+   rclone sync baidu:$bdbook --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onebook
+   echo "同步完成..."
+}
+
+### 将onedrive书库给baidu ###
+function onetobaidubook {
+   echo "正在清除alist文件目录缓存..."
+   systemctl restart alist; sleep 15
+   echo "同步中..."
+   rclone sync onedrive:$onebook baidu:$bdbook --header "Referer:"  --header "User-Agent:pan.baidu.com" 
+   echo "同步完成..."
+}
     
 #############################################################################################################################################################################################
 ##############################################################################   在更新检查及错误检查后，执行主函数  ################################################################################################
