@@ -1605,7 +1605,7 @@ function baidutoone {
    read -p "请输入要同步给Onedrive的Baidu网盘文件夹路径" bdname
    read -p "请输入Onedrive保存位置路径" onename
    echo "同步中..."
-   rclone sync baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onename
+   rclone sync baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onename   #  更改百度网盘的UA，加速作用。 --header "Referer:"  --header "User-Agent:pan.baidu.com"
    echo "同步完成..."
 }
 
