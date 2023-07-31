@@ -1588,8 +1588,22 @@ rclone_menu=(
     "  1、返回上一级"            "return"
     "  2、安装Rclone"            'curl https://rclone.org/install.sh | sudo bash'
     "  3、Rclone配置"            'rclone config'
-    "  4、Rclone使用指引"         'echo "指令指引";echo "列出文件夹: rclone lsd onedrive:";echo "复制文件：rclone copy baidu:myfolder OneDrive:myfolder";echo "同步文件："'
+    "  4、将Baidu网盘书库更新至Onedrive"            'rclone config'
+    "  5、将Onedrive书库更新至Baidu网盘"            'rclone config'
+    "  6、将Baidu网盘指定文件更新至Onedrive"            'rclone config'
+    "  7、将Onedrive指定文件更新至Baidu网盘"            'rclone config'
+    "  8、Rclone使用指引"                       'echo "指令指引";echo "列出文件夹: rclone lsd onedrive:";echo "复制文件：rclone copy";echo "同步文件：rclone sync"'
     "  0、退出")
+
+### 将baidu同步给onedrive ###
+function baidutoone {
+   echo "正在清除alist文件目录缓存..."
+   systemctl restart alist; sleep 15
+   read -p "请输入要同步给Onedrive网盘的Baidu网盘文件夹路径" bdname
+   read -p "请输入Onedrive网盘保存位置路径" onename
+   rclone sync baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onename
+}
+
     
 #############################################################################################################################################################################################
 ##############################################################################   在更新检查及错误检查后，执行主函数  ################################################################################################
