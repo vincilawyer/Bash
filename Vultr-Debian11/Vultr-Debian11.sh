@@ -820,9 +820,27 @@ toolbox_menu=(
     "  1、返回上一级"      "return"
     "  2、设置微信通知推送" "notifier"
     "  0、退出")   
+####  参数  ###
+webhook='https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=615a90ac-4d8a-48f1-b396-1f4bfbc650cd'
 
 ###### 消息推送 ######
 function notifier {
+# 获取当前时间
+TIME=\$(date '+%Y-%m-%d %H:%M:%S')
+# 使用curl发送POST请求，这里使用的JSON格式的数据
+curl $webhook \
+     -H 'Content-Type: application/json' \
+     -d "
+{
+     \"msgtype\": \"text\",
+     \"text\": {
+         \"content\": \"\$TIME\n$1\"
+     }
+}" > /dev/null
+}
+
+###### 作废消息推送 ######
+function notifier_service {
 cat > "$path_notifier" <<EOF
 #!/bin/sh
 # 获取当前时间
@@ -1611,10 +1629,12 @@ function baidutoone {
    echo "正在获取Onedrive文件夹基本信息..."
    echo "Onedrive $onename 文件夹基本信息如下："
    rclone size onedrive:$onename
+   notifier "网盘文件信息已获取，请返回操作系统确认！"
    if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
    rclone sync baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onename   #  更改百度网盘的UA，加速作用。 --header "Referer:"  --header "User-Agent:pan.baidu.com"
    echo "同步完成..."
+   notifier "baidu to one 已同步完成"
 }
 
 ### 将onedrive同步给baidu ###
@@ -1629,25 +1649,29 @@ function onetobaidu {
    echo "正在获取Onedrive文件夹基本信息..."
    echo "Onedrive $onename 文件夹基本信息如下："
    rclone size onedrive:$onename
+   notifier "网盘文件信息已获取，请返回操作系统确认！"
    if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
    rclone sync onedrive:$onename baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" 
    echo "同步完成..."
+   notifier "one to baidu 已同步完成"
 }
 ### 将baidu书库给onedrive ###
 function baidutoonebook {
    echo "正在清除alist文件目录缓存..."
    systemctl restart alist; sleep 15
      echo "正在获取百度网盘文件夹基本信息..."
-   echo "百度网盘 $bdname 文件夹基本信息如下："
-   rclone size baidu:$bdname
+   echo "百度网盘 $bdbook 文件夹基本信息如下："
+   rclone size baidu:$bdbook
    echo "正在获取Onedrive文件夹基本信息..."
-   echo "Onedrive $onename 文件夹基本信息如下："
-   rclone size onedrive:$onename
+   echo "Onedrive $onebook 文件夹基本信息如下："
+   rclone size onedrive:$onebook
+   notifier "网盘文件信息已获取，请返回操作系统确认！"
    if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
    rclone sync baidu:$bdbook --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onebook
    echo "同步完成..."
+   notifier "baidu to one 已同步完成"
 }
 
 ### 将onedrive书库给baidu ###
@@ -1655,15 +1679,17 @@ function onetobaidubook {
    echo "正在清除alist文件目录缓存..."
    systemctl restart alist; sleep 15
      echo "正在获取百度网盘文件夹基本信息..."
-   echo "百度网盘 $bdname 文件夹基本信息如下："
-   rclone size baidu:$bdname
+   echo "百度网盘 $bdbook 文件夹基本信息如下："
+   rclone size baidu:$bdbook
    echo "正在获取Onedrive文件夹基本信息..."
-   echo "Onedrive $onename 文件夹基本信息如下："
-   rclone size onedrive:$onename
+   echo "Onedrive $onebook 文件夹基本信息如下："
+   rclone size onedrive:$onebook
+   notifier "网盘文件信息已获取，请返回操作系统确认！"
    if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
    rclone sync onedrive:$onebook baidu:$bdbook --header "Referer:"  --header "User-Agent:pan.baidu.com" 
    echo "同步完成..."
+   notifier "one to baidu 已同步完成"
 }
     
 #############################################################################################################################################################################################
