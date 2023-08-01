@@ -211,8 +211,8 @@ function page {
     while true; do
     # 清除和显示页面样式
     clear
-    echo; echo -e "${RED}${art}${NC}"; echo; echo; echo "                   欢迎进入Vinci服务器管理系统(版本V$Version1)"
-    echo; echo "=========================== "$2" =============================="; echo
+    echo; echo -e "${RED}${art}${NC}"; echo; echo; echo "      欢迎进入Vinci服务器管理系统(版本V$Version1)"
+    echo; echo "====================== "$2" ========================="; echo
     
     array=("${@:3}")
     menu=()
