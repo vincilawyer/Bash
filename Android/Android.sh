@@ -1110,12 +1110,9 @@ function check_ssl_certificate {
 ### 菜单栏
 alist_menu=(
     "  1、返回上一级"            "return"
-    "  2、安装Alist"            'curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install'
-    "  3、更新Alist"            'curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s update'
-    "  4、启动\重启Alist"        'restart alist'
-    "  5、查看Alist运行状况"     "status alist"
-    "  6、停止Alist运行"        "stop alist"
-    "  7、删除Alist"          'confirm "是否删除Alist？" "已取消删除Alist" || ( curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s uninstall && echo "已删除Alist" )'
+    "  2、安装\更新Alist"        'pkg upgrade; pkg update; pkg install alist'
+    "  3、启动Alist"             'alist server'
+    "  4、查看Alist账户密码"       "alist admin"
     "  0、退出")
     
 #############################################################################################################################################################################################
@@ -1124,7 +1121,7 @@ alist_menu=(
 ### 菜单栏
 rclone_menu=(
     "  1、返回上一级"            "return"
-    "  2、安装Rclone"            'curl https://rclone.org/install.sh | sudo bash'
+    "  2、安装\更新Rclone"      'pkg upgrade; pkg update; pkg install rclone'
     "  3、Rclone配置"            'rclone config'
     "  4、将Baidu网盘书库更新至Onedrive"            'baidutoonebook'
     "  5、将Onedrive书库更新至Baidu网盘"            'onetobaidubook'
