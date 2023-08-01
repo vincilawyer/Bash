@@ -797,6 +797,8 @@ function change_login_password {
 ##############################################################################    8.工具箱  ################################################################################################
 ############################################################################################################################################################################################
 #### 菜单栏 ###
+####  配置  ###
+webhook='https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=615a90ac-4d8a-48f1-b396-1f4bfbc650cd'
 toolbox_menu=(
     "  1、返回上一级"      "return"
     "  2、设置微信通知推送" "notifier"
@@ -804,35 +806,18 @@ toolbox_menu=(
 
 ###### 消息推送 ######
 function notifier {
-cat > "$path_notifier" <<EOF
-#!/bin/sh
 # 获取当前时间
 TIME=\$(date '+%Y-%m-%d %H:%M:%S')
 # 使用curl发送POST请求，这里使用的JSON格式的数据
-curl 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=615a90ac-4d8a-48f1-b396-1f4bfbc650cd' \
+curl $webhook \
      -H 'Content-Type: application/json' \
      -d "
 {
      \"msgtype\": \"text\",
      \"text\": {
-         \"content\": \"\$TIME\n【服务器已开机】\"
+         \"content\": \"\$TIME\n$1\"
      }
 }" > /dev/null
-EOF
-chmod +x "$path_notifier"
-#一、编辑文本，把执行脚本notifier.sh写进sudo nano /root/.bashrc中,即可在使用bash登录ssh时自动执行
-#二、创建文件 /etc/systemd/system/notifier.service 并添加如下内容
-#[Unit]
-#Description=Boot Notification Service
-#[Service]
-#ExecStart=$path_notifier       #此次为脚本保存路径
-#[Install]
-#WantedBy=multi-user.target
-#保存以上内容并设置权限sudo chmod 644 /etc/systemd/system/notifier.service
-#输入sudo systemctl daemon-reload
-#sudo systemctl start notifier.service即可启动该服务
-#设置开机自启动sudo systemctl enable notifier.service即可在开机时执行脚本
-#三、关于关机通知，systemd并没有提供一个内置的方式来在关机时运行脚本。一种可行的方式是创建一个服务，在这个服务停止时运行关机通知脚本。
 }
 
 #############################################################################################################################################################################################
@@ -921,10 +906,12 @@ function baidutoone {
    echo "正在获取Onedrive文件夹基本信息..."
    echo "Onedrive $onename 文件夹基本信息如下："
    rclone size onedrive:$onename
+   notifier "网盘文件信息已获取，请返回操作系统确认！"
    if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
    rclone sync baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onename   #  更改百度网盘的UA，加速作用。 --header "Referer:"  --header "User-Agent:pan.baidu.com"
    echo "同步完成..."
+   notifier "baidu to one 已同步完成"
 }
 
 ### 将onedrive同步给baidu ###
@@ -939,25 +926,29 @@ function onetobaidu {
    echo "正在获取Onedrive文件夹基本信息..."
    echo "Onedrive $onename 文件夹基本信息如下："
    rclone size onedrive:$onename
+   notifier "网盘文件信息已获取，请返回操作系统确认！"
    if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
    rclone sync onedrive:$onename baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" 
    echo "同步完成..."
+   notifier "one to baidu 已同步完成"
 }
 ### 将baidu书库给onedrive ###
 function baidutoonebook {
    echo "请将alist关闭重启，以确保百度网盘的文件目录为最新内容..."
    wait
      echo "正在获取百度网盘文件夹基本信息..."
-   echo "百度网盘 $bdname 文件夹基本信息如下："
-   rclone size baidu:$bdname
+   echo "百度网盘 $bdbook 文件夹基本信息如下："
+   rclone size baidu:$bdbook
    echo "正在获取Onedrive文件夹基本信息..."
-   echo "Onedrive $onename 文件夹基本信息如下："
-   rclone size onedrive:$onename
+   echo "Onedrive $onebook 文件夹基本信息如下："
+   rclone size onedrive:$onebook
+   notifier "网盘文件信息已获取，请返回操作系统确认！"
    if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
    rclone sync baidu:$bdbook --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onebook
    echo "同步完成..."
+   notifier "baidu to one 已同步完成"
 }
 
 ### 将onedrive书库给baidu ###
@@ -965,15 +956,17 @@ function onetobaidubook {
    echo "请将alist关闭重启，以确保百度网盘的文件目录为最新内容..."
    wait
    echo "正在获取百度网盘文件夹基本信息..."
-   echo "百度网盘 $bdname 文件夹基本信息如下："
-   rclone size baidu:$bdname
+   echo "百度网盘 $bdbook 文件夹基本信息如下："
+   rclone size baidu:$bdbook
    echo "正在获取Onedrive文件夹基本信息..."
-   echo "Onedrive $onename 文件夹基本信息如下："
-   rclone size onedrive:$onename
+   echo "Onedrive $onebook 文件夹基本信息如下："
+   rclone size onedrive:$onebook
+   notifier "网盘文件信息已获取，请返回操作系统确认！"
    if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
    rclone sync onedrive:$onebook baidu:$bdbook --header "Referer:"  --header "User-Agent:pan.baidu.com" 
    echo "同步完成..."
+   notifier "one to baidu 已同步完成"
 }
     
 #############################################################################################################################################################################################
