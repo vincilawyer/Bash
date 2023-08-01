@@ -835,22 +835,6 @@ chmod +x "$path_notifier"
 #三、关于关机通知，systemd并没有提供一个内置的方式来在关机时运行脚本。一种可行的方式是创建一个服务，在这个服务停止时运行关机通知脚本。
 }
 
-####### 一键搭建服务端的函数 ######
-function one_step {
-   echo "维护"
-   return
-   if confirm "是否一键搭建科学上网服务端？" "已取消一键搭建科学上网服务端"; then return; fi
-   echo "正在安装X-ui面板"
-   install_Xui
-   wait "点击任意键安装Nginx"
-   install_Nginx
-   wait "点击任意键安装Warp"
-   install_Warp
-   echo "请：
-   1、在x-ui中自行申请SSL
-   2、在x-ui面板中调整xray模板、面板设置，并创建节点"
-}
-
 #############################################################################################################################################################################################
 ##############################################################################   9.Docker  ################################################################################################
 ############################################################################################################################################################################################
@@ -927,8 +911,8 @@ onebook="法律书库"   #onedrive书库位置
 
 ### 将baidu同步给onedrive ###
 function baidutoone {
-   echo "正在清除alist文件目录缓存..."
-   systemctl restart alist; sleep 15
+   echo "请将alist关闭重启，以确保百度网盘的文件目录为最新内容..."
+   wait
    read -p "请输入要同步给Onedrive的Baidu网盘文件夹路径" bdname
    read -p "请输入Onedrive保存位置路径" onename   
    echo "正在获取百度网盘文件夹基本信息..."
@@ -945,8 +929,8 @@ function baidutoone {
 
 ### 将onedrive同步给baidu ###
 function onetobaidu {
-   echo "正在清除alist文件目录缓存..."
-   systemctl restart alist; sleep 15
+   echo "请将alist关闭重启，以确保百度网盘的文件目录为最新内容..."
+   wait
    read -p "请输入要同步给Baidu网盘的Onedrive文件夹路径" bdname
    read -p "请输入Baidu网盘保存位置路径" onename
      echo "正在获取百度网盘文件夹基本信息..."
@@ -962,8 +946,8 @@ function onetobaidu {
 }
 ### 将baidu书库给onedrive ###
 function baidutoonebook {
-   echo "正在清除alist文件目录缓存..."
-   systemctl restart alist; sleep 15
+   echo "请将alist关闭重启，以确保百度网盘的文件目录为最新内容..."
+   wait
      echo "正在获取百度网盘文件夹基本信息..."
    echo "百度网盘 $bdname 文件夹基本信息如下："
    rclone size baidu:$bdname
@@ -978,9 +962,9 @@ function baidutoonebook {
 
 ### 将onedrive书库给baidu ###
 function onetobaidubook {
-   echo "正在清除alist文件目录缓存..."
-   systemctl restart alist; sleep 15
-     echo "正在获取百度网盘文件夹基本信息..."
+   echo "请将alist关闭重启，以确保百度网盘的文件目录为最新内容..."
+   wait
+   echo "正在获取百度网盘文件夹基本信息..."
    echo "百度网盘 $bdname 文件夹基本信息如下："
    rclone size baidu:$bdname
    echo "正在获取Onedrive文件夹基本信息..."
