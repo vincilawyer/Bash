@@ -26,7 +26,7 @@ link_vinci="https://raw.githubusercontent.com/vincilawyer/Bash/blob/main/Android
 def_path="/usr/local/bin"     #新下载脚本目录路径
 link_vinci="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh"  
 ###### 其他系统 ######
-      else; echo '未知系统，正在配置默认脚本中...'
+      else echo '未知系统，正在配置默认脚本中...'
 def_path="/usr/local/bin"     #新下载脚本目录路径
 link_vinci="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh" 
       fi
