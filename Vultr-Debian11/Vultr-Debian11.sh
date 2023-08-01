@@ -818,7 +818,7 @@ function change_login_password {
 #### 菜单栏 ###
 toolbox_menu=(
     "  1、返回上一级"      "return"
-    "  2、设置微信通知推送" "notifier"
+    "  2、设置微信通知推送" ""
     "  0、退出")   
 ####  参数  ###
 webhook='https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=615a90ac-4d8a-48f1-b396-1f4bfbc650cd'
