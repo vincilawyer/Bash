@@ -1605,6 +1605,13 @@ function baidutoone {
    systemctl restart alist; sleep 15
    read -p "请输入要同步给Onedrive的Baidu网盘文件夹路径" bdname
    read -p "请输入Onedrive保存位置路径" onename
+     echo "正在获取百度网盘文件夹基本信息..."
+   echo "百度网盘 $bdname 文件夹基本信息如下："
+   rclone size baidu:$bdname
+   echo "正在获取Onedrive文件夹基本信息..."
+   echo "Onedrive $onename 文件夹基本信息如下："
+   rclone size onedrive:$onename
+   if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
    rclone sync baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onename   #  更改百度网盘的UA，加速作用。 --header "Referer:"  --header "User-Agent:pan.baidu.com"
    echo "同步完成..."
@@ -1616,6 +1623,13 @@ function onetobaidu {
    systemctl restart alist; sleep 15
    read -p "请输入要同步给Baidu网盘的Onedrive文件夹路径" bdname
    read -p "请输入Baidu网盘保存位置路径" onename
+     echo "正在获取百度网盘文件夹基本信息..."
+   echo "百度网盘 $bdname 文件夹基本信息如下："
+   rclone size baidu:$bdname
+   echo "正在获取Onedrive文件夹基本信息..."
+   echo "Onedrive $onename 文件夹基本信息如下："
+   rclone size onedrive:$onename
+   if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
    rclone sync onedrive:$onename baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" 
    echo "同步完成..."
@@ -1624,6 +1638,13 @@ function onetobaidu {
 function baidutoonebook {
    echo "正在清除alist文件目录缓存..."
    systemctl restart alist; sleep 15
+     echo "正在获取百度网盘文件夹基本信息..."
+   echo "百度网盘 $bdname 文件夹基本信息如下："
+   rclone size baidu:$bdname
+   echo "正在获取Onedrive文件夹基本信息..."
+   echo "Onedrive $onename 文件夹基本信息如下："
+   rclone size onedrive:$onename
+   if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
    rclone sync baidu:$bdbook --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onebook
    echo "同步完成..."
@@ -1633,6 +1654,13 @@ function baidutoonebook {
 function onetobaidubook {
    echo "正在清除alist文件目录缓存..."
    systemctl restart alist; sleep 15
+     echo "正在获取百度网盘文件夹基本信息..."
+   echo "百度网盘 $bdname 文件夹基本信息如下："
+   rclone size baidu:$bdname
+   echo "正在获取Onedrive文件夹基本信息..."
+   echo "Onedrive $onename 文件夹基本信息如下："
+   rclone size onedrive:$onename
+   if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
    rclone sync onedrive:$onebook baidu:$bdbook --header "Referer:"  --header "User-Agent:pan.baidu.com" 
    echo "同步完成..."
