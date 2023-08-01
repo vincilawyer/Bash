@@ -17,11 +17,11 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 ###### 特定系统参数 #####
-      if uname -a | grep -q 'Debian'; then; echo '检测系统为Debian，正在配置中...'
+      if uname -a | grep -q 'Debian'; then echo '检测系统为Debian，正在配置中...'
 ####### Debian系统基本参数 ######
 def_path="/data/data/com.termux/files/usr/bin"     #新下载脚本目录路径
 link_vinci="https://raw.githubusercontent.com/vincilawyer/Bash/blob/main/Android/Android.sh"          # vinci脚本下载网址
-      elif uname -a | grep -q 'Android'; then; echo '检测系统为Android，正在配置中...'
+      elif uname -a | grep -q 'Android'; then echo '检测系统为Android，正在配置中...'
 ####### Debian系统基本参数 ######
 def_path="/usr/local/bin"     #新下载脚本目录路径
 link_vinci="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh"  
