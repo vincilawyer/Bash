@@ -20,7 +20,7 @@ NC='\033[0m'
 ####### Android系统基本参数 ######
       if uname -a | grep -q 'Android'; then echo '检测系统为Android，正在配置中...'     
 def_path="/data/data/com.termux/files/usr/bin"     #新下载脚本目录路径
-link_vinci="https://raw.githubusercontent.com/vincilawyer/Bash/blob/main/Android/Android.sh"          # vinci脚本下载网址
+link_vinci="https://raw.githubusercontent.com/vincilawyer/Bash/main/Android/Android.sh"          # vinci脚本下载网址
 ####### Debian系统基本参数 ######
       elif uname -a | grep -q 'Debian'; then echo '检测系统为Debian，正在配置中...'
 def_path="/usr/local/bin"     #新下载脚本目录路径
