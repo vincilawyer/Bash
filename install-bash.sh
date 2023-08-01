@@ -47,7 +47,7 @@ function main {
     (( wrong==1 )) || clear
     while true; do
          #如果未获取到新版本文件
-        if ! code="$(wget -qO- "$link_vinci")"; then  
+        if ! code="$(curl -s "$link_Vultr_Debian11")"; then  
             echo -n "vinci脚本下载失败，请检查网络！即将返回..."
             countdown 10
             exit 0
@@ -74,7 +74,7 @@ function main {
              fi
          fi 
          #开始下载
-         wget --no-cache "$link_vinci" -O  "$file_path"
+         curl -H 'Cache-Control: no-cache' -L "$link_vinci" -o "$file_path"
          chmod +x "$file_path"
          echo "管理系统V"$Version.$(eval echo $num)"版本已下载\更新完成，即将进入系统！"
          countdown 10
@@ -169,25 +169,35 @@ function countdown {
 
 #######   安卓系统初始化  ####### 
 function  InitialAndroid {
-   # 检查是否已安装 wget
-   if ! command -v wget &> /dev/null; then
-      echo "wget未安装. Start installing..."
-      pkg upgrade; pkg update; pkg install wget -y
+
+   # 检查是否已安装 wget(跳过)
+   if fasle; then   
+      echo "wget未安装. 请先选择清华镜像源..."
+      sleep 5
+      termux-change-repo
+      echo "正在更新源"
+      pkg upgrade; pkg update
+      # 检查openssl是否最新
+      INSTALLED_VERSION=$(pkg list-installed openssl | awk 'NR>1 {print $2}')
+      AVAILABLE_VERSION=$(pkg list-all openssl | awk 'NR>1 {print $2}')
+      echo $INSTALLED_VERSION
+      echo $AVAILABLE_VERSION
+      if ! [ "$INSTALLED_VERSION" = "$AVAILABLE_VERSION" ]; then
+          echo "正在安装\更新 OpenSSL..."
+          pkg upgrade; pkg update; pkg install openssl -y
+          INSTALLED_VERSION=$(pkg list-installed openssl | awk 'NR>1 {print $2}')
+          echo $INSTALLED_VERSION
+          rm -rf $PREFIX 
+          echo "OpenSSL 更新完成，需要关闭重启终端软件！"
+      fi
+      echo "正在安装wget..."
+      pkg install wget -y
    fi
+   
    # 检查是否已安装 ncurses-utils
    if ! command -v tput &> /dev/null; then
       echo "ncurses-utils未安装. Start installing..."
       pkg upgrade; pkg update; pkg install ncurses-utils -y
-   fi
-   # 检查openssl是否最新
-   INSTALLED_VERSION=$(pkg list-installed openssl | awk 'NR>1 {print $2}')
-   AVAILABLE_VERSION=$(pkg list-all openssl | awk 'NR>1 {print $2}')
-   if ! [ "$INSTALLED_VERSION" = "$AVAILABLE_VERSION" ]; then
-      echo "正在安装\更新 OpenSSL..."
-      pkg upgrade; pkg update; pkg install openssl -y
-      rm -rf $PREFIX 
-      echo "OpenSSL 更新完成，需要关闭重启终端软件，并执行 termux-change-repo  语句，选择清华镜像源！"
-      exit
    fi
 }
 
