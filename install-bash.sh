@@ -11,32 +11,41 @@
 ####### 基本参数 ######
 Ver=4                                   #版本号
 def_name="vinci"                        #默认名称
-def_path="/usr/local/bin"     #新下载脚本目录路径
-
-####### 下载网址 ######
-#Vultr-Debian11.sh文件网址
-link_Vultr_Debian11="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh"
 
 ####### 颜色
 RED='\033[0;31m'
 NC='\033[0m'
 
+###### 特定系统参数 #####
+      if uname -a | grep -q 'Debian'; then; echo '检测系统为Debian，正在配置中...'
+####### Debian系统基本参数 ######
+def_path="/data/data/com.termux/files/usr/bin"     #新下载脚本目录路径
+link_vinci="https://raw.githubusercontent.com/vincilawyer/Bash/blob/main/Android/Android.sh"          # vinci脚本下载网址
+      elif uname -a | grep -q 'Android'; then; echo '检测系统为Android，正在配置中...'
+####### Debian系统基本参数 ######
+def_path="/usr/local/bin"     #新下载脚本目录路径
+link_vinci="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh"  
+      else; echo '未知系统，正在配置默认脚本中...'
+###### 其他系统 ######
+def_path="/usr/local/bin"     #新下载脚本目录路径
+link_vinci="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh" 
+      fi
+                                  
 #######  其他参数  #######
 #$cur_path                              为旧脚本目录路径
 #$cur_name                              为旧脚名称
 #$wrong                                 为错误启动更新模式
 def_name=$( [ -z "$cur_name" ] && echo "$def_name" || echo "$cur_name" )                        #脚本名称
 file_path=$( [ -z "$cur_path" ] && echo "$def_path/$def_name" || echo "$cur_path/$def_name" )     #文件路径
-Version=""                                                                                        #最新版本号
+Version=""   
 
-                                  
 
 ####### 主函数 ######
 function main {
     (( wrong==1 )) || clear
     while true; do
          #如果未获取到新版本文件
-        if ! code="$(curl -s "$link_Vultr_Debian11")"; then  
+        if ! code="$(wget -qO- "$link_vinci")"; then  
             echo -n "vinci脚本下载失败，请检查网络！即将返回..."
             countdown 10
             exit 0
@@ -63,7 +72,7 @@ function main {
              fi
          fi 
          #开始下载
-         wget --no-cache "$link_Vultr_Debian11" -O  "$file_path"
+         wget --no-cache "$link_vinci" -O  "$file_path"
          chmod +x "$file_path"
          echo "管理系统V"$Version.$(eval echo $num)"版本已下载\更新完成，即将进入系统！"
          countdown 10
