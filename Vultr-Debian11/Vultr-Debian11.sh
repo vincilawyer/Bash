@@ -644,6 +644,7 @@ function update_dat {
     if ! source $dat_path >/dev/null 2>&1; then   #读取用户数据
         echo "系统无用户数据记录。准备新建用户数据..."
         eval dat_all="\"$dat_mod\"" || quit 1 "更新数据配置模板出错"  #更新数据配置模板
+        mkdir $HOME/myfile >/dev/null 2>&1
         echo "$dat_all" > "$dat_path"  #写入数据文件
         echo "初始化数据完成"
         wait
