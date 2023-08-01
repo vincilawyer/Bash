@@ -317,7 +317,7 @@ function installed {
 #######   等待函数   #######   
 function wait {
    if [[ -z "$1" ]]; then
-    echo "请按下任意键返回"
+    echo "请按下任意键继续"
    else
     echo $1
    fi
