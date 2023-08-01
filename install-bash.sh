@@ -18,7 +18,7 @@ NC='\033[0m'
 
 ###### 特定系统参数 #####
 ####### Android系统基本参数 ######
-      if uname -a | grep -q 'Android'; then echo '检测系统为Android，正在配置中...'
+      if uname -a | grep -q 'Android'; then echo '检测系统为Android，正在配置中...'     
 def_path="/data/data/com.termux/files/usr/bin"     #新下载脚本目录路径
 link_vinci="https://raw.githubusercontent.com/vincilawyer/Bash/blob/main/Android/Android.sh"          # vinci脚本下载网址
 ####### Debian系统基本参数 ######
@@ -42,6 +42,8 @@ Version=""
 
 ####### 主函数 ######
 function main {
+     #安卓系统初始化
+     if uname -a | grep -q 'Android'; then InitialAndroid; fi
     (( wrong==1 )) || clear
     while true; do
          #如果未获取到新版本文件
@@ -163,6 +165,30 @@ function countdown {
         ((from--))
     done
     echo
+}
+
+#######   安卓系统初始化  ####### 
+function  InitialAndroid{
+   # 检查是否已安装 wget
+   if ! command -v wget &> /dev/null; then
+      echo "wget未安装. Start installing..."
+      pkg upgrade; pkg update; pkg install wget -y
+   fi
+   # 检查是否已安装 ncurses-utils
+   if ! command -v tput &> /dev/null; then
+      echo "ncurses-utils未安装. Start installing..."
+      pkg install ncurses-utils -y
+   fi
+   # 检查openssl是否最新
+   INSTALLED_VERSION=$(pkg list-installed openssl | awk 'NR>1 {print $2}')
+   AVAILABLE_VERSION=$(pkg list-all openssl | awk 'NR>1 {print $2}')
+   if ! [ "$INSTALLED_VERSION" = "$AVAILABLE_VERSION" ]; then
+      echo "正在安装\更新 OpenSSL..."
+      pkg install openssl -y
+      rm -rf $PREFIX 
+      echo "OpenSSL 更新完成，需要关闭重启终端软件，并执行 termux-change-repo  语句，选择清华镜像源！"
+      exit
+   fi
 }
 
 ######  运行主函数  ######
