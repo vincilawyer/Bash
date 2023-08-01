@@ -47,7 +47,7 @@ function main {
     (( wrong==1 )) || clear
     while true; do
          #如果未获取到新版本文件
-        if ! code="$(curl -s "$link_Vultr_Debian11")"; then  
+        if ! code="$(curl -s "$link_vinci")"; then  
             echo -n "vinci脚本下载失败，请检查网络！即将返回..."
             countdown 10
             exit 0
