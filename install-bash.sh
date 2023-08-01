@@ -168,7 +168,7 @@ function countdown {
 }
 
 #######   安卓系统初始化  ####### 
-function  InitialAndroid{
+function  InitialAndroid {
    # 检查是否已安装 wget
    if ! command -v wget &> /dev/null; then
       echo "wget未安装. Start installing..."
@@ -177,14 +177,14 @@ function  InitialAndroid{
    # 检查是否已安装 ncurses-utils
    if ! command -v tput &> /dev/null; then
       echo "ncurses-utils未安装. Start installing..."
-      pkg install ncurses-utils -y
+      pkg upgrade; pkg update; pkg install ncurses-utils -y
    fi
    # 检查openssl是否最新
    INSTALLED_VERSION=$(pkg list-installed openssl | awk 'NR>1 {print $2}')
    AVAILABLE_VERSION=$(pkg list-all openssl | awk 'NR>1 {print $2}')
    if ! [ "$INSTALLED_VERSION" = "$AVAILABLE_VERSION" ]; then
       echo "正在安装\更新 OpenSSL..."
-      pkg install openssl -y
+      pkg upgrade; pkg update; pkg install openssl -y
       rm -rf $PREFIX 
       echo "OpenSSL 更新完成，需要关闭重启终端软件，并执行 termux-change-repo  语句，选择清华镜像源！"
       exit
