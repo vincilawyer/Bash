@@ -825,18 +825,15 @@ webhook='https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=615a90ac-4d8a-48f1
 
 ###### 消息推送 ######
 function notifier {
-# 获取当前时间
-TIME=\$(date '+%Y-%m-%d %H:%M:%S')
 # 使用curl发送POST请求，这里使用的JSON格式的数据
-curl $webhook \
+curl "$webhook" \
      -H 'Content-Type: application/json' \
-     -d "
-{
+     -d "{
      \"msgtype\": \"text\",
      \"text\": {
-         \"content\": \"\$TIME\n$1\"
+         \"content\": \"【服务器信息】\n$1\"
      }
-}" > /dev/null
+}" >/dev/null 2>&1
 }
 
 ###### 作废消息推送 ######
