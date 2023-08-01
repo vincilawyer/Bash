@@ -906,7 +906,7 @@ function baidutoone {
    notifier "网盘文件信息已获取，请返回操作系统确认！"
    if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
-   rclone sync baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onename   #  更改百度网盘的UA，加速作用。 --header "Referer:"  --header "User-Agent:pan.baidu.com"
+   rclone sync baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onename -P   #  更改百度网盘的UA，加速作用。 --header "Referer:"  --header "User-Agent:pan.baidu.com"
    echo "同步完成..."
    notifier "baidu to one 已同步完成"
 }
@@ -926,7 +926,7 @@ function onetobaidu {
    notifier "网盘文件信息已获取，请返回操作系统确认！"
    if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
-   rclone sync onedrive:$onename baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" 
+   rclone sync onedrive:$onename baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" -P 
    echo "同步完成..."
    notifier "one to baidu 已同步完成"
 }
@@ -943,7 +943,7 @@ function baidutoonebook {
    notifier "网盘文件信息已获取，请返回操作系统确认！"
    if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
-   rclone sync baidu:$bdbook --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onebook
+   rclone sync baidu:$bdbook --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onebook -P
    echo "同步完成..."
    notifier "baidu to one 已同步完成"
 }
@@ -961,7 +961,7 @@ function onetobaidubook {
    notifier "网盘文件信息已获取，请返回操作系统确认！"
    if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
-   rclone sync onedrive:$onebook baidu:$bdbook --header "Referer:"  --header "User-Agent:pan.baidu.com" 
+   rclone sync onedrive:$onebook baidu:$bdbook --header "Referer:"  --header "User-Agent:pan.baidu.com" -P
    echo "同步完成..."
    notifier "one to baidu 已同步完成"
 }
