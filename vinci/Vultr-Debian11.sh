@@ -2,85 +2,33 @@
 ############################################################################################################################################################################################
 ##############################################################################   vinci脚本源代码   ########################################################################################
 ############################################################################################################################################################################################
-###          目  录        
-###   1.参数               
-###   2.脚本启动及退出检查模块        
-###   3.主函数
-###   4.开发工具 
-###   5.文本管理模块    
-###   6.用户数据及应用配置管理模块       
-###   7.系统工具
-###   8.Docker
-###   9.Nginx
-###   10.Xui
-###   11.Cloudflare
-###   12.Tor
-###   13.Frp
-###   14.Chatgpt
-############################################################################################################################################################################################
-############################################################################################################################################################################################
 ###   说明:
 ###   一、输入参数：1.则为用户报错更新。2.则本脚本为更新检查程序唤醒。
 ###   二、输出返回值：1.则为程序报错,要求返回更新检查程序继续更新;2.当脚本出现语法错误，可能返回值为2;3.程序暂无错，用户自主要求返回程序更新。
 
-
 ####### 版本更新相关参数 ######
 Version=3.29  #版本号 
-script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"      #获取当前脚本的目录路径
-script_name="$(basename "${BASH_SOURCE[0]}")"                                     #获取当前脚本的名称
-file_path="$script_path/$script_name"                                             #获取当前脚本的文件路径
-Version1="$Version.$(n="$(cat "$file_path")" &&  echo "${#n}")"                   #脚本完整版本号
-startnum="$1"                                                                     #当前脚本的启动指令：1、告知本程序由更新程序唤醒；
-
-
-####### 定义颜色 ######
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-PURPLE='\033[0;35m'
-CYAN='\033[0;36m'
-WHITE='\033[0;37m'
-BLACK="\033[40m"
-NC='\033[0m'
 
 ####### 定义全局变量  ######                                  
 option=""     #用户选择序号 
 old_text=""   #settext函数修改前内容
 new_text=""   #inp函数输入的内容
 
-####### 定义路径  ######
-#更新检查程序网址
-link_update="https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh"
-#脚本数据文件夹
-vincidat_path="/root/myfile"
-#用户数据路径
-dat_path="$vincidat_path/vinci.dat"
-#ssh配置文件路径(查看配置：nano /etc/ssh/sshd_config)                           
-path_ssh="/etc/ssh/sshd_config"
-#开启消息提醒脚本路径
-path_notifier="/root/myfile/notifier.sh"
+####### 定义路径及文件名  ######
+link_update="https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh"    #更新检查程序网址
+link_arg="https://raw.githubusercontent.com/vincilawyer/Bash/main/library/arg.lib"       #参数文件路径
+data_name="$HOME/myfile"                                                                 #应用数据文件夹位置路径                   
+data_path="$data_name/vinci_data"                                                        #应用数据文件夹位置名
+config_path="$data_path/vinci.dat"                                                       #配置数据文件路径
 
 
-####### 定义正则表达式 ####### 
-#一级域名表达式
-domain_regex='^[a-zA-Z0-9-]{1,63}(\.[a-zA-Z]{2,})$'
-#二级域名表达式
-subdomain_regex='^[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+$'
-#网址域名
-web_regex='^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$'
-#邮箱表表达式
-email_regex='^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-#IPV4表达式
-ipv4_regex='^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
-#IPV6表达式
-ipv6_regex='^([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])$'
-#ip端口号表达式
-port_regex='^([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$'
-#大陆手机11位手机号表达式
-tel_regex='^1[3-9]\d{9}$'
-#若干#和空格前置的表达式 
-comment_regex='^ *[# ]*'
+######  版本更新相关参数  #####
+script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"            #获取当前脚本的目录路径
+script_name="$(basename "${BASH_SOURCE[0]}")"                                           #获取当前脚本的名称
+scriptfile_path="$script_path/$script_name"                                                   #获取当前脚本的文件路径
+Version1="$Version.$(n="$(cat "$file_path")" &&  echo "${#n}")"                         #脚本完整版本号
+startnum="$1"    
+
 
 ####### 登录logo样式 ####### 
 art=$(cat << "EOF"
@@ -97,11 +45,11 @@ EOF
 
 ######   配置模板 ######
 function pz { echo "$1=\"$(eval echo \$"$1")\"" ; }
-function adddat { tn=$#; ([ -z "$1" ] || (( tn > 1 ))) && quit 1 "添加配置模板错误，请检查是否可能遗漏单引号！" || dat_mod+="$1"; }
+function adddat { tn=$#; ([ -z "$1" ] || (( tn > 1 ))) && quit 1 "添加配置模板错误，请检查是否可能遗漏单引号！" || config_mod+="$1"; }
 adddat '
 # 该文件为vinci用户配置文本
 # * 表示不可在脚本中修改的常量,变量值需要用双引号包围, #@ 用于分隔变量名称、备注、匹配规则（条件规则和比较规则）。比较规则即为正则表达式的变量名，条件规则为判断\$new_text变量是否符合规则条件，条件需用两个\"\"包裹
-Dat_num="\"${#dat_mod}\""                         #版本号*              
+config_num="\"${#config_mod}\""                         #版本号*              
 $(pz "Domain")                                    #@一级域名#@不用加www#@domain_regex
 $(pz "Email")                                     #@邮箱#@#@email_regex
 ' 
@@ -114,11 +62,48 @@ $(pz "Email")                                     #@邮箱#@#@email_regex
 
 ####### 脚本更新  ####### 
 #  说明：输入参数为1则为用户报错或程序自检错误更新
-function update {
-    clear
-    if ((startnum == 2)); then exit 3; fi #未出错程序，用户主动要求返回到更新检查程序继续更新 
-    cur_path="$script_path" cur_name="$script_name" wrong="$1" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
-    result=$?
+function update_load {
+    local upcode="$1"                     #更新模式，1为报错模式
+    local file_path="$2"                  #更新文件路径
+    local file_link="$3"                  #更新文件链接
+    local file_name="$4"                  #更新文件名称
+    local reloadcode="$4"                 #加载模式  1为source，2为执行
+    while true; do
+       upcode="$upcode" file_path="$file_path" file_link="$file_link" name="$file_name" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
+       result=$?
+       if ((reloadcode == 1)); then          
+            local wrongtext="$(source $file_path 2>&1 >/dev/null)"   #载入配置文件，并获取错误输出
+            if [ -n "$wrongtext" ]; then  #如果新的配置文件存在错误
+                 echo "$file_name文件存在错误，报错内容为："
+                 echo "$wrongtext"
+                 echo "即将重新开始更新"
+                 upcode=1
+                 continue
+            fi
+       elif ((reloadcode == 2)); then
+            if [ "$upcode" == "1" ]; then                       #如果脚本正常更新，则执行并检测新脚本
+                chmod +x "$file_path"
+                $file_path 2
+                upcode=$?  #脚本错误返回1，脚本语法错误，返回值可能为2，用户主动更新返回3
+                if [ "$upcode" == "0" ]; then 
+                    exit 0
+                elif [ "$upcode" == "3" ]; then  
+                else 
+                    upcode=1
+                    continue
+                fi   
+         fi   
+         
+            if [ "$upcode" == "0" ]; then                       #如果脚本正常更新，则退出
+              exit 1                                            
+         elif [ "$upcode" == "3" ]; then                           #如果用户要求更新，则继续更新
+              continue
+         else 
+              upcode=1
+              continue
+         fi   
+       fi
+       
     if [ "$result" == "1" ] ; then        #如果已经更新或不需要继续执行
         exit 0   
     elif [ "$result" == "0" ]; then       #如果没有更新(已是最新版、脚本下载失败、新脚本运行错误)，则继续执行当前脚本
@@ -127,7 +112,9 @@ function update {
         echo -n "未知错误，请检查！即将返回..."
         countdown 5
     fi
-} 
+}     
+
+if ((startnum == 2)); then exit 3; fi #未出错程序，用户主动要求返回到更新检查程序继续更新 
 
 #######   倒计时   ####### 
 function countdown {
@@ -144,7 +131,8 @@ function countdown {
 }
 
 ####### 执行启动前更新检查  ####### 
-[ "$startnum" == 2 ] || update $startnum     #刚更新的程序无需再次检查更新
+clear
+[ "$startnum" == 2 ] || update_load $startnum     #刚更新的程序无需再次检查更新
 
 #######  当用户选择主动退出  #########
 function quit() {
@@ -155,7 +143,7 @@ function quit() {
    elif [ "$1" == "1" ]; then
        echo "$2"
        [ "$startnum" == "2" ] && exit 1              #检查程序更新脚本后的退出（即无需再次启动检查程序），这里的exit不会执行normal_exit函数
-       update 1    
+       update_load 1    
    else
        echo -e "${GREED}非正常退出vinci脚本（V"$Version1"）！${NC}";
    fi
@@ -165,7 +153,7 @@ function quit() {
 function handle_error() {
     echo "脚本运行出现错误！"
    [ "$startnum" == "2" ] && exit 1              #检查程序更新脚本后的退出（即无需再次启动检查程序），这里的exit不会执行normal_exit函数
-   update 1                                     #唤醒程序更新
+   update_load 1                                     #唤醒程序更新
 }
 
 #######   当脚本退出   ####### 
@@ -643,18 +631,18 @@ function confirm {
 
 #######   创建\更新用户配置数据模板    #######
 function update_dat { 
-    if ! source $dat_path >/dev/null 2>&1; then   #读取用户数据
+    if ! source $config_path >/dev/null 2>&1; then   #读取用户数据
         echo "系统无用户数据记录。准备新建用户数据..."
-        eval dat_all="\"$dat_mod\"" || quit 1 "更新数据配置模板出错"  #更新数据配置模板
+        eval config_all="\"$config_mod\"" || quit 1 "更新数据配置模板出错"  #更新数据配置模板
         mkdir $HOME/myfile >/dev/null 2>&1
-        echo "$dat_all" > "$dat_path"  #写入数据文件
+        echo "$config_all" > "$config_path"  #写入数据文件
         echo "初始化数据完成"
         wait
     else
-        if ! [ "$Dat_num" == "${#dat_mod}" ] ; then
+        if ! [ "$config_num" == "${#config_mod}" ] ; then
            echo "配置文件更新中..."
-           eval dat_all="\"$dat_mod\"" || quit 1  "更新数据配置模板出错" #更新数据配置模板 
-           echo "$dat_all" > "$dat_path" #写入数据文件
+           eval config_all="\"$config_mod\"" || quit 1  "更新数据配置模板出错" #更新数据配置模板 
+           echo "$config_all" > "$config_path" #写入数据文件
            echo "更新完成，可在系统设置中修改参数！"
            wait
         fi
@@ -666,7 +654,7 @@ function set_dat {
   #如果指定配置，则指定修改
     if ! [ $# -eq 0 ]; then
          for arg in "$@"; do
-             line=$(search "#@" '' "$arg" 1 false false false true "$dat_path" )            
+             line=$(search "#@" '' "$arg" 1 false false false true "$config_path" )            
              IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
              rule="$(echo -e "${a[2]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"   #去除规则前后的空格
              if [ -z "$rule" ]; then
@@ -674,7 +662,7 @@ function set_dat {
              elif ! [[ "${rule:0:1}" == '"' && "${rule: -1}" == '"' ]]; then   #判断rule是正则表达式变量名还是条件语句,如果是正则表达式变量名则转换为条件语句
                  rule="${!rule}" 
              fi 
-             settext "\"" "\"" "$arg" 1 true false false true "$dat_path" "${a[0]}" "${a[1]}" 1 "$rule" 
+             settext "\"" "\"" "$arg" 1 true false false true "$config_path" "${a[0]}" "${a[1]}" 1 "$rule" 
          done         
     else
     
@@ -683,7 +671,7 @@ function set_dat {
     while IFS= read -r line; do   # IFS用于指定分隔符，IFS= read -r line 的含义是：在没有任何字段分隔符的情况下（即将IFS设置为空），读取一整行内容并赋值给变量line。与下面的IFS不同，这个命令在一个 while 循环中执行，每次循环都会读取 line1 中的一行，直到 line1 中的所有行都被读取完毕。
          if [[ ! $line =~ "=" ]] || [[ $line =~ ^([[:space:]]*[#]+|[#]+) ]] || [[ $line =~ \*([[:space:]]*|$) ]] ; then continue ; fi  #跳过#开头和*结尾的行
          lines+=("$line")    #将每行文本转化为数组     
-    done < "$dat_path"
+    done < "$config_path"
     
     # 因为在上面含有IFS= read的循环中，没法再次read到用户的输入数据，因此在循环外处理数据
     for line in "${lines[@]}"; do   
@@ -696,10 +684,10 @@ function set_dat {
          elif ! [[ "${rule:0:1}" == '"' && "${rule: -1}" == '"' ]]; then   #判断rule是正则表达式变量名还是条件语句,如果是正则表达式变量名则转换为条件语句
              rule=${!rule}   
          fi
-         settext "${b[0]}=\"" '"' "" 1 true false false true "$dat_path" "${a[1]}" "${a[2]}" 1 "$rule" 
+         settext "${b[0]}=\"" '"' "" 1 true false false true "$config_path" "${a[1]}" "${a[2]}" 1 "$rule" 
     done
     fi
-    source "$dat_path"   #重新载入数据
+    source "$config_path"   #重新载入数据
     echo
     echo "已修改配置完毕！"
 }
@@ -754,6 +742,9 @@ function update_config {
 #############################################################################################################################################################################################
 ##############################################################################    7.系统工具  ################################################################################################
 ############################################################################################################################################################################################
+#ssh配置文件路径(查看配置：nano /etc/ssh/sshd_config)                           
+path_ssh="/etc/ssh/sshd_config"
+
 ### 菜单选项 ###
 system_menu=(
     "  1、返回上一级"                "return"
@@ -813,6 +804,31 @@ function change_login_password {
             echo -e "${GREEN}SSH登录密码已修改成功！新密码为:$new_text,请妥善保管！${NC}"
          fi
    fi
+}
+#######   进度条  ####### 
+function bar() {
+    time=$1 #进度条时间
+    #$2  第一行文本内容
+    #$3  第二行文本内容
+    #$4  是否可退
+    #$5  退出提醒
+    block=""
+    echo -e "\033[1G$block"$2"···"
+    printf "输入任意键退出%02ds" $time
+    for i in $(seq 1 $1); do
+       time=$((time-1))
+       block=$block$(printf "\e[42m \e[0m")
+       echo -e "\033[1F\033[1G$block"$2"···"
+       printf "输入任意键可退出...%02ds" $time
+       read -t 1 -n 1 input
+           if [ -n "$input" ] || [ $? -eq 142 ] && [[ $4 == "true" ]]; then
+               echo "$5"
+               return 0 
+           fi  
+    done       
+    echo
+    printf "\033[1A\033[K%s\n" "$3"
+    return 1
 }
 #############################################################################################################################################################################################
 ##############################################################################    8.工具箱  ################################################################################################
