@@ -1694,7 +1694,7 @@ function onetobaidubook {
 
 function checksync {
    echo $vincidat_path
-   nohup sh -c 'notifier "one to baidu 已同步完成"; type notifier' > "$vincidat_path"/rclonesync.log 2>&1 &   #  更改百度网盘的UA，加速作用。 --header "Referer:"  --header "User-Agent:pan.baidu.com"
+   nohup sh -c 'notifier "one to baidu 已同步完成"; type notifier; echo 哈哈' > "$vincidat_path"/rclonesync.log 2>&1 &   #  更改百度网盘的UA，加速作用。 --header "Referer:"  --header "User-Agent:pan.baidu.com"
 }    
 #############################################################################################################################################################################################
 ##############################################################################   在更新检查及错误检查后，执行主函数  ################################################################################################
