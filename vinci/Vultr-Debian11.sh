@@ -3,7 +3,7 @@
 ##############################################################################   vinci脚本源代码   ########################################################################################
 ############################################################################################################################################################################################
 ###   说明:
-###   一、输入参数：1.则为用户报错更新。2.则本脚本为更新检查程序唤醒。
+###   一、输入参数：1.则为用户指令更新。2.则本脚本为更新检查程序唤醒。
 ###   二、输出返回值：1.则为程序报错,要求返回更新检查程序继续更新;2.当脚本出现语法错误，可能返回值为2;3.程序暂无错，用户自主要求返回程序更新。
 
 ####### 版本更新相关参数 ######
@@ -62,6 +62,10 @@ $(pz "Email")                                     #@邮箱#@#@email_regex
 
 ####### 脚本更新  ####### 
 #  说明：输入参数为1则为用户报错或程序自检错误更新
+function update_all {
+
+}
+
 function update_load {
     local upcode="$1"                     #更新模式，1为报错模式
     local file_path="$2"                  #更新文件路径
@@ -71,6 +75,7 @@ function update_load {
     while true; do
        upcode="$upcode" file_path="$file_path" file_link="$file_link" name="$file_name" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")
        result=$?
+       #加载配置文件
        if ((reloadcode == 1)); then          
             local wrongtext="$(source $file_path 2>&1 >/dev/null)"   #载入配置文件，并获取错误输出
             if [ -n "$wrongtext" ]; then  #如果新的配置文件存在错误
@@ -80,19 +85,23 @@ function update_load {
                  upcode=1
                  continue
             fi
+       #重启脚本
        elif ((reloadcode == 2)); then
-            if [ "$upcode" == "1" ]; then                       #如果脚本正常更新，则执行并检测新脚本
+            if ((startnum == 2)); then exit 3; fi    #如果程序为更改后程序，用户主动要求返回继续无错更新 
+            if [ "$result" == "1" ]; then             #如果脚本已更新，则执行并检测新脚本
                 chmod +x "$file_path"
                 $file_path 2
-                upcode=$?  #脚本错误返回1，脚本语法错误，返回值可能为2，用户主动更新返回3
+                upcode=$?  #脚本错误返回1，脚本语法错误，返回值可能为2，用户主动无错更新返回3
                 if [ "$upcode" == "0" ]; then 
                     exit 0
                 elif [ "$upcode" == "3" ]; then  
+                    return 3
                 else 
                     upcode=1
                     continue
                 fi   
-         fi   
+            fi   
+        fi
          
             if [ "$upcode" == "0" ]; then                       #如果脚本正常更新，则退出
               exit 1                                            
@@ -114,8 +123,6 @@ function update_load {
     fi
 }     
 
-if ((startnum == 2)); then exit 3; fi #未出错程序，用户主动要求返回到更新检查程序继续更新 
-
 #######   倒计时   ####### 
 function countdown {
     local from=$1
@@ -132,7 +139,7 @@ function countdown {
 
 ####### 执行启动前更新检查  ####### 
 clear
-[ "$startnum" == 2 ] || update_load $startnum     #刚更新的程序无需再次检查更新
+[ "$startnum" == 2 ] || update_all $startnum     #刚更新的程序无需再次检查更新
 
 #######  当用户选择主动退出  #########
 function quit() {
