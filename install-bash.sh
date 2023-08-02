@@ -4,12 +4,12 @@
 ############################################################################################################################################################################################
 ####内容说明：
 ####1、当脚本启动更新时，输入值为1.为程序报错或用户报错更新;2.程序暂无错，用户自主要求返回程序检查更新。
-####4、输出返回值：1、；2、。
+####4、输出返回值：1、已经更新。
 #######  传递其他参数  #######
+#$upcode                                更新模式
 #$file_path                             为旧脚本目录路径
 #$file_link                             脚本url链接
 #$name                                  配置文件名称
-#$wrong                                 为错误启动更新模式
 
 
 ####### 基本参数 ######
@@ -22,7 +22,7 @@ NC='\033[0m'
 ####### 主函数 ######
 function main {
      [ -z "$file_path" ] && Initialvinci   #如果没有任何参数，则执行初始化
-     (( wrong==1 )) || clear
+     (( upcode==1 )) || clear
      echo "正在检查${RED}$name文件更新..."
      
      while true; do
@@ -42,7 +42,7 @@ function main {
 
              #如果已是最新版本
              if [ "$code" == "$(cat "$file_path")" ]; then
-                  (( wrong==1 )) && ( warning; continue ) #如果是报错更新，现显示错误提醒，并重新检测更新
+                  (( upcode==1 )) && ( warning; continue ) #如果是报错更新，现显示错误提醒，并重新检测更新
                   echo "${RED}$name文件当前已是最新版本V$cur_Version.$num！"
                   exit
                   
@@ -50,7 +50,7 @@ function main {
              else 
                    #获取新版本号
                    Version=$( echo "$code" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
-                   (( wrong==1 )) && echo "${RED} 当前${RED}$name文件存在错误！即将开始更新${NC}" 
+                   (( upcode==1 )) && echo "${RED} 当前${RED}$name文件存在错误！即将开始更新${NC}" 
                    echo "${RED}$name文件当前版本号为：V$cur_Version.$num"
                    echo "${RED}$name文件最新版本号为：V$Version.${#code}，即将更新..."
              fi
@@ -58,22 +58,9 @@ function main {
          
          #开始下载
          curl -H 'Cache-Control: no-cache' -L "$file_link" -o "$file_path"
-         echo "${RED}$name文件V"$Version.$(eval echo $num)"版本已下载\更新完成，即将返回系统！"
+         echo "${RED}$name文件V"$Version.$(eval echo $num)"版本已下载\更新完成，即将继续！"
          countdown 10
-         exit 
-         
-         chmod +x "$file_path"
-         $def_name 2   
-         wrong=$?  #脚本语法错误，返回值可能为2
-         n=0
-         if [ "$wrong" == "0" ]; then                       #如果脚本正常更新，则退出
-              exit 1                                            
-         elif [ "$wrong" == "3" ]; then                           #如果用户要求更新，则继续更新
-              continue
-         else 
-              wrong=1
-              continue
-         fi   
+         exit 1
     done  
     
 }
@@ -94,7 +81,7 @@ function main {
             echo -e "${RED}#################################################################################${NC}"
             echo -e "${RED}#################################################################################${NC}"
             echo -e "${RED}####                                                                         ####${NC}"
-            echo -e "${RED}####   脚本运行错误！当前运行版本V$cur_Version.$num，检查程序版本V$Ver，第$n次检查$ti   ####${NC}"
+            echo -e "${RED}####   ${RED}$name文件错误！当前运行V$cur_Version.$num，检查程序版本V$Ver，第$n次检查$ti   ####${NC}"
             echo -e "${RED}####                                                                         ####${NC}"
             echo -e "${RED}####$b####${NC}"
             echo -e "${RED}####                                                                         ####${NC}"
@@ -102,37 +89,11 @@ function main {
             echo -e "${RED}#################################################################################${NC}"
             read -t 1 -n 1 input  #读取输入，在循环中一次1秒
             if [ -n "$input" ] || [ $? -eq 142 ] ; then
-                echo "已取消继续更新..."
+                echo "已取消继续更新${RED}$name文件..."
                 countdown 10
-                exit 0   
+                exit   
             fi
       done
-}
-           
-#######   进度条  ####### 
-function bar() {
-    time=$1 #进度条时间
-    #$2  第一行文本内容
-    #$3  第二行文本内容
-    #$4  是否可退
-    #$5  退出提醒
-    block=""
-    echo -e "\033[1G$block"$2"···"
-    printf "输入任意键退出%02ds" $time
-    for i in $(seq 1 $1); do
-       time=$((time-1))
-       block=$block$(printf "\e[42m \e[0m")
-       echo -e "\033[1F\033[1G$block"$2"···"
-       printf "输入任意键可退出...%02ds" $time
-       read -t 1 -n 1 input
-           if [ -n "$input" ] || [ $? -eq 142 ] && [[ $4 == "true" ]]; then
-               echo "$5"
-               return 0 
-           fi  
-    done       
-    echo
-    printf "\033[1A\033[K%s\n" "$3"
-    return 1
 }
 
 #######   倒计时  ####### 
@@ -147,40 +108,6 @@ function countdown {
         ((from--))
     done
     echo
-}
-
-#######   安卓系统初始化  ####### 
-function InitialAndroid {
-
-   # 检查是否已安装 wget(跳过)
-   if fasle; then   
-      echo "wget未安装. 请先选择清华镜像源..."
-      sleep 5
-      termux-change-repo
-      echo "正在更新源"
-      pkg upgrade; pkg update
-      # 检查openssl是否最新
-      INSTALLED_VERSION=$(pkg list-installed openssl | awk 'NR>1 {print $2}')
-      AVAILABLE_VERSION=$(pkg list-all openssl | awk 'NR>1 {print $2}')
-      echo $INSTALLED_VERSION
-      echo $AVAILABLE_VERSION
-      if ! [ "$INSTALLED_VERSION" = "$AVAILABLE_VERSION" ]; then
-          echo "正在安装\更新 OpenSSL..."
-          pkg upgrade; pkg update; pkg install openssl -y
-          INSTALLED_VERSION=$(pkg list-installed openssl | awk 'NR>1 {print $2}')
-          echo $INSTALLED_VERSION
-          rm -rf $PREFIX 
-          echo "OpenSSL 更新完成，需要关闭重启终端软件！"
-      fi
-      echo "正在安装wget..."
-      pkg install wget -y
-   fi
-   
-   # 检查是否已安装 ncurses-utils
-   if ! command -v tput &> /dev/null; then
-      echo "ncurses-utils未安装. Start installing..."
-      pkg upgrade; pkg update; pkg install ncurses-utils -y
-   fi
 }
 
 ##### 更新脚本初始化  #######
@@ -204,6 +131,15 @@ file_link="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian1
 def_name="vinci"                  #主脚本默认名称
 file_path="$def_path/$def_name"   #文件保存路径
 name="$def_name脚本"   
+}
+
+#######   安卓系统初始化  ####### 
+function InitialAndroid {
+   # 检查是否已安装 ncurses-utils
+   if ! command -v tput &> /dev/null; then
+      echo "ncurses-utils未安装. Start installing..."
+      pkg upgrade; pkg update; pkg install ncurses-utils -y
+   fi
 }
 
 ######  运行主函数  ######
