@@ -52,8 +52,10 @@ new_text=""   #inp函数输入的内容
 ####### 定义路径  ######
 #更新检查程序网址
 link_update="https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh"
+#脚本数据文件夹
+vincidat_path="/root/myfile"
 #用户数据路径
-dat_path="/root/myfile/vinci.dat"
+dat_path="$vincidat_path/vinci.dat"
 #ssh配置文件路径(查看配置：nano /etc/ssh/sshd_config)                           
 path_ssh="/etc/ssh/sshd_config"
 #开启消息提醒脚本路径
@@ -1692,7 +1694,7 @@ function onetobaidubook {
 
 function checksync {
 
-   nohup sh -c notifier "one to baidu 已同步完成" > /$HOME/myfile/rclonesync.log 2>&1 &   #  更改百度网盘的UA，加速作用。 --header "Referer:"  --header "User-Agent:pan.baidu.com"
+   nohup sh -c 'notifier "one to baidu 已同步完成"; type notifier' > $vincidat_path/rclonesync.log 2>&1 &   #  更改百度网盘的UA，加速作用。 --header "Referer:"  --header "User-Agent:pan.baidu.com"
 }    
 #############################################################################################################################################################################################
 ##############################################################################   在更新检查及错误检查后，执行主函数  ################################################################################################
