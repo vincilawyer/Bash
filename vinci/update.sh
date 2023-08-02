@@ -3,13 +3,13 @@
 ##################################################################################   更新检查程序   #######################################################################################
 ############################################################################################################################################################################################
 ####内容说明：
-####1、当脚本启动更新时，输入值为1.为程序报错或用户报错更新;2.程序暂无错，用户自主要求返回程序检查更新。
+####1、当脚本启动更新时，输入值为1.为程序报错或用户报错更新
 ####4、输出返回值：1、已经更新。
 #######  传递其他参数  #######
 #$upcode                                更新模式
 #$file_path                             为旧脚本目录路径
 #$file_link                             脚本url链接
-#$name                                  配置文件名称
+#$file_name                                  配置文件名称
 
 ####### 基本参数 ######
 Ver=5                                   #版本号
@@ -20,14 +20,13 @@ NC='\033[0m'
 
 ####### 主函数 ######
 function main {
-     [ -z "$file_path" ] && Initialvinci   #如果没有任何参数，则执行初始化
      (( upcode==1 )) || clear
-     echo "正在检查${RED}$name文件更新..."
+     echo "正在检查$file_name文件更新..."
      
      while true; do
          #如果未获取到新版本文件
         if ! code="$(curl -s "$file_link")"; then  
-            echo -ne "${RED}$name文件下载失败，请检查网络！即将返回...${NC}"
+            echo -ne "${RED}$file_name文件下载失败，请检查网络！即将返回...${NC}"
             countdown 10
             exit
         fi
@@ -42,22 +41,22 @@ function main {
              #如果已是最新版本
              if [ "$code" == "$(cat "$file_path")" ]; then
                   (( upcode==1 )) && ( warning; continue ) #如果是报错更新，现显示错误提醒，并重新检测更新
-                  echo "${RED}$name文件当前已是最新版本V$cur_Version.$num！"
+                  echo "${RED}$file_name文件当前已是最新版本V$cur_Version.$num！"
                   exit
                   
              #如果存在更新版本
              else 
                    #获取新版本号
                    Version=$( echo "$code" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
-                   (( upcode==1 )) && echo "${RED} 当前${RED}$name文件存在错误！即将开始更新${NC}" 
-                   echo "${RED}$name文件当前版本号为：V$cur_Version.$num"
-                   echo "${RED}$name文件最新版本号为：V$Version.${#code}，即将更新..."
+                   (( upcode==1 )) && echo "${RED} 当前${RED}$file_name文件存在错误！即将开始更新${NC}" 
+                   echo "${RED}$file_name文件当前版本号为：V$cur_Version.$num"
+                   echo "${RED}$file_name文件最新版本号为：V$Version.${#code}，即将更新..."
              fi
          fi 
          
          #开始下载
          curl -H 'Cache-Control: no-cache' -L "$file_link" -o "$file_path"
-         echo "${RED}$name文件V"$Version.$(eval echo $num)"版本已下载\更新完成，即将继续！"
+         echo "${RED}$file_name文件V"$Version.$(eval echo $num)"版本已下载\更新完成，即将继续！"
          countdown 10
          exit 1
     done  
@@ -80,7 +79,7 @@ function main {
             echo -e "${RED}#################################################################################${NC}"
             echo -e "${RED}#################################################################################${NC}"
             echo -e "${RED}####                                                                         ####${NC}"
-            echo -e "${RED}####   ${RED}$name文件错误！当前运行V$cur_Version.$num，检查程序版本V$Ver，第$n次检查$ti   ####${NC}"
+            echo -e "${RED}####   ${RED}$file_name文件错误！当前运行V$cur_Version.$num，检查程序版本V$Ver，第$n次检查$ti   ####${NC}"
             echo -e "${RED}####                                                                         ####${NC}"
             echo -e "${RED}####$b####${NC}"
             echo -e "${RED}####                                                                         ####${NC}"
@@ -88,7 +87,7 @@ function main {
             echo -e "${RED}#################################################################################${NC}"
             read -t 1 -n 1 input  #读取输入，在循环中一次1秒
             if [ -n "$input" ] || [ $? -eq 142 ] ; then
-                echo "已取消继续更新${RED}$name文件..."
+                echo "已取消继续更新${RED}$file_name文件..."
                 countdown 10
                 exit   
             fi
