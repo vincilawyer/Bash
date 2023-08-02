@@ -1,6 +1,6 @@
 #!/bin/bash 
 ############################################################################################################################################################################################
-##############################################################################   vinci更新检查脚本源代码   ####################################################################################
+##################################################################################   更新检查程序   #######################################################################################
 ############################################################################################################################################################################################
 ####内容说明：
 ####1、当脚本启动更新时，输入值为1.为程序报错或用户报错更新;2.程序暂无错，用户自主要求返回程序检查更新。
@@ -10,7 +10,6 @@
 #$file_path                             为旧脚本目录路径
 #$file_link                             脚本url链接
 #$name                                  配置文件名称
-
 
 ####### 基本参数 ######
 Ver=5                                   #版本号
@@ -108,38 +107,6 @@ function countdown {
         ((from--))
     done
     echo
-}
-
-##### 更新脚本初始化  #######
-function  Initialvinci {
-####### Android系统基本参数 ######
-      if uname -a | grep -q 'Android'; then echo '检测系统为Android，正在配置中...'     
-def_path="/data/data/com.termux/files/usr/bin"     #新下载脚本目录路径
-file_link="https://raw.githubusercontent.com/vincilawyer/Bash/main/Android/Android.sh"          # vinci脚本下载网址
-
-     InitialAndroid                                                                              #安卓系统初始化
-####### Debian系统基本参数 ######
-      elif uname -a | grep -q 'Debian'; then echo '检测系统为Debian，正在配置中...'
-def_path="/usr/local/bin"     #新下载脚本目录路径
-file_link="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh"  
-
-###### 其他系统 ######
-      else echo '未知系统，正在配置默认脚本中...'
-def_path="/usr/local/bin"     #新下载脚本目录路径
-file_link="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh" 
-      fi
-def_name="vinci"                  #主脚本默认名称
-file_path="$def_path/$def_name"   #文件保存路径
-name="$def_name脚本"   
-}
-
-#######   安卓系统初始化  ####### 
-function InitialAndroid {
-   # 检查是否已安装 ncurses-utils
-   if ! command -v tput &> /dev/null; then
-      echo "ncurses-utils未安装. Start installing..."
-      pkg upgrade; pkg update; pkg install ncurses-utils -y
-   fi
 }
 
 ######  运行主函数  ######
