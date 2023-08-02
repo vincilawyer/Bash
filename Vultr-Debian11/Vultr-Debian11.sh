@@ -1608,7 +1608,8 @@ rclone_menu=(
     "  5、将Onedrive书库更新至Baidu网盘"            'onetobaidubook'
     "  6、将Baidu网盘指定文件更新至Onedrive"            'baidutoone'
     "  7、将Onedrive指定文件更新至Baidu网盘"            'onetobaidu'
-    "  8、Rclone使用指引"                       'echo "指令指引";echo "列出文件夹: rclone lsd onedrive:";echo "复制文件：rclone copy";echo "同步文件：rclone sync"'
+    "  8、查看同步进度"                            'checksync'
+    "  9、Rclone使用指引"                       'echo "指令指引";echo "列出文件夹: rclone lsd onedrive:";echo "复制文件：rclone copy";echo "同步文件：rclone sync"'
     "  0、退出")
 ### 配置 ####
 bdbook="共享文件夹/法律电子书（持续更新）"   #百度网盘书库位置
@@ -1628,8 +1629,8 @@ function baidutoone {
    rclone size onedrive:$onename
    notifier "网盘文件信息已获取，请返回操作系统确认！"
    if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
-   echo "同步中..."
-   rclone sync baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onename -P   #  更改百度网盘的UA，加速作用。 --header "Referer:"  --header "User-Agent:pan.baidu.com"
+   echo "同步中...已将同步程序置于后台"
+   rclone sync baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onename -P #  更改百度网盘的UA，加速作用。 --header "Referer:"  --header "User-Agent:pan.baidu.com"
    echo "同步完成..."
    notifier "baidu to one 已同步完成"
 }
@@ -1688,7 +1689,11 @@ function onetobaidubook {
    echo "同步完成..."
    notifier "one to baidu 已同步完成"
 }
-    
+
+function checksync {
+
+   nohup sh -c notifier "one to baidu 已同步完成" > /$HOME/myfile/rclonesync.log 2>&1 &   #  更改百度网盘的UA，加速作用。 --header "Referer:"  --header "User-Agent:pan.baidu.com"
+}    
 #############################################################################################################################################################################################
 ##############################################################################   在更新检查及错误检查后，执行主函数  ################################################################################################
 ############################################################################################################################################################################################
