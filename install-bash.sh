@@ -3,81 +3,66 @@
 ##############################################################################   vinci更新检查脚本源代码   ####################################################################################
 ############################################################################################################################################################################################
 ####内容说明：
-####1、检查程序的启动方式：1、脚本启动更新；2、脚本返回更新。
-####2、当脚本启动更新时，输入值为1.为程序报错或用户报错更新。
-####3、当脚本返回更新时，获取返回值1.则为程序报错,要求返回更新检查程序继续更新。2.程序暂无错，用户自主要求返回程序检查更新。
-####4、输出返回值：0、退出旧版本；1、要求继续执行旧版本。
+####1、当脚本启动更新时，输入值为1.为程序报错或用户报错更新;2.程序暂无错，用户自主要求返回程序检查更新。
+####4、输出返回值：1、；2、。
+#######  传递其他参数  #######
+#$file_path                             为旧脚本目录路径
+#$file_link                             脚本url链接
+#$name                                  配置文件名称
+#$wrong                                 为错误启动更新模式
+
 
 ####### 基本参数 ######
-Ver=4                                   #版本号
-def_name="vinci"                        #默认名称
+Ver=5                                   #版本号
 
 ####### 颜色
 RED='\033[0;31m'
 NC='\033[0m'
 
-###### 特定系统参数 #####
-####### Android系统基本参数 ######
-      if uname -a | grep -q 'Android'; then echo '检测系统为Android，正在配置中...'     
-def_path="/data/data/com.termux/files/usr/bin"     #新下载脚本目录路径
-link_vinci="https://raw.githubusercontent.com/vincilawyer/Bash/main/Android/Android.sh"          # vinci脚本下载网址
-####### Debian系统基本参数 ######
-      elif uname -a | grep -q 'Debian'; then echo '检测系统为Debian，正在配置中...'
-def_path="/usr/local/bin"     #新下载脚本目录路径
-link_vinci="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh"  
-###### 其他系统 ######
-      else echo '未知系统，正在配置默认脚本中...'
-def_path="/usr/local/bin"     #新下载脚本目录路径
-link_vinci="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh" 
-      fi
-                                  
-#######  其他参数  #######
-#$cur_path                              为旧脚本目录路径
-#$cur_name                              为旧脚名称
-#$wrong                                 为错误启动更新模式
-def_name=$( [ -z "$cur_name" ] && echo "$def_name" || echo "$cur_name" )                        #脚本名称
-file_path=$( [ -z "$cur_path" ] && echo "$def_path/$def_name" || echo "$cur_path/$def_name" )     #文件路径
-Version=""   
-
-
 ####### 主函数 ######
 function main {
-     #安卓系统初始化
-     if uname -a | grep -q 'Android'; then InitialAndroid; fi
-    (( wrong==1 )) || clear
-    while true; do
+     [ -z "$file_path" ] && Initialvinci   #如果没有任何参数，则执行初始化
+     (( wrong==1 )) || clear
+     echo "正在检查${RED}$name文件更新..."
+     
+     while true; do
          #如果未获取到新版本文件
-        if ! code="$(curl -s "$link_vinci")"; then  
-            echo -n "vinci脚本下载失败，请检查网络！即将返回..."
+        if ! code="$(curl -s "$file_link")"; then  
+            echo -ne "${RED}$name文件下载失败，请检查网络！即将返回...${NC}"
             countdown 10
-            exit 0
+            exit
         fi
         
-        #如果脚本已经存在，则开始检查更新。如果脚本不存在，则跳过检查直接开始下载。
+        #如果文件存在，则开始检查更新。如果文件不存在，则跳过检查直接开始下载。
         if [ -e "$file_path" ]; then
-             #获取新版本号
-             Version=$( echo "$code" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
-             #已下载新版本文件，开始获取旧版本号机代码数量
+        
+             #已下载新版本文件，开始获取旧版本号及代码字符数量
              cur_Version=$(sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}' "$file_path") 
-             num=$(n="$(cat "$file_path")" &&  echo "${#n}")  
-             (( wrong==1 )) && warning 
+             num=$(n="$(cat "$file_path")" &&  echo "${#n}") 
+
              #如果已是最新版本
              if [ "$code" == "$(cat "$file_path")" ]; then
-                  (( wrong==1 )) && continue   #如果是报错更新，现显示错误提醒，并重新检测更新
-                  echo "当前已是最新版本V$cur_Version.$num！"
-                  exit 0 
+                  (( wrong==1 )) && ( warning; continue ) #如果是报错更新，现显示错误提醒，并重新检测更新
+                  echo "${RED}$name文件当前已是最新版本V$cur_Version.$num！"
+                  exit
+                  
+             #如果存在更新版本
              else 
-                  (( wrong==1 )) && echo "${RED} 当前脚本运行出现错误！即将开始更新${NC}" 
-                       echo "当前版本号为：V$cur_Version.$num"
-                       echo "最新版本号为：V$Version.${#code}，即将更新脚本..."
-                  ! (( wrong==1 )) && cp -f "$file_path" "$file_path"_backup && echo "已对当前版本进行备份！" 
+                   #获取新版本号
+                   Version=$( echo "$code" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
+                   (( wrong==1 )) && echo "${RED} 当前${RED}$name文件存在错误！即将开始更新${NC}" 
+                   echo "${RED}$name文件当前版本号为：V$cur_Version.$num"
+                   echo "${RED}$name文件最新版本号为：V$Version.${#code}，即将更新..."
              fi
          fi 
+         
          #开始下载
-         curl -H 'Cache-Control: no-cache' -L "$link_vinci" -o "$file_path"
-         chmod +x "$file_path"
-         echo "管理系统V"$Version.$(eval echo $num)"版本已下载\更新完成，即将进入系统！"
+         curl -H 'Cache-Control: no-cache' -L "$file_link" -o "$file_path"
+         echo "${RED}$name文件V"$Version.$(eval echo $num)"版本已下载\更新完成，即将返回系统！"
          countdown 10
+         exit 
+         
+         chmod +x "$file_path"
          $def_name 2   
          wrong=$?  #脚本语法错误，返回值可能为2
          n=0
@@ -117,10 +102,7 @@ function main {
             echo -e "${RED}#################################################################################${NC}"
             read -t 1 -n 1 input  #读取输入，在循环中一次1秒
             if [ -n "$input" ] || [ $? -eq 142 ] ; then
-                if bar 15 "已取消继续更新，即将尝试回滚至旧版本" "开始回滚" true "已取消回滚！即将返回..."; then exit 1; fi 
-                cp -f "$file_path"_backup "$file_path" 
-                echo
-                echo "已回滚至旧版本！即将返回..."
+                echo "已取消继续更新..."
                 countdown 10
                 exit 0   
             fi
@@ -168,7 +150,7 @@ function countdown {
 }
 
 #######   安卓系统初始化  ####### 
-function  InitialAndroid {
+function InitialAndroid {
 
    # 检查是否已安装 wget(跳过)
    if fasle; then   
@@ -199,6 +181,29 @@ function  InitialAndroid {
       echo "ncurses-utils未安装. Start installing..."
       pkg upgrade; pkg update; pkg install ncurses-utils -y
    fi
+}
+
+##### 更新脚本初始化  #######
+function  Initialvinci {
+####### Android系统基本参数 ######
+      if uname -a | grep -q 'Android'; then echo '检测系统为Android，正在配置中...'     
+def_path="/data/data/com.termux/files/usr/bin"     #新下载脚本目录路径
+file_link="https://raw.githubusercontent.com/vincilawyer/Bash/main/Android/Android.sh"          # vinci脚本下载网址
+
+     InitialAndroid                                                                              #安卓系统初始化
+####### Debian系统基本参数 ######
+      elif uname -a | grep -q 'Debian'; then echo '检测系统为Debian，正在配置中...'
+def_path="/usr/local/bin"     #新下载脚本目录路径
+file_link="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh"  
+
+###### 其他系统 ######
+      else echo '未知系统，正在配置默认脚本中...'
+def_path="/usr/local/bin"     #新下载脚本目录路径
+file_link="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh" 
+      fi
+def_name="vinci"                  #主脚本默认名称
+file_path="$def_path/$def_name"   #文件保存路径
+name="$def_name脚本"   
 }
 
 ######  运行主函数  ######
