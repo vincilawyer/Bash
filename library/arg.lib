@@ -1,7 +1,3 @@
-####### 定义路径  ######
-#更新检查程序网址
-link_update="https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh"
-
 ####### 定义颜色 ######
 RED='\033[0;31m'
 GREEN='\033[0;32m'
