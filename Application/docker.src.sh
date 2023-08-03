@@ -8,7 +8,7 @@ docker_menu=(
     "  2、安装Docker"           "install_Docker"
     "  3、查看Docker容器"        'echo "Docker容器状况：" && docker ps -a && echo; echo "提示：可使用docker stop 或 docker rm 语句加容器 ID 或者名称来停止容器的运行或者删除容器 "'
     "  4、删除所有容器"          'confirm "是否删除所有Docker容器？" "已取消删除容器" || ( docker stop $(docker ps -a -q) &&  docker rm $(docker ps -a -q) && echo "已删除所有容器" )'
-    "  5、程序管理器"            'get_appmanage_menu "docker"; page true "docker" "${appmanage_menu[@]}"'
+    "  5、程序管理器"            'get_appmanage_menu "docker"; page true "Docker" "${appmanage_menu[@]}"'
     "  0、退出")
     
 #######  安装Docker及依赖包  #######
