@@ -28,26 +28,36 @@ path="$data_path/page.src.sh"
 link="${link_repositories}library/page.src.sh"
 updata_load "$path" "$link" "用户配置模块" 1 true
 
-#程序管理
-#library > page.src.sh
-path="$data_path/page.src.sh"
-link="${link_repositories}library/page.src.sh"
-updata_load "$path" "$link" "用户配置模块" 1 true
-
 #通用工具
 #toolbox > universal.src.sh
 path="$data_path/toolbox/universal.src.sh"
 link="${link_repositories}vinci/toolbox/universal.src.sh"
 updata_load "$path" "$link" "通用工具模块" 1 true
-
 #linux工具
 #toolbox > linux.src.sh
 path_toolbox_linux="$data_path/toolbox/linux.src.sh"
 link_toolbox_linux="${link_repositories}vinci/toolbox/linux.src.sh"
+
+#appmanage.src.sh
+#app > appmanage.src.sh
+path_appmanage="$data_path/app/appmanage.src.sh"
+link_appmanage="${link_repositories}vinci/application/appmanage.src.sh"
+#xui
+#app > xui.src.sh
+path_xui="$data_path/app/xui.src.sh"
+link_xui="${link_repositories}vinci/application/xui.src.sh"
+#tor.src.sh
+#app > tor.src.sh
+path_tor="$data_path/app/tor.src.sh"
+link_tor="${link_repositories}vinci/application/tor.src.sh"
 #
 #app > 
-path_="$data_path/"
-link_="${link_repositories}vinci/"
+path_="$data_path/app/"
+link_="${link_repositories}vinci/application/"
+#
+#app > 
+path_="$data_path/app/"
+link_="${link_repositories}vinci/application/"
 
 
 
