@@ -33,7 +33,7 @@ link_def="${link_repositories}Vultr-Debian11.sh"
 #update.src.sh
 link_repositories="https://raw.githubusercontent.com/vincilawyer/Bash/main/"             #仓库网址
 link_update="${link_repositories}library/update.src.sh"                                  #更新检查程序网址
-path_update="$data_path/update.src.sh"                                                   #更新检查程序路径
+path_update="$data_path/library/update.src.sh"                                                   #更新检查程序路径
 #main.src.sh
 link_main="${link_repositories}vinci/main.src.sh"                                      #主程序网址
 path_main="$data_path/main.src.sh"                                                     #主程序路径
