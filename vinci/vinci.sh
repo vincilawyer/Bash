@@ -1,54 +1,58 @@
 #!/bin/bash 
+#程序组成结构:1、启动程序（即本程序）,用于下载、启动更新update程序和主程序（该程序容错率为0）
 ####### 版本更新相关参数 ######
 Version=1.00  #版本号 
 
-####### Android系统基本参数 ######
-      if uname -a | grep -q 'Android'; then echo '检测系统为Android，正在配置中...' 
-def_path="/data/data/com.termux/files/usr/bin"                                           #主脚本目录路径
-main_link="https://raw.githubusercontent.com/vincilawyer/Bash/main/Android/Android.sh"   #脚本下载网址
-         
-####### Debian系统基本参数 ######
-      elif uname -a | grep -q 'Debian'; then echo '检测系统为Debian，正在配置中...'
-def_path="/usr/local/bin"                                                                #主脚本目录路径
-main_link="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh"  
-
-###### 其他系统 ######
-      else echo '未知系统，正在配置默认脚本中...'
-def_path="/usr/local/bin"                                                                #主脚本目录路径
-main_link="https://raw.githubusercontent.com/vincilawyer/Bash/main/Vultr-Debian11/Vultr-Debian11.sh" 
-      fi
-      
-####### 定义路径及文件名  ######
-link_update="https://raw.githubusercontent.com/vincilawyer/Bash/main/install-bash.sh"    #更新检查程序网址
-def_name="vinci"                                                                         #主脚本默认名称
+####### 定义本脚本名称、应用数据路径 ######
+def_name="vinci"                                                                         #启动程序脚本默认名称
 data_name="$HOME/myfile"                                                                 #应用数据文件夹位置路径                   
-data_path="$data_name/vinci_source"                                                      #应用数据文件夹位置名
-main_path="$def_path/$def_name"                                                          #主脚本保存路径
-mkdir "$HOME/myfile"  >/dev/null 2>&1                                                    #创建文件夹 
-mkdir "$data_name/${def_name}_src"  >/dev/null 2>&1                                      #应用资源文件夹
+data_path="$data_name/${def_name}_src"                                                   #应用数据文件夹位置名
+mkdir "$data_name"  >/dev/null 2>&1                                                      #创建文件夹 
+mkdir "$data_path"  >/dev/null 2>&1                                                      #应用资源文件夹
 
-function update_load {
-    local upcode="$1"                     #更新模式，1为报错模式
-    local file_path="$2"                  #更新文件路径
-    local file_link="$3"                  #更新文件链接
-    local file_name="$4"                  #更新文件名称
-    local execute="$5"                    #是否直接执行
-    while true; do
-       upcode="$upcode" file_path="$file_path" file_link="$file_link" file_name="$file_name" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")       
-       local wrongtext="$(source $file_path 2>&1 >/dev/null)"   #载入配置文件，并获取错误输出
-       if [ -n "$wrongtext" ]; then  #如果新的配置文件存在语法错误
-          echo "$file_name文件存在语法错误，报错内容为："
-          echo "$wrongtext"
-          echo "即将重新开始更新"
-          upcode=1
-          continue
-       else
-       
-       fi
-    done
-}  
+####### Android系统启动程序网址、路径 ######
+      if uname -a | grep -q 'Android'; then echo '检测系统为Android，正在配置中...' 
+path_def="/data/data/com.termux/files/usr/bin/$def_name"                                           #启动程序目录路径
+link_def="${link_repositories}Android/Android.sh"                                                  #启动程序下载网址
+         
+####### Debian系统启动程序网址、路径 ######
+      elif uname -a | grep -q 'Debian'; then echo '检测系统为Debian，正在配置中...'
+path_def="/usr/local/bin/$def_name"                                                                #启动程序目录路径
+link_def="${link_repositories}Vultr-Debian11/Vultr-Debian11.sh"  
+
+###### 其他系统启动程序网址、路径 ######
+      else echo '未知系统，正在配置默认版本中...'
+path_def="/usr/local/bin/$def_name"                                                                #启动程序目录路径
+link_def="${link_repositories}Vultr-Debian11.sh" 
+      fi    
+      
+#### 配置文件、程序网址、路径 ####
+#update.src.sh
+link_repositories="https://raw.githubusercontent.com/vincilawyer/Bash/main/"             #仓库网址
+link_update="${link_repositories}library/update.src.sh"                                  #更新检查程序网址
+path_update="$data_path/update.src.sh"                                                   #更新检查程序路径
+#main.src.sh
+link_main="${link_repositories}vinci/main.src.sh"                                      #主程序网址
+path_main="$data_path/main.src.sh"                                                     #主程序路径
 
 
+#下载更新检查程序
+if ! curl -H 'Cache-Control: no-cache' -L "$link_update" -o "$path_update" >/dev/null; then echo "更新检查程序下载失败，请检查网络！"; countdown 5; fi
+
+#载入更新检查文件，并获取错误输出
+wrongtext="$(source $path_update 2>&1 >/dev/null)"
+if [ -n "$wrongtext" ]; then echo "当前更新检查程序存在错误，未能启动主程序，报错内容为：" 
+     echo "$wrongtext"
+     exit
+fi    
+
+#更新本程序
+update_load "$path_def" "$link_def" "$def_name脚本" 2 true
+
+#更新主程序   
+update_load "$path_main" "$link_main" "主程序" 1 true
+
+main
 
 function InitialAndroid {
    # 检查是否已安装 ncurses-utils
