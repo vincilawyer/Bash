@@ -17,9 +17,7 @@ cf_menu=(
     "  2、Cloudflare DNS配置"      'cfdns; continue'
     "  3、修改CF账户配置"           "set_cfdns"
     "  4、下载CFWarp"              "install_Warp"
-    "  5、启动\重启CFWarp"          "restart warp-svc"
-    "  6、查看CFWarp运行状况"        "status warp-svc"
-    "  7、停用CFWarp"              "stop warp-svc"
+    "  5、CFWarp程序管理器"         'get_appmanage_menu "warp-svc"; page true "CFWarp" "${appmanage_menu[@]}"'
     "  0、退出")      
     
 ###### Cf dns配置 ######
