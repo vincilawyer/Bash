@@ -1,7 +1,7 @@
 #!/bin/bash 
 #程序组成结构:1、启动程序（即本程序）,用于下载、启动更新update程序和主程序（该两程序及本程序容错率为0）。
 #2、update程序，用于更新、加载配置文件。
-#3、主程序，用于辨别系统，并诠释程序作用。
+#3、主程序，诠释程序作用。
 
 ####### 版本更新相关参数 ######
 Version=1.00  #版本号 
@@ -55,12 +55,5 @@ update_load "$path_def" "$link_def" "$def_name脚本" 2 true
 #更新主程序   
 update_load "$path_main" "$link_main" "主程序" 1 true
 
+#运行主程序
 main
-
-function InitialAndroid {
-   # 检查是否已安装 ncurses-utils
-   if ! command -v tput &> /dev/null; then
-      echo "ncurses-utils未安装. Start installing..."
-      pkg upgrade; pkg update; pkg install ncurses-utils -y
-   fi
-}
