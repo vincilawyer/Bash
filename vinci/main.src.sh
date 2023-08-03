@@ -7,6 +7,48 @@ Version=4.00  #版本号
 Version1="$Version.$(n="$(cat "$path_def")" &&  echo "${#n}")"                         #脚本完整版本号
 
 ####### 各配置路径及文件名  ######
+#基本参数
+#library > arg.lib
+path="$data_path/library/arg.lib"
+link="${link_repositories}library/arg.lib"
+updata_load "$path" "$link" "基本参数模块" 1 true
+#文本处理
+#library > text_processing.scr.sh
+path="$data_path/library/text_processing.scr.sh"
+link="${link_repositories}library/text_processing.scr.sh"
+updata_load "$path" "$link" "文本处理模块" 1 true
+#页面显示
+#library > page.src.sh
+path="$data_path/page.src.sh"
+link="${link_repositories}library/page.src.sh"
+updata_load "$path" "$link" "页面显示模块" 1 true
+#用户配置
+#library > page.src.sh
+path="$data_path/page.src.sh"
+link="${link_repositories}library/page.src.sh"
+updata_load "$path" "$link" "用户配置模块" 1 true
+
+#程序管理
+#library > page.src.sh
+path="$data_path/page.src.sh"
+link="${link_repositories}library/page.src.sh"
+updata_load "$path" "$link" "用户配置模块" 1 true
+
+#通用工具
+#toolbox > universal.src.sh
+path="$data_path/toolbox/universal.src.sh"
+link="${link_repositories}vinci/toolbox/universal.src.sh"
+updata_load "$path" "$link" "通用工具模块" 1 true
+
+#linux工具
+#toolbox > linux.src.sh
+path_toolbox_linux="$data_path/toolbox/linux.src.sh"
+link_toolbox_linux="${link_repositories}vinci/toolbox/linux.src.sh"
+#
+#app > 
+path_="$data_path/"
+link_="${link_repositories}vinci/"
+
 
 
 ############################################################################################################################################################################################
@@ -47,6 +89,10 @@ function menutitle {
     echo
 }
 
+######载入模块 ######
+updata_load "$path_toolbox_linux" "$link_toolbox_linux" "linux工具模块" 1 false
+
+#### 主菜单 ####
 main_menu=(
     "  1、系统设置"              'page true " 系 统 设 置 " "${system_menu[@]}"'
     "  2、UFW防火墙管理"          'page true " UFW 防 火 墙" "${ufw_menu[@]}"'
