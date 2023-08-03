@@ -28,7 +28,7 @@ local upcode="$5"                               更新模式
         if ! code="$(curl -s "$file_link")"; then  
             echo -ne "${RED}$file_name文件下载失败，请检查网络！即将返回...${NC}"
             countdown 10
-            exit
+            return
         fi
         
         #如果文件存在，则开始检查更新。如果文件不存在，则跳过检查直接开始下载。
@@ -42,7 +42,7 @@ local upcode="$5"                               更新模式
              if [ "$code" == "$(cat "$file_path")" ]; then
                   (( upcode==1 )) && ( warning; continue ) #如果是报错更新，现显示错误提醒，并重新检测更新
                   echo "${RED}$file_name文件当前已是最新版本V$cur_Version.$num！"
-                  exit
+                  return
                   
              #如果存在更新版本
              else 
@@ -80,11 +80,12 @@ local upcode="$5"                               更新模式
                       upcode=1
                       continue
                   fi 
-              exit
+              return
+              
           else
               echo "${RED}$file_name文件V"$Version.$(eval echo $num)"版本已下载\更新完成，即将继续！"
               countdown 3
-              exit
+              return
           fi
     done  
     
@@ -116,7 +117,7 @@ local upcode="$5"                               更新模式
             if [ -n "$input" ] || [ $? -eq 142 ] ; then
                 echo "已取消继续更新${RED}$file_name文件..."
                 countdown 10
-                exit   
+                return   
             fi
       done
 }
