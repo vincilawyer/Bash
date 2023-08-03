@@ -3,12 +3,6 @@
 ##################################################################################   更新检查程序   #######################################################################################
 ############################################################################################################################################################################################
 ####内容说明：
-####1、当脚本启动更新时，输入值为1.为程序报错或用户报错更新
-#######  传递其他参数  #######
-#$upcode                                更新模式
-#$file_path                             为旧脚本目录路径
-#$file_link                             脚本url链接
-#$file_name                                  配置文件名称
 
 ####### 基本参数 ######
 Ver=5                                   #版本号
@@ -17,8 +11,15 @@ Ver=5                                   #版本号
 RED='\033[0;31m'
 NC='\033[0m'
 
-####### 主函数 ######
-function main {
+
+#######  更新函数  #######
+function update_load {
+local file_path="$1"                            为旧脚本目录路径
+local file_link="$2"                            脚本url链接
+local file_name="$3"                            配置文件名称
+local loadcode="$4"                             加载模式，1为source、2为bash
+local upcode="$5"                               更新模式
+
      (( upcode==1 )) || clear
      echo "正在检查$file_name文件更新..."
      
@@ -55,9 +56,28 @@ function main {
          
          #开始下载
          curl -H 'Cache-Control: no-cache' -L "$file_link" -o "$file_path"
-         echo "${RED}$file_name文件V"$Version.$(eval echo $num)"版本已下载\更新完成，即将继续！"
-         countdown 10
-         exit 
+                  
+         #如果载入模式为source
+         if (( loadcode == 1 )); then
+              echo "${RED}$file_name文件V"$Version.$(eval echo $num)"版本已下载\更新完成，即将继续！"
+              countdown 3
+              local wrongtext="$(source $file_path 2>&1 >/dev/null)"   #载入配置文件，并获取错误输出
+              if [ -n "$wrongtext" ]; then  #如果新的配置文件存在错误
+              echo "$file_name文件存在语法错误，报错内容为："
+              echo "$wrongtext"
+              echo "即将重新开始更新"
+              upcode=1
+              continue
+          elif (( loadcode == 2 )); then
+              echo "${RED}$file_name文件V"$Version.$(eval echo $num)"版本已下载\更新完成，即将重启系统！"
+              countdown 10
+              $file_path
+              exit
+          else
+              echo "${RED}$file_name文件V"$Version.$(eval echo $num)"版本已下载\更新完成，即将继续！"
+              countdown 3
+              exit
+          fi
     done  
     
 }
@@ -106,6 +126,3 @@ function countdown {
     done
     echo
 }
-
-######  运行主函数  ######
-main
