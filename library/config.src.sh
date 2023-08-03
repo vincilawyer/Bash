@@ -15,7 +15,7 @@ $(pz "Domain")                                          #@一级域名#@不用�
 
 ## 添加配置文件内容 
 function adddat { 
-     eval "$(eval echo "\"$configfile_mod"\")" || quit "添加配置模板错误，请检查格式！即将退出" "${BASH_SOURCE[0]}" "${FUNCNAME[0]}" "${FUNCNAME[1]}"
+     eval "$(eval echo "\"$configfile_mod"\")" || quit "添加配置模板错误，请检查格式！" "${BASH_SOURCE[0]}" "${FUNCNAME[0]}" "${FUNCNAME[1]}"
      configfile_mod+="$1" 
 }
 
@@ -28,7 +28,7 @@ function update_dat {
     if ! source $configfile_path >/dev/null 2>&1; then   #读取用户数据
         echo "系统无用户数据记录。准备新建用户数据..."
         #配置文件具象化
-        eval configfile_mod="\"$configfile_mod\"" || quit "添加配置模板错误，请检查格式！即将退出" "${BASH_SOURCE[0]}" "${FUNCNAME[0]}" "${FUNCNAME[1]}"
+        eval configfile_mod="\"$configfile_mod\"" || quit "添加配置模板错误，请检查格式！" "${BASH_SOURCE[0]}" "${FUNCNAME[0]}" "${FUNCNAME[1]}"
         echo "$configfile_mod" > "$configfile_path"  #写入数据文件
         echo "初始化数据完成"
         wait
