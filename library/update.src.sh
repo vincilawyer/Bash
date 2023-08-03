@@ -57,7 +57,7 @@ local n="1"                                     #错误警告更新次数
              fi
          fi 
          
-         #下载更新文件并增加执行权限吗
+         #下载更新文件并增加执行权限
          echo "$code" > "$file_path" && chmod +x "$file_path"
 
          #如果载入模式为source
