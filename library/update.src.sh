@@ -84,11 +84,12 @@ local n="1"                                     #错误警告更新次数
                       continue
                   fi 
               exit
-          else
+          elif (( loadcode == 3 )); then
               echo "${RED}$file_name文件V"$Version.$(eval echo $num)"版本已下载\更新完成，即将继续！"
               countdown 3
               return
           fi
+          exit
     done  
     
 }
