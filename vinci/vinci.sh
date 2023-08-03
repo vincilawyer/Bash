@@ -32,15 +32,18 @@ function update_load {
     local file_path="$2"                  #更新文件路径
     local file_link="$3"                  #更新文件链接
     local file_name="$4"                  #更新文件名称
+    local execute="$5"                    #是否直接执行
     while true; do
        upcode="$upcode" file_path="$file_path" file_link="$file_link" file_name="$file_name" bash <(curl -s -L -H 'Cache-Control: no-cache' "$link_update")       
        local wrongtext="$(source $file_path 2>&1 >/dev/null)"   #载入配置文件，并获取错误输出
-       if [ -n "$wrongtext" ]; then  #如果新的配置文件存在错误
+       if [ -n "$wrongtext" ]; then  #如果新的配置文件存在语法错误
           echo "$file_name文件存在语法错误，报错内容为："
           echo "$wrongtext"
           echo "即将重新开始更新"
           upcode=1
           continue
+       else
+       
        fi
     done
 }  
