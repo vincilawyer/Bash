@@ -57,9 +57,9 @@ local n="1"                                     #错误警告更新次数
              fi
          fi 
          
-         #开始下载
-         echo "$code" > "$file_path"
-                  
+         #下载更新文件并增加执行权限吗
+         echo "$code" > "$file_path" && chmod +x "$file_path"
+
          #如果载入模式为source
          if (( loadcode == 1 )); then
               echo "${RED}$file_name文件V"$Version.$(eval echo $num)"版本已下载\更新完成，即将继续！"
