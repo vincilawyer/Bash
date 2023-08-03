@@ -55,5 +55,48 @@ update_load "$path_def" "$link_def" "$def_name脚本" 2 true
 #更新主程序   
 update_load "$path_main" "$link_main" "主程序" 1 true
 
+######  退出函数 ######      
+function quit() {
+local exitnotice="$1"
+local scrname="$2"
+local funcname1="$3"
+local funcname2="$4"
+   if [ -n "$exitnotice" ]; then
+        echo -e "${RED}出现错误：$exitnotice。错误代码详见以下：${NC}"
+        echo -e "${RED}错误函数为：$funcname1${NC}"
+        echo -e "${RED}调用函数为：$funcname2${NC}"
+        echo -e "${RED}错误模块为：$funcname2${NC}"
+   else
+         clear
+   fi            
+   exit
+}
+
+#######   当脚本错误退出时，启动更新检查   ####### 
+function handle_error() {
+    echo "脚本运行出现错误！即将退出"
+    countdown 50
+}
+
+#######   当脚本退出   ####### 
+function normal_exit() { 
+    echo -e "${GREED}已退出vinci脚本（V"$Version1"）！${NC}"
+}
+
+#######   脚本退出前执行  #######   
+trap 'handle_error' ERR
+trap 'normal_exit' EXIT
+
+
+#######   等待函数   #######   
+function wait {
+   if [[ -z "$1" ]]; then
+    echo "请按下任意键继续"
+   else
+    echo $1
+   fi
+   read -n 1 -s input
+}
+
 #运行主程序
 main
