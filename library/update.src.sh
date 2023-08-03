@@ -14,20 +14,23 @@ NC='\033[0m'
 
 #######  更新函数  #######
 function update_load {
-local file_path="$1"                            为旧脚本目录路径
-local file_link="$2"                            脚本url链接
-local file_name="$3"                            配置文件名称
-local loadcode="$4"                             加载模式，1为source、2为bash
-local upcode="$5"                               更新模式
+local file_path="$1"                            #为旧脚本目录路径
+local file_link="$2"                            #脚本url链接
+local file_name="$3"                            #配置文件名称
+local loadcode="$4"                             #加载模式，1为source、2为bash
+local necessary="${5:false}"                    #是否必要，true为必要
+local upcode="$6"                               #更新模式
+local n="1"                                     #错误警告更新次数
 
      (( upcode==1 )) || clear
      echo "正在检查$file_name文件更新..."
      
      while true; do
-         #如果未获取到新版本文件
-        if ! code="$(curl -s "$file_link")"; then  
-            echo -ne "${RED}$file_name文件下载失败，请检查网络！即将返回...${NC}"
+         #开始获取代码
+        if ! code="$(curl -s "$file_link")"; then    #如果未获取到代码
+            echo -ne "${RED}$file_name文件下载失败，请检查网络！${NC}"
             countdown 10
+            [[ $necessary == "true" ]] && ! [ -e "$file_path" ] && echo "即将退出系统..." && exit
             return
         fi
         
@@ -40,7 +43,7 @@ local upcode="$5"                               更新模式
 
              #如果已是最新版本
              if [ "$code" == "$(cat "$file_path")" ]; then
-                  (( upcode==1 )) && ( warning; continue ) #如果是报错更新，现显示错误提醒，并重新检测更新
+                  (( upcode==1 )) && ( warning "$file_path" "$file_name" "$necessary" "$cur_Version" "$num" "$n"; ((n++)); continue ) #如果是报错更新，现显示错误提醒，并重新检测更新
                   echo "${RED}$file_name文件当前已是最新版本V$cur_Version.$num！"
                   return
                   
@@ -55,7 +58,7 @@ local upcode="$5"                               更新模式
          fi 
          
          #开始下载
-         curl -H 'Cache-Control: no-cache' -L "$file_link" -o "$file_path"
+         echo "$code" > "$file_path"
                   
          #如果载入模式为source
          if (( loadcode == 1 )); then
@@ -92,6 +95,13 @@ local upcode="$5"                               更新模式
 
 #######   保存提示  ####### 
  function warning {
+      local file_path="$1"                        
+      local file_name="$2"                
+      local $necessary="$3"
+      local $cur_Version="$4"
+      local $num="$5"
+      local $n="$6"
+      
       check_time=35    #检查更新时长
       tput sc  #保存当前光标位置
       local t=0
@@ -116,6 +126,7 @@ local upcode="$5"                               更新模式
             if [ -n "$input" ] || [ $? -eq 142 ] ; then
                 echo "已取消继续更新${RED}$file_name文件..."
                 countdown 10
+                [[ $necessary == "true" ]] && ! [ -e "$file_path" ] && echo "即将退出系统..." && exit
                 return   
             fi
       done
