@@ -80,8 +80,7 @@ local upcode="$5"                               更新模式
                       upcode=1
                       continue
                   fi 
-              return
-              
+              exit
           else
               echo "${RED}$file_name文件V"$Version.$(eval echo $num)"版本已下载\更新完成，即将继续！"
               countdown 3
