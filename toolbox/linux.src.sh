@@ -8,20 +8,7 @@ ufw_menu=(
     "  6、查看防火墙运行状况"     "status ufw"
     "  7、停止防火墙"            "stop ufw"
     "  0、退出")     
-
-
-### 系统工具选项 ###
-system_menu=(
-    "  1、返回上一级"                "return"
-    "  2、查看所有重要程序运行状态"    "status"
-    "  3、本机ip信息"               "ipinfo"
-    "  4、修改配置参数"              "set_dat"
-    "  5、查看配置参数文件"           "nano /root/myfile/vinci.dat"
-    "  6、修改SSH登录端口和登录密码"   "change_ssh_port; change_login_password"
-    "  7、更新脚本"                  'update; [ "$?" == "2" ] && echo "当前版本为最新版，无需更新！"'
-    "  0、退出" )    
-
- 
+   
     
 ###### 查看ip信息 ######
 function ipinfo {
