@@ -58,3 +58,29 @@ function change_login_password {
          fi
    fi
 }
+
+### 查看所有程序运行状况 ####
+function status_app {
+apps=(
+"ufw"
+"docker"
+"nginx"
+"warp-svc"
+"tor"
+"frps"
+"alist"
+)
+   for app in "${apps[@]}"; do  
+      zl="systemctl status $app"
+      i=1
+      while IFS= read -r line; do
+          if (( "$i" == 1 )); then
+              echo -e "${RED}${line}${NC}"
+          else
+              echo "$line"
+          fi
+          i=$((i+1))
+      done < <($zl)
+   done
+}
+
