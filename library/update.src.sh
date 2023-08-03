@@ -61,7 +61,7 @@ local upcode="$5"                               更新模式
          if (( loadcode == 1 )); then
               echo "${RED}$file_name文件V"$Version.$(eval echo $num)"版本已下载\更新完成，即将继续！"
               countdown 3
-              local wrongtext="$(source $file_path 2>&1 >/dev/null)"   #载入配置文件，并获取错误输出
+              wrongtext="$(source $file_path 2>&1 >/dev/null)"   #载入配置文件，并获取错误输出
               if [ -n "$wrongtext" ]; then  #如果新的配置文件存在错误
               echo "$file_name文件存在语法错误，报错内容为："
               echo "$wrongtext"
