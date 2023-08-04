@@ -27,10 +27,7 @@ while true; do
         echo -e "${RED}$file_name文件下载失败，请检查网络！${NC}"
         echo "Wrong url:$file_link"
         countdown 10
-        #如果文件不存在：
-        [[ $necessary == "true" ]] && ! [ -e "$file_path" ] && echo "${RED}$file_name文件缺失，即将退出系统..." && quit
-        ! [ -e "$file_path" ] && echo -e "${RED}$file_name文件缺失，可能导致系统功能缺失...${NC}" && return
-        
+           
    #如果下载成功
    else
         #如果文件存在，则开始检查更新。
@@ -68,7 +65,9 @@ while true; do
          fi
    fi
 
-         
+         #如果文件仍不存在：
+         ! [ -e "$file_path" ] && echo "${RED}$file_name文件缺失，即将退出系统..." && quit
+
          #开始载入：如果载入模式为source
          if (( loadcode == 1 )); then
               wrongtext=""
@@ -129,10 +128,9 @@ while true; do
             echo -e "${RED}#################################################################################${NC}"
             read -t 1 -n 1 input  #读取输入，在循环中一次1秒
             if [ -n "$input" ] || [ $? -eq 142 ] ; then
-                echo "已取消继续更新${RED}$file_name文件..."
+                echo "已取消继续更新${RED}$file_name文件，即将退出系统..."
                 countdown 10
-                [[ $necessary == "true" ]] && ! [ -e "$file_path" ] && echo "即将退出系统..." && quit
-                return   
+                quit 
             fi
       done
 }
