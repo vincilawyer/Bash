@@ -1,12 +1,45 @@
 #!/bin/bash 
+############################################################################################################################################################################################
+##############################################################################   启动程序源代码   ########################################################################################
+############################################################################################################################################################################################
 #程序组成结构:1、启动程序（即本程序）,用于下载、启动更新update程序和主程序（该两程序及本程序容错率为0）。
 #2、update程序，用于更新、加载配置文件。
 #3、主程序，诠释程序作用。
+############################################################################################################################################################################################
+##############################################################################   shell调整环境   ########################################################################################
+############################################################################################################################################################################################
+echo "hahah"
+if uname -a | grep -q 'Darwin'; then 
+    [[ $(ps -p $$ -o comm=) == *"bash"* ]] && exec "/bin/zsh" "$0" "$1"
+    #允许注释与代码同行
+    setopt interactivecomments
+    #打开终端网络代理
+    export http_proxy=http://127.0.0.1:1087;export https_proxy=http://127.0.0.1:1087;export ALL_PROXY=socks5://127.0.0.1:1086
+fi
+
 ####### 版本更新相关参数 ######
 Version=2.00 
-def_name="vinci" 
 starcode="$1"
 clear
+
+####### 定义本脚本名称、应用数据路径 ######
+def_name="vinci"                        #脚本名称
+data_name="$HOME/myfile"                #应用数据文件夹位置路径 
+data_path="$data_name/${def_name}_src"  #应用数据文件夹位置名                                               
+mkdir "$data_name"  >/dev/null 2>&1     #创建文件夹                                                
+mkdir "$data_path"  >/dev/null 2>&1     #应用资源文件夹                                                  
+
+#### 配置文件、程序网址、路径 ####
+#仓库
+link_repositories="https://raw.githubusercontent.com/vincilawyer/Bash/main/"            
+#update.src.sh
+link_update="${link_repositories}library/update.src.sh"                                  
+path_update="$data_path/update.src.sh"                                                
+#main.src.sh
+link_main="${link_repositories}vinci/main.src.sh"                                    
+path_main="$data_path/main.src.sh"                                                    
+#启动程序下载网址
+link_def="${link_repositories}vinci/vinci.sh" 
 
 ####### Android系统启动程序网址、路径 ######
 if uname -a | grep -q 'Android'; then 
@@ -23,9 +56,6 @@ elif uname -a | grep -q 'Darwin'; then
     #调整运行环境
     [[ $(ps -p $$ -o comm=) == *"bash"* ]] && exec "/bin/zsh" "$0" "$starcode" && exit
     echo "检测系统为Mac，已切换Shell环境为$(ps -p $$ -o comm=)，正在配置中..."
-    setopt interactivecomments
-    #打开网络代理
-    export http_proxy=http://127.0.0.1:1087;export https_proxy=http://127.0.0.1:1087;export ALL_PROXY=socks5://127.0.0.1:1086
     path_def="/usr/local/bin/$def_name"
 ###### 其他系统启动程序网址、路径 ######
 else echo '未知系统，正在配置默认版本中...'
@@ -33,29 +63,6 @@ else echo '未知系统，正在配置默认版本中...'
     sleep 5
 fi  
 
-####### 定义本脚本名称、应用数据路径 ######
-#应用数据文件夹位置路径 
-data_name="$HOME/myfile" 
-#应用数据文件夹位置名
-data_path="$data_name/${def_name}_src"                                                   
-#创建文件夹 
-mkdir "$data_name"  >/dev/null 2>&1                                                      
-#应用资源文件夹
-mkdir "$data_path"  >/dev/null 2>&1                                                      
-
-#### 配置文件、程序网址、路径 ####
-#仓库
-link_repositories="https://raw.githubusercontent.com/vincilawyer/Bash/main/"            
-#update.src.sh
-link_update="${link_repositories}library/update.src.sh"                                  
-path_update="$data_path/update.src.sh"                                                
-#main.src.sh
-link_main="${link_repositories}vinci/main.src.sh"                                    
-path_main="$data_path/main.src.sh"                                                    
-#启动程序下载网址
-link_def="${link_repositories}vinci/vinci.sh"                                                  
-
-  
 ######  退出函数 ######      
 function quit() {
 local exitnotice="$1"
