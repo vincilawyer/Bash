@@ -20,7 +20,7 @@ local file_name="$3"                            #配置文件名称
 local loadcode="$4"                             #加载模式，1为source、2为bash
 local necessary="${5:-false}"                    #是否必要，true为必要
 local upcode="$6"                               #更新模式
-local n="1"                                     #错误警告更新次数
+local n=0                                       #错误警告更新次数
 
      echo "正在检查$file_name文件更新..."
      
@@ -48,7 +48,6 @@ while true; do
                    #如果是报错更新，现显示错误提醒，并重新检测更新
                    if  (( upcode==1 )); then
                        warning "$file_path" "$file_name" "$necessary" "$cur_Version" "$num" "$n"
-                       ((n++)) 
                        continue
                    fi
                    echo "$file_name文件当前已是最新版本V$cur_Version.$num！"
@@ -115,7 +114,7 @@ while true; do
       check_time=35    #检查更新时长
       tput sc  #保存当前光标位置
       local t=0
-      n=$((n + 1))
+      ((n++)) 
       while true; do
             tput rc  #恢复光标位置
             tput el  #清除光标后内容
