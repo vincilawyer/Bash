@@ -37,7 +37,7 @@ while true; do
     #如果文件已存在     
     else
          #如果无需更新
-         if ! ((upcode==0)); then               
+         if ((upcode==0)); then               
              #如果为主程序，则跳过；其他配置需加载
              (( loadcode == 2 )) && return 
          #如果需要更新，则检查更新
