@@ -15,7 +15,7 @@ tor_menu=(
     "安装Tor"                   "install_Tor"
     "设置Tor配置"                "set_tor_config"
     "程序管理器"                 'get_appmanage_menu "tor"; page true "Tor" "${appmanage_menu[@]}"'
-    "退出")
+    )
 
 ###### 安装Tor的函数 ######
 function install_Tor {
