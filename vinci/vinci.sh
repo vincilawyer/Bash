@@ -47,7 +47,7 @@ function handle_error() {
 
 #######   当脚本退出   ####### 
 function normal_exit() { 
-    echo -e "${GREED}已退出vinci脚本（V"$Version1"）！${NC}"
+    echo -e "${GREED}已退出vinci脚本！${NC}"
 }
 
 #######   脚本退出前执行  #######   
@@ -57,7 +57,7 @@ trap 'normal_exit' EXIT
 clear
 
 #下载更新检查程序
-if ! curl -H 'Cache-Control: no-cache' -L "$link_update" -o "$path_update" >/dev/null; then echo "更新检查程序下载失败，请检查网络！"; wait; fi
+if ! curl -H 'Cache-Control: no-cache' -L "$link_update" -o "$path_update" >/dev/null 2>&1 ; then echo "更新检查程序下载失败，请检查网络！"; wait; fi
 
 #载入更新检查文件，并获取错误输出
 wrongtext="$(source $path_update 2>&1 >/dev/null)"
