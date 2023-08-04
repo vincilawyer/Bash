@@ -50,6 +50,7 @@ if [ -n "$wrongtext" ]; then echo "当前更新检查程序存在语法错误，
      exit
 else
      source "$path_update"
+     echo "开始更新检查..."
 fi    
 
 #更新本程序
