@@ -1,13 +1,11 @@
 #####防火墙管理#####
 ufw_menu=(
-    "  1、返回上一级"            "return"
-    "  2、启动\重启防火墙"        "restart ufw"
-    "  3、启用防火墙规则"         "ufw enable"
-    "  4、停用防火墙规则"         "ufw disable"
-    "  5、查看防火墙规则"         "ufw status verbose"
-    "  6、查看防火墙运行状况"     "status ufw"
-    "  7、停止防火墙"            "stop ufw"
-    "  0、退出")     
+    "返回上一级"            "return"
+    "启用防火墙规则"         "ufw enable"
+    "停用防火墙规则"         "ufw disable"
+    "查看防火墙规则"         "ufw status verbose"
+    "防火墙程序管理"         'get_appmanage_menu "ufw"; page true "UFW" "${appmanage_menu[@]}"'
+    )     
    
     
 ###### 查看ip信息 ######
