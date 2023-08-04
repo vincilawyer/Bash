@@ -90,7 +90,7 @@ while true; do
               $file_path
               local result="$?"
                   if ((result == 2 )); then        #执行文件语法错误
-                      "$file_name文件存在以上语法错误"
+                      echo "$file_name文件存在以上语法错误"
                       echo "即将重新开始更新"
                       upcode=1
                       continue
