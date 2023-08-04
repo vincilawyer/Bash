@@ -33,12 +33,11 @@ while true; do
         #如果文件存在，则开始检查更新。
         if [ -e "$file_path" ]; then
         
-             #已下载新版本文件，开始获取旧版本号及代码字符数量
-             11111111111111111111111111111
-             num=$(n="$(cat "$file_path")" &&  echo "${#n}") 
+             #已下载新版本文件，开始获取旧版本代码
+             old_code="$(cat "$file_path")"
              
              #如果已是最新版本
-             if [[ "$code" == "$n" ]]; then
+             if [[ "$code" == "$old_code" ]]; then 
                    #如果是报错更新，现显示错误提醒，并重新检测更新
                    if  (( upcode==1 )); then
                        ((n++)) 
@@ -49,11 +48,9 @@ while true; do
                    (( loadcode == 2 )) && return #如果是启动程序本身，则无需再次载入
              #如果存在更新版本
              else 
-                   #获取新版本号
-                   Version=$( echo "$code" | sed -n -e '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p;}' -e q)
                    (( upcode==1 )) && echo -e "${RED} 当前${RED}$file_name文件存在错误！即将开始更新${NC}" 
-                   echo "$file_name文件当前版本号为：V$num"
-                   echo "$code" > "$file_path" && chmod +x "$file_path"
+                   echo "$file_name文件当前版本号为：V${#old_code}"
+                   printf "%s" "$code" > "$file_path" && chmod +x "$file_path"
                    echo -e "${GREEN}$file_name文件最新版本号为：V${#code}，已完成更新，载入中...${NC}"
                 
              fi
