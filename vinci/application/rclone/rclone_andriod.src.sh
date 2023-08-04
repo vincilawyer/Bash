@@ -69,7 +69,7 @@ function onetobaidubook {
 }
 
 ## 获取网盘文件夹大小
-funciton get_size {
+function get_size {
     local baiduname=$1
     local onename=$2
     echo "正在获取百度网盘及onedrive文件夹基本信息..."
