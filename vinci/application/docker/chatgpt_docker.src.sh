@@ -18,14 +18,14 @@ Chatgpt_name=\"chatgpt\"                                    #Chat容器名称*
 '
 ##### 菜单栏 #####
 gpt_menu=(
-    "  1、返回上一级"                        "return"
-    "  2、下载\更新Chatgpt"                 "pull_gpt"
-    "  3、启动\重启动Chatgpt"               "docker start $Chatgpt_name"
-    "  4、运行\重运行Chatgpt容器"            "run_gpt"
-    "  5、设置Chatgpt配置"                  "set_gpt"
-    "  6、查看Chatgpt运行状况"               'docker inspect $Chatgpt_name'
-    "  7、停用Chatgpt"                     'confirm "是否停止运行Chatgpt？" "已取消！" || docker stop $Chatgpt_name'
-    "  0、退出")                     
+    "返回上一级"                        "return"
+    "下载\更新Chatgpt"                 "pull_gpt"
+    "启动\重启动Chatgpt"               "docker start $Chatgpt_name"
+    "运行\重运行Chatgpt容器"            "run_gpt"
+    "设置Chatgpt配置"                  "set_gpt"
+    "查看Chatgpt运行状况"               'docker inspect $Chatgpt_name'
+    "停用Chatgpt"                     'confirm "是否停止运行Chatgpt？" "已取消！" || docker stop $Chatgpt_name'
+    )                     
 
 
 ######  下载 chatgpt-next-web 镜像 ######
