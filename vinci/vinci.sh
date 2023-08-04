@@ -1,10 +1,11 @@
-#!/bin/bash 
+#!/bin/zsh 
 #程序组成结构:1、启动程序（即本程序）,用于下载、启动更新update程序和主程序（该两程序及本程序容错率为0）。
 #2、update程序，用于更新、加载配置文件。
 #3、主程序，诠释程序作用。
 ####### 版本更新相关参数 ######
 setopt interactivecomments
-echo $SHELL
+ps -p $$ -o comm=
+sleep 3
 Version=2.00  #版本号 
 
 ####### 定义本脚本名称、应用数据路径 ######
