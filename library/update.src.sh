@@ -81,6 +81,7 @@ while true; do
                   continue
               else
                   source "$file_path"
+                  break
               fi
           #开始载入：如果载入模式为bash
           elif (( loadcode == 2 )); then
