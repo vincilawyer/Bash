@@ -83,8 +83,7 @@ while true; do
               fi
           #开始载入：如果载入模式为bash
           elif (( loadcode == 2 )); then
-              exec "/bin/zsh" "$file_path"
-              #$file_path
+              $file_path
               local result="$?"
                   if ((result == 2 )); then        #执行文件语法错误
                       echo "$file_name文件存在以上语法错误"
