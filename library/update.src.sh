@@ -83,7 +83,7 @@ while true; do
                   upcode=1
                   continue
               else
-                  source $file_path
+                  source "$file_path"
               fi
           #开始载入：如果载入模式为bash
           elif (( loadcode == 2 )); then
