@@ -5,10 +5,10 @@ Version=1.00  #版本号
 
 ### 菜单栏 ###
   xui_menu=(
-    "  1、返回上一级"                     "return"
-    "  2、安装\更新Xui面板"               "install_Xui"
-    "  3、进入Xui面板管理（指令:x-ui）"     "x-ui"
-    "  0、退出" )     
+    "返回上一级"                     "return"
+    "安装\更新Xui面板"               "install_Xui"
+    "进入Xui面板管理（指令:x-ui）"     "x-ui"
+    "退出" )     
     
 ###### 安装X-ui的函数 ######
 function install_Xui {
