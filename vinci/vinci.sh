@@ -64,7 +64,7 @@ local exitnotice="$1"
 local scrname="$2"
 local funcname1="$3"
 local funcname2="$4"
-   if (( exitnotice == 1 )); then
+   if ((exitnotice == 1)); then
         clear
    elif [ -n "$exitnotice" ]; then
         echo -e "${RED}出现错误：$exitnotice。错误代码详见以下：${NC}"
