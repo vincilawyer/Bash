@@ -162,17 +162,12 @@ if [[ $SHELL == *"bash"* ]]; then
         if $(read -s -t 1 -n 1); then break; fi
         ((from--))
    done
+   echo
 elif [[ $SHELL == *"zsh"* ]]; then
-    echoti sc  # Save the current cursor position
-    while (( from >= 0 )); do
-        echoti rc  # Restore the saved cursor position
-        echoti el  # Clear from cursor to the end of the line
-        printf "%02ds" $from  # Print the countdown
-        if read -sk -t1; then break; fi
-        ((from--))
-    done
+   echo "此处倒计时$1秒"
+   sleep $1
 fi
-    echo
+    
 }
 
 #######   等待函数   #######   
