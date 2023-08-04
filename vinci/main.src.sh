@@ -9,29 +9,28 @@ Version1="$Version.$(n="$(cat "$path_def")" &&  echo "${#n}")"                  
 ####### 各配置路径及文件名  ######
 #基本参数
 #library > arg.lib
-path="$data_path/arg.lib"
-link="${link_repositories}library/arg.lib"
-update_load "$path" "$link" "基本参数模块" 1 true
+path_arg="$data_path/arg.lib"
+link_arg="${link_repositories}library/arg.lib"
+
 #文本处理
 #library > text_processing.scr.sh
-path="$data_path/text_processing.scr.sh"
-link="${link_repositories}library/text_processing.scr.sh"
-update_load "$path" "$link" "文本处理模块" 1 true
+path_text_processing="$data_path/text_processing.scr.sh"
+link_text_processing="${link_repositories}library/text_processing.scr.sh"
+
 #页面显示
 #library > page.src.sh
-path="$data_path/page.src.sh"
-link="${link_repositories}library/page.src.sh"
-update_load "$path" "$link" "页面显示模块" 1 true
+path_page="$data_path/page.src.sh"
+link_page="${link_repositories}library/page.src.sh"
+
 #用户配置
 #library > config.src.sh
-path="$data_path/config.src.sh"
-link="${link_repositories}library/config.src.sh"
-update_load "$path" "$link" "用户配置模块" 1 true
+path_config="$data_path/config.src.sh"
+link_config="${link_repositories}library/config.src.sh"
+
 #通用工具
 #toolbox > universal.src.sh
-path="$data_path/universal.src.sh"
-link="${link_repositories}vinci/toolbox/universal.src.sh"
-update_load "$path" "$link" "通用工具模块" 1 true
+path_toolbox_universal="$data_path/universal.src.sh"
+link_toolbox_universal="${link_repositories}vinci/toolbox/universal.src.sh"
 
 #linux工具
 #toolbox > linux.src.sh
@@ -111,6 +110,27 @@ if uname -a | grep -q 'Debian'; then
         wait
     fi
     
+    #载入通用模块
+    update_load "$path_arg" "$link_arg" "基本参数模块" 1 true
+    update_load "$path_text_processing" "$link_text_processing" "文本处理模块" 1 true
+    update_load "$path_page" "$link_page" "页面显示模块" 1 true
+    update_load "$path_config" "$link_config" "用户配置模块" 1 true
+    update_load "$path_toolbox_universal" "$link_toolbox_universal" "通用工具模块" 1 true
+    #载入专属模块
+    update_load "$path_toolbox_linux" "$link_toolbox_linux" "linux工具模块" 1 false
+    update_load "$path_appmanage" "$link_appmanage" "程序管理模块" 1 false
+    update_load "$path_docker" "$link_docker" "docker" 1 false
+    update_load "$path_nginx" "$link_nginx" "nginx" 1 false
+    update_load "$path_xui" "$link_xui" "xui" 1 false
+    update_load "$path_cf" "$link_cf" "cloudflare" 1 false
+    update_load "$path_tor" "$link_tor" "tor" 1 false
+    update_load "$path_frp" "$link_frp" "" 1 false
+    update_load "$path_chatgpt" "$link_chatgpt" "chatgpt" 1 false
+    update_load "$path_alist_linux" "$link_alist_linux" "alist_linux" 1 false
+    update_load "$path_rclone_linux" "$link_rclone_linux" "rclone_linux" 1 false
+
+    
+    
 ###### 页面logo ######
 function logo {
 art=$(cat << "EOF"
@@ -138,44 +158,32 @@ function menutitle {
     echo
 }
 
-######载入模块 ######
-update_load "$path_toolbox_linux" "$link_toolbox_linux" "linux工具模块" 1 false
-update_load "$path_appmanage" "$link_appmanage" "程序管理模块" 1 false
-update_load "$path_docker" "$link_docker" "docker" 1 false
-update_load "$path_nginx" "$link_nginx" "nginx" 1 false
-update_load "$path_xui" "$link_xui" "xui" 1 false
-update_load "$path_cf" "$link_cf" "cloudflare" 1 false
-update_load "$path_tor" "$link_tor" "tor" 1 false
-update_load "$path_frp" "$link_frp" "" 1 false
-update_load "$path_chatgpt" "$link_chatgpt" "chatgpt" 1 false
-update_load "$path_alist_linux" "$link_alist_linux" "alist_linux" 1 false
-update_load "$path_rclone_linux" "$link_rclone_linux" "rclone_linux" 1 false
 
 #### 主菜单 ####
 main_menu=(
-    "  1、系统设置"              'page true " 系 统 设 置 " "${system_menu[@]}"'
-    "  2、UFW防火墙管理"          'page true " UFW 防 火 墙" "${ufw_menu[@]}"'
-    "  3、Docker服务"            'page true "Docker" "${docker_menu[@]}"'
-    "  4、Nginx服务"             'page true "Nginx" "${nginx_menu[@]}"'
-    "  5、X-ui服务"              'page true "X-UI" "${xui_menu[@]}"'
-    "  6、Cloudflare服务"        'page true "Cloudflare" "${cf_menu[@]}"'
-    "  7、Tor服务"               'page true "Tor" "${tor_menu[@]}"'
-    "  8、Frp服务"               'page true "Frp" "${frp_menu[@]}"'
-    "  9、Chatgpt-Docker服务"   'page true "Chatgpt-Docker" "${gpt_menu[@]}"'
-    "  10、Alist服务"            'page true "Alist" "${alist_menu[@]}"'
-    "  11、Rclone服务"            'page true "Rclone" "${rclone_menu[@]}"'
-    "  0、退出")
+    "系统设置"              'page true " 系 统 设 置 " "${system_menu[@]}"'
+    "UFW防火墙管理"          'page true " UFW 防 火 墙" "${ufw_menu[@]}"'
+    "Docker服务"            'page true "Docker" "${docker_menu[@]}"'
+    "Nginx服务"             'page true "Nginx" "${nginx_menu[@]}"'
+    "X-ui服务"              'page true "X-UI" "${xui_menu[@]}"'
+    "Cloudflare服务"        'page true "Cloudflare" "${cf_menu[@]}"'
+    "Tor服务"               'page true "Tor" "${tor_menu[@]}"'
+    "Frp服务"               'page true "Frp" "${frp_menu[@]}"'
+    "Chatgpt-Docker服务"   'page true "Chatgpt-Docker" "${gpt_menu[@]}"'
+    "Alist服务"            'page true "Alist" "${alist_menu[@]}"'
+    "Rclone服务"            'page true "Rclone" "${rclone_menu[@]}"'
+    )
     
 ### 系统工具选项 ###
 system_menu=(
-    "  1、返回上一级"                "return"
-    "  2、查看所有重要程序运行状态"    "status_all"
-    "  3、本机ip信息"               "ipinfo"
-    "  4、修改配置参数"              "set_dat"
-    "  5、查看配置参数文件"           "nano /root/myfile/vinci.dat"
-    "  6、修改SSH登录端口和登录密码"   "change_ssh_port; change_login_password"
-    "  7、更新脚本"                  'echo "维护"'
-    "  0、退出" )  
+    "返回上一级"                "return"
+    "查看所有重要程序运行状态"    "status_all"
+    "本机ip信息"               "ipinfo"
+    "修改配置参数"              "set_dat"
+    "查看配置参数文件"           "nano /root/myfile/vinci.dat"
+    "修改SSH登录端口和登录密码"   "change_ssh_port; change_login_password"
+    "更新脚本"                  'echo "维护"'
+     )  
 
 ############################################################################################################################################################################################
 ##############################################################################    Android系统   ########################################################################################
@@ -216,16 +224,16 @@ update_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_linux" 1 false
 
 
 main_menu=(
-    "  1、系统设置"              'page true " 系 统 设 置 " "${system_menu[@]}"' 
-    "  2、Alist服务"            'page true "Alist" "${alist_menu[@]}"'
-    "  3、Rclone服务"            'page true "Rclone" "${rclone_menu[@]}"'
-    "  0、退出")
+    "系统设置"              'page true " 系 统 设 置 " "${system_menu[@]}"' 
+    "Alist服务"            'page true "Alist" "${alist_menu[@]}"'
+    "Rclone服务"            'page true "Rclone" "${rclone_menu[@]}"'
+    )
 system_menu=(
-    "  1、返回上一级"                "return"
-    "  2、修改配置参数"              "set_dat"
-    "  3、查看配置参数文件"           "nano /root/myfile/vinci.dat"
-    "  4、更新脚本"                  'echo "维护"'
-    "  0、退出" )  
+    "返回上一级"                "return"
+    "修改配置参数"              "set_dat"
+    "查看配置参数文件"           "nano /root/myfile/vinci.dat"
+    "更新脚本"                  'echo "维护"'
+    )  
 
 
 #初始化安卓配件
