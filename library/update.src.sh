@@ -28,7 +28,7 @@ while true; do
         echo "Wrong url:$file_link"
         countdown 10
         #如果文件不存在：
-        [[ $necessary == "true" ]] && ! [ -e "$file_path" ] && echo "${RED}$file_name文件缺失，即将退出系统..." && exit
+        [[ $necessary == "true" ]] && ! [ -e "$file_path" ] && echo "${RED}$file_name文件缺失，即将退出系统..." && quit
         ! [ -e "$file_path" ] && echo -e "${RED}$file_name文件缺失，可能导致系统功能缺失...${NC}" && return
         
    #如果下载成功
@@ -93,7 +93,7 @@ while true; do
                       upcode=1
                       continue
                   fi 
-              exit
+              quit
           fi
     done  
     
@@ -131,7 +131,7 @@ while true; do
             if [ -n "$input" ] || [ $? -eq 142 ] ; then
                 echo "已取消继续更新${RED}$file_name文件..."
                 countdown 10
-                [[ $necessary == "true" ]] && ! [ -e "$file_path" ] && echo "即将退出系统..." && exit
+                [[ $necessary == "true" ]] && ! [ -e "$file_path" ] && echo "即将退出系统..." && quit
                 return   
             fi
       done
