@@ -16,7 +16,7 @@ local file_link="$2"                            #脚本url链接
 local file_name="$3"                            #配置文件名称
 local loadcode="$4"                             #加载模式，1为source、2为bash
 local upcode="${5:-0}"                          #更新模式,0为无需更新，1为正常更新，2为报错更新
-local starcode="${5:-0}"                        #更新模式,0为无需更新，1为正常更新,传递给启动程序，使其继续更新
+local startcode="${5:-0}"                        #更新模式,0为无需更新，1为正常更新,传递给启动程序，使其继续更新
 local n=0                                       #错误警告更新次数
 
      
@@ -102,7 +102,7 @@ while true; do
           echo "正在重启程序..."
           #增加执行权限
           chmod +x "$file_path"
-          $file_path "$starcode"
+          $file_path "$startcode"
           local result="$?"
                if ((result == 2 )); then        #执行文件语法错误
                     echo "$file_name文件存在以上语法错误"
