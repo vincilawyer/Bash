@@ -65,7 +65,7 @@ while true; do
    fi
 echo 1
          #如果文件仍不存在：
-         ! [ -e "$file_path" ] && echo "${RED}$file_name文件缺失，即将退出系统..." && quit
+         ! [ -e "$file_path" ] && echo "${RED}$file_name文件缺失，即将退出系统..." && sleep
 echo 2
          #开始载入：如果载入模式为source
          if (( loadcode == 1 )); then
