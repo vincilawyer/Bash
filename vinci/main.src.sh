@@ -19,20 +19,20 @@ link="${link_repositories}library/text_processing.scr.sh"
 updata_load "$path" "$link" "文本处理模块" 1 true
 #页面显示
 #library > page.src.sh
-path="$data_path/page.src.sh"
+path="$data_path/library/page.src.sh"
 link="${link_repositories}library/page.src.sh"
 updata_load "$path" "$link" "页面显示模块" 1 true
 #用户配置
-#library > page.src.sh
-path="$data_path/page.src.sh"
-link="${link_repositories}library/page.src.sh"
+#library > config.src.sh
+path="$data_path/library/config.src.sh"
+link="${link_repositories}library/config.src.sh"
 updata_load "$path" "$link" "用户配置模块" 1 true
-
 #通用工具
 #toolbox > universal.src.sh
 path="$data_path/toolbox/universal.src.sh"
 link="${link_repositories}vinci/toolbox/universal.src.sh"
 updata_load "$path" "$link" "通用工具模块" 1 true
+
 #linux工具
 #toolbox > linux.src.sh
 path_toolbox_linux="$data_path/toolbox/linux.src.sh"
@@ -42,22 +42,61 @@ link_toolbox_linux="${link_repositories}vinci/toolbox/linux.src.sh"
 #app > appmanage.src.sh
 path_appmanage="$data_path/app/appmanage.src.sh"
 link_appmanage="${link_repositories}vinci/application/appmanage.src.sh"
+
 #xui
 #app > xui.src.sh
 path_xui="$data_path/app/xui.src.sh"
 link_xui="${link_repositories}vinci/application/xui.src.sh"
+
 #tor.src.sh
 #app > tor.src.sh
 path_tor="$data_path/app/tor.src.sh"
 link_tor="${link_repositories}vinci/application/tor.src.sh"
-#
-#app > 
-path_="$data_path/app/"
-link_="${link_repositories}vinci/application/"
-#
-#app > 
-path_="$data_path/app/"
-link_="${link_repositories}vinci/application/"
+
+#nginx
+#app > nginx.scr.sh
+path_nginx="$data_path/app/nginx.scr.sh"
+link_nginx="${link_repositories}vinci/application/nginx.scr.sh"
+
+#frp
+#app > frp.scr.sh
+path_frp="$data_path/app/frp.scr.sh"
+link_frp="${link_repositories}vinci/application/frp.scr.sh"
+
+#cf
+#app > cloudflare.scr.sh
+path_cf="$data_path/app/cloudflare.scr.sh"
+link_cf="${link_repositories}vinci/application/cloudflare.scr.sh"
+
+#rclone_linux
+#app > rclone_linux.src.sh
+path_rclone_linux="$data_path/app/rclone/rclone_linux.src.sh"
+link_rclone_linux="${link_repositories}vinci/application/rclone/rclone_linux.src.sh"
+
+#rclone_andriod
+#app > rclone_andriod.src.sh
+path_rclone_andriod="$data_path/app/rclone/rclone_andriod.src.sh"
+link_rclone_andriod="${link_repositories}vinci/application/rclone/rclone_andriod.src.sh"
+
+#alist_linux
+#app > alist_linux.src.sh
+path_alist_linux="$data_path/app/alist/alist_linux.src.sh"
+link_alist_linux="${link_repositories}vinci/application/alist/alist_linux.src.sh"
+
+#alist_andriod
+#app > alist_andriod.src.sh
+path_alist_andriod="$data_path/app/alist/alist_andriod.src.sh"
+link_alist_andriod="${link_repositories}vinci/application/alist/alist_andriod.src.sh"
+
+#docker
+#app > docker.src.sh
+path_docker="$data_path/app/docker/docker.src.sh"
+link_docker="${link_repositories}vinci/application/docker/docker.src.sh"
+
+#chatgpt
+#app > chatgpt_docker.src.sh
+path_chatgpt="$data_path/app/docker/chatgpt_docker.src.sh"
+link_chatgpt="${link_repositories}vinci/application/docker/chatgpt_docker.src.sh"
 
 
 
@@ -101,6 +140,15 @@ function menutitle {
 
 ######载入模块 ######
 updata_load "$path_toolbox_linux" "$link_toolbox_linux" "linux工具模块" 1 false
+updata_load "$path_docker" "$link_docker" "docker" 1 false
+updata_load "$path_nginx" "$link_nginx" "nginx" 1 false
+updata_load "$path_xui" "$link_xui" "xui" 1 false
+updata_load "$path_cf" "$link_cf" "cloudflare" 1 false
+updata_load "$path_tor" "$link_tor" "tor" 1 false
+updata_load "$path_frp" "$link_frp" "" 1 false
+updata_load "$path_chatgpt" "$link_chatgpt" "chatgpt" 1 false
+updata_load "$path_alist_linux" "$link_alist_linux" "alist_linux" 1 false
+updata_load "$path_rclone_linux" "$link_rclone_linux" "rclone_linux" 1 false
 
 #### 主菜单 ####
 main_menu=(
@@ -160,12 +208,16 @@ function menutitle {
     echo "=================== "$1" ======================="
     echo
 }
+
+######载入模块 ######
+updata_load "$path_alist_andriod" "$link_alist_andriod" "alist_linux" 1 false
+updata_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_linux" 1 false
+
+
 main_menu=(
-    "  1、系统设置"              'page true " 系 统 设 置 " "${system_menu[@]}"'
-    "  2、工具箱"                'page true " 工 具 箱 " "${toolbox_menu[@]}"'   
-    "  3、Docker服务"            'page true "Docker" "${docker_menu[@]}"'
-    "  4、Alist服务"            'page true "Alist" "${alist_menu[@]}"'
-    "  5、Rclone服务"            'page true "Rclone" "${rclone_menu[@]}"'
+    "  1、系统设置"              'page true " 系 统 设 置 " "${system_menu[@]}"' 
+    "  2、Alist服务"            'page true "Alist" "${alist_menu[@]}"'
+    "  3、Rclone服务"            'page true "Rclone" "${rclone_menu[@]}"'
     "  0、退出")
 system_menu=(
     "  1、返回上一级"                "return"
