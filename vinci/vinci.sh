@@ -73,6 +73,7 @@ trap 'normal_exit' EXIT
 
 #基础更新
 function base_update {
+echo "正在启动基础更新..."
 #下载更新检查程序
 if ! curl -H 'Cache-Control: no-cache' -L "$link_update" -o "$path_update" >/dev/null 2>&1 ; then echo "更新检查程序下载失败，请检查网络！"; wait; fi
 
