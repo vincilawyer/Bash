@@ -54,7 +54,6 @@ local funcname2="$4"
    else
         clear
    fi            
-   echo -e "${GREED}已退出vinci脚本！${NC}"
    exit
 }
 
@@ -83,7 +82,7 @@ function handle_error() {
 
 #######   当脚本退出   ####### 
 function normal_exit() { 
-:
+   echo -e "${GREED}已退出vinci脚本！${NC}"
 }
 
 #######   脚本退出前执行  #######   
