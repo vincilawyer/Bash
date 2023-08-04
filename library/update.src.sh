@@ -29,6 +29,7 @@ while true; do
    #开始获取代码,如果下载失败
    if ! code="$(curl -s "$file_link")"; then    
         echo -en "${RED}$file_name文件下载失败，请检查网络！${NC}"
+        echo "wrong url:$file_link"
         countdown 10
         
    #如果下载成功
