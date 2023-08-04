@@ -60,7 +60,7 @@ function change_login_password {
 }
 
 ### 查看所有程序运行状况 ####
-function status_app {
+function status_all {
 apps=(
 "ufw"
 "docker"
