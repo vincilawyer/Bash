@@ -42,7 +42,7 @@ path_def="/usr/local/bin/$def_name"
 
 ####### Mac系统启动程序网址、路径 ######
       elif uname -a | grep -q 'Darwin'; then 
-path_def="/Users/Vinci/Desktop/$def_name"
+path_def="/usr/local/bin/$def_name"
       #切换运行环境
       [[ $(ps -p $$ -o comm=) == *"bash"* ]] && exec "/bin/zsh" "$0" && exit
       echo '检测系统为Mac，已切换Shell环境为zsh，正在配置中...'
@@ -53,7 +53,7 @@ path_def="/Users/Vinci/Desktop/$def_name"
       
 ###### 其他系统启动程序网址、路径 ######
       else echo '未知系统，正在配置默认版本中...'
-path_def="/usr/local/bin/$def_name"                                                             
+:                                                           
       fi    
 
 ######  退出函数 ######      
