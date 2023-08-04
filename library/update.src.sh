@@ -31,7 +31,7 @@ while true; do
         echo -en "${RED}$file_name文件下载失败，请检查网络！${NC}"
         echo "Wrong url:$file_link"
         countdown 10
-        #如果文件仍不存在：
+        #如果文件不存在：
         [[ $necessary == "true" ]] && ! [ -e "$file_path" ] && echo "${RED}$file_name文件缺失，即将退出系统..." && exit
         ! [ -e "$file_path" ] && echo "${RED}$file_name文件缺失，可能导致系统功能缺失..." && return
         
@@ -150,4 +150,14 @@ function countdown {
         ((from--))
     done
     echo
+}
+
+#######   等待函数   #######   
+function wait {
+   if [[ -z "$1" ]]; then
+    echo "请按下任意键继续"
+   else
+    echo $1
+   fi
+   read -n 1 -s input
 }
