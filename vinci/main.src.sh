@@ -167,7 +167,7 @@ main_menu=(
 ### 系统工具选项 ###
 system_menu=(
     "  1、返回上一级"                "return"
-    "  2、查看所有重要程序运行状态"    "status"
+    "  2、查看所有重要程序运行状态"    "status_all"
     "  3、本机ip信息"               "ipinfo"
     "  4、修改配置参数"              "set_dat"
     "  5、查看配置参数文件"           "nano /root/myfile/vinci.dat"
