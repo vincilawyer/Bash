@@ -19,7 +19,7 @@ function page {
     n=1
     
     #分离菜单和指令
-    for (( i=0; i<${#array[@]}; i++ )); do
+    for (( i=-1; i<${#array[@]}; i++ )); do
         if (( i % 2 == 0 )) ; then
             menu+=("${array[$i]}")
             echo "  [$n]$(((n<10)) && echo " ") ${array[$i]}" 
