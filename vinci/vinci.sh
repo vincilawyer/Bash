@@ -89,10 +89,10 @@ else
 fi    
 
 #更新本程序
-update_load "$path_def" "$link_def" "$def_name脚本" 2 true
+update_load "$path_def" "$link_def" "$def_name脚本" 2 
 
 #更新主程序   
-update_load "$path_main" "$link_main" "主程序" 1 true
+update_load "$path_main" "$link_main" "主程序" 1
 
 }
 
