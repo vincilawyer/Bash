@@ -37,8 +37,6 @@ path_def="/usr/local/bin/$def_name"                                             
       else echo '未知系统，正在配置默认版本中...'
 path_def="/usr/local/bin/$def_name"                                                                #启动程序目录路径
       fi    
-      
-clear
 
 ######  退出函数 ######      
 function quit() {
@@ -57,6 +55,24 @@ local funcname2="$4"
    exit
 }
 
+#######   当脚本错误退出时，启动更新检查   ####### 
+function handle_error() {
+    echo "脚本运行出现错误！即将退出"
+    countdown 50
+}
+
+#######   当脚本退出   ####### 
+function normal_exit() { 
+   echo -e "${GREED}已退出vinci脚本！${NC}"
+}
+
+#######   脚本退出前执行  #######   
+trap 'handle_error' ERR
+trap 'normal_exit' EXIT
+
+
+#基础更新
+function base_update {
 #下载更新检查程序
 if ! curl -H 'Cache-Control: no-cache' -L "$link_update" -o "$path_update" >/dev/null 2>&1 ; then echo "更新检查程序下载失败，请检查网络！"; wait; fi
 
@@ -73,24 +89,12 @@ fi
 #更新本程序
 update_load "$path_def" "$link_def" "$def_name脚本" 2 true
 
-
-#######   当脚本错误退出时，启动更新检查   ####### 
-function handle_error() {
-    echo "脚本运行出现错误！即将退出"
-    countdown 50
-}
-
-#######   当脚本退出   ####### 
-function normal_exit() { 
-   echo -e "${GREED}已退出vinci脚本！${NC}"
-}
-
-#######   脚本退出前执行  #######   
-trap 'handle_error' ERR
-trap 'normal_exit' EXIT
-
 #更新主程序   
 update_load "$path_main" "$link_main" "主程序" 1 true
 
-#运行主程序
+}
+
+#开始运行脚本
+clear
+base_update
 main
