@@ -9,7 +9,7 @@ Version=1.00  #版本号
     "安装Frp"                     "install_Frp"
     "设置Frp配置"                  "set_Frp"
     "程序管理器"                   'get_appmanage_menu "frps"; page true "Frp" "${appmanage_menu[@]}"'
-    "退出")
+    )
     
 ######   参数配置   ######
 adddat '
