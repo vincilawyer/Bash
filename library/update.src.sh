@@ -15,83 +15,102 @@ local file_path="$1"                            #为旧脚本目录路径
 local file_link="$2"                            #脚本url链接
 local file_name="$3"                            #配置文件名称
 local loadcode="$4"                             #加载模式，1为source、2为bash
-local necessary="${5:-false}"                    #是否必要，true为必要
-local upcode="$6"                               #更新模式
+local upcode="${5:-0}"                          #更新模式,0为无需更新，1为正常更新，2为报错更新
+local starcode="${5:-0}"                        #更新模式,0为无需更新，1为正常更新,传递给启动程序，使其继续更新
 local n=0                                       #错误警告更新次数
 
      echo "正在检查$file_name文件更新..."
      
 while true; do
-   #开始获取代码,如果下载失败
-   if ! code="$(curl -s "$file_link")"; then    
-        echo -e "${RED}$file_name文件下载失败，请检查网络！${NC}"
-        echo "Wrong url:$file_link"
-        countdown 10
-           
-   #如果下载成功
-   else
-        #如果文件存在，则开始检查更新。
-        if [ -e "$file_path" ]; then
-        
-             #已下载新版本文件，开始获取旧版本代码
-             old_code="$(cat "$file_path")"
-             
-             #如果已是最新版本
-             if [[ "$code" == "$old_code" ]]; then 
-                   #如果是报错更新，现显示错误提醒，并重新检测更新
-                   if  (( upcode==1 )); then
-                       ((n++)) 
-                       warning "$file_path" "$file_name" "$necessary" "$cur_Version" "$n"
-                       continue
-                   fi
-                   echo -e "${BLUE}$file_name文件当前已是最新版本V${#old_code}！${NC}"
-                   (( loadcode == 2 )) && return #如果是启动程序本身，则无需再次载入
-             #如果存在更新版本
-             else 
-                   (( upcode==1 )) && echo -e "${RED} 当前${RED}$file_name文件存在错误！即将开始更新${NC}" 
-                   echo "$file_name文件当前版本号为：V${#old_code}"
-                   printf "%s" "$code" > "$file_path" && chmod +x "$file_path"
-                   echo -e "${BLUE}$file_name文件最新版本号为：V${#code}，已完成更新，载入中...${NC}"
-                
-             fi
-             
-         #如果文件不存在，则直接开始下载。
+    #如果文件不存在
+    if ! [ -e "$file_path" ]; then
+         #下载更新文件
+         echo "正在下载$file_name文件..."
+         if ! curl -H 'Cache-Control: no-cache' -L "$file_link" -o "$file_path"; then 
+              #如果下载失败
+              echo -e "${RED}$file_name文件下载失败，请检查网络！${NC}"
+              echo "Wrong url:$file_link"
+              echo "${RED}$file_name文件缺失，即将退出系统..." && quit
+         fi   
+         echo -e "${BLUE}$file_name文件V${#code}已完成下载。开始载入...${NC}"
+         countdown 2
+ 
+    #如果文件已存在     
+    else
+         #如果无需更新
+         if ((upcode==0)); then
+               echo "正在载入$file_name文件..."
+               
+         #如果需要更新
          else
-             #下载更新文件并增加执行权限
-             echo "$code" > "$file_path" && chmod +x "$file_path"
-             echo -e "${BLUE}$file_name文件最新版本号为：V${#code}，已完成下载，载入中...${NC}"
+               #获取代码
+               if ! code="$(curl -s "$file_link")"; then    
+                    #代码获取失败
+                    echo -e "${RED}$file_name文件更新失败，请检查网络！${NC}"
+                    echo "Wrong url:$file_link"
+                    wait
+               fi
+               #获取旧版本代码
+               old_code="$(cat "$file_path")"     
+                    #如果两版本一致
+                    if [[ "$code" == "$old_code" ]]; then 
+                         #如果是报错更新，先报错，并继续检测更新
+                         if  (( upcode==2 )); then
+                             ((n++)) 
+                             warning "$file_path" "$file_name" "$necessary" "$cur_Version" "$n"
+                             continue
+                         fi
+                         #无需更新
+                         echo -e "${BLUE}$file_name文件当前已是最新版本V${#old_code}！${NC}"
+                         #如果是启动程序，则无需载入
+                         (( loadcode == 2 )) && return 
+                         
+                    #如果版本不一致,载入新版本
+                    else
+                         (( upcode==2 )) && echo -e "${RED} 当前${RED}$file_name文件存在错误！即将开始更新${NC}" 
+                         echo "$file_name文件当前版本号为：V${#old_code}"
+                         printf "%s" "$code" > "$file_path" && chmod +x "$file_path"
+                         echo -e "${BLUE}$file_name文件最新版本号为：V${#code}，已完成更新。开始载入...${NC}"
+                    fi
          fi
    fi
-         #如果文件仍不存在：
-         ! [ -e "$file_path" ] && echo "${RED}$file_name文件缺失，即将退出系统..." && quit
-         #开始载入：如果载入模式为source
-         if (( loadcode == 1 )); then
-              wrongtext=""
-              wrongtext="$(source $file_path 2>&1 >/dev/null)"   #载入配置文件，并获取错误输出
-              if [ -n "$wrongtext" ]; then  #如果新的配置文件存在错误
-                  echo "$file_name文件存在语法错误，报错内容为："
-                  echo "$wrongtext"
-                  echo "即将开始重新更新"
-                  upcode=1
-                  continue
-              else
-                  source "$file_path"
-                  break
-              fi
-          #开始载入：如果载入模式为bash
-          elif (( loadcode == 2 )); then
-              $file_path
-              local result="$?"
-                  if ((result == 2 )); then        #执行文件语法错误
-                      echo "$file_name文件存在以上语法错误"
-                      echo "即将重新开始更新"
-                      upcode=1
-                      continue
-                  fi 
-              exit
-          fi
-    done  
+         
+
+    #开始载入：如果载入模式为source
+    if (( loadcode == 1 )); then
     
+          #脚本语法检查
+          wrongtext=""
+          wrongtext="$(source $file_path 2>&1 >/dev/null)"
+          if [ -n "$wrongtext" ]; then  
+               #如果新的配置文件存在错误
+               echo "$file_name文件存在语法错误，报错内容为："
+               echo "$wrongtext"
+               echo "即将开始重新更新"
+               upcode=2
+               continue
+               
+          #语法无错，正式载入
+          else
+               source "$file_path"
+               break
+          fi
+          
+     #如果有更新，则开始载入在新的shell环境中载入
+     elif (( loadcode == 2 )); then
+          #增加执行权限
+          chmod +x "$file_path"
+          $file_path "$starcode"
+          local result="$?"
+               if ((result == 2 )); then        #执行文件语法错误
+                    echo "$file_name文件存在以上语法错误"
+                    echo "即将重新开始更新"
+                    upcode=2
+                    continue
+               fi 
+               exit
+     fi
+done      
 }
 
 #######   保存提示  ####### 
@@ -123,9 +142,8 @@ while true; do
             echo -e "${RED}#################################################################################${NC}"
             read -t 1 -n 1 input  #读取输入，在循环中一次1秒
             if [ -n "$input" ] || [ $? -eq 142 ] ; then
-                echo "已取消继续更新${RED}$file_name文件，即将退出系统..."
-                countdown 10
-                quit 
+                echo "已取消继续更新${RED}$file_name文件，并退出系统！"
+                quit
             fi
       done
 }
