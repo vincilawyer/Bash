@@ -91,6 +91,7 @@ trap 'handle_error' ERR
 trap 'normal_exit' EXIT
 
 #更新主程序   
+echo "主程序载入中，请稍等..."
 update_load "$path_main" "$link_main" "主程序" 1 true
 
 #运行主程序
