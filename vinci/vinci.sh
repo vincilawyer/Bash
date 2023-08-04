@@ -4,6 +4,7 @@
 #3、主程序，诠释程序作用。
 ####### 版本更新相关参数 ######
 setopt interactivecomments
+echo $SHELL
 Version=1.00  #版本号 
 
 ####### 定义本脚本名称、应用数据路径 ######
