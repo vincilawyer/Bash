@@ -25,13 +25,14 @@ local n="1"                                     #错误警告更新次数
      (( upcode==1 )) || clear
      echo "正在检查$file_name文件更新..."
      
-     while true; do
-         #开始获取代码
-        if ! code="$(curl -s "$file_link")"; then    #如果未获取到代码
-            echo -ne "${RED}$file_name文件下载失败，请检查网络！${NC}"
-            countdown 10
-        fi
+while true; do
+   #开始获取代码,如果下载失败
+   if ! code="$(curl -s "$file_link")"; then    
+        echo -en "${RED}$file_name文件下载失败，请检查网络！${NC}"
+        countdown 10
         
+   #如果下载成功
+   else
         #如果文件存在，则开始检查更新。
         if [ -e "$file_path" ]; then
         
