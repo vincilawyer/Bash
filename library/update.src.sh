@@ -48,7 +48,7 @@ while true; do
                    #如果是报错更新，现显示错误提醒，并重新检测更新
                    if  (( upcode==1 )); then
                        warning "$file_path" "$file_name" "$necessary" "$cur_Version" "$num" "$n"
-                       ((n++)) ) 
+                       ((n++)) 
                        continue
                    fi
                    echo "${RED}$file_name文件当前已是最新版本V$cur_Version.$num！"
