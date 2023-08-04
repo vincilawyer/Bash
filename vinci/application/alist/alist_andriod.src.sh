@@ -5,11 +5,11 @@
 Version=1.00  #版本号 
 ### 菜单栏
 alist_menu=(
-    "  1、返回上一级"            "return"
-    "  2、安装\更新Alist"        'pkg upgrade; pkg update; pkg install alist'
-    "  3、启动Alist"             'alist server'
-    "  4、查看Alist账户密码"       "alist admin"
-    "  0、退出")
+    "返回上一级"            "return"
+    "安装\更新Alist"        'pkg upgrade; pkg update; pkg install alist'
+    "启动Alist"             'alist server'
+    "查看Alist账户密码"       "alist admin"
+    "退出")
     
 
     
