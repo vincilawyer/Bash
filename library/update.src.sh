@@ -93,7 +93,7 @@ while true; do
                       upcode=1
                       continue
                   fi 
-              quit
+              exit
           fi
     done  
     
