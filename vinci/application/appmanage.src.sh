@@ -4,10 +4,10 @@
 function get_appmanage_menu {
 appmanage_menu=(
     "  1、返回上一级"                   "return"
-    "  3、启动/重启$1"                "restart $1"
-    "  4、查看$1运行状态"                 "status $1"
-    "  5、停止运行$1"                    "stop $1"
-    "  6、卸载$1"                    'echo "暂不支持"'
+    "  2、启动/重启$1"                "restart $1"
+    "  3、查看$1运行状态"                 "status $1"
+    "  4、停止运行$1"                    "stop $1"
+    "  5、卸载$1"                    'echo "暂不支持"'
     "  0、退出" )    
 }   
 
