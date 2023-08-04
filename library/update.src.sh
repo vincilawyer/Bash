@@ -30,11 +30,9 @@ local n="1"                                     #错误警告更新次数
         if ! code="$(curl -s "$file_link")"; then    #如果未获取到代码
             echo -ne "${RED}$file_name文件下载失败，请检查网络！${NC}"
             countdown 10
-            [[ $necessary == "true" ]] && ! [ -e "$file_path" ] && echo "即将退出系统..." && exit
-            return
         fi
         
-        #如果文件存在，则开始检查更新。如果文件不存在，则跳过检查直接开始下载。
+        #如果文件存在，则开始检查更新。
         if [ -e "$file_path" ]; then
         
              #已下载新版本文件，开始获取旧版本号及代码字符数量
@@ -45,37 +43,42 @@ local n="1"                                     #错误警告更新次数
              if [ "$code" == "$(cat "$file_path")" ]; then
                   (( upcode==1 )) && ( warning "$file_path" "$file_name" "$necessary" "$cur_Version" "$num" "$n"; ((n++)); continue ) #如果是报错更新，现显示错误提醒，并重新检测更新
                   echo "${RED}$file_name文件当前已是最新版本V$cur_Version.$num！"
-                  return
-                  
+                  (( loadcode == 2 )) && return #如果是启动程序本身，则无需再次载入
              #如果存在更新版本
              else 
                    #获取新版本号
                    Version=$( echo "$code" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
                    (( upcode==1 )) && echo "${RED} 当前${RED}$file_name文件存在错误！即将开始更新${NC}" 
                    echo "${RED}$file_name文件当前版本号为：V$cur_Version.$num"
-                   echo "${RED}$file_name文件最新版本号为：V$Version.${#code}，即将更新..."
+                   echo "$code" > "$file_path" && chmod +x "$file_path"
+                   echo "${RED}$file_name文件最新版本号为：V$Version.${#code}，已完成更新，载入中..."
+                   countdown 3
              fi
-         fi 
-         
-         #下载更新文件并增加执行权限
-         echo "$code" > "$file_path" && chmod +x "$file_path"
+             
+         #如果文件不存在，则直接开始下载。
+         else
+             #下载更新文件并增加执行权限
+             echo "$code" > "$file_path" && chmod +x "$file_path"
+             echo "${RED}$file_name文件最新版本号为：V$Version.${#code}，已完成下载，载入中..."
+         fi
 
-         #如果载入模式为source
+         #如果文件仍不存在：
+         [[ $necessary == "true" ]] && ! [ -e "$file_path" ] && echo "${RED}$file_name文件缺失，即将退出系统..." && exit
+         ! [ -e "$file_path" ] && echo "${RED}$file_name文件缺失，可能导致系统功能缺失..." && return
+         
+         #开始载入：如果载入模式为source
          if (( loadcode == 1 )); then
-              echo "${RED}$file_name文件V"$Version.$(eval echo $num)"版本已下载\更新完成，即将继续！"
-              countdown 3
               wrongtext=""
               wrongtext="$(source $file_path 2>&1 >/dev/null)"   #载入配置文件，并获取错误输出
               if [ -n "$wrongtext" ]; then  #如果新的配置文件存在错误
-                   echo "$file_name文件存在语法错误，报错内容为："
+                  echo "$file_name文件存在语法错误，报错内容为："
                   echo "$wrongtext"
-                  echo "即将重新开始更新"
+                  echo "即将开始重新更新"
                   upcode=1
                   continue
               fi
+          #开始载入：如果载入模式为bash
           elif (( loadcode == 2 )); then
-              echo "${RED}$file_name文件V"$Version.$(eval echo $num)"版本已下载\更新完成，即将重启系统！"
-              countdown 10
               $file_path
               local result="$?"
                   if ((result == 2 )); then        #执行文件语法错误
@@ -85,10 +88,6 @@ local n="1"                                     #错误警告更新次数
                       continue
                   fi 
               exit
-          elif (( loadcode == 3 )); then
-              echo "${RED}$file_name文件V"$Version.$(eval echo $num)"版本已下载\更新完成，即将继续！"
-              countdown 3
-              return
           fi
           exit
     done  
