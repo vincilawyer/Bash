@@ -99,9 +99,9 @@ function replace() {
                               endtext = substr($0, startPos + length(start) + endPos - 1 );
                               line = starttext new endtext;
                               if (comment == "true") {
-                                   match(line, /^[ \#]*/)
+                                   match(line, /^[ #]*/)
                                    s = substr(line, RSTART, RLENGTH)
-                                   gsub(/\#/, "", s)
+                                   gsub(/#/, "", s)
                                    line = s substr(line, RLENGTH + 1)
                               }
                               print line;
@@ -128,9 +128,9 @@ function replace() {
                               endtext = substr($0, startPos + length(start) + endPos - 1 );
                               line = starttext new endtext;
                               if (comment == "true") {
-                                   match(line, /^[ \#]*/)
+                                   match(line, /^[ #]*/)
                                    s = substr(line, RSTART, RLENGTH)
-                                   gsub(/\#/, "", s)
+                                   gsub(/#/, "", s)
                                    line = s substr(line, RLENGTH + 1)
                               }
                               print line;
@@ -146,9 +146,9 @@ function replace() {
                               starttext = substr($0, 1 , startPos - 1 + length(start) );
                               line = starttext new;
                               if (comment == "true") {
-                                   match(line, /^[ \#]*/)
+                                   match(line, /^[ #]*/)
                                    s = substr(line, RSTART, RLENGTH)
-                                   gsub(/\#/, "", s)
+                                   gsub(/#/, "", s)
                                    line = s substr(line, RLENGTH + 1)
                               }
                               print line;
