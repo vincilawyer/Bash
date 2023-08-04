@@ -18,7 +18,7 @@ local file_path="$1"                            #为旧脚本目录路径
 local file_link="$2"                            #脚本url链接
 local file_name="$3"                            #配置文件名称
 local loadcode="$4"                             #加载模式，1为source、2为bash
-local necessary="${5:false}"                    #是否必要，true为必要
+local necessary="${5:-false}"                    #是否必要，true为必要
 local upcode="$6"                               #更新模式
 local n="1"                                     #错误警告更新次数
 
@@ -67,11 +67,12 @@ local n="1"                                     #错误警告更新次数
               wrongtext=""
               wrongtext="$(source $file_path 2>&1 >/dev/null)"   #载入配置文件，并获取错误输出
               if [ -n "$wrongtext" ]; then  #如果新的配置文件存在错误
-              echo "$file_name文件存在语法错误，报错内容为："
-              echo "$wrongtext"
-              echo "即将重新开始更新"
-              upcode=1
-              continue
+                   echo "$file_name文件存在语法错误，报错内容为："
+                  echo "$wrongtext"
+                  echo "即将重新开始更新"
+                  upcode=1
+                  continue
+              fi
           elif (( loadcode == 2 )); then
               echo "${RED}$file_name文件V"$Version.$(eval echo $num)"版本已下载\更新完成，即将重启系统！"
               countdown 10
