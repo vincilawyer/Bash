@@ -251,5 +251,5 @@ function main {
    update_dat 
   
    #显示一级菜单主页面
-   page false " 主 菜 单 " "${main_menu[@]}"          
+   page false ' 主 菜 单 ' "${main_menu[@]}"          
 }
