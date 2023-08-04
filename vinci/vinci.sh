@@ -81,6 +81,7 @@ function handle_error() {
 
 #######   当脚本退出   ####### 
 function normal_exit() { 
+:
 }
 
 #######   脚本退出前执行  #######   
