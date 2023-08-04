@@ -19,7 +19,7 @@ cf_menu=(
     "修改CF账户配置"           "set_cfdns"
     "下载CFWarp"              "install_Warp"
     "CFWarp程序管理器"         'get_appmanage_menu "warp-svc"; page true "CFWarp" "${appmanage_menu[@]}"'
-    "退出")      
+    )      
     
 ###### Cf dns配置 ######
 function cfdns {
@@ -159,7 +159,7 @@ function get_all_dns_records {
 function set_cfdns {
 local config=(
 "Domain"
-"Email"
+"CFemail"
 "Cloudflare_api_key"
 )
     set_dat "${config[@]}"
