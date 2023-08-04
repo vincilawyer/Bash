@@ -41,10 +41,10 @@ while true; do
                    #如果是报错更新，现显示错误提醒，并重新检测更新
                    if  (( upcode==1 )); then
                        ((n++)) 
-                       warning "$file_path" "$file_name" "$necessary" "$cur_Version" "$num" "$n"
+                       warning "$file_path" "$file_name" "$necessary" "$cur_Version" "$n"
                        continue
                    fi
-                   echo -e "${GREEN}$file_name文件当前已是最新版本V$num！${NC}"
+                   echo -e "${GREEN}$file_name文件当前已是最新版本V${#old_code}！${NC}"
                    (( loadcode == 2 )) && return #如果是启动程序本身，则无需再次载入
              #如果存在更新版本
              else 
@@ -100,8 +100,7 @@ while true; do
       local file_name="$2"                
       local necessary="$3"
       local cur_Version="$4"
-      local num="$5"
-      local n="$6"
+      local n="$5"
       
       check_time=35    #检查更新时长
       tput sc  #保存当前光标位置
