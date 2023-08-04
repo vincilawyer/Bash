@@ -33,7 +33,7 @@ while true; do
          fi   
          echo -e "${BLUE}$file_name文件已完成下载。${NC}"
          countdown 2
- 
+         countdown 
     #如果文件已存在     
     else
          #如果无需更新
@@ -101,7 +101,7 @@ while true; do
      elif (( loadcode == 2 )); then
           echo "正在重启程序..."
           #增加执行权限
-          sudo chmod +x "$file_path"
+          chmod +x "$file_path"
           $file_path "$starcode"
           local result="$?"
                if ((result == 2 )); then        #执行文件语法错误
@@ -153,6 +153,7 @@ done
 #######   倒计时  ####### 
 function countdown {
     local from=$1
+if [[ $SHELL == *"bash"* ]]; then
     tput sc  # Save the current cursor position
     while [ $from -ge 0 ]; do
         tput rc  # Restore the saved cursor position
@@ -160,8 +161,19 @@ function countdown {
         printf "%02ds" $from  # Print the countdown
         if $(read -s -t 1 -n 1); then break; fi
         ((from--))
+elif [[ $SHELL == *"zsh"* ]]; then
+    echoti sc  # Save the current cursor position
+    while (( from >= 0 )); do
+        echoti rc  # Restore the saved cursor position
+        echoti el  # Clear from cursor to the end of the line
+        printf "%02ds" $from  # Print the countdown
+        if read -sk -t1; then break; fi
+        ((from--))
+fi
     done
     echo
+}
+
 }
 
 #######   等待函数   #######   
