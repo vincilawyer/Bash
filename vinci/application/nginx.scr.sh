@@ -13,9 +13,9 @@ nginx_menu=(
     
 ### 路径 ###
 #nginx配置文件网址
-link_nginx="https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf"
+link_nginx_config="https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf"
 #nginx配置文件路径 (查看配置：nano /etc/nginx/conf.d/default.conf)                      
-path_nginx="/etc/nginx/conf.d/default.conf" 
+path_nginx_config="/etc/nginx/conf.d/default.conf" 
 #nginx日志文件路径
 log_nginx="/var/log/nginx/access.log"
 #nginx 80端口默认服务块文件路径
@@ -43,7 +43,7 @@ function install_Nginx {
 function download_nginx_config {
       if confirm "是否从Github下载更新Nginx配置文件？此举动将覆盖原配置文件" "已取消下载更新Nginx配置文件"; then return; fi
       echo -e "${GREEN}正在载入：${NC}"
-      if wget $link_nginx -O $path_nginx; then 
+      if wget $link_nginx_config -O $path_nginx_config; then 
          echo -e "${GREEN}载入完毕，第一次使用请设置配置：${NC}"
         set_nginx_config
     else
@@ -58,21 +58,21 @@ function set_nginx_config {
        if ! [ -x "$(command -v nginx)" ]; then
           echo -e "${RED}Nginx尚未安装，请先进行安装！${NC}"
        fi
-       current_domain=$(search "server_name " ";" 1 $path_nginx true false)
-       set "ssl_certificate " "/$current_domain" 1 $path_nginx true "SSL证书存放路径"
-       current_ssl_path=$(search "ssl_certificate " "$current_domain" 1 $path_nginx true false)
-       if set "server_name " ";" 1 $path_nginx true "VPS域名" "" true "^[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$"; then
-           replace  "$current_ssl_path" ".cer;" 1 "$text2" $path_nginx true
-           replace  "$current_ssl_path" ".key;" 1 "$text2" $path_nginx true
+       current_domain=$(search "server_name " ";" 1 $path_nginx_config true false)
+       set "ssl_certificate " "/$current_domain" 1 $path_nginx_config true "SSL证书存放路径"
+       current_ssl_path=$(search "ssl_certificate " "$current_domain" 1 $path_nginx_config true false)
+       if set "server_name " ";" 1 $path_nginx_config true "VPS域名" "" true "^[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$"; then
+           replace  "$current_ssl_path" ".cer;" 1 "$text2" $path_nginx_config true
+           replace  "$current_ssl_path" ".key;" 1 "$text2" $path_nginx_config true
        fi
-       if set "https://" "; #伪装网址" 1 $path_nginx true "伪装域名" "" true "^[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$"; then
-           replace  "sub_filter \"" "\"" 1 "$text2" $path_nginx true
-           replace  "proxy_set_header Host \"" "\"" 1 "$text2" $path_nginx true
+       if set "https://" "; #伪装网址" 1 $path_nginx_config true "伪装域名" "" true "^[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$"; then
+           replace  "sub_filter \"" "\"" 1 "$text2" $path_nginx_config true
+           replace  "proxy_set_header Host \"" "\"" 1 "$text2" $path_nginx_config true
        fi
-       set "location /ray-" " {" 1 $path_nginx true "xray分流路径" "省略/ray-前缀，"
-       set "http://127.0.0.1:" "; #Xray端口" 1 $path_nginx true "Xray监听端口" "0-65535，" true "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"
-       set "location /xui-" " {" 1 $path_nginx true "x-ui面板分流路径" "省略/xui-前缀，"
-       set "http://127.0.0.1:" "; #xui端口" 1 $path_nginx true "X-ui监听端口" "0-65535，" true "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"
+       set "location /ray-" " {" 1 $path_nginx_config true "xray分流路径" "省略/ray-前缀，"
+       set "http://127.0.0.1:" "; #Xray端口" 1 $path_nginx_config true "Xray监听端口" "0-65535，" true "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"
+       set "location /xui-" " {" 1 $path_nginx_config true "x-ui面板分流路径" "省略/xui-前缀，"
+       set "http://127.0.0.1:" "; #xui端口" 1 $path_nginx_config true "X-ui监听端口" "0-65535，" true "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"
        echo "正在重启Nginx..."
        if nginx -t &> /dev/null; then
           systemctl restart nginx
