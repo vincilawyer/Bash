@@ -11,11 +11,11 @@ $(pz "Tor_port")                                  #@Tor监听端口#@0-65535#@po
 '
 ##### 菜单栏 #####
 tor_menu=(
-    "  1、返回上一级"                  "return"
-    "  2、安装Tor"                   "install_Tor"
-    "  3、设置Tor配置"                "set_tor_config"
-    "  4、程序管理器"                 'get_appmanage_menu "tor"; page true "Tor" "${appmanage_menu[@]}"'
-    "  0、退出")
+    "返回上一级"                  "return"
+    "安装Tor"                   "install_Tor"
+    "设置Tor配置"                "set_tor_config"
+    "程序管理器"                 'get_appmanage_menu "tor"; page true "Tor" "${appmanage_menu[@]}"'
+    "退出")
 
 ###### 安装Tor的函数 ######
 function install_Tor {
