@@ -38,12 +38,12 @@ path_def="/usr/local/bin/$def_name"                                             
 path_def="/usr/local/bin/$def_name"                                                                #启动程序目录路径
       fi    
       
+clear 
 
 #下载更新检查程序
 if ! curl -H 'Cache-Control: no-cache' -L "$link_update" -o "$path_update" >/dev/null; then echo "更新检查程序下载失败，请检查网络！"; wait; fi
 
 #载入更新检查文件，并获取错误输出
-path_update="/root/myfile/vinci_src/update.src.sh"
 wrongtext="$(source $path_update 2>&1 >/dev/null)"
 if [ -n "$wrongtext" ]; then echo "当前更新检查程序存在错误，未能启动主程序，报错内容为：" 
      echo "$wrongtext"
@@ -51,8 +51,6 @@ if [ -n "$wrongtext" ]; then echo "当前更新检查程序存在错误，未能
 else
      source "$path_update"
 fi    
-
-echo $Ver
 
 #更新本程序
 update_load "$path_def" "$link_def" "$def_name脚本" 2 true
