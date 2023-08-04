@@ -63,7 +63,11 @@ local funcname2="$4"
 
 #######   当脚本错误退出时，启动更新检查   ####### 
 function handle_error() {
-    echo "脚本运行出现错误！即将退出"
+    echo "脚本运行出现错误！"
+    echo -e "${RED}错误代码详见以下：${NC}"
+    echo -e "${RED}错误函数为：$funcname1${NC}"
+    echo -e "${RED}调用函数为：$funcname2${NC}"
+    echo -e "${RED}错误模块为：$funcname2${NC}"
     countdown 50
 }
 
