@@ -23,7 +23,6 @@ local n=0                                       #错误警告更新次数
      
 while true; do
    #开始获取代码,如果下载失败
-   echo $file_link
    if ! code="$(curl -s "$file_link")"; then    
         echo -e "${RED}$file_name文件下载失败，请检查网络！${NC}"
         echo "Wrong url:$file_link"
@@ -35,10 +34,11 @@ while true; do
         if [ -e "$file_path" ]; then
         
              #已下载新版本文件，开始获取旧版本号及代码字符数量
+             11111111111111111111111111111
              num=$(n="$(cat "$file_path")" &&  echo "${#n}") 
-             echo $file_path
+             
              #如果已是最新版本
-             if [[ "$code" == "$(cat "$file_path")" ]]; then
+             if [[ "$code" == "$n" ]]; then
                    #如果是报错更新，现显示错误提醒，并重新检测更新
                    if  (( upcode==1 )); then
                        ((n++)) 
