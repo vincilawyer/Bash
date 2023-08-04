@@ -31,6 +31,9 @@ while true; do
         echo -en "${RED}$file_name文件下载失败，请检查网络！${NC}"
         echo "Wrong url:$file_link"
         countdown 10
+        #如果文件仍不存在：
+        [[ $necessary == "true" ]] && ! [ -e "$file_path" ] && echo "${RED}$file_name文件缺失，即将退出系统..." && exit
+        ! [ -e "$file_path" ] && echo "${RED}$file_name文件缺失，可能导致系统功能缺失..." && return
         
    #如果下载成功
    else
@@ -63,10 +66,8 @@ while true; do
              echo "$code" > "$file_path" && chmod +x "$file_path"
              echo "${RED}$file_name文件最新版本号为：V$Version.${#code}，已完成下载，载入中..."
          fi
+   fi
 
-         #如果文件仍不存在：
-         [[ $necessary == "true" ]] && ! [ -e "$file_path" ] && echo "${RED}$file_name文件缺失，即将退出系统..." && exit
-         ! [ -e "$file_path" ] && echo "${RED}$file_name文件缺失，可能导致系统功能缺失..." && return
          
          #开始载入：如果载入模式为source
          if (( loadcode == 1 )); then
