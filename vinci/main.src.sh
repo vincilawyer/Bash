@@ -226,6 +226,7 @@ if uname -a | grep -q 'Debian'; then
     update_load "$path_chatgpt" "$link_chatgpt" "chatgpt" 1 "$starcode" 
     update_load "$path_alist_linux" "$link_alist_linux" "alist_linux" 1 "$starcode" 
     update_load "$path_rclone_linux" "$link_rclone_linux" "rclone_linux" 1 "$starcode"  
+    ((starcode==1)) && echo "更新检查完成，即将进入程序..." && countdown 5
 
 #### 主菜单 ####
 main_menu=(
@@ -268,6 +269,7 @@ elif uname -a | grep -q 'Android'; then
     ######载入专属模块 ######
     update_load "$path_alist_andriod" "$link_alist_andriod" "alist_andriod" 1 "$starcode" 
     update_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_andriod" 1 "$starcode" 
+    ((starcode==1)) && echo "更新检查完成，即将进入程序..." && countdown 5
 
 main_menu=(
     "系统设置"              'page true " 系 统 设 置 " "${system_menu[@]}"' 
@@ -307,6 +309,7 @@ elif uname -a | grep -q 'Darwin'; then
     ######载入专属模块 ######
     update_load "$path_alist_andriod" "$link_alist_andriod" "alist_andriod" 1 "$starcode" 
     update_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_andriod" 1 "$starcode" 
+    ((starcode==1)) && echo "更新检查完成，即将进入程序..." && countdown 5
 
 main_menu=(
     "系统设置"              'page true " 系 统 设 置 " "${system_menu[@]}"' 
