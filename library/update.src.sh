@@ -37,8 +37,12 @@ while true; do
  
     #如果文件已存在     
     else
-         #如果需要更新，则检查更新；如果无需更新，则跳过
+         #如果无需更新
          if ! ((upcode==0)); then               
+             #如果为主程序，则跳过；其他配置需加载
+             (( loadcode == 2 )) && return 
+         #如果需要更新，则检查更新
+         else
                echo "正在检查$file_name文件更新..."
                #获取代码
                if ! code="$(curl -s "$file_link")"; then    
@@ -91,7 +95,7 @@ while true; do
           #语法无错，正式载入
           else
                source "$file_path"
-               break
+               return
           fi
           
      #如果有更新，则开始载入在新的shell环境中载入
