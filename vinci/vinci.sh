@@ -100,6 +100,7 @@ trap 'normal_exit' EXIT
 function base_load {
       #更新模式
      if ((starcode==1)) || [ -e $path_update ]; then
+         echo "检测系统为Mac，$(ps -p $$ -o comm=)
          echo "正在启动基础更新..."
          if ! curl -H 'Cache-Control: no-cache' -L "$link_update" -o "$path_update" >/dev/null 2>&1 ; then echo "更新检查程序下载失败，请检查网络！"; wait; fi
      fi
