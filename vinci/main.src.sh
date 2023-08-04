@@ -190,7 +190,7 @@ if uname -a | grep -q 'Debian'; then
     update_load "$path_xui" "$link_xui" "xui" 1 false
     update_load "$path_cf" "$link_cf" "cloudflare" 1 false
     update_load "$path_tor" "$link_tor" "tor" 1 false
-    update_load "$path_frp" "$link_frp" "" 1 false
+    update_load "$path_frp" "$link_frp" "frp" 1 false
     update_load "$path_chatgpt" "$link_chatgpt" "chatgpt" 1 false
     update_load "$path_alist_linux" "$link_alist_linux" "alist_linux" 1 false
     update_load "$path_rclone_linux" "$link_rclone_linux" "rclone_linux" 1 false 
