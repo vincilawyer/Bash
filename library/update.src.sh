@@ -43,6 +43,7 @@ while true; do
                
          #如果需要更新
          else
+               echo "正在检查$file_name文件更新..."
                #获取代码
                if ! code="$(curl -s "$file_link")"; then    
                     #代码获取失败
