@@ -98,24 +98,22 @@ trap 'normal_exit' EXIT
 
 #基础更新
 function base_load {
-
-     if ((starcode==1)); then
+      #更新模式
+     if ((starcode==1)) || [ -e $path_update ]; then
          echo "正在启动基础更新..."
-         
-         #下载更新检查程序
          if ! curl -H 'Cache-Control: no-cache' -L "$link_update" -o "$path_update" >/dev/null 2>&1 ; then echo "更新检查程序下载失败，请检查网络！"; wait; fi
-
-         #载入更新检查文件，并获取错误输出
-         wrongtext="$(source "$path_update" 2>&1 >/dev/null)"
-         if [ -n "$wrongtext" ]; then 
-              echo "当前更新检查程序存在语法错误，未能启动主程序，报错内容为：" 
-              echo "$wrongtext"
-              quit
-         else
-              source "$path_update"
-              echo "开始更新检查..."
-         fi    
-    fi
+     fi
+     
+     #载入更新检查文件，并获取错误输出
+     wrongtext="$(source "$path_update" 2>&1 >/dev/null)"
+     if [ -n "$wrongtext" ]; then 
+          echo "当前更新检查程序存在语法错误，未能启动主程序，报错内容为：" 
+          echo "$wrongtext"
+          quit
+     else
+          source "$path_update"
+          echo "开始更新检查..."
+     fi    
 
     #更新本程序
     update_load "$path_def" "$link_def" "$def_name脚本" 2 "$starcode"
