@@ -8,9 +8,9 @@ nginx_menu=(
     "  2、安装Nginx"              "install_Nginx"
     "  3、设置Nginx配置"           'echo "维护中"'
     "  4、查看Nginx日志"            "nano /var/log/nginx/access.log"
-    "  5、程序管理"                 'get_appmanage_menu "nginx"; echo "${appmanage_menu[3]}" ; page true "Nginx" "${appmanage_menu[@]}"'
+    "  5、程序管理"                 'get_appmanage_menu "nginx"; echo "${appmanage_menu[3]}"'
     "  0、退出")
-
+ #; page true "Nginx" "${appmanage_menu[@]}"'
 ### 路径 ###
 #nginx配置文件网址
 link_nginx="https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf"
