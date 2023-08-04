@@ -5,6 +5,7 @@
 
 ####### 颜色
 RED='\033[0;31m'
+GREEN='\033[0;32m'
 NC='\033[0m'
 
 
@@ -43,7 +44,7 @@ while true; do
                        warning "$file_path" "$file_name" "$necessary" "$cur_Version" "$num" "$n"
                        continue
                    fi
-                   echo "$file_name文件当前已是最新版本V$num！"
+                   echo -e "${GREEN}$file_name文件当前已是最新版本V$num！${NC}"
                    (( loadcode == 2 )) && return #如果是启动程序本身，则无需再次载入
              #如果存在更新版本
              else 
@@ -52,7 +53,7 @@ while true; do
                    (( upcode==1 )) && echo -e "${RED} 当前${RED}$file_name文件存在错误！即将开始更新${NC}" 
                    echo "$file_name文件当前版本号为：V$num"
                    echo "$code" > "$file_path" && chmod +x "$file_path"
-                   echo "$file_name文件最新版本号为：V${#code}，已完成更新，载入中..."
+                   echo -e "${GREEN}$file_name文件最新版本号为：V${#code}，已完成更新，载入中...${NC}"
                 
              fi
              
@@ -60,7 +61,7 @@ while true; do
          else
              #下载更新文件并增加执行权限
              echo "$code" > "$file_path" && chmod +x "$file_path"
-             echo "$file_name文件最新版本号为：V${#code}，已完成下载，载入中..."
+             echo -e "${GREEN}$file_name文件最新版本号为：V${#code}，已完成下载，载入中...${NC}"
          fi
    fi
          #如果文件仍不存在：
