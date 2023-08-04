@@ -11,27 +11,27 @@ Version1="$Version.$(n="$(cat "$path_def")" &&  echo "${#n}")"                  
 #library > arg.lib
 path="$data_path/arg.lib"
 link="${link_repositories}library/arg.lib"
-updata_load "$path" "$link" "基本参数模块" 1 true
+update_load "$path" "$link" "基本参数模块" 1 true
 #文本处理
 #library > text_processing.scr.sh
 path="$data_path/text_processing.scr.sh"
 link="${link_repositories}library/text_processing.scr.sh"
-updata_load "$path" "$link" "文本处理模块" 1 true
+update_load "$path" "$link" "文本处理模块" 1 true
 #页面显示
 #library > page.src.sh
 path="$data_path/page.src.sh"
 link="${link_repositories}library/page.src.sh"
-updata_load "$path" "$link" "页面显示模块" 1 true
+update_load "$path" "$link" "页面显示模块" 1 true
 #用户配置
 #library > config.src.sh
 path="$data_path/config.src.sh"
 link="${link_repositories}library/config.src.sh"
-updata_load "$path" "$link" "用户配置模块" 1 true
+update_load "$path" "$link" "用户配置模块" 1 true
 #通用工具
 #toolbox > universal.src.sh
 path="$data_path/universal.src.sh"
 link="${link_repositories}vinci/toolbox/universal.src.sh"
-updata_load "$path" "$link" "通用工具模块" 1 true
+update_load "$path" "$link" "通用工具模块" 1 true
 
 #linux工具
 #toolbox > linux.src.sh
@@ -139,16 +139,16 @@ function menutitle {
 }
 
 ######载入模块 ######
-updata_load "$path_toolbox_linux" "$link_toolbox_linux" "linux工具模块" 1 false
-updata_load "$path_docker" "$link_docker" "docker" 1 false
-updata_load "$path_nginx" "$link_nginx" "nginx" 1 false
-updata_load "$path_xui" "$link_xui" "xui" 1 false
-updata_load "$path_cf" "$link_cf" "cloudflare" 1 false
-updata_load "$path_tor" "$link_tor" "tor" 1 false
-updata_load "$path_frp" "$link_frp" "" 1 false
-updata_load "$path_chatgpt" "$link_chatgpt" "chatgpt" 1 false
-updata_load "$path_alist_linux" "$link_alist_linux" "alist_linux" 1 false
-updata_load "$path_rclone_linux" "$link_rclone_linux" "rclone_linux" 1 false
+update_load "$path_toolbox_linux" "$link_toolbox_linux" "linux工具模块" 1 false
+update_load "$path_docker" "$link_docker" "docker" 1 false
+update_load "$path_nginx" "$link_nginx" "nginx" 1 false
+update_load "$path_xui" "$link_xui" "xui" 1 false
+update_load "$path_cf" "$link_cf" "cloudflare" 1 false
+update_load "$path_tor" "$link_tor" "tor" 1 false
+update_load "$path_frp" "$link_frp" "" 1 false
+update_load "$path_chatgpt" "$link_chatgpt" "chatgpt" 1 false
+update_load "$path_alist_linux" "$link_alist_linux" "alist_linux" 1 false
+update_load "$path_rclone_linux" "$link_rclone_linux" "rclone_linux" 1 false
 
 #### 主菜单 ####
 main_menu=(
@@ -210,8 +210,8 @@ function menutitle {
 }
 
 ######载入模块 ######
-updata_load "$path_alist_andriod" "$link_alist_andriod" "alist_linux" 1 false
-updata_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_linux" 1 false
+update_load "$path_alist_andriod" "$link_alist_andriod" "alist_linux" 1 false
+update_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_linux" 1 false
 
 
 main_menu=(
