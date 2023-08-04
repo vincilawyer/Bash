@@ -33,7 +33,7 @@ function update_dat {
         echo "初始化数据完成"
         wait
     else
-        if ! [ "$config_num" == "${#configfile_mod}" ] ; then
+        if ! [[ "$config_num" == "${#configfile_mod}" ]] ; then
            echo "配置文件更新中..."
            eval config_all="\"$configfile_mod\"" || quit "添加配置模板错误，请检查格式！即将退出" "${BASH_SOURCE[0]}" "${FUNCNAME[0]}" "${FUNCNAME[1]}"
            echo "$config_all" > "$configfile_path" #写入数据文件
