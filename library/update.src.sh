@@ -161,6 +161,7 @@ if [[ $SHELL == *"bash"* ]]; then
         printf "%02ds" $from  # Print the countdown
         if $(read -s -t 1 -n 1); then break; fi
         ((from--))
+   done
 elif [[ $SHELL == *"zsh"* ]]; then
     echoti sc  # Save the current cursor position
     while (( from >= 0 )); do
@@ -169,8 +170,8 @@ elif [[ $SHELL == *"zsh"* ]]; then
         printf "%02ds" $from  # Print the countdown
         if read -sk -t1; then break; fi
         ((from--))
-fi
     done
+fi
     echo
 }
 
