@@ -72,9 +72,7 @@ while true; do
          #开始载入：如果载入模式为source
          if (( loadcode == 1 )); then
               wrongtext=""
-                            echo 1
               wrongtext="$(source $file_path 2>&1 >/dev/null)"   #载入配置文件，并获取错误输出
-              echo 2
               if [ -n "$wrongtext" ]; then  #如果新的配置文件存在错误
                   echo "$file_name文件存在语法错误，报错内容为："
                   echo "$wrongtext"
@@ -82,7 +80,6 @@ while true; do
                   upcode=1
                   continue
               else
-                  echo 3
                   source "$file_path"
                   break
               fi
