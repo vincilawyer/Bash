@@ -19,7 +19,6 @@ local upcode="${5:-0}"                          #更新模式,0为无需更新�
 local starcode="${5:-0}"                        #更新模式,0为无需更新，1为正常更新,传递给启动程序，使其继续更新
 local n=0                                       #错误警告更新次数
 
-     sleep 3
      
 while true; do
     #如果文件不存在
@@ -79,7 +78,7 @@ while true; do
 
     #开始载入：如果载入模式为source
     if (( loadcode == 1 )); then
-          echo "正在载入$file_name文件..."
+          echo -e "${BLUE}正在载入$file_name文件...${NC}"
           
           #脚本语法检查
           wrongtext=""
