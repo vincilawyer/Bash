@@ -38,14 +38,30 @@ path_def="/usr/local/bin/$def_name"                                             
 path_def="/usr/local/bin/$def_name"                                                                #启动程序目录路径
       fi    
       
-clear 
+
+#######   当脚本错误退出时，启动更新检查   ####### 
+function handle_error() {
+    echo "脚本运行出现错误！即将退出"
+    countdown 50
+}
+
+#######   当脚本退出   ####### 
+function normal_exit() { 
+    echo -e "${GREED}已退出vinci脚本（V"$Version1"）！${NC}"
+}
+
+#######   脚本退出前执行  #######   
+trap 'handle_error' ERR
+trap 'normal_exit' EXIT
+
+clear
 
 #下载更新检查程序
 if ! curl -H 'Cache-Control: no-cache' -L "$link_update" -o "$path_update" >/dev/null; then echo "更新检查程序下载失败，请检查网络！"; wait; fi
 
 #载入更新检查文件，并获取错误输出
 wrongtext="$(source $path_update 2>&1 >/dev/null)"
-if [ -n "$wrongtext" ]; then echo "当前更新检查程序存在错误，未能启动主程序，报错内容为：" 
+if [ -n "$wrongtext" ]; then echo "当前更新检查程序存在语法错误，未能启动主程序，报错内容为：" 
      echo "$wrongtext"
      exit
 else
@@ -74,21 +90,6 @@ local funcname2="$4"
    fi            
    exit
 }
-
-#######   当脚本错误退出时，启动更新检查   ####### 
-function handle_error() {
-    echo "脚本运行出现错误！即将退出"
-    countdown 50
-}
-
-#######   当脚本退出   ####### 
-function normal_exit() { 
-    echo -e "${GREED}已退出vinci脚本（V"$Version1"）！${NC}"
-}
-
-#######   脚本退出前执行  #######   
-trap 'handle_error' ERR
-trap 'normal_exit' EXIT
 
 
 #运行主程序
