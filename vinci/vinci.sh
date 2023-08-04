@@ -38,21 +38,6 @@ path_def="/usr/local/bin/$def_name"                                             
 path_def="/usr/local/bin/$def_name"                                                                #启动程序目录路径
       fi    
       
-
-#######   当脚本错误退出时，启动更新检查   ####### 
-function handle_error() {
-    echo "脚本运行出现错误！即将退出"
-    countdown 50
-}
-
-#######   当脚本退出   ####### 
-function normal_exit() { 
-}
-
-#######   脚本退出前执行  #######   
-trap 'handle_error' ERR
-trap 'normal_exit' EXIT
-
 clear
 
 #下载更新检查程序
@@ -91,6 +76,19 @@ local funcname2="$4"
    exit
 }
 
+#######   当脚本错误退出时，启动更新检查   ####### 
+function handle_error() {
+    echo "脚本运行出现错误！即将退出"
+    countdown 50
+}
+
+#######   当脚本退出   ####### 
+function normal_exit() { 
+}
+
+#######   脚本退出前执行  #######   
+trap 'handle_error' ERR
+trap 'normal_exit' EXIT
 
 #运行主程序
 main
