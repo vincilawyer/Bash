@@ -66,7 +66,7 @@ local funcname1="$3"
 local funcname2="$4"
    if (( exitnotice == 1 )); then
         clear
-   else [ -n "$exitnotice" ]; then
+   elif [ -n "$exitnotice" ]; then
         echo -e "${RED}出现错误：$exitnotice。错误代码详见以下：${NC}"
         echo -e "${RED}错误函数为：${FUNCNAME[1]}${NC}"
         echo -e "${RED}调用函数为：${FUNCNAME[2]}${NC}"
@@ -116,7 +116,6 @@ function base_load {
 
     #更新本程序
     update_load "$path_def" "$link_def" "$def_name脚本" 2 "$starcode"
-    wait
     #更新主程序   
     update_load "$path_main" "$link_main" "主程序" 1 "$starcode"
 
