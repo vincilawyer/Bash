@@ -47,7 +47,7 @@ path_def="/usr/local/bin/$def_name"
       #切换运行环境
       [[ $(ps -p $$ -o comm=) == *"bash"* ]] && exec "/bin/zsh" "$0" "$starcode" && exit
       echo "检测系统为Mac，已切换Shell环境为$(ps -p $$ -o comm=)，正在配置中..."
-      #允许注释与代码同行
+      
       setopt interactivecomments
       #打开网络代理
       export http_proxy=http://127.0.0.1:1087;export https_proxy=http://127.0.0.1:1087;export ALL_PROXY=socks5://127.0.0.1:1086
