@@ -32,17 +32,13 @@ while true; do
               echo "Wrong url:$file_link"
               echo "${RED}$file_name文件缺失，即将退出系统..." && quit
          fi   
-         echo -e "${BLUE}$file_name文件V${#code}已完成下载。开始载入...${NC}"
+         echo -e "${BLUE}$file_name文件V${#code}已完成下载。${NC}"
          countdown 2
  
     #如果文件已存在     
     else
-         #如果无需更新
-         if ((upcode==0)); then
-               echo "正在载入$file_name文件..."
-               
-         #如果需要更新
-         else
+         #如果需要更新，则检查更新；如果无需更新，则跳过
+         if ! ((upcode==0)); then               
                echo "正在检查$file_name文件更新..."
                #获取代码
                if ! code="$(curl -s "$file_link")"; then    
@@ -53,36 +49,37 @@ while true; do
                fi
                #获取旧版本代码
                old_code="$(cat "$file_path")"     
-                    #如果两版本一致
-                    if [[ "$code" == "$old_code" ]]; then 
-                         #如果是报错更新，先报错，并继续检测更新
-                         if  (( upcode==2 )); then
-                             ((n++)) 
-                             warning "$file_path" "$file_name" "$necessary" "$cur_Version" "$n"
-                             continue
-                         fi
-                         #无需更新
-                         echo -e "${BLUE}$file_name文件当前已是最新版本V${#old_code}！${NC}"
-                         #如果是启动程序，则无需载入
-                         (( loadcode == 2 )) && return 
+               #如果两版本一致
+               if [[ "$code" == "$old_code" ]]; then 
+                     #如果是报错更新，先报错，并继续检测更新
+                     if  (( upcode==2 )); then
+                         ((n++)) 
+                         warning "$file_path" "$file_name" "$necessary" "$cur_Version" "$n"
+                         continue
+                     fi
+                     #无需更新
+                     echo -e "${BLUE}$file_name文件当前已是最新版本V${#old_code}！${NC}"
+                     #如果是启动程序，则无需载入
+                     (( loadcode == 2 )) && return 
                          
-                    #如果版本不一致,载入新版本
-                    else
-                         (( upcode==2 )) && echo -e "${RED} 当前${RED}$file_name文件存在错误！即将开始更新${NC}" 
-                         echo "$file_name文件当前版本号为：V${#old_code}"
-                         printf "%s" "$code" > "$file_path" && chmod +x "$file_path"
-                         echo -e "${BLUE}$file_name文件最新版本号为：V${#code}，已完成更新。开始载入...${NC}"
-                    fi
+                #如果版本不一致,载入新版本
+                else
+                    (( upcode==2 )) && echo -e "${RED} 当前${RED}$file_name文件存在错误！即将开始更新${NC}" 
+                    echo "$file_name文件当前版本号为：V${#old_code}"
+                    printf "%s" "$code" > "$file_path" && chmod +x "$file_path"
+                    echo -e "${BLUE}$file_name文件最新版本号为：V${#code}，已完成更新。${NC}"
+                fi
          fi
    fi
          
 
     #开始载入：如果载入模式为source
     if (( loadcode == 1 )); then
-    
+          echo "正在载入$file_name文件..."
+          
           #脚本语法检查
           wrongtext=""
-          wrongtext="$(source $file_path 2>&1 >/dev/null)"
+          wrongtext="$(source "$file_path" 2>&1 >/dev/null)"
           if [ -n "$wrongtext" ]; then  
                #如果新的配置文件存在错误
                echo "$file_name文件存在语法错误，报错内容为："
