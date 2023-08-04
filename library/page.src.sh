@@ -22,13 +22,13 @@ function page {
     for (( i=0; i<${#array[@]}; i++ )); do
         if (( i % 2 == 0 )) ; then
             menu+=("${array[$i]}")
-            echo "  $n$(((n<10)) && echo " ") ${array[$i]}" 
+            echo "  [$n]$(((n<10)) && echo " ") ${array[$i]}" 
             ((n++))
         else
             cmd+=("${array[$i]}")
         fi
     done
-       echo "  0  退出"
+       echo "  [0]  退出"
        
     #获取菜单数量
     menunum=${#menu[@]} 
