@@ -23,7 +23,7 @@ $(pz "dashboard_pwd")                              #@仪表板登录密码
 '
 
 #frp配置文件路径（查看配置：nano /etc/frp/frps.ini）  
-path_frp="/etc/frp"
+path_frp_config="/etc/frp"
 
 
 ###### 安装Frp的函数 ######
@@ -41,8 +41,8 @@ function install_Frp {
         
         # 把frps加入systemd
         mv $(echo $file_name | sed 's/.tar.gz//')/frps /usr/bin/
-        mkdir -p $path_frp
-        mv $(echo $file_name | sed 's/.tar.gz//')/frps.ini $path_frp
+        mkdir -p $path_frp_config
+        mv $(echo $file_name | sed 's/.tar.gz//')/frps.ini $path_frp_config
         rm -r $(echo $file_name | sed 's/.tar.gz//')
         # 注意文件中的路径
         cat > /usr/lib/systemd/system/frps.service <<EOF
@@ -65,7 +65,7 @@ EOF
 
 ###### 初始化Frp配置 ######
 function initialize_frp {
-cat > "$path_frp/frps.ini" <<EOF
+cat > "$path_frp_config/frps.ini" <<EOF
 [common]
 #￥#@服务端监听端口#@= #@ #@bind_port
 bind_port = 27277
@@ -93,7 +93,7 @@ local conf=(
 "dashboard_pwd"
 )
     set_dat ${conf[@]}
-    if update_config "$path_frp/frps.ini"; then
+    if update_config "$path_frp_config/frps.ini"; then
        confirm "是否重启Frps并适用新配置？" "已取消重启！" || restart frps
     fi  
   
