@@ -4,9 +4,6 @@
 ############################################################################################################################################################################################
 ####内容说明：检查文件更新，载入并判断是否存在语法错误
 
-####### 基本参数 ######
-Ver=5.2                                   #版本号
-
 ####### 颜色
 RED='\033[0;31m'
 NC='\033[0m'
@@ -40,7 +37,6 @@ while true; do
         if [ -e "$file_path" ]; then
         
              #已下载新版本文件，开始获取旧版本号及代码字符数量
-             cur_Version=$(sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}' "$file_path") 
              num=$(n="$(cat "$file_path")" &&  echo "${#n}") 
 
              #如果已是最新版本
@@ -50,16 +46,16 @@ while true; do
                        warning "$file_path" "$file_name" "$necessary" "$cur_Version" "$num" "$n"
                        continue
                    fi
-                   echo "$file_name文件当前已是最新版本V$cur_Version.$num！"
+                   echo "$file_name文件当前已是最新版本V$num！"
                    (( loadcode == 2 )) && return #如果是启动程序本身，则无需再次载入
              #如果存在更新版本
              else 
                    #获取新版本号
                    Version=$( echo "$code" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
                    (( upcode==1 )) && echo -e "${RED} 当前${RED}$file_name文件存在错误！即将开始更新${NC}" 
-                   echo "$file_name文件当前版本号为：V$cur_Version.$num"
+                   echo "$file_name文件当前版本号为：V$num"
                    echo "$code" > "$file_path" && chmod +x "$file_path"
-                   echo "$file_name文件最新版本号为：V$Version.${#code}，已完成更新，载入中..."
+                   echo "$file_name文件最新版本号为：V${#code}，已完成更新，载入中..."
                    countdown 3
              fi
              
@@ -67,7 +63,7 @@ while true; do
          else
              #下载更新文件并增加执行权限
              echo "$code" > "$file_path" && chmod +x "$file_path"
-             echo "$file_name文件最新版本号为：V$Version.${#code}，已完成下载，载入中..."
+             echo "$file_name文件最新版本号为：V${#code}，已完成下载，载入中..."
          fi
    fi
 
@@ -124,7 +120,7 @@ while true; do
             echo -e "${RED}#################################################################################${NC}"
             echo -e "${RED}#################################################################################${NC}"
             echo -e "${RED}####                                                                         ####${NC}"
-            echo -e "${RED}####   ${RED}$file_name文件错误！当前运行V$cur_Version.$num，检查程序版本V$Ver，第$n次检查$ti   ####${NC}"
+            echo -e "${RED}####                ${RED}$file_name文件错误！正在进行第$n次检查$ti             ####${NC}"
             echo -e "${RED}####                                                                         ####${NC}"
             echo -e "${RED}####$b####${NC}"
             echo -e "${RED}####                                                                         ####${NC}"
