@@ -63,7 +63,6 @@ while true; do
              echo "$file_name文件最新版本号为：V${#code}，已完成下载，载入中..."
          fi
    fi
-echo 2; sleep 3
          #如果文件仍不存在：
          ! [ -e "$file_path" ] && echo "${RED}$file_name文件缺失，即将退出系统..." && quit
          #开始载入：如果载入模式为source
@@ -149,10 +148,16 @@ function countdown {
 
 #######   等待函数   #######   
 function wait {
-   if [[ -z "$1" ]]; then
-    echo "请按下任意键继续"
-   else
-    echo $1
-   fi
-   read -n 1 -s input
+    if [[ -z "$1" ]]; then
+        echo "请按下任意键继续"
+    else
+        echo $1
+    fi
+    if [[ $SHELL == *"bash"* ]]; then
+        read -n 1 -s input
+    elif [[ $SHELL == *"zsh"* ]]; then
+        stty -echo
+        read -k 1 input
+        stty echo
+    fi
 }
