@@ -33,7 +33,6 @@ while true; do
          fi   
          echo -e "${BLUE}$file_name文件已完成下载。${NC}"
          countdown 2
-         countdown 
     #如果文件已存在     
     else
          #如果无需更新
@@ -99,7 +98,8 @@ while true; do
           
      #如果有更新，则开始载入在新的shell环境中载入
      elif (( loadcode == 2 )); then
-          echo "正在重启程序..."
+          echo "即将重启程序..."
+          countdown 3
           #增加执行权限
           chmod +x "$file_path"
           $file_path "$startcode"
