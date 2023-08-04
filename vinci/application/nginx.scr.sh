@@ -4,12 +4,12 @@
 
 ### 菜单栏  ####
 nginx_menu=(
-    "  1、返回上一级"              "return"
-    "  2、安装Nginx"              "install_Nginx"
-    "  3、设置Nginx配置"           'echo "维护中"'
-    "  4、查看Nginx日志"            "nano /var/log/nginx/access.log"
-    "  5、程序管理"                 'get_appmanage_menu "nginx"; page true "Nginx" "${appmanage_menu[@]}"'
-    "  0、退出")
+    "返回上一级"              "return"
+    "安装Nginx"              "install_Nginx"
+    "设置Nginx配置"           'echo "维护中"'
+    "查看Nginx日志"            "nano /var/log/nginx/access.log"
+    "程序管理"                 'get_appmanage_menu "nginx"; page true "Nginx" "${appmanage_menu[@]}"'
+    "退出")
     
 ### 路径 ###
 #nginx配置文件网址
