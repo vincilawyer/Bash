@@ -68,7 +68,7 @@ local funcname2="$4"
         echo -e "${RED}调用函数为：$funcname2${NC}"
         echo -e "${RED}错误模块为：$funcname2${NC}"
    else
-         clear
+        clear
    fi            
    echo -e "${GREED}已退出vinci脚本！${NC}"
    exit
