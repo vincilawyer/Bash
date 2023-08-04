@@ -9,93 +9,93 @@ Version1="$Version.$(n="$(cat "$path_def")" &&  echo "${#n}")"                  
 ####### 各配置路径及文件名  ######
 #基本参数
 #library > arg.lib
-path="$data_path/library/arg.lib"
+path="$data_path/arg.lib"
 link="${link_repositories}library/arg.lib"
 updata_load "$path" "$link" "基本参数模块" 1 true
 #文本处理
 #library > text_processing.scr.sh
-path="$data_path/library/text_processing.scr.sh"
+path="$data_path/text_processing.scr.sh"
 link="${link_repositories}library/text_processing.scr.sh"
 updata_load "$path" "$link" "文本处理模块" 1 true
 #页面显示
 #library > page.src.sh
-path="$data_path/library/page.src.sh"
+path="$data_path/page.src.sh"
 link="${link_repositories}library/page.src.sh"
 updata_load "$path" "$link" "页面显示模块" 1 true
 #用户配置
 #library > config.src.sh
-path="$data_path/library/config.src.sh"
+path="$data_path/config.src.sh"
 link="${link_repositories}library/config.src.sh"
 updata_load "$path" "$link" "用户配置模块" 1 true
 #通用工具
 #toolbox > universal.src.sh
-path="$data_path/toolbox/universal.src.sh"
+path="$data_path/universal.src.sh"
 link="${link_repositories}vinci/toolbox/universal.src.sh"
 updata_load "$path" "$link" "通用工具模块" 1 true
 
 #linux工具
 #toolbox > linux.src.sh
-path_toolbox_linux="$data_path/toolbox/linux.src.sh"
+path_toolbox_linux="$data_path/linux.src.sh"
 link_toolbox_linux="${link_repositories}vinci/toolbox/linux.src.sh"
 
 #appmanage.src.sh
 #app > appmanage.src.sh
-path_appmanage="$data_path/app/appmanage.src.sh"
+path_appmanage="$data_path/appmanage.src.sh"
 link_appmanage="${link_repositories}vinci/application/appmanage.src.sh"
 
 #xui
 #app > xui.src.sh
-path_xui="$data_path/app/xui.src.sh"
+path_xui="$data_path/xui.src.sh"
 link_xui="${link_repositories}vinci/application/xui.src.sh"
 
 #tor.src.sh
 #app > tor.src.sh
-path_tor="$data_path/app/tor.src.sh"
+path_tor="$data_path/tor.src.sh"
 link_tor="${link_repositories}vinci/application/tor.src.sh"
 
 #nginx
 #app > nginx.scr.sh
-path_nginx="$data_path/app/nginx.scr.sh"
+path_nginx="$data_path/nginx.scr.sh"
 link_nginx="${link_repositories}vinci/application/nginx.scr.sh"
 
 #frp
 #app > frp.scr.sh
-path_frp="$data_path/app/frp.scr.sh"
+path_frp="$data_path/frp.scr.sh"
 link_frp="${link_repositories}vinci/application/frp.scr.sh"
 
 #cf
 #app > cloudflare.scr.sh
-path_cf="$data_path/app/cloudflare.scr.sh"
+path_cf="$data_path/cloudflare.scr.sh"
 link_cf="${link_repositories}vinci/application/cloudflare.scr.sh"
 
 #rclone_linux
 #app > rclone_linux.src.sh
-path_rclone_linux="$data_path/app/rclone/rclone_linux.src.sh"
+path_rclone_linux="$data_path/rclone_linux.src.sh"
 link_rclone_linux="${link_repositories}vinci/application/rclone/rclone_linux.src.sh"
 
 #rclone_andriod
 #app > rclone_andriod.src.sh
-path_rclone_andriod="$data_path/app/rclone/rclone_andriod.src.sh"
+path_rclone_andriod="$data_path/rclone_andriod.src.sh"
 link_rclone_andriod="${link_repositories}vinci/application/rclone/rclone_andriod.src.sh"
 
 #alist_linux
 #app > alist_linux.src.sh
-path_alist_linux="$data_path/app/alist/alist_linux.src.sh"
+path_alist_linux="$data_path/alist_linux.src.sh"
 link_alist_linux="${link_repositories}vinci/application/alist/alist_linux.src.sh"
 
 #alist_andriod
 #app > alist_andriod.src.sh
-path_alist_andriod="$data_path/app/alist/alist_andriod.src.sh"
+path_alist_andriod="$data_path/alist_andriod.src.sh"
 link_alist_andriod="${link_repositories}vinci/application/alist/alist_andriod.src.sh"
 
 #docker
 #app > docker.src.sh
-path_docker="$data_path/app/docker/docker.src.sh"
+path_docker="$data_path/docker.src.sh"
 link_docker="${link_repositories}vinci/application/docker/docker.src.sh"
 
 #chatgpt
 #app > chatgpt_docker.src.sh
-path_chatgpt="$data_path/app/docker/chatgpt_docker.src.sh"
+path_chatgpt="$data_path/chatgpt_docker.src.sh"
 link_chatgpt="${link_repositories}vinci/application/docker/chatgpt_docker.src.sh"
 
 
