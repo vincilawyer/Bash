@@ -43,6 +43,7 @@ while true; do
              if [ "$code" == "$(cat "$file_path")" ]; then
                    #如果是报错更新，现显示错误提醒，并重新检测更新
                    if  (( upcode==1 )); then
+                       ((n++)) 
                        warning "$file_path" "$file_name" "$necessary" "$cur_Version" "$num" "$n"
                        continue
                    fi
@@ -109,7 +110,6 @@ while true; do
       check_time=35    #检查更新时长
       tput sc  #保存当前光标位置
       local t=0
-      ((n++)) 
       while true; do
             tput rc  #恢复光标位置
             tput el  #清除光标后内容
