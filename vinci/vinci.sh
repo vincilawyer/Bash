@@ -33,14 +33,23 @@ link_def="${link_repositories}Vultr-Debian11.sh"
 #update.src.sh
 link_repositories="https://raw.githubusercontent.com/vincilawyer/Bash/main/"             #仓库网址
 link_update="${link_repositories}library/update.src.sh"                                  #更新检查程序网址
-path_update="$data_path/library/update.src.sh"                                                   #更新检查程序路径
+path_update="$data_path/update.src.sh"                                                   #更新检查程序路径
 #main.src.sh
 link_main="${link_repositories}vinci/main.src.sh"                                      #主程序网址
 path_main="$data_path/main.src.sh"                                                     #主程序路径
 
+#######   等待函数   #######   
+function wait {
+   if [[ -z "$1" ]]; then
+    echo "请按下任意键继续"
+   else
+    echo $1
+   fi
+   read -n 1 -s input
+}
 
 #下载更新检查程序
-if ! curl -H 'Cache-Control: no-cache' -L "$link_update" -o "$path_update" >/dev/null; then echo "更新检查程序下载失败，请检查网络！"; countdown 5; fi
+if ! curl -H 'Cache-Control: no-cache' -L "$link_update" -o "$path_update" >/dev/null; then echo "更新检查程序下载失败，请检查网络！"; wait; fi
 
 #载入更新检查文件，并获取错误输出
 wrongtext="$(source $path_update 2>&1 >/dev/null)"
@@ -87,16 +96,6 @@ function normal_exit() {
 trap 'handle_error' ERR
 trap 'normal_exit' EXIT
 
-
-#######   等待函数   #######   
-function wait {
-   if [[ -z "$1" ]]; then
-    echo "请按下任意键继续"
-   else
-    echo $1
-   fi
-   read -n 1 -s input
-}
 
 #运行主程序
 main
