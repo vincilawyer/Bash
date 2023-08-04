@@ -175,8 +175,6 @@ fi
     echo
 }
 
-}
-
 #######   等待函数   #######   
 function wait {
     if [[ -z "$1" ]]; then
