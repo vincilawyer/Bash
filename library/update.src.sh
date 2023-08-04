@@ -76,6 +76,8 @@ local n="1"                                     #错误警告更新次数
                   echo "即将开始重新更新"
                   upcode=1
                   continue
+              else
+                  source $file_path
               fi
           #开始载入：如果载入模式为bash
           elif (( loadcode == 2 )); then
