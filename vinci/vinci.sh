@@ -51,9 +51,9 @@ local funcname1="$3"
 local funcname2="$4"
    if [ -n "$exitnotice" ]; then
         echo -e "${RED}出现错误：$exitnotice。错误代码详见以下：${NC}"
-        echo -e "${RED}错误函数为：$funcname1${NC}"
-        echo -e "${RED}调用函数为：$funcname2${NC}"
-        echo -e "${RED}错误模块为：$funcname2${NC}"
+        echo -e "${RED}错误函数为：${FUNCNAME[0]}${NC}"
+        echo -e "${RED}调用函数为：${FUNCNAME[1]}${NC}"
+        echo -e "${RED}错误模块为：$BASH_SOURCE[0]${NC}"
    else
         clear
    fi            
