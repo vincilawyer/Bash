@@ -30,18 +30,21 @@ path_main="$data_path/main.src.sh"
 link_def="${link_repositories}vinci/vinci.sh"                                                  
 
 ####### Android系统启动程序网址、路径 ######
-      if uname -a | grep -q 'Android'; then echo '检测系统为Android，正在配置中...' 
+      if uname -a | grep -q 'Android'; then 
+      echo '检测系统为Android，正在配置中...' 
 path_def="/data/data/com.termux/files/usr/bin/$def_name"                                           
         
 ####### Debian系统启动程序网址、路径 ######
-      elif uname -a | grep -q 'Debian'; then echo '检测系统为Debian，正在配置中...'
+      elif uname -a | grep -q 'Debian'; then 
+      echo '检测系统为Debian，正在配置中...'
 path_def="/usr/local/bin/$def_name"                                                               
 
 ####### Mac系统启动程序网址、路径 ######
-      elif uname -a | grep -q 'Darwin'; then echo '检测系统为Mac，正在配置中...'
+      elif uname -a | grep -q 'Darwin'; then 
 path_def="/Users/Vinci/Desktop/$def_name"
       #切换运行环境
       [[ $(ps -p $$ -o comm=) == *"bash"* ]] && exec "/bin/zsh" "$0" && exit
+      echo '检测系统为Mac，已切换Shell环境为zsh，正在配置中...'
       #允许注释与代码同行
       setopt interactivecomments
       #打开网络代理
