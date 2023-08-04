@@ -18,7 +18,7 @@ fi
 
 ####### 版本更新相关参数 ######
 Version=2.00 
-starcode="$1"
+startcode="$1"
 clear
 
 ####### 定义本脚本名称、应用数据路径 ######
@@ -53,7 +53,7 @@ elif uname -a | grep -q 'Debian'; then
 ####### Mac系统启动程序网址、路径 ######
 elif uname -a | grep -q 'Darwin'; then 
     #调整运行环境
-    [[ $(ps -p $$ -o comm=) == *"bash"* ]] && exec "/bin/zsh" "$0" "$starcode" && exit
+    [[ $(ps -p $$ -o comm=) == *"bash"* ]] && exec "/bin/zsh" "$0" "$startcode" && exit
     echo "检测系统为Mac，已切换Shell环境为$(ps -p $$ -o comm=)，正在配置中..."
     path_def="/usr/local/bin/$def_name"
 ###### 其他系统启动程序网址、路径 ######
@@ -103,7 +103,7 @@ trap 'normal_exit' EXIT
 #基础更新
 function base_load {
       #更新模式
-     if ((starcode==1)) || ! [ -e "$path_update" ]; then
+     if ((startcode==1)) || ! [ -e "$path_update" ]; then
          echo "正在启动基础更新..."
          if ! curl -H 'Cache-Control: no-cache' -L "$link_update" -o "$path_update" >/dev/null 2>&1 ; then echo "更新检查程序下载失败，请检查网络！"; wait; fi
      fi
@@ -119,9 +119,9 @@ function base_load {
      fi    
 
     #更新本程序
-    update_load "$path_def" "$link_def" "$def_name脚本" 2 "$starcode"
+    update_load "$path_def" "$link_def" "$def_name脚本" 2 "$startcode"
     #更新主程序   
-    update_load "$path_main" "$link_main" "主程序" 1 "$starcode"
+    update_load "$path_main" "$link_main" "主程序" 1 "$startcode"
 
 }
 
