@@ -33,6 +33,10 @@ path_def="/data/data/com.termux/files/usr/bin/$def_name"                        
       elif uname -a | grep -q 'Debian'; then echo '检测系统为Debian，正在配置中...'
 path_def="/usr/local/bin/$def_name"                                                                #启动程序目录路径
 
+####### Mac系统启动程序网址、路径 ######
+      elif uname -a | grep -q 'Darwin'; then echo '检测系统为Mac，正在配置中...'
+path_def="/Users/Vinci/Desktop/$def_name"                                                                #启动程序目录路径
+
 ###### 其他系统启动程序网址、路径 ######
       else echo '未知系统，正在配置默认版本中...'
 path_def="/usr/local/bin/$def_name"                                                                #启动程序目录路径
