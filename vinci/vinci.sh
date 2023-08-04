@@ -58,7 +58,7 @@ if [ -n "$wrongtext" ]; then echo "当前更新检查程序存在错误，未能
      echo "$wrongtext"
      exit
 else
-     source $path_update
+     source "$path_update"
 fi    
 
 echo $Ver
