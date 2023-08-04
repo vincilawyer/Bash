@@ -48,7 +48,7 @@ while true; do
              #如果存在更新版本
              else 
                    #获取新版本号
-                   Version=$( echo "$code" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
+                   Version=$( echo "$code" | sed -n -e '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p;}' -e q)
                    (( upcode==1 )) && echo -e "${RED} 当前${RED}$file_name文件存在错误！即将开始更新${NC}" 
                    echo "$file_name文件当前版本号为：V$num"
                    echo "$code" > "$file_path" && chmod +x "$file_path"
