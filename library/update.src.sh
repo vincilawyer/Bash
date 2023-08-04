@@ -31,7 +31,7 @@ while true; do
               echo "Wrong url:$file_link"
               echo "${RED}$file_name文件缺失，即将退出系统..." && quit
          fi   
-         echo -e "${BLUE}$file_name文件V${#code}已完成下载。${NC}"
+         echo -e "${BLUE}$file_name文件已完成下载。${NC}"
          countdown 2
  
     #如果文件已存在     
@@ -99,8 +99,9 @@ while true; do
           
      #如果有更新，则开始载入在新的shell环境中载入
      elif (( loadcode == 2 )); then
+          echo "正在重启程序..."
           #增加执行权限
-          chmod +x "$file_path"
+          sudo chmod +x "$file_path"
           $file_path "$starcode"
           local result="$?"
                if ((result == 2 )); then        #执行文件语法错误
