@@ -14,12 +14,12 @@ $(pz "Warp_port")                                   #@Warp监听端口#@0-65535#
 
 #### 菜单栏
 cf_menu=(
-    "  1、返回上一级"               "return"
-    "  2、Cloudflare DNS配置"      'cfdns; continue'
-    "  3、修改CF账户配置"           "set_cfdns"
-    "  4、下载CFWarp"              "install_Warp"
-    "  5、CFWarp程序管理器"         'get_appmanage_menu "warp-svc"; page true "CFWarp" "${appmanage_menu[@]}"'
-    "  0、退出")      
+    "返回上一级"               "return"
+    "Cloudflare DNS配置"      'cfdns; continue'
+    "修改CF账户配置"           "set_cfdns"
+    "下载CFWarp"              "install_Warp"
+    "CFWarp程序管理器"         'get_appmanage_menu "warp-svc"; page true "CFWarp" "${appmanage_menu[@]}"'
+    "退出")      
     
 ###### Cf dns配置 ######
 function cfdns {
