@@ -112,7 +112,6 @@ function base_load {
           quit
      else
           source "$path_update"
-          echo "开始更新检查..."
      fi    
 
     #更新本程序
