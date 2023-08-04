@@ -22,7 +22,7 @@ function page {
     for (( i=0; i<${#array[@]}; i++ )); do
         if (( i % 2 == 0 )) ; then
             menu+=("${array[$i]}")
-            echo "  $n、${array[$i]}" 
+            echo "  $(((n<10)) && echo " ")$n、${array[$i]}" 
             ((n++))
         else
             cmd+=("${array[$i]}")
@@ -34,7 +34,7 @@ function page {
     menunum=${#menu[@]} 
     echo
     echo -n "  请按序号选择操作: "
-    inp false 1 '"[[ "$new_text" =~ ^[0-9]+$ ]] && (( $new_text >= 0 && $new_text <= '$((menunum-1))' ))"'
+    inp false 1 '"[[ "$new_text" =~ ^[0-9]+$ ]] && (( $new_text >= 0 && $new_text <= '$((menunum))' ))"'
     [ "$new_text" == "0" ] && quit              #如果选择零则退出
     clear 
     eval ${cmd[$((new_text-1))]}  || ( echo "指令执行可能失败，请检查！"; waitcon="true" )
