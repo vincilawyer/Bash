@@ -209,24 +209,24 @@ if uname -a | grep -q 'Debian'; then
     fi
     
     #载入通用模块
-    update_load "$path_arg" "$link_arg" "基本参数模块" 1 "$starcode" 
-    update_load "$path_text_processing" "$link_text_processing" "文本处理模块" 1 "$starcode" 
-    update_load "$path_page" "$link_page" "页面显示模块" 1 "$starcode" 
-    update_load "$path_config" "$link_config" "用户配置模块" 1 "$starcode" 
-    update_load "$path_toolbox_universal" "$link_toolbox_universal" "通用工具模块" 1 "$starcode" 
+    update_load "$path_arg" "$link_arg" "基本参数模块" 1 "$startcode" 
+    update_load "$path_text_processing" "$link_text_processing" "文本处理模块" 1 "$startcode" 
+    update_load "$path_page" "$link_page" "页面显示模块" 1 "$startcode" 
+    update_load "$path_config" "$link_config" "用户配置模块" 1 "$startcode" 
+    update_load "$path_toolbox_universal" "$link_toolbox_universal" "通用工具模块" 1 "$startcode" 
     #载入专属模块
-    update_load "$path_toolbox_linux" "$link_toolbox_linux" "linux工具模块" 1 "$starcode" 
-    update_load "$path_appmanage" "$link_appmanage" "程序管理模块" 1 "$starcode" 
-    update_load "$path_docker" "$link_docker" "docker" 1 "$starcode" 
-    update_load "$path_nginx" "$link_nginx" "nginx" 1 "$starcode" 
-    update_load "$path_xui" "$link_xui" "xui" 1 "$starcode" 
-    update_load "$path_cf" "$link_cf" "cloudflare" 1 "$starcode" 
-    update_load "$path_tor" "$link_tor" "tor" 1 "$starcode" 
-    update_load "$path_frp" "$link_frp" "frp" 1 "$starcode" 
-    update_load "$path_chatgpt" "$link_chatgpt" "chatgpt" 1 "$starcode" 
-    update_load "$path_alist_linux" "$link_alist_linux" "alist_linux" 1 "$starcode" 
-    update_load "$path_rclone_linux" "$link_rclone_linux" "rclone_linux" 1 "$starcode"  
-    ((starcode==1)) && echo "更新检查完成，即将进入程序..." && countdown 5
+    update_load "$path_toolbox_linux" "$link_toolbox_linux" "linux工具模块" 1 "$startcode" 
+    update_load "$path_appmanage" "$link_appmanage" "程序管理模块" 1 "$startcode" 
+    update_load "$path_docker" "$link_docker" "docker" 1 "$startcode" 
+    update_load "$path_nginx" "$link_nginx" "nginx" 1 "$startcode" 
+    update_load "$path_xui" "$link_xui" "xui" 1 "$startcode" 
+    update_load "$path_cf" "$link_cf" "cloudflare" 1 "$startcode" 
+    update_load "$path_tor" "$link_tor" "tor" 1 "$startcode" 
+    update_load "$path_frp" "$link_frp" "frp" 1 "$startcode" 
+    update_load "$path_chatgpt" "$link_chatgpt" "chatgpt" 1 "$startcode" 
+    update_load "$path_alist_linux" "$link_alist_linux" "alist_linux" 1 "$startcode" 
+    update_load "$path_rclone_linux" "$link_rclone_linux" "rclone_linux" 1 "$startcode"  
+    ((startcode==1)) && echo "更新检查完成，即将进入程序..." && countdown 5
 
 #### 主菜单 ####
 main_menu=(
@@ -251,7 +251,7 @@ system_menu=(
     "修改配置参数"              "set_dat"
     "查看配置参数文件"           "nano /root/myfile/vinci.dat"
     "修改SSH登录端口和登录密码"   "change_ssh_port; change_login_password"
-    "更新脚本"                  'starcode=1; base_load; Initial'
+    "更新脚本"                  'startcode=1; base_load; Initial'
      )  
 
 ############################################################################################################################################################################################
@@ -261,15 +261,15 @@ elif uname -a | grep -q 'Android'; then
     echo '已载入主程序，进行Android端模块配置...'
     
     #载入通用模块
-    update_load "$path_arg" "$link_arg" "基本参数模块" 1 "$starcode" 
-    update_load "$path_text_processing" "$link_text_processing" "文本处理模块" 1 "$starcode" 
-    update_load "$path_page" "$link_page" "页面显示模块" 1 "$starcode" 
-    update_load "$path_config" "$link_config" "用户配置模块" 1 "$starcode" 
-    update_load "$path_toolbox_universal" "$link_toolbox_universal" "通用工具模块" 1 "$starcode" 
+    update_load "$path_arg" "$link_arg" "基本参数模块" 1 "$startcode" 
+    update_load "$path_text_processing" "$link_text_processing" "文本处理模块" 1 "$startcode" 
+    update_load "$path_page" "$link_page" "页面显示模块" 1 "$startcode" 
+    update_load "$path_config" "$link_config" "用户配置模块" 1 "$startcode" 
+    update_load "$path_toolbox_universal" "$link_toolbox_universal" "通用工具模块" 1 "$startcode" 
     ######载入专属模块 ######
-    update_load "$path_alist_andriod" "$link_alist_andriod" "alist_andriod" 1 "$starcode" 
-    update_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_andriod" 1 "$starcode" 
-    ((starcode==1)) && echo "更新检查完成，即将进入程序..." && countdown 5
+    update_load "$path_alist_andriod" "$link_alist_andriod" "alist_andriod" 1 "$startcode" 
+    update_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_andriod" 1 "$startcode" 
+    ((startcode==1)) && echo "更新检查完成，即将进入程序..." && countdown 5
 
 main_menu=(
     "系统设置"              'page true " 系 统 设 置 " "${system_menu[@]}"' 
@@ -280,7 +280,7 @@ system_menu=(
     "返回上一级"                "return"
     "修改配置参数"              "set_dat"
     "查看配置参数文件"           "nano /root/myfile/vinci.dat"
-    "更新脚本"                  'starcode=1; base_load; Initial'
+    "更新脚本"                  'startcode=1; base_load; Initial'
     )  
 
 
@@ -301,15 +301,15 @@ elif uname -a | grep -q 'Darwin'; then
     echo '已载入主程序，进行Mac端模块配置...'
     
     #载入通用模块
-    update_load "$path_arg" "$link_arg" "基本参数模块" 1 "$starcode" 
-    update_load "$path_text_processing" "$link_text_processing" "文本处理模块" 1 "$starcode" 
-    update_load "$path_page" "$link_page" "页面显示模块" 1 "$starcode" 
-    update_load "$path_config" "$link_config" "用户配置模块" 1 "$starcode" 
-    update_load "$path_toolbox_universal" "$link_toolbox_universal" "通用工具模块" 1 "$starcode" 
+    update_load "$path_arg" "$link_arg" "基本参数模块" 1 "$startcode" 
+    update_load "$path_text_processing" "$link_text_processing" "文本处理模块" 1 "$startcode" 
+    update_load "$path_page" "$link_page" "页面显示模块" 1 "$startcode" 
+    update_load "$path_config" "$link_config" "用户配置模块" 1 "$startcode" 
+    update_load "$path_toolbox_universal" "$link_toolbox_universal" "通用工具模块" 1 "$startcode" 
     ######载入专属模块 ######
-    update_load "$path_alist_andriod" "$link_alist_andriod" "alist_andriod" 1 "$starcode" 
-    update_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_andriod" 1 "$starcode" 
-    ((starcode==1)) && echo "更新检查完成，即将进入程序..." && countdown 5
+    update_load "$path_alist_andriod" "$link_alist_andriod" "alist_andriod" 1 "$startcode" 
+    update_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_andriod" 1 "$startcode" 
+    ((startcode==1)) && echo "更新检查完成，即将进入程序..." && countdown 5
 
 main_menu=(
     "系统设置"              'page true " 系 统 设 置 " "${system_menu[@]}"' 
@@ -320,7 +320,7 @@ system_menu=(
     "返回上一级"                "return"
     "修改配置参数"              "set_dat"
     "查看配置参数文件"           "nano /root/myfile/vinci.dat"
-    "更新脚本"                  'starcode=1; base_load; Initial'
+    "更新脚本"                  'startcode=1; base_load; Initial'
     )  
 
 
