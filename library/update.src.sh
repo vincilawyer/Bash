@@ -97,7 +97,6 @@ while true; do
                   fi 
               exit
           fi
-          exit
     done  
     
 }
