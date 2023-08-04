@@ -5,7 +5,7 @@
 ####内容说明：检查文件更新，载入并判断是否存在语法错误
 
 ####### 基本参数 ######
-Ver=5                                   #版本号
+Ver=5.1                                   #版本号
 
 ####### 颜色
 RED='\033[0;31m'
@@ -29,7 +29,7 @@ while true; do
    #开始获取代码,如果下载失败
    if ! code="$(curl -s "$file_link")"; then    
         echo -en "${RED}$file_name文件下载失败，请检查网络！${NC}"
-        echo "wrong url:$file_link"
+        echo "Wrong url:$file_link"
         countdown 10
         
    #如果下载成功
