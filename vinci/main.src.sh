@@ -140,6 +140,7 @@ function menutitle {
 
 ######载入模块 ######
 update_load "$path_toolbox_linux" "$link_toolbox_linux" "linux工具模块" 1 false
+update_load "$path_appmanage" "$link_appmanage" "程序管理模块" 1 false
 update_load "$path_docker" "$link_docker" "docker" 1 false
 update_load "$path_nginx" "$link_nginx" "nginx" 1 false
 update_load "$path_xui" "$link_xui" "xui" 1 false
