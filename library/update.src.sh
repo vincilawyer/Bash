@@ -53,7 +53,7 @@ while true; do
                    echo "$file_name文件当前版本号为：V$num"
                    echo "$code" > "$file_path" && chmod +x "$file_path"
                    echo "$file_name文件最新版本号为：V${#code}，已完成更新，载入中..."
-                   countdown 3
+                
              fi
              
          #如果文件不存在，则直接开始下载。
