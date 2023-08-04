@@ -8,7 +8,7 @@ Version=1.00  #版本号
     "返回上一级"                     "return"
     "安装\更新Xui面板"               "install_Xui"
     "进入Xui面板管理（指令:x-ui）"     "x-ui"
-    "退出" )     
+     )     
     
 ###### 安装X-ui的函数 ######
 function install_Xui {
