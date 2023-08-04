@@ -16,16 +16,20 @@ function page {
     array=("${@:3}")
     menu=()
     cmd=()
+    n=1
     
     #分离菜单和指令
     for (( i=0; i<${#array[@]}; i++ )); do
         if (( i % 2 == 0 )) ; then
             menu+=("${array[$i]}")
-            echo "${array[$i]}" 
+            echo "  $n、${array[$i]}" 
+            ((n++))
         else
             cmd+=("${array[$i]}")
         fi
     done
+       echo "  0、退出"
+       
     #获取菜单数量
     menunum=${#menu[@]} 
     echo
