@@ -32,7 +32,7 @@ while true; do
         countdown 10
         #如果文件不存在：
         [[ $necessary == "true" ]] && ! [ -e "$file_path" ] && echo "${RED}$file_name文件缺失，即将退出系统..." && exit
-        ! [ -e "$file_path" ] && echo "${RED}$file_name文件缺失，可能导致系统功能缺失..." && return
+        ! [ -e "$file_path" ] && echo -e "${RED}$file_name文件缺失，可能导致系统功能缺失...${NC}" && return
         
    #如果下载成功
    else
@@ -51,13 +51,13 @@ while true; do
                        ((n++)) 
                        continue
                    fi
-                   echo "${RED}$file_name文件当前已是最新版本V$cur_Version.$num！"
+                   echo "$file_name文件当前已是最新版本V$cur_Version.$num！"
                    (( loadcode == 2 )) && return #如果是启动程序本身，则无需再次载入
              #如果存在更新版本
              else 
                    #获取新版本号
                    Version=$( echo "$code" | sed -n '/^Version=/ {s/[^0-9.]*\([0-9.]*\).*/\1/; p; q}')
-                   (( upcode==1 )) && echo "${RED} 当前${RED}$file_name文件存在错误！即将开始更新${NC}" 
+                   (( upcode==1 )) && echo -e "${RED} 当前${RED}$file_name文件存在错误！即将开始更新${NC}" 
                    echo "$file_name文件当前版本号为：V$cur_Version.$num"
                    echo "$code" > "$file_path" && chmod +x "$file_path"
                    echo "$file_name文件最新版本号为：V$Version.${#code}，已完成更新，载入中..."
@@ -68,7 +68,7 @@ while true; do
          else
              #下载更新文件并增加执行权限
              echo "$code" > "$file_path" && chmod +x "$file_path"
-             echo "${RED}$file_name文件最新版本号为：V$Version.${#code}，已完成下载，载入中..."
+             echo "$file_name文件最新版本号为：V$Version.${#code}，已完成下载，载入中..."
          fi
    fi
 
