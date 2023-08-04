@@ -4,6 +4,7 @@
 #3、主程序，诠释程序作用。
 ####### 版本更新相关参数 ######
 Version=2.00  #版本号 
+starcode="$1"
 clear
 
 ####### 定义本脚本名称、应用数据路径 ######
@@ -53,7 +54,8 @@ path_def="/usr/local/bin/$def_name"
       
 ###### 其他系统启动程序网址、路径 ######
       else echo '未知系统，正在配置默认版本中...'
-:                                                           
+echo "未知系统"
+sleep 5
       fi    
 
 ######  退出函数 ######      
@@ -62,13 +64,13 @@ local exitnotice="$1"
 local scrname="$2"
 local funcname1="$3"
 local funcname2="$4"
-   if ((exitnotice==1)); then
-        clear
-   elif [ -n "$exitnotice" ]; then
+   if [ -n "$exitnotice" ]; then
         echo -e "${RED}出现错误：$exitnotice。错误代码详见以下：${NC}"
         echo -e "${RED}错误函数为：${FUNCNAME[0]}${NC}"
         echo -e "${RED}调用函数为：${FUNCNAME[1]}${NC}"
         echo -e "${RED}错误模块为：$BASH_SOURCE[0]${NC}"
+   else
+        clear
    fi            
    echo -e "${GREED}已退出vinci脚本！${NC}"
    exit
@@ -81,7 +83,7 @@ function handle_error() {
     echo -e "${RED}错误函数为：$funcname1${NC}"
     echo -e "${RED}调用函数为：$funcname2${NC}"
     echo -e "${RED}错误模块为：$funcname2${NC}"
-    countdown 50
+    quit
 }
 
 #######   当脚本退出   ####### 
@@ -95,29 +97,34 @@ trap 'normal_exit' EXIT
 
 
 #基础更新
-function base_update {
-echo "正在启动基础更新..."
-#下载更新检查程序
-if ! curl -H 'Cache-Control: no-cache' -L "$link_update" -o "$path_update" >/dev/null 2>&1 ; then echo "更新检查程序下载失败，请检查网络！"; wait; fi
+function base_load {
 
-#载入更新检查文件，并获取错误输出
-wrongtext="$(source $path_update 2>&1 >/dev/null)"
-if [ -n "$wrongtext" ]; then echo "当前更新检查程序存在语法错误，未能启动主程序，报错内容为：" 
-     echo "$wrongtext"
-     quit
-else
-     source "$path_update"
-     echo "开始更新检查..."
-fi    
+     if ((starcode==1)); then
+         echo "正在启动基础更新..."
+         
+         #下载更新检查程序
+         if ! curl -H 'Cache-Control: no-cache' -L "$link_update" -o "$path_update" >/dev/null 2>&1 ; then echo "更新检查程序下载失败，请检查网络！"; wait; fi
 
-#更新本程序
-update_load "$path_def" "$link_def" "$def_name脚本" 2 
+         #载入更新检查文件，并获取错误输出
+         wrongtext="$(source "$path_update" 2>&1 >/dev/null)"
+         if [ -n "$wrongtext" ]; then 
+              echo "当前更新检查程序存在语法错误，未能启动主程序，报错内容为：" 
+              echo "$wrongtext"
+              quit
+         else
+              source "$path_update"
+              echo "开始更新检查..."
+         fi    
+    fi
 
-#更新主程序   
-update_load "$path_main" "$link_main" "主程序" 1
+    #更新本程序
+    update_load "$path_def" "$link_def" "$def_name脚本" 2 "$starcode"
+
+    #更新主程序   
+    update_load "$path_main" "$link_main" "主程序" 1 "$starcode"
 
 }
 
 #开始运行脚本
-base_update
+base_load
 main
