@@ -113,6 +113,9 @@ trap 'normal_exit' EXIT
 ############################################################################################################################################################################################
 
 function base_load {
+      #检测代码是本地启动还是网络或其他异地启动,异地则为更新模式
+      [[ "$0" == "$path_def" ]] || startcode==1
+      
       #更新模式
      if ((startcode==1)) || ! [ -e "$path_update" ]; then
          echo "正在启动基础更新..."
@@ -131,6 +134,7 @@ function base_load {
 
     #更新本程序
     update_load "$path_def" "$link_def" "$def_name脚本" 2 "$startcode"
+    
     #更新主程序   
     update_load "$path_main" "$link_main" "主程序" 1 "$startcode"
 
