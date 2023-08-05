@@ -26,18 +26,29 @@ clear
 
 ####### Debian系统启动程序网址、路径 ######
 if uname -a | grep -q 'Debian'; then 
+    path_def="/usr/local/bin/$def_name"   
+    
     CURSHELL="bash"
     echo "检测系统为Debian，当前Shell环境为$SHELL，正在配置中..."
-    path_def="/usr/local/bin/$def_name"   
     
 ####### Android系统启动程序网址、路径 ######
 elif uname -a | grep -q 'Android'; then 
+    path_def="/data/data/com.termux/files/usr/bin/$def_name"
+    
     CURSHELL="bash"
     echo "检测系统为Android，当前Shell环境为$SHELL，正在配置中..."
-    path_def="/data/data/com.termux/files/usr/bin/$def_name"                                           
+    # 检查安装 ncurses-utils，以支持tput工具
+    if ! command -v tput &> /dev/null; then
+        echo "ncurses-utils未安装. Start installing..."
+        pkg upgrade; pkg update; pkg install ncurses-utils -y
+    fi
+}
+InitialAndroid
                                                                 
 ####### Mac系统启动程序网址、路径 ######
 elif uname -a | grep -q 'Darwin'; then 
+    path_def="/usr/local/bin/$def_name"
+    
     CURSHELL="zsh"
     echo "检测系统为Mac，已切换Shell环境为$(ps -p $$ -o comm=)，正在配置中..."
     #允许注释与代码同行
@@ -46,7 +57,7 @@ elif uname -a | grep -q 'Darwin'; then
     setopt ksh_arrays
     #打开终端网络代理
     export http_proxy=http://127.0.0.1:1087;export https_proxy=http://127.0.0.1:1087;export ALL_PROXY=socks5://127.0.0.1:1086
-    path_def="/usr/local/bin/$def_name"
+
     
 ###### 其他系统启动程序网址、路径 ######
 else 
