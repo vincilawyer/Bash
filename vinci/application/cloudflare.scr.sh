@@ -3,7 +3,6 @@
 ############################################################################################################################################################################################
 #依赖  config.src.sh 、 text_processing.scr.sh
 Version=1.00  #版本号  
-
 ######   参数配置   ######
 adddat '
 ##### Cloudflare ######
@@ -19,7 +18,8 @@ cf_menu=(
     "修改CF账户配置"           "set_cfdns"
     "下载CFWarp"              "install_Warp"
     "CFWarp程序管理器"         'get_appmanage_menu "warp-svc"; page true "CFWarp" "${appmanage_menu[@]}"'
-    )      
+    "CFIP优选"                ''page true "CloudflareST优选" "${CFST_menu[@]}"''
+    ) 
     
 ###### Cf dns配置 ######
 function cfdns {
@@ -194,3 +194,38 @@ function install_Warp {
         curl ifconfig.me --proxy socks5://127.0.0.1:40000
         echo
 }
+#############################################################################################################################################################################################
+##############################################################################   IP优选模块  ################################################################################################
+############################################################################################################################################################################################
+### 菜单栏  ####
+CFST_menu=(
+    "返回上一级"              "return"
+    "安装CFIP优选"            "install_CFST"
+    "启动CFIP优选"            "$path_CFST_file/CloudflareST"
+    "退出")
+
+#安装IP优选
+function install_CFST {
+
+    #创建应用文件夹
+    path_CFST_file="$data_name/CFST"
+    mkdir "$path_CFST_file"
+    echo "已创建$path_CFST_file应用文件夹"
+    
+    #下载地址
+    if uname -a | grep -q 'Debian'; then 
+        link_CFST_download="https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.4/CloudflareST_linux_amd64.tar.gz"
+    elif uname -a | grep -q 'Android'; then 
+        link_CFST_download="https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.4/CloudflareST_linux_arm64.tar.gz"
+    elif uname -a | grep -q 'Darwin'; then 
+        link_CFST_download="https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.4/CloudflareST_darwin_amd64.zip"
+    fi
+    echo "开始下载..."
+    curl -L "$link_CFST_download" -o "$path_CFST_file/CFST.tar.gz"
+    echo "开始解压..."
+    tar -zxf "$path_CFST_file/CFST.tar.gz" -C "$path_CFST_file"
+    chmod +x "$path_CFST_file/CloudflareST"
+    rm "$path_CFST_file/CFST.tar.gz"
+    echo "安装完成！"
+}
+    
