@@ -210,7 +210,7 @@ function install_CFST {
     #创建应用文件夹
     path_CFST_file="$data_name/CFST"
     mkdir "$path_CFST_file"
-    echo "已创建$path_CFST_file应用文件夹"
+    echo "已创建 $path_CFST_file 应用文件夹"
     
     #下载地址
     if uname -a | grep -q 'Debian'; then 
