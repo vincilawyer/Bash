@@ -5,7 +5,7 @@
 #程序组成结构:1、启动程序（即本程序）,用于下载、启动更新update程序和主程序（该两程序及本程序容错率为0）。
 #2、update程序，用于更新、加载配置文件。
 #3、主程序，诠释程序作用。
-
+echo 一
 echo 启动码 $startcode，$1
 echo 路径1：$0 
 echo 路径2：$ZSH_NAME
@@ -20,13 +20,13 @@ sleep 5
 if uname -a | grep -q 'Darwin'; then
     [[ $(ps -p $$ -o comm=) == *"bash"* ]] && exec "/bin/zsh" "$0" "$startcode"
 fi
-
+echo 二
 echo 启动码 $startcode，$1
 echo 路径1：$0 
 echo 路径2：$ZSH_NAME
 echo 环境1：$$   
 echo 环境2：$SHELL
-sleep5
+sleep 5
 
 ####### 版本更新相关参数 ######
 Version=2.00 
