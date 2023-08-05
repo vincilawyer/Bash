@@ -204,7 +204,8 @@ path_CFST_file="$data_name/CFST"
 CFST_menu=(
     "返回上一级"              "return"
     "安装CFIP优选"            "install_CFST"
-    "启动CFIP优选"            'cd $path_CFST_file; $path_CFST_file/CloudflareST'
+    "开启CFIP优选"            'cd $path_CFST_file; $path_CFST_file/CloudflareST -n 400 -url https://www.dvbh3bhvzvavdsne7h2cds.world/download/speedtest.bin'
+    "CFIP配置说明"            'cd $path_CFST_file; $path_CFST_file/CloudflareST -h; continue '
     "创建可下载CF测试文件"       'Creat_cfspeedtest'
      )
 
