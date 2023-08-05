@@ -9,7 +9,7 @@ nginx_menu=(
     "设置Nginx配置"           'echo "维护中"'
     "查看Nginx日志"            "nano /var/log/nginx/access.log"
     "程序管理"                 'get_appmanage_menu "nginx"; page true "Nginx" "${appmanage_menu[@]}"'
-    "退出")
+    )
     
 ### 路径 ###
 #nginx配置文件网址
