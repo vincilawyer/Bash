@@ -152,10 +152,11 @@ done
 
 #######   倒计时  ####### 
 function countdown {
+echo "计时开始"
     local from=$1
 if [[ $CURSHELL == *"bash"* ]]; then
     tput sc  # Save the current cursor position
-    while [ $from -ge 0 ]; do
+    while (( from >= 0 )); do
         tput rc  # Restore the saved cursor position
         tput el  # Clear from cursor to the end of the line
         printf "%02ds" $from  # Print the countdown
@@ -169,9 +170,9 @@ elif [[ $CURSHELL == *"zsh"* ]]; then
         echoti rc  # Restore the saved cursor position
         echoti el  # Clear from cursor to the end of the line
         printf "%02ds" $from  # Print the countdown
-        stty -echo   #关闭输入显示
-        if read -t 1 -k 1 input; then stty echo;break; fi
-        stty echo    #打开输入显示
+        #stty -echo   #关闭输入显示
+        #if read -t 1 -k 1 input; then stty echo;break; fi
+        #stty echo    #打开输入显示
         ((from--))
     done
     echo
