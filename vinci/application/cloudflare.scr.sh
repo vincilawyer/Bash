@@ -225,7 +225,7 @@ function install_CFST {
         link_CFST_download="https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.4/CloudflareST_darwin_amd64.zip"
     fi
     echo "开始下载..."
-    curl -L "$link_CFST_download" -o "$path_CFST_file/CFST.tar.gz"
+    curl -L "$link_CFST_download" -o "$path_CFST_file/CFST.tar.gz" || (echo "下载失败了，先翻个墙吧~"; return)
     echo "开始解压..."
     tar -zxf "$path_CFST_file/CFST.tar.gz" -C "$path_CFST_file"
     chmod +x "$path_CFST_file/CloudflareST"
