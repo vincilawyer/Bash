@@ -43,7 +43,7 @@ while true; do
          else
                echo "正在检查$file_name文件更新..."
                #获取代码
-               if ! code="$(curl -s "$file_link")"; then    
+               if ! code="$(curl -s -H 'Cache-Control: no-cache' "$file_link")"; then    
                     #代码获取失败
                     echo -e "${RED}$file_name文件更新失败，请检查网络！${NC}"
                     echo "Wrong url:$file_link"
