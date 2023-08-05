@@ -125,6 +125,7 @@ function base_load {
       echo 1 $startcode
       [[ "$0" == "$path_def" ]] || startcode=1
       echo $0 
+      echo $ZSH_NAME
       echo $path_def
       echo 2 $startcode
       #更新模式
