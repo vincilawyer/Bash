@@ -17,7 +17,8 @@ local file_link="$2"                            #脚本url链接
 local file_name="$3"                            #配置文件名称
 local loadcode="$4"                             #加载模式，1为source、2为bash
 local upcode="${5:-0}"                          #更新模式,0为无需更新，1为正常更新，2为报错更新
-local startcode="${5:-0}"                        #更新模式,0为无需更新，1为正常更新,传递给启动程序，使其继续更新
+local startcode="${5:-0}"                       #更新模式,0为无需更新，1为正常更新,传递给启动程序，使其继续更新
+local initial_name="$6"                         #执行初始化函数名
 local n=0                                       #错误警告更新次数
 
 echo     
@@ -91,9 +92,9 @@ while true; do
         echo -e "${GREEN}正在载入$file_name文件...${NC}"
         source "$file_path"
         #执行初始化函数
-        if type "${file_path##*/}_initial" 2>/dev/null | grep -q 'function'; then
+        if type "$initial_name" 2>/dev/null | grep -q 'function'; then
              echo "正在初始化$file_name模块"
-             ${file_path##*/}_initial
+             $initial_name
         fi
         return
           
