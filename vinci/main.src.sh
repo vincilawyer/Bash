@@ -243,11 +243,11 @@ main_menu=(
 ### 系统工具选项 ###
 system_menu=(
     "返回上一级"                "return"
+    "更新脚本"                  'startcode=1; base_load; Initial; continue'
+    "个人配置设置"               'page true "配置设置" "${config_menu[@]}"'
     "查看所有重要程序运行状态"    "status_all"
     "本机ip信息"               "ipinfo"    
-    "个人配置设置"               'page true "配置设置" "${config_menu[@]}"'
     "修改SSH登录端口和登录密码"   "change_ssh_port; change_login_password"
-    "更新脚本"                  'startcode=1; base_load; Initial; continue'
      )  
 
 ############################################################################################################################################################################################
@@ -270,8 +270,8 @@ main_menu=(
     )
 system_menu=(
     "返回上一级"                "return"
-    "个人配置设置"               'page true "配置设置" "${config_menu[@]}"'
     "更新脚本"                  'startcode=1; base_load; Initial; continue'
+    "个人配置设置"               'page true "配置设置" "${config_menu[@]}"'
     )  
 
 
@@ -295,9 +295,9 @@ main_menu=(
     )
 system_menu=(
     "返回上一级"                "return"
+    "更新脚本"                  'startcode=1; base_load; Initial; continue'
     "个人配置设置"               'page true "配置设置" "${config_menu[@]}"'
     "Mac终端网络代理模式"         'export http_proxy=http://127.0.0.1:1087;export https_proxy=http://127.0.0.1:1087;export ALL_PROXY=socks5://127.0.0.1:1086; echo "已启动终端网络代理！"'
-    "更新脚本"                  'startcode=1; base_load; Initial; continue'
     )  
 
 
