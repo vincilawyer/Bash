@@ -254,7 +254,7 @@ function start_speedtest {
     cd $path_CFST_file
     echo "开始测速，请稍等..."
     $path_CFST_file/CloudflareST -n 400 -url https://www.dvbh3bhvzvavdsne7h2cds.world/download/speedtest.bin
-    notifier "【IP优选测速结果如下：\n$(cat result.svc)"
+    notifier "【IP优选测速结果如下：\n$(cat result.csv)"
 }
 function Creat_cfspeedtest {
     speedtest_name="speedtest.bin"
