@@ -328,7 +328,7 @@ else
 fi; }
 
 function main {
-   Initial
+
    #检查用户数据文件 
    clear
    update_dat 
