@@ -89,7 +89,7 @@ while true; do
    #开始载入：如果载入模式为source
    if (( loadcode == 1 )); then
         #开始脚本语法检查
-        wrongtext="$($CURSHELL "$file_path" 2>&1 >/dev/null)"
+        wrongtext="$(source "$file_path" 2>&1 >/dev/null)"
         if [ -n "$wrongtext" ]; then  
              echo "$file_name文件存在语法错误，报错内容为："
              echo "$wrongtext"
@@ -188,19 +188,3 @@ fi
     
 }
 
-#######   等待函数   #######   
-function wait {
-    if [[ -z "$1" ]]; then
-        echo "请按下任意键继续"
-    else
-        echo "请查看wait函数，看看是谁调用的：${FUNCNAME[1]}"
-    fi
-    
-    if [[ "$CURSHELL" == *"bash"* ]]; then
-        read -n 1 -s input
-    elif [[ "$CURSHELL" == *"zsh"* ]]; then
-        stty -echo
-        read -k 1 input
-        stty echo
-    fi
-}
