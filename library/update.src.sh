@@ -66,13 +66,13 @@ while true; do
                          #如果是启动程序，则无需载入
                          (( loadcode == 2 )) && return 
                          
-                        #如果版本不一致,载入新版本
-                        else
-                            (( upcode==2 )) && echo -e "${RED} 当前${RED}$file_name文件存在错误！即将开始更新${NC}" 
-                            echo -e "${RED}$file_name文件当前版本号为：V${#old_code}${NC}"
-                            printf "%s" "$code" > "$file_path" && chmod +x "$file_path"
-                            echo -e "${BLUE}$file_name文件最新版本号为：V${#code}，已完成更新。${NC}"
-                     fi
+                    #如果版本不一致,载入新版本
+                    else
+                        (( upcode==2 )) && echo -e "${RED} 当前${RED}$file_name文件存在错误！即将开始更新${NC}" 
+                        echo -e "${RED}$file_name文件当前版本号为：V${#old_code}${NC}"
+                        printf "%s" "$code" > "$file_path" && chmod +x "$file_path"
+                        echo -e "${BLUE}$file_name文件最新版本号为：V${#code}，已完成更新。${NC}"
+                    fi
                 fi
          fi
    fi
