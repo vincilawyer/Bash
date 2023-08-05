@@ -54,10 +54,10 @@ elif uname -a | grep -q 'Debian'; then
 elif uname -a | grep -q 'Darwin'; then 
     #调整运行环境
     #[[ $(ps -p $$ -o comm=) == *"bash"* ]] && exec "/bin/zsh" "$0" "$startcode" && exit
-    echo "之前$SHELL、$1、$(ps -p $$ -o comm=)"
+    echo "之前$SHELL、值$1、shell$(ps -p $$ -o comm=)"
     sleep 3
     [[ $SHELL == *"bash"* ]] && exec "/bin/zsh" "$0" "$startcode" && exit
-    echo "之后$SHELL、$1、$(ps -p $$ -o comm=)"
+    echo "之后$SHELL、值$1、shell$(ps -p $$ -o comm=)"
     sleep 3
     echo "检测系统为Mac，已切换Shell环境为$(ps -p $$ -o comm=)，正在配置中..."
     path_def="/usr/local/bin/$def_name"
