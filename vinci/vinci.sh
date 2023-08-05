@@ -171,7 +171,7 @@ function base_load {
      fi    
 
      #更新本程序
-     update_load "$path_def" "$link_def" "$def_name脚本" 2 "$startcode"
+     update_load "$path_def" "$link_def" "$def_name启动" 2 "$startcode"
     
      #更新主程序   
      update_load "$path_main" "$link_main" "主程序" 1 "$startcode"
