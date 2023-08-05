@@ -152,8 +152,6 @@ done
 
 #######   倒计时  ####### 
 function countdown {
-echo "倒计时"
-sleep 3
     local from=$1
 if [[ "$CURSHELL" == *"bash"* ]]; then
     tput sc  # Save the current cursor position
@@ -166,6 +164,8 @@ if [[ "$CURSHELL" == *"bash"* ]]; then
    done
    echo
 elif [[ "$CURSHELL" == *"zsh"* ]]; then
+echo "倒计时"
+sleep 3
     echoti sc  # Save the current cursor position
     while (( from >= 0 )); do
         echoti rc  # Restore the saved cursor position
