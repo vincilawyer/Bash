@@ -92,7 +92,7 @@ while true; do
         echo -e "${GREEN}正在载入$file_name文件...${NC}"
         source "$file_path"
         #执行初始化函数
-        if type "$initial_name" 2>/dev/null | grep -q 'function'; then
+        if [ -n "$initial_name" ]; then
              echo "正在初始化$file_name模块"
              $initial_name
         fi
