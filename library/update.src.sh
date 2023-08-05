@@ -97,6 +97,7 @@ while true; do
              echo
              echo -e "${GREEN}开始初始化$file_name模块...${NC}"
              $initial_name
+             echo
              echo -e "${GREEN}$file_name初始化完成！${NC}"
         fi
         return
