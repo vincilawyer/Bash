@@ -217,7 +217,7 @@ if uname -a | grep -q 'Debian'; then
     #载入专属模块
     update_load "$path_toolbox_linux" "$link_toolbox_linux" "linux工具模块" 1 "$startcode" 
     update_load "$path_appmanage" "$link_appmanage" "程序管理模块" 1 "$startcode" 
-    update_load "$path_docker" "$link_docker" "docker" 1 "$startcode" 
+    update_load "$path_docker" "$link_docker" "docker" 1 "$startcode" "docker_initial"
     update_load "$path_nginx" "$link_nginx" "nginx" 1 "$startcode" 
     update_load "$path_xui" "$link_xui" "xui" 1 "$startcode" 
     update_load "$path_cf" "$link_cf" "cloudflare" 1 "$startcode" 
@@ -259,11 +259,13 @@ elif uname -a | grep -q 'Android'; then
     echo -e "${GREEN}正在进行Android端模块配置...${NC}"
 
     ######载入专属模块 ######
+    update_load "$path_cf" "$link_cf" "cloudflare" 1 "$startcode" 
     update_load "$path_alist_andriod" "$link_alist_andriod" "alist_andriod" 1 "$startcode" 
     update_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_andriod" 1 "$startcode" 
 
 main_menu=(
     "系统设置"              'page true " 系 统 设 置 " "${system_menu[@]}"' 
+    "Cloudflare服务"        'page true "Cloudflare" "${cf_menu[@]}"'
     "Alist服务"            'page true "Alist" "${alist_menu[@]}"'
     "Rclone服务"            'page true "Rclone" "${rclone_menu[@]}"'
     )
@@ -283,11 +285,13 @@ elif uname -a | grep -q 'Darwin'; then
     echo -e "${GREEN}正在进行Mac端模块配置...${NC}"
     
     ######载入专属模块 ######
+     update_load "$path_cf" "$link_cf" "cloudflare" 1 "$startcode" 
     update_load "$path_alist_andriod" "$link_alist_andriod" "alist_andriod" 1 "$startcode" 
     update_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_andriod" 1 "$startcode" 
 
 main_menu=(
     "系统设置"              'page true " 系 统 设 置 " "${system_menu[@]}"' 
+    "Cloudflare服务"        'page true "Cloudflare" "${cf_menu[@]}"'
     "Alist服务"            'page true "Alist" "${alist_menu[@]}"'
     "Rclone服务"            'page true "Rclone" "${rclone_menu[@]}"'
     )
