@@ -25,7 +25,7 @@ while true; do
     if ! [ -e "$file_path" ]; then
          #下载更新文件
          echo "正在下载$file_name文件..."
-         if ! curl -H 'Cache-Control: no-cache' -L "$file_link" -o "$file_path"; then 
+         if ! curl -s -H 'Cache-Control: no-cache' -L "$file_link" -o "$file_path"; then 
               #如果下载失败
               echo -e "${RED}$file_name文件下载失败，请检查网络！${NC}"
               echo "Wrong url:$file_link"
@@ -164,7 +164,6 @@ if [[ $CURSHELL == *"bash"* ]]; then
    done
    echo
 elif [[ $CURSHELL == *"zsh"* ]]; then
-   echo "此处倒计时$1秒"
    sleep $1
 fi
     
