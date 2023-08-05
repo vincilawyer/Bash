@@ -16,6 +16,7 @@ fi
 ####### 版本更新相关参数 ######
 Version=2.00 
 def_name="vinci"          
+CURSHELL=$(ps -p $$ -o comm=)
 clear
 #$startcode   为启动时传递的更新指令
 
@@ -25,25 +26,27 @@ clear
 ############################################################################################################################################################################################
 ####### Debian系统启动程序网址、路径 ######
 if uname -a | grep -q 'Debian'; then 
-    echo "检测系统为Debian，当前Shell环境为$(ps -p $$ -o comm=)，正在配置中..."
+    echo "检测系统为Debian，当前Shell环境为$CURSHELL，正在配置中..."
     path_def="/usr/local/bin/$def_name"   
     
 ####### Android系统启动程序网址、路径 ######
 elif uname -a | grep -q 'Android'; then 
-    echo "检测系统为Android，当前Shell环境为$(ps -p $$ -o comm=)，正在配置中..."
+    echo "检测系统为Android，当前Shell环境为$CURSHELL，正在配置中..."
     path_def="/data/data/com.termux/files/usr/bin/$def_name"                                           
                                                                 
 ####### Mac系统启动程序网址、路径 ######
 elif uname -a | grep -q 'Darwin'; then 
-    echo "检测系统为Mac，已切换Shell环境为$(ps -p $$ -o comm=)，正在配置中..."
+    echo "检测系统为Mac，已切换Shell环境为$CURSHELL，正在配置中..."
     #允许注释与代码同行
     setopt interactivecomments
+    #让数组编号与bash一致，从0开始
+    setopt ksh_arrays
     #打开终端网络代理
     export http_proxy=http://127.0.0.1:1087;export https_proxy=http://127.0.0.1:1087;export ALL_PROXY=socks5://127.0.0.1:1086
     path_def="/usr/local/bin/$def_name"
     
 ###### 其他系统启动程序网址、路径 ######
-else echo "未知系统，当前Shell环境为$(ps -p $$ -o comm=)，正在配置默认版本中..."
+else echo "未知系统，当前Shell环境为$CURSHELL，正在配置默认版本中..."
     echo "未知系统"
     sleep 5
 fi  
