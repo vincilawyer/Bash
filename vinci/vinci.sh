@@ -11,10 +11,9 @@
 if uname -a | grep -q 'Darwin'; then
     echo "之前$SHELL、值：$1、shell$(ps -p $$ -o comm=)"
     sleep 3
-    [[ $SHELL == *"bash"* ]] && exec "/bin/zsh" "$0" "$startcode" && exit
+    [[ $(ps -p $$ -o comm=) == *"bash"* ]] && exec "/bin/zsh" "$0" "$1"
     echo "之后$SHELL、值：$1、shell$(ps -p $$ -o comm=)"
     sleep 3
-    #[[ $(ps -p $$ -o comm=) == *"bash"* ]] && exec "/bin/zsh" "$0" "$1"
     #允许注释与代码同行
     setopt interactivecomments
     #打开终端网络代理
