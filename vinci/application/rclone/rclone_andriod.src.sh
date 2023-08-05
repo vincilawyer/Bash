@@ -12,7 +12,7 @@ rclone_menu=(
     "将Baidu网盘指定文件更新至Onedrive"            'baidutoone'
     "将Onedrive指定文件更新至Baidu网盘"            'onetobaidu'
     "Rclone使用指引"                       'echo "指令指引";echo "列出文件夹: rclone lsd onedrive:";echo "复制文件：rclone copy";echo "同步文件：rclone sync"'
-    "退出")
+    )
 ### 配置 ####
 bdbook="共享文件夹/法律电子书（持续更新）"   #百度网盘书库位置
 onebook="法律书库"   #onedrive书库位置
