@@ -53,7 +53,12 @@ elif uname -a | grep -q 'Debian'; then
 ####### Mac系统启动程序网址、路径 ######
 elif uname -a | grep -q 'Darwin'; then 
     #调整运行环境
-    [[ $(ps -p $$ -o comm=) == *"bash"* ]] && exec "/bin/zsh" "$0" "$startcode" && exit
+    #[[ $(ps -p $$ -o comm=) == *"bash"* ]] && exec "/bin/zsh" "$0" "$startcode" && exit
+    echo 之前
+    sleep 3
+    [[ $SHELL == *"bash"* ]] && exec "/bin/zsh" "$0" "$startcode" && exit
+    echo 之后
+    sleep 3
     echo "检测系统为Mac，已切换Shell环境为$(ps -p $$ -o comm=)，正在配置中..."
     path_def="/usr/local/bin/$def_name"
 ###### 其他系统启动程序网址、路径 ######
