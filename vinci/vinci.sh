@@ -8,7 +8,7 @@
 echo 一
 echo 启动码 $startcode，$1
 echo 路径1：$0 
-echo 路径2：$ZSH_NAME
+echo 路径2：$ZSH_NAME，$ZSH_ARGZERO
 echo 环境1：$$   
 echo 环境2：$SHELL
 sleep 5
@@ -23,7 +23,7 @@ fi
 echo 二
 echo 启动码 $startcode，$1
 echo 路径1：$0 
-echo 路径2：$ZSH_NAME
+echo 路径2：$ZSH_NAME，$ZSH_ARGZERO
 echo 环境1：$$   
 echo 环境2：$SHELL
 sleep 5
