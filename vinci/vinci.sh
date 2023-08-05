@@ -42,7 +42,7 @@ elif uname -a | grep -q 'Android'; then
         echo "ncurses-utils未安装. Start installing..."
         pkg upgrade; pkg update; pkg install ncurses-utils -y
     fi
-}
+
 InitialAndroid
                                                                 
 ####### Mac系统启动程序网址、路径 ######
