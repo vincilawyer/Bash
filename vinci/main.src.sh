@@ -309,7 +309,7 @@ else
 fi; }
 
 function main {
-
+   echo 12
    #检查用户数据文件 
    clear
    update_dat 
