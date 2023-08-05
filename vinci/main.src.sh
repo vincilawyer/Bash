@@ -92,11 +92,6 @@ link_alist_andriod="${link_repositories}vinci/application/alist/alist_andriod.sr
 path_docker="$data_path/docker.src.sh"
 link_docker="${link_repositories}vinci/application/docker/docker.src.sh"
 
-#chatgpt
-#app > chatgpt_docker.src.sh
-path_chatgpt="$data_path/chatgpt_docker.src.sh"
-link_chatgpt="${link_repositories}vinci/application/docker/chatgpt_docker.src.sh"
-
 ############################################################################################################################################################################################
 ##############################################################################    Debian11系统UI   ########################################################################################
 ############################################################################################################################################################################################
@@ -196,26 +191,29 @@ echo "当前为未识别系统，未定义UI"
 sleep 3
 fi
 
-
 ############################################################################################################################################################################################
-##############################################################################    Debian11系统加载模块及菜单   ########################################################################################
+##############################################################################     初始化  ########################################################################################
 ############################################################################################################################################################################################
 function main_initial {
-if uname -a | grep -q 'Debian'; then 
-    echo
-    echo -e "${GREEN}正在进行Debian端模块配置...${NC}"
-    #判断系统适配  
-    if [ ! $(lsb_release -rs) = "11" ]; then 
-        echo "请注意，本脚本是适用于Vulre服务器Debian11系统，用于其他系统或版本时将可能出错！"
-        wait
-    fi
-    
     #载入通用模块
     update_load "$path_arg" "$link_arg" "基本参数模块" 1 "$startcode" 
     update_load "$path_text_processing" "$link_text_processing" "文本处理模块" 1 "$startcode" 
     update_load "$path_page" "$link_page" "页面显示模块" 1 "$startcode" 
     update_load "$path_config" "$link_config" "用户配置模块" 1 "$startcode" 
     update_load "$path_toolbox_universal" "$link_toolbox_universal" "通用工具模块" 1 "$startcode" 
+    
+############################################################################################################################################################################################
+##############################################################################    Debian11系统加载模块及菜单   ########################################################################################
+############################################################################################################################################################################################
+if uname -a | grep -q 'Debian'; then 
+    echo
+    echo -e "${GREEN}正在进行Debian端专属模块配置...${NC}"
+    #判断系统适配  
+    if [ ! $(lsb_release -rs) = "11" ]; then 
+        echo "请注意，本脚本是适用于Vulre服务器Debian11系统，用于其他系统或版本时将可能出错！"
+        wait
+    fi
+
     #载入专属模块
     update_load "$path_toolbox_linux" "$link_toolbox_linux" "linux工具模块" 1 "$startcode" 
     update_load "$path_appmanage" "$link_appmanage" "程序管理模块" 1 "$startcode" 
@@ -225,10 +223,8 @@ if uname -a | grep -q 'Debian'; then
     update_load "$path_cf" "$link_cf" "cloudflare" 1 "$startcode" 
     update_load "$path_tor" "$link_tor" "tor" 1 "$startcode" 
     update_load "$path_frp" "$link_frp" "frp" 1 "$startcode" 
-    update_load "$path_chatgpt" "$link_chatgpt" "chatgpt" 1 "$startcode" 
     update_load "$path_alist_linux" "$link_alist_linux" "alist_linux" 1 "$startcode" 
     update_load "$path_rclone_linux" "$link_rclone_linux" "rclone_linux" 1 "$startcode"  
-    ((startcode==1)) && (echo -n "更新检查完成，即将进入程序..." ; countdown 5)
 
 #### 主菜单 ####
 main_menu=(
@@ -240,7 +236,6 @@ main_menu=(
     "Cloudflare服务"        'page true "Cloudflare" "${cf_menu[@]}"'
     "Tor服务"               'page true "Tor" "${tor_menu[@]}"'
     "Frp服务"               'page true "Frp" "${frp_menu[@]}"'
-    "Chatgpt-Docker服务"   'page true "Chatgpt-Docker" "${gpt_menu[@]}"'
     "Alist服务"            'page true "Alist" "${alist_menu[@]}"'
     "Rclone服务"            'page true "Rclone" "${rclone_menu[@]}"'
     )
@@ -262,17 +257,10 @@ system_menu=(
 elif uname -a | grep -q 'Android'; then 
     echo
     echo -e "${GREEN}正在进行Android端模块配置...${NC}"
-    
-    #载入通用模块
-    update_load "$path_arg" "$link_arg" "基本参数模块" 1 "$startcode" 
-    update_load "$path_text_processing" "$link_text_processing" "文本处理模块" 1 "$startcode" 
-    update_load "$path_page" "$link_page" "页面显示模块" 1 "$startcode" 
-    update_load "$path_config" "$link_config" "用户配置模块" 1 "$startcode" 
-    update_load "$path_toolbox_universal" "$link_toolbox_universal" "通用工具模块" 1 "$startcode" 
+
     ######载入专属模块 ######
     update_load "$path_alist_andriod" "$link_alist_andriod" "alist_andriod" 1 "$startcode" 
     update_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_andriod" 1 "$startcode" 
-    ((startcode==1)) && (echo -n "更新检查完成，即将进入程序..." ; countdown 5)
 
 main_menu=(
     "系统设置"              'page true " 系 统 设 置 " "${system_menu[@]}"' 
@@ -294,16 +282,9 @@ elif uname -a | grep -q 'Darwin'; then
     echo
     echo -e "${GREEN}正在进行Mac端模块配置...${NC}"
     
-    #载入通用模块
-    update_load "$path_arg" "$link_arg" "基本参数模块" 1 "$startcode" 
-    update_load "$path_text_processing" "$link_text_processing" "文本处理模块" 1 "$startcode" 
-    update_load "$path_page" "$link_page" "页面显示模块" 1 "$startcode" 
-    update_load "$path_config" "$link_config" "用户配置模块" 1 "$startcode" 
-    update_load "$path_toolbox_universal" "$link_toolbox_universal" "通用工具模块" 1 "$startcode" 
     ######载入专属模块 ######
     update_load "$path_alist_andriod" "$link_alist_andriod" "alist_andriod" 1 "$startcode" 
     update_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_andriod" 1 "$startcode" 
-    ((startcode==1)) && (echo -n "更新检查完成，即将进入程序..." ; countdown 5)
 
 main_menu=(
     "系统设置"              'page true " 系 统 设 置 " "${system_menu[@]}"' 
