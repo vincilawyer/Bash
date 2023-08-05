@@ -144,7 +144,7 @@ function base_load {
          echo "正在启动基础更新..."
          if ! curl -H 'Cache-Control: no-cache' -L "$link_update" -o "$path_update" >/dev/null 2>&1 ; then echo "更新检查程序下载失败，请检查网络！"; wait; fi
      fi
-     
+
      #载入更新检查文件，并获取错误输出
      wrongtext="$(source "$path_update" 2>&1 >/dev/null)"
      if [ -n "$wrongtext" ]; then 
@@ -155,11 +155,11 @@ function base_load {
           source "$path_update"
      fi    
 
-    #更新本程序
-    update_load "$path_def" "$link_def" "$def_name脚本" 2 "$startcode"
+     #更新本程序
+     update_load "$path_def" "$link_def" "$def_name脚本" 2 "$startcode"
     
-    #更新主程序   
-    update_load "$path_main" "$link_main" "主程序" 1 "$startcode"
+     #更新主程序   
+     update_load "$path_main" "$link_main" "主程序" 1 "$startcode"
 
 }
 ############################################################################################################################################################################################
