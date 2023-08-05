@@ -206,7 +206,7 @@ CFST_menu=(
     "返回上一级"              "return"
     "安装CFIP优选"            "install_CFST"
     "开启CFIP优选"            'start_speedtest'
-    "CFIP配置说明"            'cd $path_CFST_file; $path_CFST_file/CloudflareST -h; continue '
+    "CFIP配置说明"            'cd $path_CFST_file; $path_CFST_file/CloudflareST -h '
     "创建可下载CF测试文件"       'Creat_cfspeedtest'
      )
 
@@ -259,7 +259,7 @@ function start_speedtest {
         set_dat "SPEEDTEST_URL"
     fi
     echo "开始测速，请稍等..."
-    $path_CFST_file/CloudflareST -n 400 -url https://www.dvbh3bhvzvavdsne7h2cds.world/download/speedtest.bin
+    $path_CFST_file/CloudflareST -n 400 -t 6 -tl 200 -tlr 0.2 -sl 30 -allip -url https://www.dvbh3bhvzvavdsne7h2cds.world/download/speedtest.bin
     notifier "IP优选测速结果如下：\n$(cat result.csv)"
 }
 
