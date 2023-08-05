@@ -162,6 +162,7 @@ local config=(
 "Domain"
 "CFemail"
 "Cloudflare_api_key"
+"SPEEDTEST_URL"
 )
     set_dat "${config[@]}"
 }
