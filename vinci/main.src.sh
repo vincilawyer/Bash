@@ -203,7 +203,7 @@ fi
 function main_initial {
 if uname -a | grep -q 'Debian'; then 
     echo
-    echo -e "${GREEN}已载入主程序，进行Debian端模块配置...${NC}"
+    echo -e "${GREEN}正在进行Debian端模块配置...${NC}"
     #判断系统适配  
     if [ ! $(lsb_release -rs) = "11" ]; then 
         echo "请注意，本脚本是适用于Vulre服务器Debian11系统，用于其他系统或版本时将可能出错！"
@@ -261,7 +261,7 @@ system_menu=(
 ############################################################################################################################################################################################
 elif uname -a | grep -q 'Android'; then 
     echo
-    echo -e "${GREEN}已载入主程序，进行Android端模块配置...${NC}"
+    echo -e "${GREEN}正在进行Android端模块配置...${NC}"
     
     #载入通用模块
     update_load "$path_arg" "$link_arg" "基本参数模块" 1 "$startcode" 
@@ -292,7 +292,7 @@ system_menu=(
 ############################################################################################################################################################################################
 elif uname -a | grep -q 'Darwin'; then 
     echo
-    echo -e "${GREEN}已载入主程序，进行Mac端模块配置...${NC}"
+    echo -e "${GREEN}正在进行Mac端模块配置...${NC}"
     
     #载入通用模块
     update_load "$path_arg" "$link_arg" "基本参数模块" 1 "$startcode" 
