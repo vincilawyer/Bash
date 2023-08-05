@@ -115,7 +115,7 @@ trap 'normal_exit' EXIT
 
 function base_load {
       #检测代码是本地启动还是网络或其他异地启动,异地则为更新模式
-      [[ "$0" == "$path_def" ]] || startcode==1
+      [[ "$0" == "$path_def" ]] || startcode=1
       
       #更新模式
      if ((startcode==1)) || ! [ -e "$path_update" ]; then
