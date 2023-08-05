@@ -75,17 +75,6 @@ while true; do
          fi
    fi
 
-   #开始脚本语法检查
-   wrongtext="$($CURSHELL "$file_path" 2>&1 >/dev/null)"
-   if [ -n "$wrongtext" ]; then  
-          echo "$file_name文件存在语法错误，报错内容为："
-          echo "$wrongtext"
-          echo "即将开始重新更新"
-          upcode=2
-          wrongtext=""
-          continue
-   fi          
-
    #开始载入：如果载入模式为source
    if (( loadcode == 1 )); then
         #开始脚本语法检查
@@ -103,7 +92,7 @@ while true; do
         source "$file_path"
         return
           
-   #启动程序如果有更新，则开始载入在新的shell环境中载入
+   #开始载入：启动程序如果有更新，则开始载入在新的shell环境中载入
    elif (( loadcode == 2 )); then
           echo -n "即将重启程序..."
           countdown 3
