@@ -111,9 +111,9 @@ local funcname2="$4"
 function handle_error() {
     echo "脚本运行出现错误！"
     echo -e "${RED}错误代码详见以下：${NC}"
-    echo -e "${RED}错误函数为：$funcname1${NC}"
-    echo -e "${RED}调用函数为：$funcname2${NC}"
-    echo -e "${RED}错误模块为：$funcname2${NC}"
+    echo -e "${RED}错误函数为：${FUNCNAME[1]}${NC}"
+    echo -e "${RED}调用函数为：${FUNCNAME[2]}${NC}"
+    echo -e "${RED}错误模块为：${BASH_SOURCE[1]}${NC}"
     quit
 }
 
@@ -170,7 +170,8 @@ function base_load {
       
       #更新模式
      if ((startcode==1)) || ! [ -e "$path_update" ]; then
-         echo "正在启动基础更新..."
+         echo
+         echo "正在启动更新检查程序..."
          if ! curl -H 'Cache-Control: no-cache' -L "$link_update" -o "$path_update" >/dev/null 2>&1 ; then echo "更新检查程序下载失败，请检查网络！"; wait; fi
      fi
 
@@ -189,7 +190,7 @@ function base_load {
     
      #更新主程序   
      update_load "$path_main" "$link_main" "主程序" 1 "$startcode" "main_initial"
-     
+     echo
      ((startcode==1)) && (echo -n "更新检查完成，即将进入程序..." ; countdown 5)
 }
 ############################################################################################################################################################################################
