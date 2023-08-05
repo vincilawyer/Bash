@@ -9,7 +9,7 @@ alist_menu=(
     "安装\更新Alist"        'pkg upgrade; pkg update; pkg install alist'
     "启动Alist"             'alist server'
     "查看Alist账户密码"       "alist admin"
-    "退出")
+    )
     
 
     
