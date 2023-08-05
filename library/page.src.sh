@@ -17,7 +17,7 @@ function page {
     menu=()
     cmd=()
     n=1
-
+    
     #分离菜单和指令
     for (( i=0; i<${#array[@]}; i++ )); do
         if (( i % 2 == 0 )) ; then
@@ -30,10 +30,6 @@ function page {
     done
        echo "  [0]  退出"
 
-       echo ${array[1]}
-       echo ${array[2]}
-       echo ${array[3]}
-       echo ${array[4]}
     #获取菜单数量
     menunum=${#menu[@]} 
     echo
