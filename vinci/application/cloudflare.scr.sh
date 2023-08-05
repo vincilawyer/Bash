@@ -16,10 +16,10 @@ $(pz "SPEEDTEST_URL")                              #@CF测速地址#@需要加ht
 cf_menu=(
     "返回上一级"               "return"
     "Cloudflare DNS配置"      'cfdns; continue'
-    "修改CF账户配置"           "set_cfdns"
     "下载CFWarp"              "install_Warp"
     "CFWarp程序管理器"         'get_appmanage_menu "warp-svc"; page true "CFWarp" "${appmanage_menu[@]}"'
     "CFIP优选"                'page true "CloudflareST优选" "${CFST_menu[@]}"; continue'
+    "修改CF个人配置"           "set_cfdns"
     ) 
     
 ###### Cf dns配置 ######
@@ -206,7 +206,8 @@ path_CFST_file="$data_name/CFST"
 CFST_menu=(
     "返回上一级"              "return"
     "安装CFIP优选"            "install_CFST"
-    "开启CFIP优选"            'start_speedtest'
+    "开始随机CFIP优选"            'start_speedtest'
+    "开始穷尽CFIP优选"            'start_speedtest'
     "CFIP配置说明"            'cd $path_CFST_file; $path_CFST_file/CloudflareST -h '
     "创建可下载CF测试文件"       'Creat_cfspeedtest'
      )
@@ -260,7 +261,7 @@ function start_speedtest {
         set_dat "SPEEDTEST_URL"
     fi
     echo "开始测速，请稍等..."
-    $path_CFST_file/CloudflareST -n 400 -t 6 -tl 180 -tlr 0 -sl 30 -allip -url https://www.dvbh3bhvzvavdsne7h2cds.world/download/speedtest.bin
+    $path_CFST_file/CloudflareST -n 400 -t 6 -tl 220 -tlr 0 -sl 25 -url https://www.dvbh3bhvzvavdsne7h2cds.world/download/speedtest.bin
     notifier "IP优选测速结果如下：\n$(cat result.csv)"
 }
 
