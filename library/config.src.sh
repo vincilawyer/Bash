@@ -7,8 +7,8 @@ config_menu=(
     "返回上一级"               "return"
     "修改个人配置参数"          "set_dat"
     "查看配置参数文件"          'nano "$configfile_path"'
-    "备份个人配置文件"          'if ! confirm "是否备份个人配置文件，并覆盖原有备份？" "已取消备份配置"; then  cp "$configfile_path" "$configfile_path.bak"'
-    "恢复个人配置文件"          'if ! confirm "是否恢复个人配置文件，并覆盖现有配置？" "已取消恢复配置"; then  cp "$configfile_path.bak" "$configfile_path" '
+    "备份个人配置文件"          'confirm "是否备份个人配置文件，并覆盖原有备份？" "已取消备份配置" || cp "$configfile_path" "$configfile_path.bak"'
+    "恢复个人配置文件"          'confirm "是否恢复个人配置文件，并覆盖现有配置？" "已取消恢复配置" || cp "$configfile_path.bak" "$configfile_path"'
     )
     
 ####### 定义路径及文件名  ######
