@@ -88,10 +88,13 @@ while true; do
              continue
         fi          
         #如果脚本没有语法错误，则载入
-        echo -e "${BLUE}正在载入$file_name文件...${NC}"
+        echo -e "${GREEN}正在载入$file_name文件...${NC}"
         source "$file_path"
         #执行初始化函数
-        
+        if type "${file_path##*/}_initial" 2>/dev/null | grep -q 'function'; then
+             echo "正在初始化$file_name模块"
+             ${file_path##*/}_initial
+        fi
         return
           
    #开始载入：启动程序如果有更新，则开始载入在新的shell环境中载入
