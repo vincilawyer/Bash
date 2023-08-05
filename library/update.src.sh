@@ -50,28 +50,29 @@ while true; do
                     echo -e "${RED}$file_name文件更新失败，请检查网络！${NC}"
                     echo "Wrong url:$file_link"
                     wait
-               fi
-               #获取旧版本代码
-               old_code="$(cat "$file_path")"     
-               #如果两版本一致
-               if [[ "$code" == "$old_code" ]]; then 
-                     #如果是报错更新，先报错，并继续检测更新
-                     if  (( upcode==2 )); then
-                         ((n++)) 
-                         warning "$file_path" "$file_name" "$necessary" "$cur_Version" "$n"
-                         continue
-                     fi
-                     #无需更新
-                     echo -e "${BLUE}$file_name文件当前已是最新版本V${#old_code}！${NC}"
-                     #如果是启动程序，则无需载入
-                     (( loadcode == 2 )) && return 
+               else
+                   #获取旧版本代码
+                   old_code="$(cat "$file_path")"     
+                   #如果两版本一致
+                   if [[ "$code" == "$old_code" ]]; then 
+                         #如果是报错更新，先报错，并继续检测更新
+                         if  (( upcode==2 )); then
+                             ((n++)) 
+                             warning "$file_path" "$file_name" "$necessary" "$cur_Version" "$n"
+                             continue
+                         fi
+                         #无需更新
+                         echo -e "${BLUE}$file_name文件当前已是最新版本V${#old_code}！${NC}"
+                         #如果是启动程序，则无需载入
+                         (( loadcode == 2 )) && return 
                          
-                #如果版本不一致,载入新版本
-                else
-                    (( upcode==2 )) && echo -e "${RED} 当前${RED}$file_name文件存在错误！即将开始更新${NC}" 
-                    echo -e "${RED}$file_name文件当前版本号为：V${#old_code}${NC}"
-                    printf "%s" "$code" > "$file_path" && chmod +x "$file_path"
-                    echo -e "${BLUE}$file_name文件最新版本号为：V${#code}，已完成更新。${NC}"
+                        #如果版本不一致,载入新版本
+                        else
+                            (( upcode==2 )) && echo -e "${RED} 当前${RED}$file_name文件存在错误！即将开始更新${NC}" 
+                            echo -e "${RED}$file_name文件当前版本号为：V${#old_code}${NC}"
+                            printf "%s" "$code" > "$file_path" && chmod +x "$file_path"
+                            echo -e "${BLUE}$file_name文件最新版本号为：V${#code}，已完成更新。${NC}"
+                     fi
                 fi
          fi
    fi
@@ -185,3 +186,4 @@ elif [[ "$CURSHELL" == *"zsh"* ]]; then
     echo
 fi    
 }
+    
