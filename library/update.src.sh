@@ -19,7 +19,7 @@ local upcode="${5:-0}"                          #更新模式,0为无需更新�
 local startcode="${5:-0}"                        #更新模式,0为无需更新，1为正常更新,传递给启动程序，使其继续更新
 local n=0                                       #错误警告更新次数
 
-     
+echo     
 while true; do
     #如果文件不存在
     if ! [ -e "$file_path" ]; then
@@ -31,8 +31,8 @@ while true; do
               echo "Wrong url:$file_link"
               echo "${RED}$file_name文件缺失，即将退出系统..." && quit
          fi   
-         echo -e "${BLUE}$file_name文件已完成下载。${NC}"
-         countdown 2
+         echo -e -n "${BLUE}$file_name文件已完成下载。${NC}"
+         countdown 2 
     #如果文件已存在     
     else
          #如果无需更新
@@ -98,7 +98,7 @@ while true; do
           
      #如果有更新，则开始载入在新的shell环境中载入
      elif (( loadcode == 2 )); then
-          echo "即将重启程序..."
+          echo -n "即将重启程序..."
           countdown 3
           #增加执行权限
           chmod +x "$file_path"
@@ -164,7 +164,17 @@ if [[ $CURSHELL == *"bash"* ]]; then
    done
    echo
 elif [[ $CURSHELL == *"zsh"* ]]; then
-   sleep $1
+    echoti sc  # Save the current cursor position
+    while (( from >= 0 )); do
+        echoti rc  # Restore the saved cursor position
+        echoti el  # Clear from cursor to the end of the line
+        printf "%02ds" $from  # Print the countdown
+        stty -echo   #关闭输入显示
+        if read -t 1 -k 1 input; then stty echo;break; fi
+        stty echo    #打开输入显示
+        ((from--))
+    done
+    echo
 fi
     
 }
@@ -174,8 +184,9 @@ function wait {
     if [[ -z "$1" ]]; then
         echo "请按下任意键继续"
     else
-        echo $1
+        echo "请查看wait函数，看看是谁调用的：${FUNCNAME[1]}"
     fi
+    
     if [[ $CURSHELL == *"bash"* ]]; then
         read -n 1 -s input
     elif [[ $CURSHELL == *"zsh"* ]]; then
