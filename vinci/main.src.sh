@@ -201,6 +201,7 @@ function main_initial {
     update_load "$path_page" "$link_page" "页面显示模块" 1 "$startcode" 
     update_load "$path_config" "$link_config" "用户配置模块" 1 "$startcode" 
     update_load "$path_toolbox_universal" "$link_toolbox_universal" "通用工具模块" 1 "$startcode" 
+    update_load "$path_appmanage" "$link_appmanage" "程序管理模块" 1 "$startcode" 
     
 ############################################################################################################################################################################################
 ##############################################################################    Debian11系统加载模块及菜单   ########################################################################################
@@ -216,7 +217,6 @@ if uname -a | grep -q 'Debian'; then
 
     #载入专属模块
     update_load "$path_toolbox_linux" "$link_toolbox_linux" "linux工具模块" 1 "$startcode" 
-    update_load "$path_appmanage" "$link_appmanage" "程序管理模块" 1 "$startcode" 
     update_load "$path_docker" "$link_docker" "docker" 1 "$startcode" "docker_initial"
     update_load "$path_nginx" "$link_nginx" "nginx" 1 "$startcode" 
     update_load "$path_xui" "$link_xui" "xui" 1 "$startcode" 
