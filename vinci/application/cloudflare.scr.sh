@@ -205,6 +205,7 @@ CFST_menu=(
     "返回上一级"              "return"
     "安装CFIP优选"            "install_CFST"
     "启动CFIP优选"            'cd $path_CFST_file; $path_CFST_file/CloudflareST'
+    "创建可下载CF测试文件"       'Creat_cfspeedtest'
      )
 
 #安装IP优选
@@ -230,4 +231,10 @@ function install_CFST {
     rm "$path_CFST_file/CFST.tar.gz"
     echo "安装完成！"
 }
-    
+function Creat_cfspeedtest {
+    speedtest_name="speedtest.bin"
+    speedtest_path="/usr/share/nginx/html/$speedtest_name"
+    #创建空白大文件300m
+    dd if=/dev/zero of="$speedtest_path" bs=1M count=0 seek=300 
+    echo "已创建完成，请在中进行nginx配置"
+}
