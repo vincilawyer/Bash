@@ -167,10 +167,10 @@ sleep 3
         echoti rc  # Restore the saved cursor position
         echoti el  # Clear from cursor to the end of the line
         printf "%02ds" $from  # Print the countdown
-        #stty -echo   #关闭输入显示
-        #if read -t 1 -k 1 input; then stty echo;break; fi
-        #stty echo    #打开输入显示
-        ((from--))
+        stty -echo   #关闭输入显示
+        if read -t 1 -k 1 input; then stty echo;break; fi
+        stty echo    #打开输入显示
+        (( --from ))
     done
     echo
 fi
