@@ -31,8 +31,14 @@ elif uname -a | grep -q 'Android'; then
                                                                 
 ####### Mac系统启动程序网址、路径 ######
 elif uname -a | grep -q 'Darwin'; then 
+echo 启动码 $startcode，$1
+echo 路径1：$0 
+echo 路径2：$ZSH_NAME，$ZSH_ARGZERO
+echo 环境1：$(ps -p $$ -o comm=)  
+echo 环境2：$SHELL
+
     #SHELL环境变更
-    [[ $(ps -p $$ -o comm=) == *"bash"* ]] && (exec "/bin/zsh" "$0" "$startcode"; exit )
+    [[ $(ps -p $$ -o comm=) == *"bash"* ]] && exec "/bin/zsh" "$0" "$startcode"
     CURSHELL="zsh"
     echo "检测系统为Mac，已切换Shell环境为$(ps -p $$ -o comm=)，正在配置中..."
     #允许注释与代码同行
