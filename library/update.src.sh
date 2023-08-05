@@ -89,12 +89,15 @@ while true; do
              continue
         fi          
         #如果脚本没有语法错误，则载入
-        echo -e "${GREEN}正在载入$file_name文件...${NC}"
+        echo -e -n "${GREEN}正在载入$file_name文件...${NC}"
         source "$file_path"
+        echo -e "${GREEN}载入完成${NC}"
         #执行初始化函数
         if [ -n "$initial_name" ]; then
-             echo "正在初始化$file_name模块"
+             echo
+             echo -e "${GREEN}开始初始化$file_name模块...${NC}"
              $initial_name
+             echo -e "${GREEN}$file_name初始化完成！${NC}"
         fi
         return
           
