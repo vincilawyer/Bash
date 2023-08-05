@@ -203,7 +203,7 @@ fi
 function Initial {
 if uname -a | grep -q 'Debian'; then 
     echo
-    echo -e "${GREEN}已载入主程序，进行Debian端模块配置...${NC}""
+    echo -e "${GREEN}已载入主程序，进行Debian端模块配置...${NC}"
     #判断系统适配  
     if [ ! $(lsb_release -rs) = "11" ]; then 
         echo "请注意，本脚本是适用于Vulre服务器Debian11系统，用于其他系统或版本时将可能出错！"
