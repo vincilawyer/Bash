@@ -42,12 +42,12 @@ link_def="${link_repositories}vinci/vinci.sh"
 
 ####### Android系统启动程序网址、路径 ######
 if uname -a | grep -q 'Android'; then 
-    echo '检测系统为Android，正在配置中...' 
+    echo '检测系统为Android，当前Shell环境为$(ps -p $$ -o comm=)，正在配置中...' 
     path_def="/data/data/com.termux/files/usr/bin/$def_name"                                           
         
 ####### Debian系统启动程序网址、路径 ######
 elif uname -a | grep -q 'Debian'; then 
-    echo '检测系统为Debian，正在配置中...'
+    echo '检测系统为Debian，当前Shell环境为$(ps -p $$ -o comm=)，正在配置中...'
     path_def="/usr/local/bin/$def_name"                                                               
 
 ####### Mac系统启动程序网址、路径 ######
@@ -57,7 +57,7 @@ elif uname -a | grep -q 'Darwin'; then
     echo "检测系统为Mac，已切换Shell环境为$(ps -p $$ -o comm=)，正在配置中..."
     path_def="/usr/local/bin/$def_name"
 ###### 其他系统启动程序网址、路径 ######
-else echo '未知系统，正在配置默认版本中...'
+else echo '未知系统，当前Shell环境为$(ps -p $$ -o comm=)，正在配置默认版本中...'
     echo "未知系统"
     sleep 5
 fi  
