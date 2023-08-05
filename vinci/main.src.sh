@@ -324,7 +324,7 @@ system_menu=(
     "返回上一级"                "return"
     "修改配置参数"              "set_dat"
     "查看配置参数文件"           "nano /root/myfile/vinci.dat"
-    "Mac终端网络代理模式"         'export http_proxy=http://127.0.0.1:1087;export https_proxy=http://127.0.0.1:1087;export ALL_PROXY=socks5://127.0.0.1:1086'
+    "Mac终端网络代理模式"         'export http_proxy=http://127.0.0.1:1087;export https_proxy=http://127.0.0.1:1087;export ALL_PROXY=socks5://127.0.0.1:1086; echo "已启动终端网络代理！"'
     "更新脚本"                  'startcode=1; base_load; Initial; continue'
     )  
 
