@@ -16,7 +16,9 @@ fi
 ####### 版本更新相关参数 ######
 Version=2.00 
 def_name="vinci"          
-CURSHELL=$(ps -p $$ -o comm=)
+echo "$(ps -p $$ -o comm=)"
+sleep 10
+CURSHELL="$(ps -p $$ -o comm=)"
 clear
 #$startcode   为启动时传递的更新指令
 
