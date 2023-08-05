@@ -153,7 +153,7 @@ done
 #######   倒计时  ####### 
 function countdown {
     local from=$1
-if [[ $SHELL == *"bash"* ]]; then
+if [[ $CURSHELL == *"bash"* ]]; then
     tput sc  # Save the current cursor position
     while [ $from -ge 0 ]; do
         tput rc  # Restore the saved cursor position
@@ -163,7 +163,7 @@ if [[ $SHELL == *"bash"* ]]; then
         ((from--))
    done
    echo
-elif [[ $SHELL == *"zsh"* ]]; then
+elif [[ $CURSHELL == *"zsh"* ]]; then
    echo "此处倒计时$1秒"
    sleep $1
 fi
@@ -177,9 +177,9 @@ function wait {
     else
         echo $1
     fi
-    if [[ $SHELL == *"bash"* ]]; then
+    if [[ $CURSHELL == *"bash"* ]]; then
         read -n 1 -s input
-    elif [[ $SHELL == *"zsh"* ]]; then
+    elif [[ $CURSHELL == *"zsh"* ]]; then
         stty -echo
         read -k 1 input
         stty echo
