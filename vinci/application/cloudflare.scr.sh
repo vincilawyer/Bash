@@ -253,14 +253,16 @@ EOF
 }
 #开始测速
 function start_speedtest {
-    cd $path_CFST_file
+    cd "$path_CFST_file"
     if [ -z "$SPEEDTEST_URL" ]; then
-    echo "请先设置测速链接吧"
-    set_dat "SPEEDTEST_URL"
+        echo "请先设置测速链接"
+        set_dat "SPEEDTEST_URL"
+    fi
     echo "开始测速，请稍等..."
     $path_CFST_file/CloudflareST -n 400 -url https://www.dvbh3bhvzvavdsne7h2cds.world/download/speedtest.bin
     notifier "IP优选测速结果如下：\n$(cat result.csv)"
 }
+
 function Creat_cfspeedtest {
     speedtest_name="speedtest.bin"
     speedtest_path="/usr/share/nginx/html/$speedtest_name"
