@@ -158,10 +158,9 @@ if [[ "$CURSHELL" == *"bash"* ]]; then
         if $(read -s -t 1 -n 1); then break; fi
         ((from--))
    done
+   tput el
    echo
 elif [[ "$CURSHELL" == *"zsh"* ]]; then
-echo "倒计时"
-sleep 3
     echoti sc  # Save the current cursor position
     while (( from >= 0 )); do
         echoti rc  # Restore the saved cursor position
@@ -170,10 +169,9 @@ sleep 3
         stty -echo   #关闭输入显示
         if read -t 1 -k 1 input; then stty echo;break; fi
         stty echo    #打开输入显示
-        (( --from ))
+        from=$(( from-1 ))
     done
+    echoti el
     echo
-fi
-    
+fi    
 }
-
