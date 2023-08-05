@@ -172,7 +172,13 @@ function base_load {
      if ((startcode==1)) || ! [ -e "$path_update" ]; then
          echo
          echo "正在启动更新检查程序..."
-         if ! curl -H 'Cache-Control: no-cache' -L "$link_update" -o "$path_update" >/dev/null 2>&1 ; then echo "更新检查程序下载失败，请检查网络！"; wait; fi
+         if ! curl -H 'Cache-Control: no-cache' -L "$link_update" -o "$path_update" >/dev/null 2>&1 ; then 
+              echo "更新检查程序下载失败，请检查网络！" 
+              wait
+              else
+              echo "网络已连接，开始检查..." 
+              fi
+    
      fi
 
      #载入更新检查文件，并获取错误输出
