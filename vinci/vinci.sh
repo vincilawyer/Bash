@@ -9,6 +9,8 @@
 echo 启动码 $startcode，$1
 echo 路径1：$0 
 echo 路径2：$ZSH_NAME
+echo 环境1：$$   
+echo 环境2：$SHELL
 sleep 5
 
 ############################################################################################################################################################################################
@@ -22,6 +24,8 @@ fi
 echo 启动码 $startcode，$1
 echo 路径1：$0 
 echo 路径2：$ZSH_NAME
+echo 环境1：$$   
+echo 环境2：$SHELL
 sleep5
 
 ####### 版本更新相关参数 ######
@@ -36,20 +40,20 @@ clear
 ############################################################################################################################################################################################
 ####### Debian系统启动程序网址、路径 ######
 if uname -a | grep -q 'Debian'; then 
-    CURSHELL="$SHELL"
+    CURSHELL="bash"
     echo "检测系统为Debian，当前Shell环境为$CURSHELL，正在配置中..."
     path_def="/usr/local/bin/$def_name"   
     
 ####### Android系统启动程序网址、路径 ######
 elif uname -a | grep -q 'Android'; then 
-    CURSHELL="$SHELL"
+    CURSHELL="bash"
     echo "检测系统为Android，当前Shell环境为$CURSHELL，正在配置中..."
     path_def="/data/data/com.termux/files/usr/bin/$def_name"                                           
                                                                 
 ####### Mac系统启动程序网址、路径 ######
 elif uname -a | grep -q 'Darwin'; then 
-    CURSHELL="$(ps -p $$ -o comm=)"
-    echo "检测系统为Mac，已切换Shell环境为$CURSHELL，正在配置中..."
+    CURSHELL="zsh"
+    echo "检测系统为Mac，已切换Shell环境为$(ps -p $$ -o comm=)，正在配置中..."
     #允许注释与代码同行
     setopt interactivecomments
     #让数组编号与bash一致，从0开始
@@ -60,8 +64,8 @@ elif uname -a | grep -q 'Darwin'; then
     
 ###### 其他系统启动程序网址、路径 ######
 else 
-    CURSHELL="$SHELL"
-    echo "未知系统，当前Shell环境为$CURSHELL，正在配置默认版本中..."
+    CURSHELL="bash"
+    echo "未知系统，当前Shell环境为$SHELL，正在配置默认版本中..."
     echo "未知系统"
     sleep 5
 fi  
