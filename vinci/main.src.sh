@@ -252,7 +252,7 @@ system_menu=(
     "修改配置参数"              "set_dat"
     "查看配置参数文件"           "nano /root/myfile/vinci.dat"
     "修改SSH登录端口和登录密码"   "change_ssh_port; change_login_password"
-    "更新脚本"                  'startcode=1; base_load; Initial'
+    "更新脚本"                  'startcode=1; base_load; Initial; continue'
      )  
 
 ############################################################################################################################################################################################
@@ -281,7 +281,7 @@ system_menu=(
     "返回上一级"                "return"
     "修改配置参数"              "set_dat"
     "查看配置参数文件"           "nano /root/myfile/vinci.dat"
-    "更新脚本"                  'startcode=1; base_load; Initial'
+    "更新脚本"                  'startcode=1; base_load; Initial; continue'
     )  
 
 
@@ -321,7 +321,7 @@ system_menu=(
     "返回上一级"                "return"
     "修改配置参数"              "set_dat"
     "查看配置参数文件"           "nano /root/myfile/vinci.dat"
-    "更新脚本"                  'startcode=1; base_load; Initial'
+    "更新脚本"                  'startcode=1; base_load; Initial; continue'
     )  
 
 
