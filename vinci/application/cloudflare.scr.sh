@@ -18,7 +18,7 @@ cf_menu=(
     "修改CF账户配置"           "set_cfdns"
     "下载CFWarp"              "install_Warp"
     "CFWarp程序管理器"         'get_appmanage_menu "warp-svc"; page true "CFWarp" "${appmanage_menu[@]}"'
-    "CFIP优选"                ''page true "CloudflareST优选" "${CFST_menu[@]}"''
+    "CFIP优选"                'page true "CloudflareST优选" "${CFST_menu[@]}"'
     ) 
     
 ###### Cf dns配置 ######
