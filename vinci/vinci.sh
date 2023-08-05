@@ -126,7 +126,7 @@ function base_load {
      #载入更新检查文件，并获取错误输出
      wrongtext="$(source "$path_update" 2>&1 >/dev/null)"
      if [ -n "$wrongtext" ]; then 
-          echo "当前更新检查程序存在语法错误，未能启动主程序，报错内容为：" 
+          echo "当前更新检查程序缺失或存在语法错误，未能启动主程序，报错内容为：" 
           echo "$wrongtext"
           quit
      else
