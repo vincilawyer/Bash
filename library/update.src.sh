@@ -152,7 +152,7 @@ done
 
 #######   倒计时  ####### 
 function countdown {
-echo "等待$CURSHELL"
+echo "倒计时"
 sleep 3
     local from=$1
 if [[ "$CURSHELL" == *"bash"* ]]; then
@@ -183,8 +183,6 @@ fi
 
 #######   等待函数   #######   
 function wait {
-echo "等待$CURSHELL"
-sleep 3
     if [[ -z "$1" ]]; then
         echo "请按下任意键继续"
     else
