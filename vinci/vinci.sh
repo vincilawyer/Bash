@@ -9,7 +9,7 @@
 echo 一启动码 $startcode，$1
 echo 路径1：$0 
 echo 路径2：$ZSH_NAME，$ZSH_ARGZERO
-echo 环境1：ps -p $$ -o comm=  
+echo 环境1：$(ps -p $$ -o comm=)  
 echo 环境2：$SHELL
 sleep 5
 
@@ -24,7 +24,7 @@ fi
 echo 二启动码 $startcode，$1
 echo 路径1：$0 
 echo 路径2：$ZSH_NAME，$ZSH_ARGZERO
-echo 环境1：ps -p $$ -o comm= 
+echo 环境1：$(ps -p $$ -o comm=)  
 echo 环境2：$SHELL
 sleep 5
 
@@ -142,7 +142,7 @@ function check {
 echo 启动码 $startcode，$1
 echo 路径1：$0 
 echo 路径2：$ZSH_NAME，$ZSH_ARGZERO
-echo 环境1：ps -p $$ -o comm= 
+echo 环境1：$(ps -p $$ -o comm=)  
 echo 环境2：$SHELL
 #############################################
 sleep 10
