@@ -9,7 +9,7 @@ adddat '
 $(pz "CFemail")                                     #@邮箱#@#@email_regex
 $(pz "Cloudflare_api_key")                          #@Cloudflare Api
 $(pz "Warp_port")                                   #@Warp监听端口#@0-65535#@port_regex
-$(pz "SPEEDTEST_URL")                              #@CF测速地址#@需要加http前缀#@web_regex
+$(pz "SPEEDTEST_URL")                              #@CF测速地址#@需要加http前缀
 '
 
 #### 菜单栏
