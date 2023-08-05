@@ -244,7 +244,7 @@ main_menu=(
 system_menu=(
     "返回上一级"                "return"
     "更新脚本"                  'startcode=1; base_load; Initial; continue'
-    "个人配置设置"               'page true "配置设置" "${config_menu[@]}"'
+    "个人配置设置"               'page true "配置设置" "${config_menu[@]}"; continue'
     "查看所有重要程序运行状态"    "status_all"
     "本机ip信息"               "ipinfo"    
     "修改SSH登录端口和登录密码"   "change_ssh_port; change_login_password"
@@ -271,7 +271,7 @@ main_menu=(
 system_menu=(
     "返回上一级"                "return"
     "更新脚本"                  'startcode=1; base_load; Initial; continue'
-    "个人配置设置"               'page true "配置设置" "${config_menu[@]}"'
+    "个人配置设置"               'page true "配置设置" "${config_menu[@]}" continue'
     )  
 
 
