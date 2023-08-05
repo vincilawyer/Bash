@@ -204,7 +204,7 @@ path_CFST_file="$data_name/CFST"
 CFST_menu=(
     "返回上一级"              "return"
     "安装CFIP优选"            "install_CFST"
-    "启动CFIP优选"            "$path_CFST_file/CloudflareST"
+    "启动CFIP优选"            'cd $path_CFST_file; $path_CFST_file/CloudflareST'
      )
 
 #安装IP优选
