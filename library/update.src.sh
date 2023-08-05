@@ -74,45 +74,33 @@ while true; do
                 fi
          fi
    fi
-         
 
-    #开始载入：如果载入模式为source
-    if (( loadcode == 1 )); then
-          echo -e "${BLUE}正在载入$file_name文件...${NC}"
-          
-          #脚本语法检查
+   #开始脚本语法检查
+   wrongtext="$($CURSHELL "$file_path" 2>&1 >/dev/null)"
+   if [ -n "$wrongtext" ]; then  
+          echo "$file_name文件存在语法错误，报错内容为："
+          echo "$wrongtext"
+          echo "即将开始重新更新"
+          upcode=2
           wrongtext=""
-          wrongtext="$(source "$file_path" 2>&1 >/dev/null)"
-          if [ -n "$wrongtext" ]; then  
-               #如果新的配置文件存在错误
-               echo "$file_name文件存在语法错误，报错内容为："
-               echo "$wrongtext"
-               echo "即将开始重新更新"
-               upcode=2
-               continue
-               
-          #语法无错，正式载入
-          else
-               source "$file_path"
-               return
-          fi
+          continue
+   fi          
+
+   #开始载入：如果载入模式为source
+   if (( loadcode == 1 )); then
+          echo -e "${BLUE}正在载入$file_name文件...${NC}"
+          source "$file_path"
+          return
           
-     #如果有更新，则开始载入在新的shell环境中载入
-     elif (( loadcode == 2 )); then
+   #启动程序如果有更新，则开始载入在新的shell环境中载入
+   elif (( loadcode == 2 )); then
           echo -n "即将重启程序..."
           countdown 3
           #增加执行权限
           chmod +x "$file_path"
           $file_path "$startcode"
-          local result="$?"
-               if ((result == 2 )); then        #执行文件语法错误
-                    echo "$file_name文件存在以上语法错误"
-                    echo "即将重新开始更新"
-                    upcode=2
-                    continue
-               fi 
-               exit
-     fi
+          exit
+   fi
 done      
 }
 
