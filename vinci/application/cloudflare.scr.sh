@@ -9,6 +9,7 @@ adddat '
 $(pz "CFemail")                                     #@邮箱#@#@email_regex
 $(pz "Cloudflare_api_key")                          #@Cloudflare Api
 $(pz "Warp_port")                                   #@Warp监听端口#@0-65535#@port_regex
+$(pz "SPEEDTEST_URL")                              #@CF测速地址#@需要加http前缀#@web_regex
 '
 
 #### 菜单栏
@@ -250,11 +251,15 @@ EOF
     echo "安装完成！"
     
 }
+#开始测速
 function start_speedtest {
     cd $path_CFST_file
+    if [ -z "$SPEEDTEST_URL" ]; then
+    echo "请先设置测速链接吧"
+    
     echo "开始测速，请稍等..."
     $path_CFST_file/CloudflareST -n 400 -url https://www.dvbh3bhvzvavdsne7h2cds.world/download/speedtest.bin
-    notifier "【IP优选测速结果如下：\n$(cat result.csv)"
+    notifier "IP优选测速结果如下：\n$(cat result.csv)"
 }
 function Creat_cfspeedtest {
     speedtest_name="speedtest.bin"
