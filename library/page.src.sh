@@ -37,7 +37,7 @@ function page {
     inp false 1 '"[[ "$new_text" =~ ^[0-9]+$ ]] && (( $new_text >= 0 && $new_text <= '$((menunum))' ))"'
     [[ "$new_text" == "0" ]] && quit 1              #如果选择零则退出
     clear 
-    eval ${cmd[$((new_text-1))]}  || ( echo "指令执行可能失败，请检查！"; waitcon="true" )
+    eval "${cmd[$((new_text-1))]}"  || ( echo "指令执行可能失败，请检查！"; waitcon="true" )
     [[ "$waitcon" == "true" ]] && wait
 done
 }
