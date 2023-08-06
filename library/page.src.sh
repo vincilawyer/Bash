@@ -22,10 +22,14 @@ function page {
     
      #判断当前页面是否由上一级页面调用
     if [[ "$CURSHELL" == *"bash"* ]]; then
+    echo "bash"
+    wait
         if [[ "${FUNCNAME[1]}" == "${FUNCNAME[0]}" ]]; then
               array=("返回上一级菜单" 'waitcon="false"; return' "${array[@]}")
         fi
     elif [[ "$CURSHELL" == *"zsh"* ]]; then
+        echo "zsh${funcstack[1]}、${funcstack[0]}"
+    wait
          if [[ "${funcstack[1]}" == "${funcstack[0]}" ]]; then
              array=("返回上一级菜单" 'waitcon="false; return' "${array[@]}")
         fi
