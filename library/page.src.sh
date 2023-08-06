@@ -19,7 +19,7 @@ function page {
         fi
     fi
    
-   while true; do
+    while true; do
    
     # 清除和显示页面样式
     clear
@@ -28,16 +28,16 @@ function page {
     menutitle "$1"
     
     waitcon="true"      #默认完成一个指令需要等待
-    local menunum=1
+    local menuindex=1
     local menu=()
-   local cmd=()
+    local cmd=()
     
     #分离菜单和指令
     for (( i=0; i<${#array[@]}; i++ )); do
         if (( i % 2 == 0 )) ; then
             menu+=("${array[$i]}")
-            echo "  [$menunum]$(((menunum<10)) && echo " ") ${array[$i]}" 
-            ((menunum++))
+            echo "  [$menuindex]$(((menuindex<10)) && echo " ") ${array[$i]}" 
+            (menuindex++))
         else
             cmd+=("${array[$i]}")
         fi
