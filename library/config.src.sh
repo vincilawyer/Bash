@@ -29,7 +29,7 @@ $(pz "Domain")                                          #@一级域名#@不用�
 
 ## 添加配置文件内容 
 function adddat { 
-     eval "$(eval echo "\"$configfile_mod"\")" || quit "添加配置模板错误，请检查格式！" "${BASH_SOURCE[0]}" "${FUNCNAME[0]}" "${FUNCNAME[1]}"
+     eval "$(eval echo "\"$1"\")" || quit "添加配置模板错误，请检查格式！" "${BASH_SOURCE[0]}" "${FUNCNAME[0]}" "${FUNCNAME[1]}"
      configfile_mod+="$1" 
 }
 
