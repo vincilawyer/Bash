@@ -6,7 +6,6 @@ Version=1.00  #版本号
 
 ### 菜单栏
 docker_menu=(
-    "返回上一级"            "return"
     "安装Docker"           "install_Docker"
     "Chatgpt应用"          'page true "Chatgpt-Docker" "${gpt_menu[@]}"'
     "查看Docker容器"        'echo "Docker容器状况：" && docker ps -a && echo; echo "提示：可使用docker stop 或 docker rm 语句加容器 ID 或者名称来停止容器的运行或者删除容器 "'
