@@ -9,17 +9,16 @@ adddat '
 $(pz "CFemail")                                     #@邮箱#@#@email_regex
 $(pz "Cloudflare_api_key")                          #@Cloudflare Api
 $(pz "Warp_port")                                   #@Warp监听端口#@0-65535#@port_regex
-$(pz "SPEEDTEST_URL")                              #@CF测速地址#@需要加http前缀
 '
 
 #### 菜单栏
 cf_menu=(
     "返回上一级"               "return"
     "Cloudflare DNS配置"      'cfdns; continue'
-    "下载CFWarp"              "install_Warp"
-    "CFWarp程序管理器"         'get_appmanage_menu "warp-svc"; page true "CFWarp" "${appmanage_menu[@]}"'
+    "修改CF DNS个人配置"        "set_cfdns"
     "CFIP优选"                'page true "CloudflareST优选" "${CFST_menu[@]}"; continue'
-    "修改CF个人配置"           "set_cfdns"
+    "安装CFWarp"              "install_Warp"
+    "CFWarp程序管理器"         'get_appmanage_menu "warp-svc"; page true "CFWarp" "${appmanage_menu[@]}"'
     ) 
     
 ###### Cf dns配置 ######
@@ -162,7 +161,6 @@ local config=(
 "Domain"
 "CFemail"
 "Cloudflare_api_key"
-"SPEEDTEST_URL"
 )
     set_dat "${config[@]}"
 }
@@ -202,15 +200,31 @@ function install_Warp {
 #配置参数
 path_CFST_file="$data_name/CFST"
 
+adddat '
+##### CFIP优选 ######
+$(pz "SPEEDTEST_URL")                              #@指定CF测速地址#@需要加https前缀#@web_regex
+$(pz "SPEEDTEST_n")                                 #@延迟测速线程#@越多延迟测速越快，性能弱的设备,如路由器请勿太高，默认200，最多1000#@"[[ "$new_text" =~ ^[0-9]+$ ]] && (( new_text>0 )) && (( new_text<1000 ))"
+$(pz "SPEEDTEST_t")                                 #@延迟测速次数#@单个 IP 延迟测速的次数，默认 4 次#@num_regex
+$(pz "SPEEDTEST_dn")                              #@下载测速数量#@延迟测速并排序后，从最低延迟起下载测速的数量，默认 10 个#@num_regex
+$(pz "SPEEDTEST_dt")                              #@下载测速时间#@单个 IP 下载测速最长时间，不能太短，默认 10 秒#@num_regex
+$(pz "SPEEDTEST_tl")                              #@平均延迟上限#@只输出低于指定平均延迟的 IP，各上下限条件可搭配使用，默认 9999 ms#@num_regex
+$(pz "SPEEDTEST_tll")                              #@平均延迟下限#@只输出高于指定平均延迟的 IP，默认 0 ms#@num_regex
+$(pz "SPEEDTEST_tlr")                              #@丢包几率上限#@只输出低于/等于指定丢包率的 IP，范围 0.00~1.00，0 过滤掉任何丢包的 IP，默认 1.00#@"[[ "$new_text" =~ ^0(\.00?)?|1(\.00?)?$ ]]"
+$(pz "SPEEDTEST_sl")                              #@下载速度下限#@只输出高于指定下载速度的 IP，凑够指定数量 [-dn] 才会停止测速，默认 0.00 MB/s#@"[[ "$new_text" =~ ^(1000(\.00?)?|([1-9]\d{0,2}|0)(\.\d{1,2})?)$ ]]"
+$(pz "SPEEDTEST_p")                              #@显示结果数量#@测速后直接显示指定数量的结果，为 0 时不显示结果直接退出，默认 10 个#@num_regex
+$(pz "SPEEDTEST_all")                              #@测速全部的IP#@对所有IP (仅支持 IPv4) 进行测速，默认 每个 /24 段随机测速一个 IP，输入all测试全部,输入n则默认#@"[[ "$new_text" == "all" ]]"
+'
+
 ### 菜单栏  ####
 CFST_menu=(
     "返回上一级"              "return"
-    "安装CFIP优选"            "install_CFST"
-    "开始随机CFIP优选"            'start_speedtest'
-    "开始穷尽CFIP优选"            'start_speedtest'
+    "开始CFIP优选"            'start_speedtest'
+    "IP优选配置"              'set_speentest'
     "CFIP配置说明"            'cd $path_CFST_file; $path_CFST_file/CloudflareST -h '
-    "创建可下载CF测试文件"       'Creat_cfspeedtest'
+    "创建CF测速文件"           'Creat_cfspeedtest'
+    "安装CFIP优选"            "install_CFST"
      )
+     
 
 #安装IP优选
 function install_CFST {
@@ -261,7 +275,7 @@ function start_speedtest {
         set_dat "SPEEDTEST_URL"
     fi
     echo "开始测速，请稍等..."
-    $path_CFST_file/CloudflareST -n 400 -t 6 -tl 220 -tlr 0 -sl 25 -url https://www.dvbh3bhvzvavdsne7h2cds.world/download/speedtest.bin
+    $path_CFST_file/CloudflareST -n 400 -t 6 -tl 220 -tlr 0 -sl 25 -url "$SPEEDTEST_URL"
     notifier "IP优选测速结果如下：\n$(cat result.csv)"
 }
 
@@ -271,4 +285,20 @@ function Creat_cfspeedtest {
     #创建空白大文件300m
     dd if=/dev/zero of="$speedtest_path" bs=1M count=0 seek=300 
     echo "已创建完成，请在中进行nginx配置"
+}
+function set_speentest {
+local config=(
+"SPEEDTEST_URL"                            
+"SPEEDTEST_n"                               
+"SPEEDTEST_t"                                
+"SPEEDTEST_dn"                             
+"SPEEDTEST_dt"                              
+"SPEEDTEST_tl"                              
+"SPEEDTEST_tll"                          
+"SPEEDTEST_tlr"                             
+"SPEEDTEST_sl"                             
+"SPEEDTEST_p"                             
+"SPEEDTEST_all"
+)
+    set_dat "${config[@]}"
 }
