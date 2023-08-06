@@ -259,7 +259,7 @@ function inp {
                fi
            fi
         done
-        [ "$k" == "true" ] && tput el && return
+        [[ "$k" == "true" ]] && tput el && return
         tput rc
         tput el
         echo
