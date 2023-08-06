@@ -5,7 +5,7 @@
 Version=1.00  #版本号  
 
 ##### 菜单栏 #####
-gpt_menu=(
+dockerapp_menu=(
     "ChatGPT-Pandora(可直接使用Openai账号登录)"        "page "ChatGPT-Pandora" "${pandora_menu[@]}""
     "ChatGPT-Next-Web(接入Openai Api后使用)"          "page "ChatGPT-Next-Web" "${gptnext_menu[@]}""
 )          
@@ -21,7 +21,7 @@ Pandora_image=\"pengzhile/pandora\"       #Chat镜像名称*
 Pandora_name=\"Pandora\"                                    #Chat容器名称*
 '
 ##### 菜单栏 #####
-gptnext_menu=(
+pandora_menu=(
     "下载\更新GPT-Pandora"                 "pull_Pandora"
     "启动\重启动Chatgpt"               "docker start $Chatgpt_name"
     "运行\重运行Chatgpt容器"            "run_gpt"
