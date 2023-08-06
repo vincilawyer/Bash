@@ -18,7 +18,6 @@ Chatgpt_name=\"chatgpt\"                                    #Chat容器名称*
 '
 ##### 菜单栏 #####
 gpt_menu=(
-    "返回上一级"                        "return"
     "下载\更新Chatgpt"                 "pull_gpt"
     "启动\重启动Chatgpt"               "docker start $Chatgpt_name"
     "运行\重运行Chatgpt容器"            "run_gpt"
