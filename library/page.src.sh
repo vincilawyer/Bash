@@ -4,20 +4,30 @@
 
 function page {
    local title="$1"    #页面标题
-   waitcon="true"      #默认需要等待
    
    while true; do
-    
     # 清除和显示页面样式
     clear
     logo
     pagetitle
     menutitle "$1"
+    waitcon="true"      #默认完成一个指令需要等待
 
     array=("${@:2}")
     menu=()
     cmd=()
     n=1
+    
+     #判断当前页面是否由上一级页面调用
+    if [[ "$CURSHELL" == *"bash"* ]]; then
+        if [[ "${FUNCNAME[1]}" == "${FUNCNAME[0]}" ]]; then
+              array=("返回上一级菜单" 'return; waitcon="false"' "${array[@]}")
+        fi
+    elif [[ "$CURSHELL" == *"zsh"* ]]; then
+         if [[ "${funcstack[1]}" == "${funcstack[0]}" ]]; then
+             array=("返回上一级菜单" 'return; waitcon="false"' "${array[@]}")
+        fi
+    fi
     
     #分离菜单和指令
     for (( i=0; i<${#array[@]}; i++ )); do
