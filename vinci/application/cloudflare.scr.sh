@@ -134,8 +134,7 @@ function cfdns {
                 continue
            fi;;
      3) return;;
-     0) quit 1
-        clear;;
+     0) quit 1;;
   esac
   wait
   done
