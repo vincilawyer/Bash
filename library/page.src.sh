@@ -27,7 +27,7 @@ function page {
         fi
     elif [[ "$CURSHELL" == *"zsh"* ]]; then
          if [[ "${funcstack[2]}" == "${funcstack[0]}" ]]; then
-             array=("返回上一级菜单" 'waitcon="false; return' "${array[@]}")
+             array=("返回上一级菜单" 'waitcon="false"; return' "${array[@]}")
         fi
     fi
     
