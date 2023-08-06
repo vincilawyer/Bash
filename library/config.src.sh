@@ -77,7 +77,8 @@ function set_dat {
     if ! [ $# -eq 0 ]; then
          for arg in "$@"; do
              line=$(search "#@" '' "$arg" 1 false false false true "$configfile_path" )            
-             IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
+             [[ "$CURSHELL" == *"bash"* ]] && IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
+             [[ "$CURSHELL" == *"zsh"* ]] && IFS=$'\n' mapfile -t a <<< $(echo "$line" | sed 's/#@/\n/g') 
              rule="$(echo -e "${a[2]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"   #去除规则前后的空格
              if [ -z "$rule" ]; then
              :      #如果是空的，则无需进行判断句的判断
@@ -99,7 +100,8 @@ function set_dat {
     # 因为在上面含有IFS= read的循环中，没法再次read到用户的输入数据，因此在循环外处理数据
     for line in "${lines[@]}"; do   
          a=()
-         IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
+         [[ "$CURSHELL" == *"bash"* ]] && IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
+          [[ "$CURSHELL" == *"zsh"* ]] && IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g')
          IFS="=" read -ra b <<< "$line" 
          rule="$(echo -e "${a[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"   #去除规则前后的空格
          if [ -z "$rule" ]; then   #如果是空的，则无需进行判断句的判断
@@ -131,7 +133,8 @@ function update_config {
          [[ "$line1" == *'#￥#@'* ]] || continue      #如果没有找到参数行，则继续查找
          [[ "$line2" =~ ^[[:space:]]*# ]] && continue      #如果配置行是注释行，则继续查找
          a=()
-         IFS=$'\n' readarray -t a <<< $(echo "$line1" | sed 's/#@/\n/g')    # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。
+         [[ "$CURSHELL" == *"bash"* ]] && IFS=$'\n' readarray -t a <<< $(echo "$line1" | sed 's/#@/\n/g')    # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。
+         [[ "$CURSHELL" == *"zsh"* ]] && IFS=$'\n' readarray -t a <<< $(echo "$line1" | sed 's/#@/\n/g')   
          varname="$(echo -e "${a[4]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"   #去除变量名的前后空格
          echo 
          #如果变量存在
