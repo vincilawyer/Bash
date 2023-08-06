@@ -28,7 +28,7 @@ function page {
     menutitle "$1"
     
     waitcon="true"      #默认完成一个指令需要等待
-    local menunum=1
+    local menuindex=1
     local menu=()
     local cmd=()
     
@@ -36,8 +36,8 @@ function page {
     for (( i=0; i<${#array[@]}; i++ )); do
         if (( i % 2 == 0 )) ; then
             menu+=("${array[$i]}")
-            echo "  [$menunum]$(((menunum<10)) && echo " ") ${array[$i]}" 
-            ((menunum))
+            echo "  [$menuindex]$(((menuindex<10)) && echo " ") ${array[$i]}" 
+            (( ++menuindex ))
         else
             cmd+=("${array[$i]}")
         fi
@@ -46,7 +46,7 @@ function page {
 
     echo
     echo -n "  请按序号选择操作: "
-    inp false 1 '"[[ "$new_text" =~ ^[0-9]+$ ]] && (( $new_text >= 0 && $new_text <= '$((menunum))' ))"'
+    inp false 1 '"[[ "$new_text" =~ ^[0-9]+$ ]] && (( $new_text >= 0 && $new_text <= '$((menuindex))' ))"'
     [[ "$new_text" == "0" ]] && quit 1              #如果选择零则退出
     clear 
     eval "${cmd[$((new_text-1))]}"  || ( echo "指令执行可能失败，请检查！"; waitcon="true" )
