@@ -13,7 +13,6 @@ $(pz "Warp_port")                                   #@Warp监听端口#@0-65535#
 
 #### 菜单栏
 cf_menu=(
-    "返回上一级"               "return"
     "Cloudflare DNS配置"      'cfdns; continue'
     "修改CF DNS个人配置"        "set_cfdns"
     "CFIP优选"                'page true "CloudflareST优选" "${CFST_menu[@]}"; continue'
@@ -217,7 +216,6 @@ $(pz "SPEEDTEST_all")                              #@测速范围#@对所有IP (
 
 ### 菜单栏  ####
 CFST_menu=(
-    "返回上一级"              "return"
     "开始CFIP优选"            'start_speedtest'
     "IP优选配置"              'set_speentest'
     "CFIP配置说明"            'cd $path_CFST_file; $path_CFST_file/CloudflareST -h '
