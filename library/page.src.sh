@@ -9,16 +9,8 @@ function page {
    local array=("${@:2}")
    local menu=()
    local cmd=()
-    n=1
+   local menunum=1
    
-   while true; do
-    # 清除和显示页面样式
-    clear
-    logo
-    pagetitle
-    menutitle "$1"
-    waitcon="true"      #默认完成一个指令需要等待
-    
      #判断当前页面是否由上一级页面调用
     if [[ "$CURSHELL" == *"bash"* ]]; then
         if [[ "${FUNCNAME[1]}" == "${FUNCNAME[0]}" ]]; then
@@ -29,12 +21,20 @@ function page {
              array=("返回上一级菜单" 'waitcon="false"; return' "${array[@]}")
         fi
     fi
+   
+   while true; do
+    # 清除和显示页面样式
+    clear
+    logo
+    pagetitle
+    menutitle "$1"
+    waitcon="true"      #默认完成一个指令需要等待
     
     #分离菜单和指令
     for (( i=0; i<${#array[@]}; i++ )); do
         if (( i % 2 == 0 )) ; then
             menu+=("${array[$i]}")
-            echo "  [$n]$(((n<10)) && echo " ") ${array[$i]}" 
+            echo "  [$menunum]$(((menunum<10)) && echo " ") ${array[$i]}" 
             ((n++))
         else
             cmd+=("${array[$i]}")
