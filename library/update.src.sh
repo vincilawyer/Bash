@@ -59,7 +59,7 @@ while true; do
                    if [[ "$code" == "$old_code" ]]; then 
                          #如果是报错更新，先报错，并继续检测更新
                          if  (( upcode==2 )); then
-                             ((n++)) 
+                             (( ++n )) 
                              warning "$file_path" "$file_name" "$necessary" "$cur_Version" "$n"
                              continue
                          fi
