@@ -27,9 +27,17 @@ config_num="\"${#configfile_mod}\""                         #配置模板版本�
 $(pz "Domain")                                          #@一级域名#@不用加www#@domain_regex
 '
 
+#生成配置文件内容 
+function outdat {
+    echo -e "${BLUE}输出内容为:${NC}"
+    (eval echo "\"$1\"") || echo "配置模板有误! "
+    (eval "$(eval echo "\"$1\"")") && echo -e "${BLUE}试执行无误${NC}" || echo "配置模板有误"
+}
+
 ## 添加配置文件内容 
 function adddat { 
-     eval "$(eval echo "\"$1"\")" || quit "添加配置模板错误，请检查格式！" "${BASH_SOURCE[0]}" "${FUNCNAME[0]}" "${FUNCNAME[1]}"
+     (eval echo "\"$1\"") || quit "添加配置模板错误，请检查格式！" "${BASH_SOURCE[0]}" "${FUNCNAME[0]}" "${FUNCNAME[1]}"
+     (eval "$(eval echo "\"$1\"")") || quit "添加配置模板错误，请检查格式！" "${BASH_SOURCE[0]}" "${FUNCNAME[0]}" "${FUNCNAME[1]}"
      configfile_mod+="$1" 
 }
 
