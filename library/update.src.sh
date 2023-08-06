@@ -81,13 +81,13 @@ while true; do
    if (( loadcode == 1 )); then
         echo -e -n "${GREEN}正在载入$file_name文件...${NC}"
         #开始脚本语法检查
+        local wrongtext=""
         wrongtext="$(source "$file_path" 2>&1 >/dev/null)"
         if [[ -n "$wrongtext" ]]; then  
              echo "$file_name文件存在语法错误，报错内容为："
              echo "$wrongtext"
              echo "即将开始重新更新"
              upcode=2
-             wrongtext=""
              continue
         fi          
         #如果脚本没有语法错误，则载入
