@@ -82,7 +82,6 @@ while true; do
         echo -e -n "${GREEN}正在载入$file_name文件...${NC}"
         #开始脚本语法检查
         wrongtext="$(source "$file_path" 2>&1 >/dev/null)"
-        echo "一、$wrongtext"
         if [[ -n "$wrongtext" ]]; then  
              echo "$file_name文件存在语法错误，报错内容为："
              echo "$wrongtext"
