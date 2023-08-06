@@ -228,23 +228,22 @@ if uname -a | grep -q 'Debian'; then
 
 #### 主菜单 ####
 main_menu=(
-    "系统设置"              'page true " 系 统 设 置 " "${system_menu[@]}"'
-    "UFW防火墙管理"          'page true " UFW 防 火 墙" "${ufw_menu[@]}"'
-    "Docker服务"            'page true "Docker" "${docker_menu[@]}"'
-    "Nginx服务"             'page true "Nginx" "${nginx_menu[@]}"'
-    "X-ui服务"              'page true "X-UI" "${xui_menu[@]}"'
-    "Cloudflare服务"        'page true "Cloudflare" "${cf_menu[@]}"'
-    "Tor服务"               'page true "Tor" "${tor_menu[@]}"'
-    "Frp服务"               'page true "Frp" "${frp_menu[@]}"'
-    "Alist服务"            'page true "Alist" "${alist_menu[@]}"'
-    "Rclone服务"            'page true "Rclone" "${rclone_menu[@]}"'
+    "系统设置"              'page " 系 统 设 置 " "${system_menu[@]}"'
+    "UFW防火墙管理"          'page " UFW 防 火 墙" "${ufw_menu[@]}"'
+    "Docker服务"            'page "Docker" "${docker_menu[@]}"'
+    "Nginx服务"             'page "Nginx" "${nginx_menu[@]}"'
+    "X-ui服务"              'page "X-UI" "${xui_menu[@]}"'
+    "Cloudflare服务"        'page "Cloudflare" "${cf_menu[@]}"'
+    "Tor服务"               'page "Tor" "${tor_menu[@]}"'
+    "Frp服务"               'page "Frp" "${frp_menu[@]}"'
+    "Alist服务"            'page "Alist" "${alist_menu[@]}"'
+    "Rclone服务"            'page "Rclone" "${rclone_menu[@]}"'
     )
     
 ### 系统工具选项 ###
 system_menu=(
-    "返回上一级"                "return"
     "更新脚本"                  'startcode=1; base_load; Initial; break'
-    "个人配置设置"               'page true "配置设置" "${config_menu[@]}"; continue'
+    "个人配置设置"               'page "配置设置" "${config_menu[@]}"; continue'
     "查看所有重要程序运行状态"    "status_all"
     "本机ip信息"               "ipinfo"    
     "修改SSH登录端口和登录密码"   "change_ssh_port; change_login_password"
@@ -263,15 +262,14 @@ elif uname -a | grep -q 'Android'; then
     update_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_andriod" 1 "$startcode" 
 
 main_menu=(
-    "系统设置"              'page true " 系 统 设 置 " "${system_menu[@]}"' 
-    "Cloudflare服务"        'page true "Cloudflare" "${cf_menu[@]}"'
-    "Alist服务"            'page true "Alist" "${alist_menu[@]}"'
-    "Rclone服务"            'page true "Rclone" "${rclone_menu[@]}"'
+    "系统设置"              'page " 系 统 设 置 " "${system_menu[@]}"' 
+    "Cloudflare服务"        'page "Cloudflare" "${cf_menu[@]}"'
+    "Alist服务"            'page "Alist" "${alist_menu[@]}"'
+    "Rclone服务"            'page "Rclone" "${rclone_menu[@]}"'
     )
 system_menu=(
-    "返回上一级"                "return"
     "更新脚本"                  'startcode=1; base_load; Initial; break'
-    "个人配置设置"               'page true "配置设置" "${config_menu[@]}" continue'
+    "个人配置设置"               'page "配置设置" "${config_menu[@]}" continue'
     )  
 
 
@@ -288,15 +286,14 @@ elif uname -a | grep -q 'Darwin'; then
     update_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_andriod" 1 "$startcode" 
 
 main_menu=(
-    "系统设置"              'page true " 系 统 设 置 " "${system_menu[@]}"' 
-    "Cloudflare服务"        'page true "Cloudflare" "${cf_menu[@]}"'
-    "Alist服务"            'page true "Alist" "${alist_menu[@]}"'
-    "Rclone服务"            'page true "Rclone" "${rclone_menu[@]}"'
+    "系统设置"              'page " 系 统 设 置 " "${system_menu[@]}"' 
+    "Cloudflare服务"        'page "Cloudflare" "${cf_menu[@]}"'
+    "Alist服务"            'page "Alist" "${alist_menu[@]}"'
+    "Rclone服务"            'page "Rclone" "${rclone_menu[@]}"'
     )
 system_menu=(
-    "返回上一级"                "return"
     "更新脚本"                  'startcode=1; base_load; Initial; break'
-    "个人配置设置"               'page true "配置设置" "${config_menu[@]}"'
+    "个人配置设置"               'page "配置设置" "${config_menu[@]}"'
     "Mac终端网络代理模式"         'export http_proxy=http://127.0.0.1:1087;export https_proxy=http://127.0.0.1:1087;export ALL_PROXY=socks5://127.0.0.1:1086; echo "已启动终端网络代理！"'
     )  
 
@@ -316,5 +313,5 @@ function main {
    update_dat 
   
    #显示一级菜单主页面
-   page false ' 主 菜 单 ' "${main_menu[@]}"          
+   page ' 主 菜 单 ' "${main_menu[@]}"          
 }
