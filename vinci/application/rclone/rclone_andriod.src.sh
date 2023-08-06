@@ -4,7 +4,6 @@
 Version=1.00  #版本号 
 ### 菜单栏
 rclone_menu=(
-    "返回上一级"            "return"
     "安装\更新Rclone"      'pkg upgrade; pkg update; pkg install rclone'
     "Rclone配置"            'rclone config'
     "将Baidu网盘书库更新至Onedrive"            'baidutoonebook'
