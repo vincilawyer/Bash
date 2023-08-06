@@ -27,8 +27,8 @@ config_num="\"${#configfile_mod}\""                         #配置模板版本�
 $(pz "Domain")                                          #@一级域名#@不用加www#@domain_regex
 '
 
-#生成配置文件内容 
-function outdat {
+#检查配置文件内容 
+function checkdat {
     echo -e "${BLUE}输出内容为:${NC}"
     (eval echo "\"$1\"") || echo "配置模板有误! "
     (eval "$(eval echo "\"$1\"")") && echo -e "${BLUE}试执行无误${NC}" || echo "配置模板有误"
