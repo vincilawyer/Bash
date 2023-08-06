@@ -172,7 +172,8 @@ function base_load {
      if ((startcode==1)) || ! [ -e "$path_update" ]; then
          echo
          echo "正在启动更新检查程序..."
-         if ! curl -H 'Cache-Control: no-cache' -L "$link_update" -o "$path_update" >/dev/null 2>&1 ; then 
+         #增加时间戳，防止缓存
+         if ! curl -H 'Cache-Control: no-cache' -L "$link_update?timestamp=$(date +%s)"" -o "$path_update" >/dev/null 2>&1 ; then 
               echo "更新检查程序下载失败，请检查网络！" 
               wait
               else
