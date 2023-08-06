@@ -267,7 +267,6 @@ EOF
 #开始测速
 function start_speedtest {
     cd "$path_CFST_file"
-    wait
     echo "开始测速，请稍等..."
     eval $path_CFST_file/CloudflareST "$([[ -n "$SPEEDTEST_URL" ]] && echo "-url "$SPEEDTEST_URL"")" "$([[ -n "$SPEEDTEST_n" ]] && echo "-n "$SPEEDTEST_n"")" \
     "$([[ -n "$SPEEDTEST_t" ]] && echo "-t "$SPEEDTEST_t"")"  "$([[ -n "$SPEEDTEST_dn" ]] && echo "-dn "$SPEEDTEST_dn"")"  \
