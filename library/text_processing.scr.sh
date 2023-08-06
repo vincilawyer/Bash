@@ -188,7 +188,8 @@ function settext {
   local input="$9"                # 要替换的内容
   local mean="${10}"              # 显示搜索和修改内容的含义
   local mark="${11}"              # 修改内容备注
-  #          ${@:12}              # 匹配规则，参照inp函数
+  #第12个参数开始，均为inp函数的参数。第12参数为比较模式，1为正则表达式规则，2为直接匹配规则。
+  #第13个参数为比较参数。
   local temp_file="$(mktemp)"
   old_text=""                     # 设置搜中的旧文本作为全局变量（不含“注释行”字样）
   new_text=""                     # 设置输入的新文本作为全局变量（不含前后空格）
@@ -200,7 +201,12 @@ function settext {
      while true; do
          #-r选项告诉read命令不要对反斜杠进行转义，避免误解用户输入。-e选项启用反向搜索功能，这样用户在输入时可以通过向左箭头键或Ctrl + B键来移动光标并修改输入。
          echo -ne "${GREEN}请设置新的$mean（$( [ -n "$mark" ] && echo "$mark,")输入为空则跳过$( [[ $coment == "true" ]] && echo "，输入#则设为注释行" || echo "，输入#则设为空值" )）：${NC}"
-         inp true ${@:12} $( [ -n "${13}" ] && echo "#" )  
+         #判断第十三个参数开始是否为空。如果不为空。则添加允许输入#号规则。
+         for Condition in "${@:13}"; do
+             [[ -n "$Condition" ]] && jjj='"[[ "$new_text" == "#" ]]"' && break
+         done
+         #开始输入
+         inp true "${@:12}" "$jjj"
          if [[ -z "$new_text" ]]; then
              echo -e "${GREEN}已跳过$mean设置${NC}"
              return 1
@@ -217,25 +223,26 @@ function settext {
                      echo -e "${BLUE}"$mean"已修改为"$([ -z "$new_text" ] && echo "空" || echo "：$new_text")"${NC}"
                      return 0
                  fi
-            else                           #如果在文本模式下
+           else                           #如果在文本模式下
 
                :
-            fi
-         fi
+           fi
+        fi
      done  
 }    
 
 #######   输入框    ####### 
 #说明：1、传入的第一个参数为true则能接受回车输入，第一个参数为false则不能回车输入。参数带有""号字符，则将参数视为具体条件语句，没有""则为普通比较。
-#     2、传入的第二个参数为比较模式，1为正则表达式匹配，2为字符串普通匹配。两种模式下，都可以使用条件语句。
-#     其余参数均为比较参数
+#     2、输入的匹配比较，有三种。1、规则比较例如："((new_text==1))"，即判断规则是否为真；2、正则表达式比较，例如$port_regex，即判断输入是否符合表达式规则；3、直接比较，例如 1或数组（注意：数组比较会耗费较多计算资源，慎用大数组），即判断输入是否为1或属于数组中的数。
+#     3、第二个参数为设置比较模式，1为正则表达式规则，2为直接匹配规则。无论哪种模式下，都可以直接使用规则比较语句。规则比较语句需要用双引号识别
+#     4、第三个参数起，均为比较参数。如果第三个参数起为空。则允许输入任何值。
 function inp {
     tput sc
     local k="true" #判断参数是否全部为空
     while true; do
         new_text=""
         read new_text
-        [ $1 = true ] && [[ -z "$new_text" ]] && tput el && return   #如果$1为true，且输入为空，则完成输入
+        [[ "$1" = "true" ]] && [[ -z "$new_text" ]] && tput el && return   #如果$1为true，且输入为空，则完成输入
         for Condition in "${@:3}"; do
            #如果参数为空则继续下一个参数
            [[ -z $Condition ]] && continue   
@@ -245,9 +252,9 @@ function inp {
                 if eval ${Condition:1:-1}; then tput el && return; fi
            # 如果参数为普通字符串
            else
-               if [ "$2" == "1" ]; then
+               if [[ "$2" == "1" ]]; then
                   [[  $new_text =~ $Condition ]] && tput el && return
-               elif [ "$2" == "2" ]; then
+               elif [[ "$2" == "2" ]]; then
                   [[ "$new_text" == "$Condition" ]] && tput el && return
                fi
            fi
