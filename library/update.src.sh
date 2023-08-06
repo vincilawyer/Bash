@@ -79,9 +79,10 @@ while true; do
 
    #开始载入：如果载入模式为source。注：为了防止检验语法时，发生指令滞留，无法退出检测，尽量不要在模块文件中，执行指令。仅定义变量与函数。需要执行的指令，可以定义一个初始化函数来执行
    if (( loadcode == 1 )); then
+        echo -e -n "${GREEN}正在载入$file_name文件...${NC}"
         #开始脚本语法检查
         wrongtext="$(source "$file_path" 2>&1 >/dev/null)"
-        if [ -n "$wrongtext" ]; then  
+        if [[ -n "$wrongtext" ]]; then  
              echo "$file_name文件存在语法错误，报错内容为："
              echo "$wrongtext"
              echo "即将开始重新更新"
@@ -90,7 +91,6 @@ while true; do
              continue
         fi          
         #如果脚本没有语法错误，则载入
-        echo -e -n "${GREEN}正在载入$file_name文件...${NC}"
         source "$file_path"
         echo -e "${GREEN}载入完成${NC}"
         #执行初始化函数
