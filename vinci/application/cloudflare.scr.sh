@@ -271,11 +271,17 @@ EOF
 function start_speedtest {
     cd "$path_CFST_file"
     if [ -z "$SPEEDTEST_URL" ]; then
-        echo "请先设置测速链接"
-        set_dat "SPEEDTEST_URL"
+        echo "请先设置基本配置"
+        set_speentest
     fi
+    wait
     echo "开始测速，请稍等..."
-    $path_CFST_file/CloudflareST -n 400 -t 6 -tl 220 -tlr 0 -sl 25 -url "$SPEEDTEST_URL"
+    $path_CFST_file/CloudflareST "$([[ -n "$SPEEDTEST_URL" ]] && echo "-url \"$SPEEDTEST_URL\"")" "$([[ -n "$SPEEDTEST_n" ]] && echo "-n \"$SPEEDTEST_n\"")" \
+    "$([[ -n "$SPEEDTEST_t" ]] && echo "-t \"$SPEEDTEST_t\"")"  "$([[ -n "$SPEEDTEST_dn" ]] && echo "-dn \"$SPEEDTEST_dn\"")"  \
+    "$([[ -n "$SPEEDTEST_dt" ]] && echo "-dt \"$SPEEDTEST_dt\"")"   "$([[ -n "$SPEEDTEST_tl" ]] && echo "-tl \"$SPEEDTEST_tl\"")"  \
+    "$([[ -n "$SPEEDTEST_tll" ]] && echo "-tll \"$SPEEDTEST_tll\"")"  "$([[ -n "$SPEEDTEST_tlr" ]] && echo "-tlr \"$SPEEDTEST_tlr\"")" \
+    "$([[ -n "$SPEEDTEST_sl" ]] && echo "-sl \"$SPEEDTEST_sl\"")"  "$([[ -n "$SPEEDTEST_p" ]] && echo "-p \"$SPEEDTEST_p\"")"   \
+    "$([[ "$SPEEDTEST_all" == "all" ]] && echo "-allip" )" 
     notifier "IP优选测速结果如下：\n$(cat result.csv)"
 }
 
