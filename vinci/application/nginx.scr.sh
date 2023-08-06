@@ -4,7 +4,6 @@
 
 ### 菜单栏  ####
 nginx_menu=(
-    "返回上一级"              "return"
     "安装Nginx"              "install_Nginx"
     "设置Nginx配置"           'echo "维护中"'
     "查看Nginx日志"            "nano /var/log/nginx/access.log; continue"
