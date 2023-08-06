@@ -9,6 +9,8 @@ GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
+#时间戳，防止缓存
+sjc="?timestamp=$(date +%s)"
 
 #######  更新函数  #######
 function update_load {
@@ -27,7 +29,7 @@ while true; do
     if ! [ -e "$file_path" ]; then
          #下载更新文件
          echo "正在下载$file_name文件..."
-         if ! curl -s -H 'Cache-Control: no-cache' -L "$file_link" -o "$file_path"; then 
+         if ! curl -s -H 'Cache-Control: no-cache' -L "$file_link$sjc" -o "$file_path"; then 
               #如果下载失败
               echo -e "${RED}$file_name文件下载失败，请检查网络！${NC}"
               echo "Wrong url:$file_link"
@@ -45,7 +47,7 @@ while true; do
          else
                echo "正在检查$file_name文件更新..."
                #获取代码
-               if ! code="$(curl -s -H 'Cache-Control: no-cache' "$file_link")"; then    
+               if ! code="$(curl -s -H 'Cache-Control: no-cache' "$file_link$sjc")"; then    
                     #代码获取失败
                     echo -e "${RED}$file_name文件更新失败，请检查网络！${NC}"
                     echo "Wrong url:$file_link"
