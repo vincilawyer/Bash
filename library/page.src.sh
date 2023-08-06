@@ -28,7 +28,7 @@ function page {
     menutitle "$1"
     
     waitcon="true"      #默认完成一个指令需要等待
-    local menuindex=1
+    local menunum=1
     local menu=()
     local cmd=()
     
@@ -36,16 +36,14 @@ function page {
     for (( i=0; i<${#array[@]}; i++ )); do
         if (( i % 2 == 0 )) ; then
             menu+=("${array[$i]}")
-            echo "  [$menuindex]$(((menuindex<10)) && echo " ") ${array[$i]}" 
-            (menuindex++))
+            echo "  [$menunum]$(((menunum<10)) && echo " ") ${array[$i]}" 
+            ((menunum))
         else
             cmd+=("${array[$i]}")
         fi
     done
        echo "  [0]  退出"
 
-    #获取菜单数量
-    menunum=${#menu[@]} 
     echo
     echo -n "  请按序号选择操作: "
     inp false 1 '"[[ "$new_text" =~ ^[0-9]+$ ]] && (( $new_text >= 0 && $new_text <= '$((menunum))' ))"'
