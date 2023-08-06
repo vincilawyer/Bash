@@ -23,11 +23,11 @@ Pandora_name=\"Pandora\"                                    #Chat容器名称*
 ##### 菜单栏 #####
 pandora_menu=(
     "下载\更新GPT-Pandora"                 "pull_Pandora"
-    "启动\重启动Chatgpt"               "docker start $Chatgpt_name"
-    "运行\重运行Chatgpt容器"            "run_gpt"
-    "设置Chatgpt配置"                  "set_gpt"
-    "查看Chatgpt运行状况"               'docker inspect $Chatgpt_name'
-    "停用Chatgpt"                     'confirm "是否停止运行Chatgpt？" "已取消！" || docker stop $Chatgpt_name'
+    "启动\重启动Chatgpt"               "docker start $Pandora_name"
+    "运行\重运行Chatgpt容器"            "run_Pandora"
+    "设置GPT-Pandora配置"                  "set_Pandora"
+    "查看GPT-Pandora运行状况"               'docker inspect $Pandora_name'
+    "停用GPT-Pandora"                     'confirm "是否停止运行Pandora？" "已取消！" || docker stop $Pandora_name'
     )                     
 
 
@@ -52,7 +52,7 @@ function run_Pandora {
 }
 
 ######  设置chatgpt配置 ######
-function set_gpt {
+function set_Pandora {
 local conf=(
 "Pandora_port"
 )
