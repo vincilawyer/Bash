@@ -1,6 +1,5 @@
 #####防火墙管理#####
 ufw_menu=(
-    "返回上一级"            "return"
     "启用防火墙规则"         "ufw enable"
     "停用防火墙规则"         "ufw disable"
     "查看防火墙规则"         "ufw status verbose"
