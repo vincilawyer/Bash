@@ -4,7 +4,6 @@
 ##此模块依赖library/text_processing.scr.sh模块，且必须置于其他配置程序前面
 ### 菜单栏
 config_menu=(
-    "返回上一级"               "return"
     "修改个人配置参数"          "set_dat"
     "查看配置参数文件"          'nano "$configfile_path"; continue'
     "备份个人配置文件"          'confirm "是否备份个人配置文件，并覆盖原有备份？" "已取消备份配置" || ( cp "$configfile_path" "$configfile_path.bak"; echo "已备份个人配置" )'
