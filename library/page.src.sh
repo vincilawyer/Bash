@@ -6,6 +6,10 @@ waitcon=""
 
 function page {
    local title="$1"    #页面标题
+   local array=("${@:2}")
+   local menu=()
+   local cmd=()
+    n=1
    
    while true; do
     # 清除和显示页面样式
@@ -14,11 +18,6 @@ function page {
     pagetitle
     menutitle "$1"
     waitcon="true"      #默认完成一个指令需要等待
-
-    local array=("${@:2}")
-    menu=()
-    cmd=()
-    n=1
     
      #判断当前页面是否由上一级页面调用
     if [[ "$CURSHELL" == *"bash"* ]]; then
