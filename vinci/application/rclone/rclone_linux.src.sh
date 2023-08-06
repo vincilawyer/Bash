@@ -5,7 +5,6 @@ Version=1.00  #版本号
 
 ### 菜单栏
 rclone_menu=(
-    "返回上一级"            "return"
     "安装Rclone"            'curl https://rclone.org/install.sh | sudo bash'
     "Rclone配置"            'rclone config'
     "将Baidu网盘书库更新至Onedrive"            'baidutoonebook'
