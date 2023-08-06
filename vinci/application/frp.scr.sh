@@ -5,7 +5,6 @@ Version=1.00  #版本号
 
 ##### 菜单栏 #####
   frp_menu=(
-    "返回上一级"                    "return"
     "安装Frp"                     "install_Frp"
     "设置Frp配置"                  "set_Frp"
     "程序管理器"                   'get_appmanage_menu "frps"; page true "Frp" "${appmanage_menu[@]}"'
