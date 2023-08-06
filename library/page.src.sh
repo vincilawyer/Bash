@@ -9,7 +9,7 @@ function page {
    local array=("${@:2}")
    local menu=()
    local cmd=()
-   local menunum=1
+   local menunum1=1
    
      #判断当前页面是否由上一级页面调用
     if [[ "$CURSHELL" == *"bash"* ]]; then
@@ -34,8 +34,8 @@ function page {
     for (( i=0; i<${#array[@]}; i++ )); do
         if (( i % 2 == 0 )) ; then
             menu+=("${array[$i]}")
-            echo "  [$menunum]$(((menunum<10)) && echo " ") ${array[$i]}" 
-            ((menunum++))
+            echo "  [$menunum1]$(((menunum1<10)) && echo " ") ${array[$i]}" 
+            ((menunum1++))
         else
             cmd+=("${array[$i]}")
         fi
