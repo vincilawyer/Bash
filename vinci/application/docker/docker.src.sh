@@ -16,8 +16,8 @@ docker_menu=(
 ###初始化
 function docker_initial {
     #加载chatapp模块
-    path_dockerapp="$data_path/dockerapp.src.sh.src.sh"
-    link_dockerapp="${link_repositories}vinci/application/docker/dockerapp.src.sh.src.sh"
+    path_dockerapp="$data_path/dockerapp.src.sh"
+    link_dockerapp="${link_repositories}vinci/application/docker/dockerapp.src.sh"
     update_load "$path_dockerapp" "$link_dockerapp" "dockerapp" 1 "$startcode" 
 
 }
