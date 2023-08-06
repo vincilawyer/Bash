@@ -15,7 +15,7 @@ function page {
     menutitle "$1"
     waitcon="true"      #默认完成一个指令需要等待
 
-    array=("${@:2}")
+    local array=("${@:2}")
     menu=()
     cmd=()
     n=1
