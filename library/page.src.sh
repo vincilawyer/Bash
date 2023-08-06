@@ -35,7 +35,7 @@ function page {
         if (( i % 2 == 0 )) ; then
             menu+=("${array[$i]}")
             echo "  [$menunum]$(((menunum<10)) && echo " ") ${array[$i]}" 
-            ((n++))
+            ((menunum++))
         else
             cmd+=("${array[$i]}")
         fi
