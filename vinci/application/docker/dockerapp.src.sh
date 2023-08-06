@@ -6,8 +6,8 @@ Version=1.00  #版本号
 
 ##### 菜单栏 #####
 dockerapp_menu=(
-    "ChatGPT-Pandora(可直接使用Openai账号登录)"        "page "ChatGPT-Pandora" "${pandora_menu[@]}""
-    "ChatGPT-Next-Web(接入Openai Api后使用)"          "page "ChatGPT-Next-Web" "${gptnext_menu[@]}""
+    "ChatGPT-Pandora(可直接使用Openai账号登录)"        'page "ChatGPT-Pandora" "${pandora_menu[@]}"'
+    "ChatGPT-Next-Web(接入Openai Api后使用)"          'page "ChatGPT-Next-Web" "${gptnext_menu[@]}"'
 )          
 
 
