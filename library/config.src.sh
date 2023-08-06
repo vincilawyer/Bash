@@ -39,8 +39,8 @@ function checkdat {
 function adddat { 
       local wrongtext=""
        wrongtext=$((eval echo "\"$1\"") 2>&1 >/dev/null)
-       if [[ -n "$wrongtext" ]] then
-           echo 添加配置模板错误，错误内容如下，请检查格式！(注意#@后的内容是否使用\符号进行转义)
+       if [[ -n "$wrongtext" ]]; then
+           echo "添加配置模板错误，错误内容如下，请检查格式！(注意#@后的内容是否使用\符号进行转义)"
            echo "$wrongtext"
            quit "配置模板错误，已退出系统！" "${BASH_SOURCE[1]}" "${FUNCNAME[1]}" "${FUNCNAME[2]}"
        fi 
