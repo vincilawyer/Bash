@@ -256,8 +256,7 @@ elif uname -a | grep -q 'Android'; then
     echo
     echo -e "${GREEN}正在进行Android端模块配置...${NC}"
 
-    ######载入专属模块 ######
-    update_load "$path_cf" "$link_cf" "cloudflare" 1 "$startcode" 
+    ######载入专属模块 #####
     update_load "$path_alist_andriod" "$link_alist_andriod" "alist_andriod" 1 "$startcode" 
     update_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_andriod" 1 "$startcode" 
 
@@ -281,7 +280,6 @@ elif uname -a | grep -q 'Darwin'; then
     echo -e "${GREEN}正在进行Mac端模块配置...${NC}"
     
     ######载入专属模块 ######
-     update_load "$path_cf" "$link_cf" "cloudflare" 1 "$startcode" 
     update_load "$path_alist_andriod" "$link_alist_andriod" "alist_andriod" 1 "$startcode" 
     update_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_andriod" 1 "$startcode" 
 
