@@ -212,6 +212,7 @@ $(pz "SPEEDTEST_sl")                              #@下载速度下限#@只输�
 $(pz "SPEEDTEST_p")                              #@显示结果数量#@测速后直接显示指定数量的结果，为 0 时不显示结果直接退出，默认 10 个#@num_regex
 $(pz "SPEEDTEST_dd")                              #@禁用下载测速#@禁用后测速结果会按延迟排序，默认按下载速度排序，默认启用，输入y禁用，输入＃启用#@\"[[ \"\$new_text\" == \"y\" ]]\"
 $(pz "SPEEDTEST_f")                              #@IP段数据文件#@如路径含有空格请加上引号；支持其他 CDN IP段，默认 ip.txt＃@
+$(pz "SPEEDTEST_o")                              #@写入结果文件#@如路径含有空格请加上引号；值为空时不写入文件，默认 result.csv＃@
 $(pz "SPEEDTEST_all")                              #@测速范围#@对所有IP (仅支持 IPv4) 进行测速，默认每个 /24 段随机测速一个 IP，输入y测试全部,输入＃默认范围#@\"[[ \"\$new_text\" == \"y\" ]]\"
 
 '
@@ -220,8 +221,8 @@ $(pz "SPEEDTEST_all")                              #@测速范围#@对所有IP (
 CFST_menu=(
     "开始CFIP优选"            'start_speedtest'
     "IP优选配置"              'set_speentest'
-    "查看测速结果"             'nano "$path_CFST_file/result.csv"; continue"
-    "CFIP配置说明"            'cd $path_CFST_file; $path_CFST_file/CloudflareST -h '
+    "查看测速结果"             'nano "$path_CFST_file/result.csv"; continue'
+    "CFIP配置说明"            'cd "$path_CFST_file"; "$path_CFST_file"/CloudflareST -h '
     "创建CF测速文件"           'Creat_cfspeedtest'
     "安装CFIP优选"            "install_CFST"
      )
@@ -271,12 +272,14 @@ EOF
 #开始测速
 function start_speedtest {
     cd "$path_CFST_file"
+    echo "优选配置如下："
     echo "$([[ -n "$SPEEDTEST_URL" ]] && echo "-url "$SPEEDTEST_URL"")" "$([[ -n "$SPEEDTEST_n" ]] && echo "-n "$SPEEDTEST_n"")" \
     "$([[ -n "$SPEEDTEST_t" ]] && echo "-t "$SPEEDTEST_t"")"  "$([[ -n "$SPEEDTEST_dn" ]] && echo "-dn "$SPEEDTEST_dn"")"  \
     "$([[ -n "$SPEEDTEST_dt" ]] && echo "-dt "$SPEEDTEST_dt"")"   "$([[ -n "$SPEEDTEST_tl" ]] && echo "-tl "$SPEEDTEST_tl"")"  \
     "$([[ -n "$SPEEDTEST_tll" ]] && echo "-tll "$SPEEDTEST_tll"")"  "$([[ -n "$SPEEDTEST_tlr" ]] && echo "-tlr "$SPEEDTEST_tlr"")" \
     "$([[ -n "$SPEEDTEST_sl" ]] && echo "-sl "$SPEEDTEST_sl"")"  "$([[ -n "$SPEEDTEST_p" ]] && echo "-p "$SPEEDTEST_p"")"   \
-    "$([[ "$SPEEDTEST_all" == "y" ]] && echo "-allip" )" "$([[ "$SPEEDTEST_dd" == "y" ]] && echo "-dd" )" "$([[ "$SPEEDTEST_f" == "y" ]] && echo "-f "$SPEEDTEST_f"" )"
+    "$([[ "$SPEEDTEST_all" == "y" ]] && echo "-allip" )" "$([[ "$SPEEDTEST_dd" == "y" ]] && echo "-dd" )" "$([[ -n "$SPEEDTEST_f" ]] && echo "-f "$SPEEDTEST_f"" )" \
+    "$([[ -n "$SPEEDTEST_o" ]] && echo "-f "$SPEEDTEST_o"" )"
     echo
     echo "开始测速，请稍等..."
     eval $path_CFST_file/CloudflareST "$([[ -n "$SPEEDTEST_URL" ]] && echo "-url "$SPEEDTEST_URL"")" "$([[ -n "$SPEEDTEST_n" ]] && echo "-n "$SPEEDTEST_n"")" \
@@ -284,7 +287,8 @@ function start_speedtest {
     "$([[ -n "$SPEEDTEST_dt" ]] && echo "-dt "$SPEEDTEST_dt"")"   "$([[ -n "$SPEEDTEST_tl" ]] && echo "-tl "$SPEEDTEST_tl"")"  \
     "$([[ -n "$SPEEDTEST_tll" ]] && echo "-tll "$SPEEDTEST_tll"")"  "$([[ -n "$SPEEDTEST_tlr" ]] && echo "-tlr "$SPEEDTEST_tlr"")" \
     "$([[ -n "$SPEEDTEST_sl" ]] && echo "-sl "$SPEEDTEST_sl"")"  "$([[ -n "$SPEEDTEST_p" ]] && echo "-p "$SPEEDTEST_p"")"   \
-    "$([[ "$SPEEDTEST_all" == "y" ]] && echo "-allip" )" "$([[ "$SPEEDTEST_dd" == "y" ]] && echo "-dd" )" "$([[ "$SPEEDTEST_f" == "y" ]] && echo "-f "$SPEEDTEST_f"" )"
+    "$([[ "$SPEEDTEST_all" == "y" ]] && echo "-allip" )" "$([[ "$SPEEDTEST_dd" == "y" ]] && echo "-dd" )" "$([[ -n "$SPEEDTEST_f" ]] && echo "-f "$SPEEDTEST_f"" )" \
+    "$([[ -n "$SPEEDTEST_o" ]] && echo "-f "$SPEEDTEST_o"" )"
     notifier "IP优选测速结果如下：\n$(cat result.csv)"
 }
 
@@ -310,6 +314,7 @@ local config=(
 "SPEEDTEST_f"   
 "SPEEDTEST_dd"               
 "SPEEDTEST_all"
+"SPEEDTEST_o"
 )
     set_dat "${config[@]}"
 }
