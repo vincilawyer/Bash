@@ -289,7 +289,7 @@ function start_speedtest {
     "$([[ -n "$SPEEDTEST_sl" ]] && echo "-sl "$SPEEDTEST_sl"")"  "$([[ -n "$SPEEDTEST_p" ]] && echo "-p "$SPEEDTEST_p"")"   \
     "$([[ "$SPEEDTEST_all" == "y" ]] && echo "-allip" )" "$([[ "$SPEEDTEST_dd" == "y" ]] && echo "-dd" )" "$([[ -n "$SPEEDTEST_f" ]] && echo "-f "$SPEEDTEST_f"" )" \
     "$([[ -n "$SPEEDTEST_o" ]] && echo "-o "$SPEEDTEST_o"" )"
-    notifier "IP优选测速结果如下：\n$(cat result.csv)"
+    notifier "IP优选测速结果如下：\n$(cat $([[ -n "$SPEEDTEST_o" ]] && echo "-o "$SPEEDTEST_o"" || result.csv ))"
 }
 
 function Creat_cfspeedtest {
