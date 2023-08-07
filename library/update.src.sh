@@ -45,7 +45,7 @@ while true; do
              (( loadcode == 2 )) && return 
          #如果需要更新，则检查更新
          else
-               echo "正在检查$file_name文件更新..."
+               echo -n "正在检查$file_name文件更新..."
                #获取代码
                if ! code="$(curl -s -H 'Cache-Control: no-cache' "$file_link$sjc")"; then    
                     #代码获取失败
@@ -64,12 +64,13 @@ while true; do
                              continue
                          fi
                          #无需更新
-                         echo -e "${BLUE}$file_name文件当前已是最新版本V${#old_code}！${NC}"
+                         echo -e "${BLUE}当前已是最新版V${#old_code}！${NC}"
                          #如果是启动程序，则无需载入
                          (( loadcode == 2 )) && return 
                          
                     #如果版本不一致,载入新版本
                     else
+                        echo
                         (( upcode==2 )) && echo -e "${RED} 当前${RED}$file_name文件存在错误！即将开始更新${NC}" 
                         echo -e "${RED}$file_name文件当前版本号为：V${#old_code}${NC}"
                         printf "%s" "$code" > "$file_path" && chmod +x "$file_path"
