@@ -221,7 +221,7 @@ $(pz "SPEEDTEST_all")                              #@测速范围#@对所有IP�
 CFST_menu=(
     "开始CFIP优选"            'start_speedtest'
     "IP优选配置"              'set_speentest'
-    "查看测速结果"             'nano "$SPEEDTEST_o"; continue'
+    "查看测速结果"             'echo "IP地址 已发送 已接收 丢包率 平均延迟 下载速度"; column -t -s ',' "$SPEEDTEST_o"'
     "CFIP配置说明"            'cd "$path_CFST_file"; "$path_CFST_file"/CloudflareST -h '
     "创建CF测速文件"           'Creat_cfspeedtest'
     "安装CFIP优选"            "install_CFST"
@@ -289,7 +289,7 @@ function start_speedtest {
     "$([[ -n "$SPEEDTEST_sl" ]] && echo "-sl "$SPEEDTEST_sl"")"  "$([[ -n "$SPEEDTEST_p" ]] && echo "-p "$SPEEDTEST_p"")"   \
     "$([[ -n "$SPEEDTEST_f" ]] && echo "-f "$SPEEDTEST_f"" )"  "$([[ -n "$SPEEDTEST_o" ]] && echo "-o "$SPEEDTEST_o"" )" \
     "$([[ "$SPEEDTEST_all" == "y" ]] && echo "-allip" )" "$([[ "$SPEEDTEST_dd" == "y" ]] && echo "-dd" )" 
-    notifier "IP优选测速结果如下：\n$(cat $([[ -n "$SPEEDTEST_o" ]] && echo "-o "$SPEEDTEST_o"" || echo "result.csv" ))"
+    notifier "IP优选测速结果如下：\n$(cut -d ',' -f 1,5,6 $([[ -n "$SPEEDTEST_o" ]] && echo "$SPEEDTEST_o" || echo "result.csv" ) |  (echo "IP  平均延迟  下载速度"; column -t -s ','))"
 }
 
 function Creat_cfspeedtest {
