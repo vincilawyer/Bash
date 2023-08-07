@@ -193,6 +193,7 @@ function settext {
   local temp_file="$(mktemp)"
   old_text=""                     # 设置搜中的旧文本作为全局变量（不含“注释行”字样）
   new_text=""                     # 设置输入的新文本作为全局变量（不含前后空格）
+  local jjj=""
 
      old_text1=$(search "$start_string" "$end_string" "$location_string" "$n" "$exact_match" "$module" "true" "$is_file" "$input")
      old_text=${old_text1// (注释行)/}
