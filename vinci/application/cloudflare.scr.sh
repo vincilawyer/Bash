@@ -287,8 +287,8 @@ function start_speedtest {
     "$([[ -n "$SPEEDTEST_dt" ]] && echo "-dt "$SPEEDTEST_dt"")"   "$([[ -n "$SPEEDTEST_tl" ]] && echo "-tl "$SPEEDTEST_tl"")"  \
     "$([[ -n "$SPEEDTEST_tll" ]] && echo "-tll "$SPEEDTEST_tll"")"  "$([[ -n "$SPEEDTEST_tlr" ]] && echo "-tlr "$SPEEDTEST_tlr"")" \
     "$([[ -n "$SPEEDTEST_sl" ]] && echo "-sl "$SPEEDTEST_sl"")"  "$([[ -n "$SPEEDTEST_p" ]] && echo "-p "$SPEEDTEST_p"")"   \
-    "$([[ "$SPEEDTEST_all" == "y" ]] && echo "-allip" )" "$([[ "$SPEEDTEST_dd" == "y" ]] && echo "-dd" )" "$([[ -n "$SPEEDTEST_f" ]] && echo "-f "$SPEEDTEST_f"" )" \
-    "$([[ -n "$SPEEDTEST_o" ]] && echo "-o "$SPEEDTEST_o"" )"
+    "$([[ -n "$SPEEDTEST_f" ]] && echo "-f "$SPEEDTEST_f"" )"  "$([[ -n "$SPEEDTEST_o" ]] && echo "-o "$SPEEDTEST_o"" )" \
+    "$([[ "$SPEEDTEST_all" == "y" ]] && echo "-allip" )" "$([[ "$SPEEDTEST_dd" == "y" ]] && echo "-dd" )" 
     notifier "IP优选测速结果如下：\n$(cat $([[ -n "$SPEEDTEST_o" ]] && echo "-o "$SPEEDTEST_o"" || result.csv ))"
 }
 
