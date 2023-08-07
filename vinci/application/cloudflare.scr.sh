@@ -279,7 +279,7 @@ function start_speedtest {
     "$([[ -n "$SPEEDTEST_tll" ]] && echo "-tll "$SPEEDTEST_tll"")"  "$([[ -n "$SPEEDTEST_tlr" ]] && echo "-tlr "$SPEEDTEST_tlr"")" \
     "$([[ -n "$SPEEDTEST_sl" ]] && echo "-sl "$SPEEDTEST_sl"")"  "$([[ -n "$SPEEDTEST_p" ]] && echo "-p "$SPEEDTEST_p"")"   \
     "$([[ "$SPEEDTEST_all" == "y" ]] && echo "-allip" )" "$([[ "$SPEEDTEST_dd" == "y" ]] && echo "-dd" )" "$([[ -n "$SPEEDTEST_f" ]] && echo "-f "$SPEEDTEST_f"" )" \
-    "$([[ -n "$SPEEDTEST_o" ]] && echo "-f "$SPEEDTEST_o"" )"
+    "$([[ -n "$SPEEDTEST_o" ]] && echo "-o "$SPEEDTEST_o"" )"
     echo
     echo "开始测速，请稍等..."
     eval $path_CFST_file/CloudflareST "$([[ -n "$SPEEDTEST_URL" ]] && echo "-url "$SPEEDTEST_URL"")" "$([[ -n "$SPEEDTEST_n" ]] && echo "-n "$SPEEDTEST_n"")" \
@@ -288,7 +288,7 @@ function start_speedtest {
     "$([[ -n "$SPEEDTEST_tll" ]] && echo "-tll "$SPEEDTEST_tll"")"  "$([[ -n "$SPEEDTEST_tlr" ]] && echo "-tlr "$SPEEDTEST_tlr"")" \
     "$([[ -n "$SPEEDTEST_sl" ]] && echo "-sl "$SPEEDTEST_sl"")"  "$([[ -n "$SPEEDTEST_p" ]] && echo "-p "$SPEEDTEST_p"")"   \
     "$([[ "$SPEEDTEST_all" == "y" ]] && echo "-allip" )" "$([[ "$SPEEDTEST_dd" == "y" ]] && echo "-dd" )" "$([[ -n "$SPEEDTEST_f" ]] && echo "-f "$SPEEDTEST_f"" )" \
-    "$([[ -n "$SPEEDTEST_o" ]] && echo "-f "$SPEEDTEST_o"" )"
+    "$([[ -n "$SPEEDTEST_o" ]] && echo "-o "$SPEEDTEST_o"" )"
     notifier "IP优选测速结果如下：\n$(cat result.csv)"
 }
 
