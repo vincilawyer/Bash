@@ -220,6 +220,7 @@ $(pz "SPEEDTEST_all")                              #@测速范围#@对所有IP (
 CFST_menu=(
     "开始CFIP优选"            'start_speedtest'
     "IP优选配置"              'set_speentest'
+    "查看测速结果"             'nano "$path_CFST_file/result.csv"; continue"
     "CFIP配置说明"            'cd $path_CFST_file; $path_CFST_file/CloudflareST -h '
     "创建CF测速文件"           'Creat_cfspeedtest'
     "安装CFIP优选"            "install_CFST"
