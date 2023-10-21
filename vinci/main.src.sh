@@ -247,7 +247,7 @@ system_menu=(
     "本机ip信息"               "ipinfo"    
     "修改SSH登录端口和登录密码"   "change_ssh_port; change_login_password"
     "查看所有重要程序systemd状态"     "status_all"
-    "程序管理器(top)"                "top; continue"
+    "监测系统动态资源(top)"                "top; continue"
     "程序树(pstree -Aup)"             "pstree -Aup" 
     "查看本机系统与核心信息（uname -a）"   "uname -a"
      )  
