@@ -3,12 +3,21 @@
 ############################################################################################################################################################################################
 function get_appmanage_menu {
 appmanage_menu=(
+    "查看$1状态"                 "status $1"
     "启动/重启$1"                "restart $1"
-    "查看$1运行状态"                 "status $1"
-    "停止运行$1"                    "stop $1"
-    "卸载$1"                    'echo "暂不支持"'
+    "重载配置"                   "reload $1"
+    "开机自启动"                  "enable $1"
+    "关闭开机自启动"               "disable $1"
+    "停止运行$1"                  "stop $1"
     )    
 }   
+
+
+###### 查看程序状况 ######
+function status {
+    echo "$1运行状况如下："
+    systemctl status "$1"
+}
 
 ###### 启动、重启程序 ######
 function restart {
@@ -16,10 +25,21 @@ function restart {
    systemctl restart "$1" && echo "$1已完成重启！"
 }
 
-###### 查看程序状况 ######
-function status {
-    echo "$1运行状况如下："
-    systemctl status "$1"
+###### 重载配置 ######
+function reload {
+   echo "正在重新载入$1配置..."
+   systemctl reload "$1" && echo "已重载$1配置！"
+}
+
+###### 开机自启动 ######
+function enable {
+   systemctl enable "$1" && echo "$1已设置开机自启动！"
+}
+
+
+###### 关闭开机自启动 ######
+function disable {
+   systemctl disable "$1" && echo "$1已关闭开机自启动！"
 }
 
 ###### 停运程序 ######
