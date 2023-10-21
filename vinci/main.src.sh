@@ -246,6 +246,7 @@ system_menu=(
     "个人配置设置"               'page "配置设置" "${config_menu[@]}"; continue'
     "本机ip信息"               "ipinfo"    
     "修改SSH登录端口和登录密码"   "change_ssh_port; change_login_password"
+    "查看网络端口监听状况(netstat -tulnp)"            "netstat -tulnp"
     "查看所有重要程序systemd状态"     "status_all"
     "监测系统动态资源(top)"                "top; continue"
     "程序树(pstree -Aup)"             "pstree -Aup" 
