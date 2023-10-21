@@ -3,7 +3,7 @@
 ############################################################################################################################################################################################
 function get_appmanage_menu {
 appmanage_menu=(
-    "查看$1状态(systemctl status)"                 "status $1"
+    "查看$1状态(systemctl status)"                 "status $1; continue"
     "启动/重启$1(systemctl restart)"                "restart $1"
     "重载配置(systemctl reload)"                   "reload $1"
     "开机自启动(systemctl enable)"                  "enable $1"
