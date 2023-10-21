@@ -99,10 +99,12 @@ while true; do
         #执行初始化函数
         if [ -n "$initial_name" ]; then
              echo
-             echo -e "${GREEN}开始初始化$file_name模块...${NC}"
+             echo -e "${BLUE}#################################${NC}"
+             echo -e "${BLUE}####开始初始化$file_name模块${NC}"
+             echo -e "${BLUE}#################################${NC}"
              $initial_name
              echo
-             echo -e "${GREEN}$file_name初始化完成！${NC}"
+             echo -e "${BLUE}$file_name初始化完成！${NC}"
         fi
         return
           
