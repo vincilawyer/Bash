@@ -3,12 +3,12 @@
 ############################################################################################################################################################################################
 function get_appmanage_menu {
 appmanage_menu=(
-    "查看$1状态"                 "status $1"
-    "启动/重启$1"                "restart $1"
-    "重载配置"                   "reload $1"
-    "开机自启动"                  "enable $1"
-    "关闭开机自启动"               "disable $1"
-    "停止运行$1"                  "stop $1"
+    "查看$1状态(systemctl status)"                 "status $1"
+    "启动/重启$1(systemctl restart)"                "restart $1"
+    "重载配置(systemctl reload)"                   "reload $1"
+    "开机自启动(systemctl enable)"                  "enable $1"
+    "关闭开机自启动(systemctl disable)"               "disable $1"
+    "停止运行$1(systemctl stop)"                  "stop $1"
     )    
 }   
 
