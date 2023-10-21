@@ -100,10 +100,10 @@ while true; do
         if [ -n "$initial_name" ]; then
              echo
              echo -e "${BLUE}#################################${NC}"
-             echo -e "${BLUE}↓↓↓↓  开始初始化$file_name模块${NC}"
+             echo -e "${BLUE}#### 开始初始化$file_name模块${NC}"
              $initial_name
              echo
-             echo -e "${BLUE}↑↑↑↑  $file_name初始化完成！  ${NC}"
+             echo -e "${BLUE}####  $file_name初始化完成！  ${NC}"
              echo -e "${BLUE}#################################${NC}"
         fi
         return
