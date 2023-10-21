@@ -244,9 +244,11 @@ main_menu=(
 system_menu=(
     "更新脚本"                  'startcode=1; base_load; Initial; update_dat; waitcon="false"; return'
     "个人配置设置"               'page "配置设置" "${config_menu[@]}"; continue'
-    "查看所有重要程序运行状态"    "status_all"
     "本机ip信息"               "ipinfo"    
     "修改SSH登录端口和登录密码"   "change_ssh_port; change_login_password"
+    "查看所有重要程序systemd状态"     "status_all"
+    "程序管理器(top)"                "top"
+    "程序树(pstree)"                "pstree -Aup; wait" 
      )  
 
 ############################################################################################################################################################################################
@@ -305,7 +307,7 @@ else
 fi; }
 
 function main {
-   echo 12
+
    #检查用户数据文件 
    clear
    update_dat 
