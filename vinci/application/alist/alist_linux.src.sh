@@ -4,8 +4,8 @@
 Version=1.00  #版本号  
 ### 菜单栏
 alist_menu=(
+    "服务管理器"                 'get_Service_menu "alist"; page "Alist" "${Service_menu[@]}"'
     "安装Alist"            'curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install'
     "更新Alist"            'curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s update'
-    "程序管理器"            'get_appmanage_menu "alist"; page "Alist" "${appmanage_menu[@]}"'
     "删除Alist"          'confirm "是否删除Alist？" "已取消删除Alist" || ( curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s uninstall && echo "已删除Alist" )'
     )
