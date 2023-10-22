@@ -30,3 +30,30 @@ function installed {
     fi
 }
 
+### 查看重要程序服务状况 ####
+function status_all {
+apps=(
+"ufw"
+"docker"
+"nginx"
+"warp-svc"
+"tor"
+"frps"
+"alist"
+)
+   for app in "${apps[@]}"; do  
+      zl="systemctl status $app"
+      i=1
+      while IFS= read -r line; do
+          if (( "$i" == 1 )); then
+              echo -e "${RED}${line}${NC}"
+          else
+              echo "$line"
+          fi
+          i=$((i+1))
+      done < <($zl)
+   done
+}
+
+
+
