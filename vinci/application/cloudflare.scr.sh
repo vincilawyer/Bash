@@ -16,8 +16,8 @@ cf_menu=(
     "Cloudflare DNS配置"      'cfdns; continue'
     "修改CF DNS个人配置"        "set_cfdns"
     "CFIP优选"                'page "CloudflareST优选" "${CFST_menu[@]}"'
+    "CFWarp服务管理器"                 'get_Service_menu "warp-svc"; page "CFWarp" "${Service_menu[@]}"'
     "安装CFWarp"              "install_Warp"
-    "CFWarp程序管理器"         'get_appmanage_menu "warp-svc"; page "CFWarp" "${appmanage_menu[@]}"'
     ) 
     
 ###### Cf dns配置 ######
