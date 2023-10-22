@@ -28,7 +28,7 @@ path_config="$data_path/config.src.sh"
 link_config="${link_repositories}library/config.src.sh"
 
 #服务管理工具
-#library > Service Management.src.sh
+#library > ServiceManagement.src.sh
 path_ServiceManagement="$data_path/ServiceManagement.src.sh"
 link_ServiceManagement="${link_repositories}vinci/library/ServiceManagement.src.sh"
 
