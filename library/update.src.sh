@@ -166,7 +166,7 @@ function countdown {
     local from=$1
 if [[ "$CURSHELL" == *"bash"* ]]; then
     tput sc  # Save the current cursor position
-    while (( from >= 0 )); do
+    while (( from >= 1 )); do
         tput rc  # Restore the saved cursor position
         tput el  # Clear from cursor to the end of the line
         printf "%02ds" $from  # Print the countdown
