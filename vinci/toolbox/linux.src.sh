@@ -3,7 +3,7 @@ ufw_menu=(
     "启用防火墙规则"         "ufw enable"
     "停用防火墙规则"         "ufw disable"
     "查看防火墙规则"         "ufw status verbose"
-    "防火墙程序管理"         'get_Service_menu "ufw"; page "UFW" "${Service_menu[@]}"'
+    "服务管理器"         'get_Service_menu "ufw"; page "UFW" "${Service_menu[@]}"'
     )     
    
     
