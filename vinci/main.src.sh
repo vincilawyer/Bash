@@ -27,6 +27,16 @@ link_page="${link_repositories}library/page.src.sh"
 path_config="$data_path/config.src.sh"
 link_config="${link_repositories}library/config.src.sh"
 
+#服务管理工具
+#library > Service Management.src.sh
+path_ServiceManagement="$data_path/Service Management.src.sh"
+link_ServiceManagement="${link_repositories}vinci/library/Service Management.src.sh"
+
+#程序管理工具
+#library > Program Management.src.sh
+path_ProgramManagement="$data_path/Program Management.src.sh"
+link_ProgramManagement="${link_repositories}vinci/library/Program Management.src.sh"
+
 #通用工具
 #toolbox > universal.src.sh
 path_toolbox_universal="$data_path/universal.src.sh"
@@ -36,11 +46,6 @@ link_toolbox_universal="${link_repositories}vinci/toolbox/universal.src.sh"
 #toolbox > linux.src.sh
 path_toolbox_linux="$data_path/linux.src.sh"
 link_toolbox_linux="${link_repositories}vinci/toolbox/linux.src.sh"
-
-#appmanage.src.sh
-#app > appmanage.src.sh
-path_appmanage="$data_path/appmanage.src.sh"
-link_appmanage="${link_repositories}vinci/application/appmanage.src.sh"
 
 #xui
 #app > xui.src.sh
@@ -201,7 +206,8 @@ function main_initial {
     update_load "$path_page" "$link_page" "页面显示模块" 1 "$startcode" 
     update_load "$path_config" "$link_config" "用户配置模块" 1 "$startcode" 
     update_load "$path_toolbox_universal" "$link_toolbox_universal" "通用工具模块" 1 "$startcode" 
-    update_load "$path_appmanage" "$link_appmanage" "程序管理模块" 1 "$startcode" 
+    update_load "$path_ServiceManagement" "$link_ServiceManagement" "服务管理模块" 1 "$startcode" 
+    update_load "$path_ProgramManagement" "$link_ProgramManagement" "程序管理模块" 1 "$startcode" 
     update_load "$path_cf" "$link_cf" "cloudflare" 1 "$startcode" 
     
 ############################################################################################################################################################################################
@@ -243,13 +249,11 @@ main_menu=(
 ### 系统工具选项 ###
 system_menu=(
     "更新脚本"                  'startcode=1; base_load; Initial; update_dat; waitcon="false"; return'
+    "程序管理"                  'page "程 序 管 理" "${Program_menu[@]}"'
     "个人配置设置"               'page "配置设置" "${config_menu[@]}"; continue'
     "本机ip信息"               "ipinfo"    
-    "修改SSH登录端口和登录密码"   "change_ssh_port; change_login_password"
     "查看网络端口监听状况(netstat -tulnp)"            "netstat -tulnp"
-    "查看所有重要程序systemd状态"     "status_all"
-    "监测系统动态资源(top)"                "top; continue"
-    "程序树(pstree -Aup)"             "pstree -Aup" 
+    "修改SSH登录端口和登录密码"   "change_ssh_port; change_login_password"
     "查看本机系统与核心信息（uname -a）"   "uname -a"
      )  
 
