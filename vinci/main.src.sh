@@ -30,12 +30,12 @@ link_config="${link_repositories}library/config.src.sh"
 #服务管理工具
 #library > ServiceManagement.src.sh
 path_ServiceManagement="$data_path/ServiceManagement.src.sh"
-link_ServiceManagement="${link_repositories}vinci/library/ServiceManagement.src.sh"
+link_ServiceManagement="${link_repositories}library/ServiceManagement.src.sh"
 
 #程序管理工具
 #library > Program Management.src.sh
 path_ProgramManagement="$data_path/ProgramManagement.src.sh"
-link_ProgramManagement="${link_repositories}vinci/library/ProgramManagement.src.sh"
+link_ProgramManagement="${link_repositories}library/ProgramManagement.src.sh"
 
 #通用工具
 #toolbox > universal.src.sh
