@@ -45,7 +45,7 @@ while true; do
              (( loadcode == 2 )) && return 
          #如果需要更新，则检查更新
          else
-               echo -n "正在检查$file_name文件更新..."
+               echo -e "\r正在检查$file_name文件更新..."
                #获取代码
                if ! code="$(curl -s -H 'Cache-Control: no-cache' "$file_link$sjc")"; then    
                     #代码获取失败
