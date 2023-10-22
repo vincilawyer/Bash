@@ -80,7 +80,7 @@ mkdir "$data_path"  >/dev/null 2>&1     #应用资源文件夹
 
 #### 配置文件、程序网址、路径 ####
 #仓库
-link_repositories="https://raw.githubusercontent.com/vincilawyer/Bash/main/"            
+link_repositories="https://raw.githubusercontent.com/vincilawyer/Shell-Script/main/"            
 #update.src.sh
 link_update="${link_repositories}library/update.src.sh"                                  
 path_update="$data_path/update.src.sh"                                                
