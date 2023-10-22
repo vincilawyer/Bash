@@ -45,7 +45,7 @@ while true; do
              (( loadcode == 2 )) && return 
          #如果需要更新，则检查更新
          else
-               echo -e "\r正在检查$file_name文件更新..."
+               echo -ne "\r正在检查$file_name文件更新..."
                #获取代码
                if ! code="$(curl -s -H 'Cache-Control: no-cache' "$file_link$sjc")"; then    
                     #代码获取失败
@@ -145,6 +145,7 @@ done
             ti=$((( $((check_time-t)) > 9 )) && echo "$((check_time-t))" || echo "0$((check_time-t))")s
             [[ "$a" == "true" ]] && b="  正在等待服务器端版本更新，输入任意键退出...   " || b='                                                '
             [[ "$a" == "true" ]] && a="false" || a="true"
+            echo 
             echo -e "${RED}########################################################${NC}"
             echo -e "${RED}########################################################${NC}"
             echo -e "${RED}####                                                ####${NC}"
