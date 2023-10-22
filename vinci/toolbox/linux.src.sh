@@ -3,7 +3,7 @@ ufw_menu=(
     "启用防火墙规则"         "ufw enable"
     "停用防火墙规则"         "ufw disable"
     "查看防火墙规则"         "ufw status verbose"
-    "防火墙程序管理"         'get_appmanage_menu "ufw"; page "UFW" "${appmanage_menu[@]}"'
+    "防火墙程序管理"         'get_Service_menu "ufw"; page "UFW" "${Service_menu[@]}"'
     )     
    
     
@@ -55,29 +55,3 @@ function change_login_password {
          fi
    fi
 }
-
-### 查看所有程序运行状况 ####
-function status_all {
-apps=(
-"ufw"
-"docker"
-"nginx"
-"warp-svc"
-"tor"
-"frps"
-"alist"
-)
-   for app in "${apps[@]}"; do  
-      zl="systemctl status $app"
-      i=1
-      while IFS= read -r line; do
-          if (( "$i" == 1 )); then
-              echo -e "${RED}${line}${NC}"
-          else
-              echo "$line"
-          fi
-          i=$((i+1))
-      done < <($zl)
-   done
-}
-
