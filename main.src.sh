@@ -1,104 +1,16 @@
 ############################################################################################################################################################################################
 ##############################################################################   vinci脚本主程序源代码   ########################################################################################
 ############################################################################################################################################################################################
-####### 版本更新相关参数 ######
+####### 参数 ######
 Version=4.00  #版本号 
 Version1="$Version.$(n="$(cat "$path_def")" &&  echo "${#n}")"                         #脚本完整版本号
 
+#github目录清单链接
+link_gitlist="https://api.github.com/repos/vincilawyer/My-Shell-Script/contents/"      
 
-####### 各配置路径及文件名  ######
-#基本参数
 #组件清单位置
 path_list="$data_path/srclist.dat"
 
-#library > arg.lib
-path_arg="$data_path/arg.lib"
-link_arg="${link_repositories}library/arg.lib"
-
-#文本处理
-#library > text_processing.scr.sh
-path_text_processing="$data_path/text_processing.scr.sh"
-link_text_processing="${link_repositories}library/text_processing.scr.sh"
-
-#页面显示
-#library > page.src.sh
-path_page="$data_path/page.src.sh"
-link_page="${link_repositories}library/page.src.sh"
-
-#用户配置
-#library > config.src.sh
-path_config="$data_path/config.src.sh"
-link_config="${link_repositories}library/config.src.sh"
-
-#服务管理工具
-#library > ServiceManagement.src.sh
-path_ServiceManagement="$data_path/ServiceManagement.src.sh"
-link_ServiceManagement="${link_repositories}library/ServiceManagement.src.sh"
-
-#程序管理工具
-#library > Program Management.src.sh
-path_ProgramManagement="$data_path/ProgramManagement.src.sh"
-link_ProgramManagement="${link_repositories}library/ProgramManagement.src.sh"
-
-#通用工具
-#toolbox > universal.src.sh
-path_toolbox_universal="$data_path/universal.src.sh"
-link_toolbox_universal="${link_repositories}vinci/toolbox/universal.src.sh"
-
-#linux工具
-#toolbox > linux.src.sh
-path_toolbox_linux="$data_path/linux.src.sh"
-link_toolbox_linux="${link_repositories}vinci/toolbox/linux.src.sh"
-
-#xui
-#app > xui.src.sh
-path_xui="$data_path/xui.src.sh"
-link_xui="${link_repositories}vinci/application/xui.src.sh"
-
-#tor.src.sh
-#app > tor.src.sh
-path_tor="$data_path/tor.src.sh"
-link_tor="${link_repositories}vinci/application/tor.src.sh"
-
-#nginx
-#app > nginx.scr.sh
-path_nginx="$data_path/nginx.scr.sh"
-link_nginx="${link_repositories}vinci/application/nginx.scr.sh"
-
-#frp
-#app > frp.scr.sh
-path_frp="$data_path/frp.scr.sh"
-link_frp="${link_repositories}vinci/application/frp.scr.sh"
-
-#cf
-#app > cloudflare.scr.sh
-path_cf="$data_path/cloudflare.scr.sh"
-link_cf="${link_repositories}vinci/application/cloudflare.scr.sh"
-
-#rclone_linux
-#app > rclone_linux.src.sh
-path_rclone_linux="$data_path/rclone_linux.src.sh"
-link_rclone_linux="${link_repositories}vinci/application/rclone/rclone_linux.src.sh"
-
-#rclone_andriod
-#app > rclone_andriod.src.sh
-path_rclone_andriod="$data_path/rclone_andriod.src.sh"
-link_rclone_andriod="${link_repositories}vinci/application/rclone/rclone_andriod.src.sh"
-
-#alist_linux
-#app > alist_linux.src.sh
-path_alist_linux="$data_path/alist_linux.src.sh"
-link_alist_linux="${link_repositories}vinci/application/alist/alist_linux.src.sh"
-
-#alist_andriod
-#app > alist_andriod.src.sh
-path_alist_andriod="$data_path/alist_andriod.src.sh"
-link_alist_andriod="${link_repositories}vinci/application/alist/alist_andriod.src.sh"
-
-#docker
-#app > docker.src.sh
-path_docker="$data_path/docker.src.sh"
-link_docker="${link_repositories}vinci/application/docker/docker.src.sh"
 
 ############################################################################################################################################################################################
 #################################################################################    系统UI   ############################################################################################
@@ -202,15 +114,20 @@ fi
 ##############################################################################     初始化  ########################################################################################
 ############################################################################################################################################################################################
 function main_initial {
-    #载入通用模块
-    update_load "$path_arg" "$link_arg" "基本参数模块" 1 "$startcode" 
-    update_load "$path_text_processing" "$link_text_processing" "文本处理模块" 1 "$startcode" 
-    update_load "$path_page" "$link_page" "页面显示模块" 1 "$startcode" 
-    update_load "$path_config" "$link_config" "用户配置模块" 1 "$startcode" 
-    update_load "$path_toolbox_universal" "$link_toolbox_universal" "通用工具模块" 1 "$startcode" 
-    update_load "$path_ServiceManagement" "$link_ServiceManagement" "服务管理模块" 1 "$startcode" 
-    update_load "$path_ProgramManagement" "$link_ProgramManagement" "程序管理模块" 1 "$startcode" 
-    update_load "$path_cf" "$link_cf" "cloudflare" 1 "$startcode" 
+
+    #如果组件清单不存在，则启动更新模式
+    [ -e "$path_list" ] || startcode=1
+    
+    #定义获取组件清单函数
+    function getsrclist {
+        local getlist=$(curl -s "$link_gitlist"/"$1")
+        paste <(echo "$getlist" | grep "name" | cut -d '"' -f4) <(echo "$getlist" | grep "download_url" | cut -d '"' -f4) >> "$path_list"
+    }
+    
+    #获取组件清单
+    echo "" > "$path_list"
+    ((startcode==1)) && getsrclist necessary
+    ((startcode==1)) && getsrclist universal
     
 ##############################################################################    Debian11系统加载模块及菜单   ########################################################################################
 if uname -a | grep -q 'Debian'; then 
@@ -221,16 +138,9 @@ if uname -a | grep -q 'Debian'; then
         echo "请注意，本脚本是适用于Vulre服务器Debian11系统，用于其他系统或版本时将可能出错！"
         wait
     fi
-
-    #载入专属模块
-    update_load "$path_toolbox_linux" "$link_toolbox_linux" "linux工具模块" 1 "$startcode" 
-    update_load "$path_docker" "$link_docker" "docker" 1 "$startcode" "docker_initial"
-    update_load "$path_nginx" "$link_nginx" "nginx" 1 "$startcode" 
-    update_load "$path_xui" "$link_xui" "xui" 1 "$startcode" 
-    update_load "$path_tor" "$link_tor" "tor" 1 "$startcode" 
-    update_load "$path_frp" "$link_frp" "frp" 1 "$startcode" 
-    update_load "$path_alist_linux" "$link_alist_linux" "alist_linux" 1 "$startcode" 
-    update_load "$path_rclone_linux" "$link_rclone_linux" "rclone_linux" 1 "$startcode"  
+    
+    #获取专属组件清单
+    ((startcode==1)) && getsrclist Debian11
 
 #### 主菜单 ####
 main_menu=(
@@ -262,6 +172,9 @@ elif uname -a | grep -q 'Android'; then
     echo
     echo -e "${GREEN}正在进行Android端模块配置...${NC}"
 
+    #获取专属组件清单
+    ((startcode==1)) && getsrclist Android
+    
     ######载入专属模块 #####
     update_load "$path_alist_andriod" "$link_alist_andriod" "alist_andriod" 1 "$startcode" 
     update_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_andriod" 1 "$startcode" 
@@ -281,6 +194,9 @@ system_menu=(
 elif uname -a | grep -q 'Darwin'; then 
     echo
     echo -e "${GREEN}正在进行Mac端模块配置...${NC}"
+
+    #获取专属组件清单
+    ((startcode==1)) && getsrclist mac
     
     ######载入专属模块 ######
     update_load "$path_alist_andriod" "$link_alist_andriod" "alist_andriod" 1 "$startcode" 
@@ -303,21 +219,14 @@ system_menu=(
 else
    echo '未知系统...拒绝加载'
    quit
-fi; }
+fi; 
 
-############################################################################################################################################################################################
-##############################################################################     初始化组件  ########################################################################################
-############################################################################################################################################################################################
-function getsrclist {
-my_array=()
+##############################################################################     更新载入模块   ########################################################################################
+
 while IFS= read -r line; do
-     | grep "name"
-    my_array+=("$line")
-done <<< $(curl -s https://api.github.com/repos/vincilawyer/My-Shell-Script/contents/necessary)
-echo ${my_array[1]} ${my_array[2]}
-
-local getlist=$(curl -s https://api.github.com/repos/vincilawyer/My-Shell-Script/contents/necessary)
-echo "$getlist" | grep "name" > "$path_list"
+    local srcname="$(echo "$line" | cut -f1)"
+    update_load "$data_path/$srcname" "$(echo "$line" | cut -f2)" "$srcname" 1 "$startcode" 
+done < "$path_list"
 
 }
 
