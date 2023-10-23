@@ -126,7 +126,7 @@ function main_initial {
     }
     
     #获取组件清单
-    echo "" > "$path_list"
+    ((startcode==1)) && echo "" > "$path_list"
     ((startcode==1)) && getsrclist necessary
     ((startcode==1)) && getsrclist universal
     
@@ -212,7 +212,7 @@ system_menu=(
 else
    echo '未知系统...拒绝加载'
    quit
-fi; 
+fi
 
 ##############################################################################     更新载入模块   ########################################################################################
 local srcname=""
