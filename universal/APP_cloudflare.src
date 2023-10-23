@@ -49,7 +49,6 @@ function cfdns {
     echo "  1. 删除DNS记录修改或增加DNS记录"
     echo "  2. 修改或增加DNS记录"
     echo "  3. 返回"
-    echo "  0. 退出"
     echo ""
     echo -n "  请选择要进行的操作：" 
     inp false 2 {0..3}
@@ -134,7 +133,6 @@ function cfdns {
                 continue
            fi;;
      3) return;;
-     0) quit 1;;
   esac
   wait
   done
