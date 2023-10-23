@@ -46,6 +46,9 @@ function Onestep_V2ray {
     echo -e "参数提示：\n域名:\n${Domain}\nAPI密钥:\n${Cloudflare_api_key}\n邮箱:\n${CFemail}\n"
     x-ui 
     echo 
+    echo -e "${BLUE}即将重启Nginx,并载入新配置...${NC}"
+    systemctl restart nginx
+    echo 
     echo -e "${BLUE}开始xui面板及v2ray参数配置...${NC}"
     ufw allow $xui_port
     echo "UFW防火墙已暂时开放$xui_port端口，请前往 http://$(hostname -I | cut -d ' ' -f1):$xui_port 按提示顺序进行设置！设置完成后方可继续 "
