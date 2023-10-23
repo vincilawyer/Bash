@@ -36,7 +36,7 @@ while true; do
               echo "${RED}$file_name文件缺失，即将退出系统..." && quit
          fi   
          echo -e -n "${BLUE}$file_name文件已完成下载。${NC}"
-         countdown 2 
+         sleep 1
     #如果文件已存在     
     else
          #如果无需更新
@@ -109,7 +109,7 @@ while true; do
    #开始载入：启动程序如果有更新，则开始载入在新的shell环境中载入
    elif (( loadcode == 2 )); then
           echo -n "即将重启程序..."
-          countdown 3
+          sleep 2
           #增加执行权限
           chmod +x "$file_path"
           $file_path "$startcode"
@@ -161,37 +161,4 @@ done
       done
 }
 
-#######   倒计时  ####### 
-function countdown {
-    local from=$1
-if [[ "$CURSHELL" == *"bash"* ]]; then
-    tput sc  # Save the current cursor position
-    while (( from >= 1 )); do
-        tput rc  # Restore the saved cursor position
-        tput el  # Clear from cursor to the end of the line
-        printf "%02ds" $from  # Print the countdown
-        if $(read -s -t 1 -n 1); then break; fi
-        ((from--))
-   done
-   tput el
-   echo
-elif [[ "$CURSHELL" == *"zsh"* ]]; then
-    echo "请等待"
-    sleep $from
-    return
-    #以下代码暂时未能使用，未知错误
-    echoti sc  # Save the current cursor position
-    while (( from >= 0 )); do
-        echoti rc  # Restore the saved cursor position
-        echoti el  # Clear from cursor to the end of the line
-        printf "%02ds" $from  # Print the countdown
-        stty -echo   #关闭输入显示
-        if read -t 1 -k 1 input; then stty echo;break; fi
-        stty echo    #打开输入显示
-        from=$(( from-1 ))
-    done
-    echoti el
-    echo
-fi    
-}
     
