@@ -20,7 +20,8 @@ function Onestep_V2ray {
     wait
     cfdns <<< "2"
     echo "开始"
-    echo "即将开始申请SSL证书"
+    echo "即将开始申请SSL证书,申请完成后可继续选择安装BBR加速，并返回继续"
+    wait
     x-ui <<< '16'
     
 }
