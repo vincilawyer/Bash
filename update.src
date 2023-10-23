@@ -36,7 +36,7 @@ while true; do
               echo "${RED}$file_name文件缺失，即将退出系统..." && quit
          fi   
          echo -ne "${BLUE}已下载完成。${NC}"
-         countdown 1
+         countdown 2
     #如果文件已存在     
     else
          #如果无需更新
@@ -168,11 +168,11 @@ function countdown {
     local from=$1
 if [[ "$CURSHELL" == *"bash"* ]]; then
     tput sc  # Save the current cursor position
-    while (( from >= 1 )); do
+    while (( from >= 0 )); do
         tput rc  # Restore the saved cursor position
         tput el  # Clear from cursor to the end of the line
         printf "%02ds" $from  # Print the countdown
-        if $(read -s -t 1 -n 1); then break; fi
+        (( from == 0 )) || ( if $(read -s -t 1 -n 1); then break; fi )
         ((from--))
    done
    tput el
