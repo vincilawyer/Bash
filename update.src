@@ -95,7 +95,7 @@ while true; do
         fi          
         #如果脚本没有语法错误，则载入
         source "$file_path"
-        echo -e "${GREEN}载入完成${NC}"
+        echo -e "${BLUE}载入完成${NC}"
         #执行初始化函数
         if [ -n "$initial_name" ]; then
              echo
