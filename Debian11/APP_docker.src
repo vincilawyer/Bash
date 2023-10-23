@@ -13,15 +13,6 @@ docker_menu=(
     "删除所有容器"          'confirm "是否删除所有Docker容器？" "已取消删除容器" || ( docker stop $(docker ps -a -q) &&  docker rm $(docker ps -a -q) && echo "已删除所有容器" )'
    )
     
-###初始化
-function docker_initial {
-    #加载chatapp模块
-    path_dockerapp="$data_path/dockerapp.src.sh"
-    link_dockerapp="${link_repositories}vinci/application/docker/dockerapp.src.sh"
-    update_load "$path_dockerapp" "$link_dockerapp" "dockerapp" 1 "$startcode" 
-
-}
-    
 #######  安装Docker及依赖包  #######
 function install_Docker {
      installed "docker" && return
