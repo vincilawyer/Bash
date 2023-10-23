@@ -27,7 +27,7 @@ function Onestep_V2ray {
     cfdns
     echo
     echo -e "${BLUE}即将开始申请SSL证书,申请完成后可继续选择安装BBR加速，并返回继续${NC}"
-    echo "参数提示：\n域名:\n${Domain}\nAPI密钥:${Cloudflare_api_key}\n邮箱:${CFemail}\n"
+    echo -e "参数提示：\n域名:\n${Domain}\nAPI密钥:${Cloudflare_api_key}\n邮箱:${CFemail}\n"
     x-ui 
     echo
     echo -e "${BLUE}即将开始配置Tor，请填写\确认参数${NC}"
