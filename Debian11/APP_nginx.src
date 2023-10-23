@@ -20,8 +20,6 @@ log_nginx="/var/log/nginx/access.log"
 #nginx 80端口默认服务块文件路径
 default_nginx="/etc/nginx/sites-enabled/default"
 
-
-
 ####### 安装Nginx ######
 function install_Nginx {
         installed "nginx" && return    #检验安装
@@ -29,88 +27,14 @@ function install_Nginx {
         apt-get update
         echo -e "${GREEN}包列表更新完成${NC}"
         apt-get install nginx -y
-        echo -e "${GREEN}Nginx 安装完成，版本号为 $(nginx -v 2>&1)。${NC}"
-        echo -e "${GREEN}正在调整防火墙规则，放开80、443端口。${NC}"
-        ufw allow http && ufw allow https 
-        echo -e "${GREEN}正在调整Nginx配置${NC}"
-        download_nginx_config
-        echo "" > $default_nginx   # 清空nginx对80端口默认服务块的配置内容
-
+        echo -e "${GREEN}正在调整防火墙规则，放开443端口。${NC}"
+        ufw allow https 
+        # 清空nginx对80端口默认服务块的配置内容
+        echo "" > $default_nginx  
+        echo -e "${GREEN}Nginx 安装完成，版本号为 $(nginx -v 2>&1)${NC}"
+        echo -e "${GREEN}请到 /etc/nginx/conf.d 目录中修改Nginx配置${NC}"
 }
-
-####### 从github下载更新Nginx配置文件 ####### 
-function download_nginx_config {
-      if confirm "是否从Github下载更新Nginx配置文件？此举动将覆盖原配置文件" "已取消下载更新Nginx配置文件"; then return; fi
-      echo -e "${GREEN}正在载入：${NC}"
-      if wget $link_nginx_config -O $path_nginx_config; then 
-         echo -e "${GREEN}载入完毕，第一次使用请设置配置：${NC}"
-        set_nginx_config
-    else
-            echo -e "${GREEN}下载失败，请检查！${NC}"
-         fi       
-}
-
-####### 设置Nginx配置 ####### 
-function set_nginx_config {
-     echo "维护中，请手动导入配置！"
-     return
-       if ! [ -x "$(command -v nginx)" ]; then
-          echo -e "${RED}Nginx尚未安装，请先进行安装！${NC}"
-       fi
-       current_domain=$(search "server_name " ";" 1 $path_nginx_config true false)
-       set "ssl_certificate " "/$current_domain" 1 $path_nginx_config true "SSL证书存放路径"
-       current_ssl_path=$(search "ssl_certificate " "$current_domain" 1 $path_nginx_config true false)
-       if set "server_name " ";" 1 $path_nginx_config true "VPS域名" "" true "^[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$"; then
-           replace  "$current_ssl_path" ".cer;" 1 "$text2" $path_nginx_config true
-           replace  "$current_ssl_path" ".key;" 1 "$text2" $path_nginx_config true
-       fi
-       if set "https://" "; #伪装网址" 1 $path_nginx_config true "伪装域名" "" true "^[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$"; then
-           replace  "sub_filter \"" "\"" 1 "$text2" $path_nginx_config true
-           replace  "proxy_set_header Host \"" "\"" 1 "$text2" $path_nginx_config true
-       fi
-       set "location /ray-" " {" 1 $path_nginx_config true "xray分流路径" "省略/ray-前缀，"
-       set "http://127.0.0.1:" "; #Xray端口" 1 $path_nginx_config true "Xray监听端口" "0-65535，" true "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"
-       set "location /xui-" " {" 1 $path_nginx_config true "x-ui面板分流路径" "省略/xui-前缀，"
-       set "http://127.0.0.1:" "; #xui端口" 1 $path_nginx_config true "X-ui监听端口" "0-65535，" true "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"
-       echo "正在重启Nginx..."
-       if nginx -t &> /dev/null; then
-          systemctl restart nginx
-          return
-       fi
-       echo "Nginx配置文件存在错误，请检查并修改后重启！"
-}   
-####### 从github下载网页文件 ####### 
-function download_html {
-   echo "维护中..."
-   return
-   if confirm "此操作将从Github的vincilawyer/Bash/nginx/html目录下载入网页文件，并覆盖原网页文件！" "已取消下载更新网页文件"; then return; fi
-    #输入主题名称
-    read -p "请输入网页主题名称（例如Moon）：" input
-    if [[ -z $input ]]; then 
-        echo "已取消操作!"
-        return
-    fi
-    echo "正在下载网页zip压缩包..."
-
-    #开始下载并覆盖
-    if wget "$link_html$input".zip -O /home/"$input".zip; then
-       echo "压缩包下载完成，开始解压"
-       unzip /home/"$input".zip -d /home
-       path_html=$(search "root" " ")
-       echo "开始覆盖原网页文件"
-       rm -r "$path_html"/*  >/dev/null
-       mv /home/"$input"/* "$path_html"/
-       echo "已更新网页文件！"
-       rm -r /home/"$input".zip
-       rm -r /home/"$input"
-       rm -rf /home/__MACOSX >/dev/null
-       echo "已清除压缩包！"
-   else
-       echo "下载失败，请检查文件名称或网络！"
-   fi    
-}
-
-                                                                         
+                                                                   
 #######  使用Certbot申请SSL证书的函数 ####### 
 function apply_ssl_certificate {
    echo "维护中"
