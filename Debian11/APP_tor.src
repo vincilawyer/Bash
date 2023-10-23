@@ -27,6 +27,8 @@ function install_Tor {
     systemctl enable tor
     #配置初始化
     initialize_tor
+    #设置开机自启动
+    systemctl restart tor
     sleep 2
     ipinfo
 }
