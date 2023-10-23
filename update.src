@@ -176,6 +176,10 @@ if [[ "$CURSHELL" == *"bash"* ]]; then
    tput el
    echo
 elif [[ "$CURSHELL" == *"zsh"* ]]; then
+    echo "请等待"
+    sleep $from
+    return
+    #以下代码暂时未能使用，未知错误
     echoti sc  # Save the current cursor position
     while (( from >= 0 )); do
         echoti rc  # Restore the saved cursor position
