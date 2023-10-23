@@ -31,7 +31,7 @@ function Onestep_V2ray {
     x-ui 
     echo
     echo -e "${BLUE}即将开始配置Tor，请填写\确认参数${NC}"
-    set_tor_config
+    set_dat "Tor_port"
     echo
     echo -e "${BLUE}开始安装Tor...${NC}"
     install_Tor 
