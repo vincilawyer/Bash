@@ -2,7 +2,7 @@ Version=1.00  #版本号
 
 ###### 企业微信消息推送 ######
 #webhook参数
-webhook='https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=615a90ac-4d8a-48f1-b396-1f4bfbc650cd'
+webhook='https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=858f72ca-cdab-4ec6-9257-e82f71b1b455'
 function notifier {
 # 使用curl发送POST请求，这里使用的JSON格式的数据
 curl "$webhook" \
