@@ -225,8 +225,9 @@ function settext {
                      return 0
                  fi
            else                           #如果在文本模式下
-
-               :
+                     [[ "$new_text" == "#" ]] && new_text=""
+                     [[ "$new_text" == '"#"' ]] && new_text="#"
+                     return 0
            fi
         fi
      done  
