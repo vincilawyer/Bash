@@ -132,13 +132,13 @@ done
       local cur_Version="$4"
       local n="$5"
       
-      check_time=35    #检查更新时长
+      check_time=99    #检查更新时长
       tput sc  #保存当前光标位置
       local t=0
       while true; do
             tput rc  #恢复光标位置
             tput el  #清除光标后内容
-            t=$((t + 1)); if ((t > $check_time)); then break; fi   #每隔50s检查一次更新情况
+            t=$((t + 1)); if ((t > $check_time)); then break; fi   #每隔周期检查一次更新情况
             ti=$((( $((check_time-t)) > 9 )) && echo "$((check_time-t))" || echo "0$((check_time-t))")s
             [[ "$a" == "true" ]] && b="  正在等待服务器端版本更新，输入任意键退出...   " || b='                                                '
             [[ "$a" == "true" ]] && a="false" || a="true"
