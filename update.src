@@ -154,7 +154,7 @@ done
             echo -e "${RED}########################################################${NC}"
             read -t 1 -n 1 input  #读取输入，在循环中一次1秒
             if [[ -n "$input" ]] || [ $? -eq 142 ] ; then
-                echo "已取消继续更新${RED}$file_name文件，并退出系统！"
+                echo -e "${RED}已取消继续更新$file_name文件，并退出系统！${NC}"
                 quit
             fi
       done
