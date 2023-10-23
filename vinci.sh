@@ -82,11 +82,11 @@ mkdir "$data_path"  >/dev/null 2>&1     #应用资源文件夹
 #仓库
 link_repositories="https://raw.githubusercontent.com/vincilawyer/My-Shell-Script/main/"            
 #update.src.sh
-link_update="${link_repositories}/update.src.sh"                                  
-path_update="$data_path/update.src.sh"                                                
+link_update="${link_repositories}/update.src"                                  
+path_update="$data_path/update.src"                                                
 #main.src.sh
-link_main="${link_repositories}/main.src.sh"                                    
-path_main="$data_path/main.src.sh"                                                    
+link_main="${link_repositories}/main.src"                                    
+path_main="$data_path/main.src"                                                    
 #启动程序下载网址
 link_def="${link_repositories}/vinci.sh" 
 
