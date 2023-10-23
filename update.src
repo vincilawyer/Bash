@@ -36,7 +36,7 @@ while true; do
               echo "${RED}$file_name文件缺失，即将退出系统..." && quit
          fi   
          echo -ne "${BLUE}已下载完成。${NC}"
-         countdown 2
+         countdown 1
     #如果文件已存在     
     else
          #如果无需更新
