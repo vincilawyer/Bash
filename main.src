@@ -192,7 +192,7 @@ elif uname -a | grep -q 'Darwin'; then
     echo -e "${GREEN}正在进行Mac端模块配置...${NC}"
 
     #获取专属组件清单
-    ((startcode==1)) && getsrclist mac
+    #((startcode==1)) && getsrclist Mac
 
 main_menu=(
     "系统设置"              'page " 系 统 设 置 " "${system_menu[@]}"' 
