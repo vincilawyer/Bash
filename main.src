@@ -215,8 +215,9 @@ else
 fi; 
 
 ##############################################################################     更新载入模块   ########################################################################################
+local srcname=""
 while IFS= read -r line; do
-    local srcname=""
+    srcname=""
     srcname="$(echo "$line" | cut -f1)"
     [ -z "$srcname" ] && continue
     update_load "$data_path/$srcname" "$(echo "$line" | cut -f2)" "$srcname模块" 1 "$startcode" 
