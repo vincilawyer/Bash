@@ -37,7 +37,7 @@ function Onestep_V2ray {
     echo -e "${BLUE}即将开始DNS解析设置，请填写\确认参数${NC}"
     set_cfdns
     echo
-    echo -e "${BLUE}请将www域名与本机ip绑定，绑定完成后返回继续${NC}"
+    echo -e "${BLUE}请将www域名与本机ip绑定(为确保安全，需启动CDN)，绑定完成后返回继续${NC}"
     wait && echo "正在启动DNS管理器，请稍候..."
     echo 
     cfdns
@@ -81,13 +81,21 @@ function Onestep_GPT {
     echo 
     echo -e "${BLUE}开始安装Docker...${NC}"
     install_Docker
+    echo
     confirm "是否删除当前所有Docker容器？" "已取消删除容器" || ( docker stop $(docker ps -a -q) &&  docker rm $(docker ps -a -q) && echo "已删除所有容器" )
+    echo
     echo -e "${BLUE}开始下载/更新镜像文件..${NC}"
     pull_Pandora
     echo -e "${BLUE}即将开始配置设置，请填写\确认参数${NC}"
     set_dat "Pandora_port"
+    echo 
+    echo -e "${BLUE}请将gpt域名与本机ip绑定(为确保安全，需启动CDN)，绑定完成后返回继续${NC}"
+    wait && echo "正在启动DNS管理器，请稍候..."
+    echo 
+    cfdns
+    echo 
     echo -e "${BLUE}准备启动GPT潘多拉服务器${NC}"
-    run_Pandora && echo -e "${BLUE}已成功启动GPT潘多拉服务器！${NC}"
+    run_Pandora && echo -e "\n${BLUE}已成功启动GPT潘多拉服务器！请前往https://gpt.${Domain} 进行使用！${NC}"
 }
 #############################################################################################################################################################################################
 ##############################################################################   一键部署网盘管理  ################################################################################################
