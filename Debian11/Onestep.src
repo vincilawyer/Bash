@@ -11,23 +11,28 @@ Onestep_menu=(
 ############################################################################################################################################################################################
 function Onestep_V2ray {
     echo -e "${BLUE}即将开始一键部署V2ray服务器${NC}"
+    echo
     echo -e "${BLUE}开始安装Nginx...${NC}"
     install_Nginx
+    echo
     echo -e "${BLUE}开始安装X-ui...${NC}"
     install_Xui
+    echo
     echo -e "${BLUE}即将开始DNS解析设置，请填写\确认参数${NC}"
     set_cfdns
+    echo
     echo -e "${BLUE}请将www域名与本机ip绑定，绑定完成后返回继续${NC}"
     wait
-    cfdns <<< "2"
+    cfdns
+    echo
     echo -e "${BLUE}即将开始申请SSL证书,申请完成后可继续选择安装BBR加速，并返回继续${NC}"
-    wait
     x-ui <<< '16'
+    echo
     echo -e "${BLUE}即将开始配置Tor，请填写\确认参数${NC}"
     set_tor_config
+    echo
     echo -e "${BLUE}开始安装Tor...${NC}"
-    install_Tor
-    
+    install_Tor 
 }
 
 
