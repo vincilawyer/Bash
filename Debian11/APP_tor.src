@@ -22,7 +22,7 @@ function install_Tor {
     echo -e "${GREEN}正在更新包列表${NC}"
     sudo apt update
     echo -e "${GREEN}开始安装Tor${NC}"
-    apt install tor -y
+    apt install tor -y && echo -e "${GREEN}安装完成，配置中请稍候...${NC}"
     #设置开机自启动
     systemctl enable tor
     #配置初始化
