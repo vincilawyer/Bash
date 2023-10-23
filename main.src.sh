@@ -174,10 +174,6 @@ elif uname -a | grep -q 'Android'; then
 
     #获取专属组件清单
     ((startcode==1)) && getsrclist Android
-    
-    ######载入专属模块 #####
-    update_load "$path_alist_andriod" "$link_alist_andriod" "alist_andriod" 1 "$startcode" 
-    update_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_andriod" 1 "$startcode" 
 
 main_menu=(
     "系统设置"              'page " 系 统 设 置 " "${system_menu[@]}"' 
@@ -197,10 +193,6 @@ elif uname -a | grep -q 'Darwin'; then
 
     #获取专属组件清单
     ((startcode==1)) && getsrclist mac
-    
-    ######载入专属模块 ######
-    update_load "$path_alist_andriod" "$link_alist_andriod" "alist_andriod" 1 "$startcode" 
-    update_load "$path_rclone_andriod" "$link_rclone_andriod" "rclone_andriod" 1 "$startcode" 
 
 main_menu=(
     "系统设置"              'page " 系 统 设 置 " "${system_menu[@]}"' 
@@ -222,10 +214,9 @@ else
 fi; 
 
 ##############################################################################     更新载入模块   ########################################################################################
-
 while IFS= read -r line; do
     local srcname="$(echo "$line" | cut -f1)"
-    update_load "$data_path/$srcname" "$(echo "$line" | cut -f2)" "$srcname" 1 "$startcode" 
+    update_load "$data_path/$srcname" "$(echo "$line" | cut -f2)" "$srcname模块" 1 "$startcode" 
 done < "$path_list"
 
 }
