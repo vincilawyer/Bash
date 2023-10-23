@@ -35,8 +35,8 @@ while true; do
               echo "Wrong url:$file_link"
               echo "${RED}$file_name文件缺失，即将退出系统..." && quit
          fi   
-         echo -e "${BLUE}已下载完成。${NC}"
-         sleep 1
+         echo -ne "${BLUE}已下载完成。${NC}"
+         countdown 1
     #如果文件已存在     
     else
          #如果无需更新
@@ -158,6 +158,39 @@ done
                 quit
             fi
       done
+}
+
+
+############################################################################################################################################################################################
+##############################################################################   倒计时   ########################################################################################
+############################################################################################################################################################################################
+function countdown {
+    local from=$1
+if [[ "$CURSHELL" == *"bash"* ]]; then
+    tput sc  # Save the current cursor position
+    while (( from >= 1 )); do
+        tput rc  # Restore the saved cursor position
+        tput el  # Clear from cursor to the end of the line
+        printf "%02ds" $from  # Print the countdown
+        if $(read -s -t 1 -n 1); then break; fi
+        ((from--))
+   done
+   tput el
+   echo
+elif [[ "$CURSHELL" == *"zsh"* ]]; then
+    echoti sc  # Save the current cursor position
+    while (( from >= 0 )); do
+        echoti rc  # Restore the saved cursor position
+        echoti el  # Clear from cursor to the end of the line
+        printf "%02ds" $from  # Print the countdown
+        stty -echo   #关闭输入显示
+        if read -t 1 -k 1 input; then stty echo;break; fi
+        stty echo    #打开输入显示
+        from=$(( from-1 ))
+    done
+    echoti el
+    echo
+fi    
 }
 
     
