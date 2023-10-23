@@ -124,6 +124,7 @@ function main_initial {
         local getlist=$(curl -s "$link_gitlist"/"$1")
         [ -z "$getlist" ] && ( echo -e "${RED}$1组件清单不存在(请检查 $link_gitlist/$1 )${NC}"; return )
         paste <(echo "$getlist" | grep "name" | cut -d '"' -f4) <(echo "$getlist" | grep "download_url" | cut -d '"' -f4) >> "$path_list"
+        cat "$path_list"
     }
     
     #获取组件清单
