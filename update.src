@@ -172,11 +172,11 @@ if [[ "$CURSHELL" == *"bash"* ]]; then
         tput rc  # Restore the saved cursor position
         tput el  # Clear from cursor to the end of the line
         printf "%02ds" $from  # Print the countdown
-        (( from == 0 )) || ( if $(read -s -t 1 -n 1); then break; fi )
+        (( from == 0 )) || { if $(read -s -t 1 -n 1); then break; fi }
         ((from--))
-   done
-   tput el
-   echo
+    done
+    tput el
+    echo
 elif [[ "$CURSHELL" == *"zsh"* ]]; then
     echoti sc  # Save the current cursor position
     while (( from >= 0 )); do
