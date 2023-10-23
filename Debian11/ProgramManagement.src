@@ -14,7 +14,7 @@ function aptup {
 echo "开始更新软件包列表..."
 apt update
 echo "软件包列表更新完成，开始更新本机软件包..."
-apt upgrade
+apt -y upgrade
 echo "更新结束"
 }
 
