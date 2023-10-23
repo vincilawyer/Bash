@@ -10,7 +10,7 @@ curl "$webhook" \
      -d "{
      \"msgtype\": \"text\",
      \"text\": {
-         \"content\": \"【服务器信息】\n$1\"
+         \"content\": \"【服务器信息】\n"$1"\"
      }
 }" >/dev/null 2>&1
 }
