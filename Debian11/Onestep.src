@@ -16,8 +16,12 @@ function install_Xui {
     install_Xui
     echo "即将开始DNS解析设置，请填写\确认参数"
     set_cfdns
-    echo "请将www域名与本机ip绑定"
-    cfdns >>> "2"
+    echo "请将www域名与本机ip绑定，绑定完成后返回继续"
+    wait
+    cfdns <<< "2"
+    echo "开始"
+    echo "即将开始申请SSL证书"
+    x-ui <<< '16'
     
 }
 
