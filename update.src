@@ -132,7 +132,7 @@ done
       local cur_Version="$4"
       local n="$5"
       
-      check_time=99    #检查更新时长
+      check_time=66    #检查更新时长
       tput sc  #保存当前光标位置
       local t=0
       while true; do
