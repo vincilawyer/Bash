@@ -122,15 +122,12 @@ function main_initial {
     function getsrclist { 
         echo "正在载入/更新$1组件清单..."
         local getlist=$(curl -s "$link_gitlist"/"$1")
-        [ -z "$getlist" ] && ( echo -e "${RED}$1组件清单不存在(请检查 $link_gitlist/$1 )${NC}"; return )
+        [ -z "$(echo "$getlist" | grep "name") ] && ( echo -e "${RED}$1组件清单不存在(请检查 $link_gitlist/$1 )${NC}"; return )
         paste <(echo "$getlist" | grep "name" | cut -d '"' -f4) <(echo "$getlist" | grep "download_url" | cut -d '"' -f4) >> "$path_list" && echo "succ"
-echo "$path_list"
-echo "$getlist"
-cat "$path_list"
     }
     
     #获取组件清单
-    ((startcode==1)) && ( echo -n "" > "$path_list"; getsrclist necessary; getsrclist universal )
+    ((startcode==1)) && ( echo -n "" > "$path_list"; getsrclist "necessary"; getsrclist "universal" )
     
 ##############################################################################    Debian11系统加载模块及菜单   ########################################################################################
 if uname -a | grep -q 'Debian'; then 
@@ -143,7 +140,7 @@ if uname -a | grep -q 'Debian'; then
     fi
     
     #获取专属组件清单
-    ((startcode==1)) && getsrclist Debian11
+    ((startcode==1)) && getsrclist "Debian11"
 
 #### 主菜单 ####
 main_menu=(
@@ -176,7 +173,7 @@ elif uname -a | grep -q 'Android'; then
     echo -e "${GREEN}正在进行Android端模块配置...${NC}"
 
     #获取专属组件清单
-    ((startcode==1)) && getsrclist Android
+    ((startcode==1)) && getsrclist "Android"
 
 main_menu=(
     "系统设置"              'page " 系 统 设 置 " "${system_menu[@]}"' 
@@ -195,7 +192,7 @@ elif uname -a | grep -q 'Darwin'; then
     echo -e "${GREEN}正在进行Mac端模块配置...${NC}"
 
     #获取专属组件清单
-    #((startcode==1)) && getsrclist Mac
+    #((startcode==1)) && getsrclist "Mac"
 
 main_menu=(
     "系统设置"              'page " 系 统 设 置 " "${system_menu[@]}"' 
