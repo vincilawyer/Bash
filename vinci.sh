@@ -80,15 +80,15 @@ mkdir "$data_path"  >/dev/null 2>&1     #应用资源文件夹
 
 #### 配置文件、程序网址、路径 ####
 #仓库
-link_repositories="https://raw.githubusercontent.com/vincilawyer/Shell-Script/main/"            
+link_repositories="https://raw.githubusercontent.com/vincilawyer/My-Shell-Script/main/"            
 #update.src.sh
-link_update="${link_repositories}library/update.src.sh"                                  
+link_update="${link_repositories}/update.src.sh"                                  
 path_update="$data_path/update.src.sh"                                                
 #main.src.sh
-link_main="${link_repositories}vinci/main.src.sh"                                    
+link_main="${link_repositories}/main.src.sh"                                    
 path_main="$data_path/main.src.sh"                                                    
 #启动程序下载网址
-link_def="${link_repositories}vinci/vinci.sh" 
+link_def="${link_repositories}/vinci.sh" 
 
 ############################################################################################################################################################################################
 ##############################################################################   脚本退出及错误检测   ########################################################################################
