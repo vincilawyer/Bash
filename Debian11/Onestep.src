@@ -22,11 +22,13 @@ function Onestep_V2ray {
     set_cfdns
     echo
     echo -e "${BLUE}请将www域名与本机ip绑定，绑定完成后返回继续${NC}"
-    wait
+    wait && echo "正在启动DNS管理器，请稍候..."
+    echo 
     cfdns
     echo
     echo -e "${BLUE}即将开始申请SSL证书,申请完成后可继续选择安装BBR加速，并返回继续${NC}"
-    x-ui <<< '16'
+    echo 
+    x-ui 
     echo
     echo -e "${BLUE}即将开始配置Tor，请填写\确认参数${NC}"
     set_tor_config
