@@ -144,8 +144,7 @@ if uname -a | grep -q 'Debian'; then
 
 #### 主菜单 ####
 main_menu=(
-    "系统设置"              'page " 系 统 设 置 " "${system_menu[@]}"'
-    "UFW防火墙管理"          'page " UFW 防 火 墙" "${ufw_menu[@]}"'
+    "系统工具"              'page " 系 统 工 具 " "${system_menu[@]}"'
     "Docker服务"            'page "Docker" "${docker_menu[@]}"'
     "Nginx服务"             'page "Nginx" "${nginx_menu[@]}"'
     "X-ui服务"              'page "X-UI" "${xui_menu[@]}"'
@@ -155,17 +154,6 @@ main_menu=(
     "Alist服务"            'page "Alist" "${alist_menu[@]}"'
     "Rclone服务"            'page "Rclone" "${rclone_menu[@]}"'
     )
-    
-### 系统工具选项 ###
-system_menu=(
-    "更新脚本"                  'startcode=1; base_load; Initial; update_dat; waitcon="false"; return'
-    "程序管理"                  'page "程 序 管 理" "${Program_menu[@]}"'
-    "个人配置设置"               'page "配置设置" "${config_menu[@]}"; continue'
-    "本机ip信息"               "ipinfo"    
-    "查看网络端口监听状况(netstat -tulnp)"            "netstat -tulnp"
-    "修改SSH登录端口和登录密码"   "change_ssh_port; change_login_password"
-    "查看本机系统与核心信息（uname -a）"   "uname -a"
-     )  
 
 ##############################################################################    Android系统加载模块及菜单   ########################################################################################
 elif uname -a | grep -q 'Android'; then 
@@ -176,7 +164,7 @@ elif uname -a | grep -q 'Android'; then
     ((startcode==1)) && getsrclist "Android"
 
 main_menu=(
-    "系统设置"              'page " 系 统 设 置 " "${system_menu[@]}"' 
+    "系统工具"              'page " 系 统 工 具 " "${system_menu[@]}"' 
     "Cloudflare服务"        'page "Cloudflare" "${cf_menu[@]}"'
     "Alist服务"            'page "Alist" "${alist_menu[@]}"'
     "Rclone服务"            'page "Rclone" "${rclone_menu[@]}"'
@@ -195,7 +183,7 @@ elif uname -a | grep -q 'Darwin'; then
     #((startcode==1)) && getsrclist "Mac"
 
 main_menu=(
-    "系统设置"              'page " 系 统 设 置 " "${system_menu[@]}"' 
+    "系统工具"              'page " 系 统 工 具 " "${system_menu[@]}"' 
     "Cloudflare服务"        'page "Cloudflare" "${cf_menu[@]}"'
     "Alist服务"            'page "Alist" "${alist_menu[@]}"'
     "Rclone服务"            'page "Rclone" "${rclone_menu[@]}"'
