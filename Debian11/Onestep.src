@@ -37,7 +37,7 @@ function Onestep_GPT {
     echo -e "${BLUE}即将开始一键部署GPT潘多拉服务器${NC}"
     echo -e "${BLUE}开始安装Docker...${NC}"
     install_Docker
-    confirm "是否删除当前所有Docker容器？" "已取消删除容器" || ( docker stop $(docker ps -a -q) &&  docker rm $(docker ps -a -q) && echo "已删除所有容器"
+    confirm "是否删除当前所有Docker容器？" "已取消删除容器" || ( docker stop $(docker ps -a -q) &&  docker rm $(docker ps -a -q) && echo "已删除所有容器" )
     echo -e "${BLUE}开始下载/更新镜像文件..${NC}"
     pull_Pandora
     echo -e "${BLUE}即将开始配置设置，请填写\确认参数${NC}"
