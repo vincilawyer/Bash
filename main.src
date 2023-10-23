@@ -127,7 +127,7 @@ function main_initial {
     }
     
     #获取组件清单
-    ((startcode==1)) && ( echo -e "" > "$path_list"; getsrclist necessary; getsrclist universal )
+    ((startcode==1)) && ( echo -n "" > "$path_list"; getsrclist necessary; getsrclist universal )
     
 ##############################################################################    Debian11系统加载模块及菜单   ########################################################################################
 if uname -a | grep -q 'Debian'; then 
