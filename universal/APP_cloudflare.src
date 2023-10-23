@@ -184,7 +184,7 @@ function install_Warp {
         #连接WARP：
         echo -e "${GREEN}连接WARP${NC}"
         warp-cli connect
-        sleep 2
+        sleep 3
         #查询代理后的IP地址：
         echo -e "${GREEN}Warp 安装完成，代理IP地址为：${NC}"
         curl ifconfig.me --proxy socks5://127.0.0.1:40000
