@@ -13,10 +13,18 @@ function Onestep_V2ray {
     echo -e "${BLUE}即将开始一键部署V2ray服务器${NC}"
     echo
     echo -e "${BLUE}开始安装Nginx...${NC}"
-    install_Nginx
+    install_Nginx 
+    echo -e "${BLUE}请到 /etc/nginx/conf.d 目录中导入Nginx配置，导入完成后方可继续 ${NC}"
+    wait
     echo
     echo -e "${BLUE}开始安装X-ui...${NC}"
+    local xui_port="15155"
+    echo -e "参数提示：\n建议端口:$xui_port\n"
     install_Xui
+    ufw allow $xui_port
+    echo "防火墙已暂时开放$xui_port端口，请前往 http://$(hostname -I | cut -d ' ' -f1):$xui_port 进行设置！设置完成后方可继续 "
+    wait
+    ufw delete allow $xui_port && echo "防火墙已关闭$xui_port端口"
     echo
     echo -e "${BLUE}即将开始DNS解析设置，请填写\确认参数${NC}"
     set_cfdns
@@ -36,10 +44,6 @@ function Onestep_V2ray {
     echo -e "${BLUE}开始安装Tor...${NC}"
     install_Tor 
 }
-
-
-#请到 /etc/nginx/conf.d 目录中修改Nginx配置
-#请完成ssl签名
 
 #############################################################################################################################################################################################
 ##############################################################################   一键部署GPT潘多拉服务器  ################################################################################################
