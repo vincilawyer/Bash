@@ -19,10 +19,11 @@ function Onestep_V2ray {
     echo
     echo -e "${BLUE}开始安装X-ui...${NC}"
     local xui_port="15155"
-    echo -e "参数提示：\n建议端口:$xui_port\n"
+    echo -e "${BLUE}参数提示：\n建议端口:$xui_port\n${NC}"
     install_Xui
     ufw allow $xui_port
-    echo "防火墙已暂时开放$xui_port端口，请前往 http://$(hostname -I | cut -d ' ' -f1):$xui_port 进行设置！设置完成后方可继续 "
+    echo "防火墙已暂时开放$xui_port端口，请前往 http://$(hostname -I | cut -d ' ' -f1):$xui_port 按提示顺序进行设置！设置完成后方可继续 "
+    echo -e "${BLUE}提示：\n1、建议版本切换至最新\n2、协议：vless\n3、端口：16166\n4、ID:随机\n5、面板url根路径:\n/xui-vf2cre7st3onv8abv3v/\n${NC}"
     wait
     ufw delete allow $xui_port && echo "防火墙已关闭$xui_port端口"
     echo
