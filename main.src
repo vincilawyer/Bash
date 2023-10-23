@@ -122,7 +122,7 @@ function main_initial {
     function getsrclist { 
         echo "正在载入/更新$1组件清单..."
         local getlist=$(curl -s "$link_gitlist"/"$1")
-        [ -z "$(echo "$getlist" | grep "name") ] && ( echo -e "${RED}$1组件清单不存在(请检查 $link_gitlist/$1 )${NC}"; return )
+        [ -z "$(echo "$getlist" | grep "name")" ] && ( echo -e "${RED}$1组件清单不存在(请检查 $link_gitlist/$1 )${NC}"; return )
         paste <(echo "$getlist" | grep "name" | cut -d '"' -f4) <(echo "$getlist" | grep "download_url" | cut -d '"' -f4) >> "$path_list" && echo "succ"
     }
     
