@@ -282,14 +282,14 @@ function insert {
     lineno="$(cat "$file" | grep -n "$location_string" | cut -d ':' -f1)"
     if [[ $lineno =~ ^[0-9]+$ ]]; then
         sed -i "${lineno}s/^/${comment}该行系由${def_name}脚本修改，原内容为：/" "$file"
-        sed -i "${lineno}a\\${inserttext1}" "$file"
         sed -i "${lineno}a\\${inserttext2}" "$file"
+        sed -i "${lineno}a\\${inserttext1}" "$file"
         return 0
     elif [[ "$lineno" == "" ]]; then
         echo >> "$file"
         echo "${comment}该行系由${def_name}脚本插入" >> "$file"
-        echo "${inserttext2}" >> "$file"
         echo "${inserttext1}" >> "$file"
+        echo "${inserttext2}" >> "$file"
         return 0
     else
         echo -e "${RED}找到多个匹配项，无法完成文本插入！${NC}"
