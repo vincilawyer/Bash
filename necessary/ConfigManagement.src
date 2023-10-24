@@ -12,7 +12,9 @@
 #7、在使用configfile_mod函数添加配置内容时，需注意注释符内容中出现的双引号"、$号都需要用\号前置，防止被转义(生成配置文件后，\号会自动剔除)。
 #
 #  应用配置文件修改说明（update_config函数）：
-#
+#1、应用配置文件格式：第一行为配置说明；第二行为具体配置内容
+#2、配置说明注释符以 #￥#@ 开头
+#3、
 
 ### 菜单栏
 config_menu=(
@@ -128,6 +130,7 @@ function set_dat {
 #######  应用配置更新   #######   
 function update_config {
     local configfile="$1" #要修改的配置文件路径
+    local comment="${2:#}" #注释符
     lines=()
     local ct=0      #已修改配置的数量
     local ft=0      #修改失败的数量
@@ -140,7 +143,7 @@ function update_config {
          linenum=$((index+1))            #配置行号
          line2=${lines[$linenum]}
          [[ "$line1" == *'#￥#@'* ]] || continue      #如果没有找到参数行，则继续查找
-         [[ "$line2" =~ ^[[:space:]]*# ]] && continue      #如果配置行是注释行，则继续查找
+         [[ "$line2" =~ "^ *$comment" ]] && continue      #如果配置行是注释行，则继续查找
          a=()
          [[ "$CURSHELL" == *"bash"* ]] && IFS=$'\n' readarray -t a <<< $(echo "$line1" | sed 's/#@/\n/g')    # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。
          [[ "$CURSHELL" == *"zsh"* ]] && IFS=$'\n' readarray -t a <<< $(echo "$line1" | sed 's/#@/\n/g')   
