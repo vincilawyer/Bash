@@ -6,7 +6,7 @@ Version=4.00  #版本号
 Version1="$Version.$(n="$(cat "$path_def")" &&  echo "${#n}")"                         #脚本完整版本号
 
 #github目录清单链接
-link_gitlist="https://api.github.com/repos/vincilawyer/My-Shell-Script/contents/"      
+link_gitlist="https://api.github.com/repos/vincilawyer/My-Shell-Script/contents"      
 
 #组件清单位置
 path_list="$data_path/srclist.dat"
