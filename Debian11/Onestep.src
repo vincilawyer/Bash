@@ -12,7 +12,16 @@ Onestep_menu=(
 ############################################################################################################################################################################################
 
 function Onestep_Env {
-
+    echo -e "${BLUE}\n正在设置本机时间...${NC}"
+    echo "当前时间状态为："
+    timedatectl
+    echo "正在备份时间配置文件..."
+    cp -i /etc/localtime /etc/localtime.bak
+    sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+    systemctl restart ntp
+    echo "已将时间更改为上海时间："
+    timedatectl
+    echo
     echo -e "${BLUE}\n正在设置环境变量...${NC}"
     insert '^ *alias ll="ls -l"' "" "$path_nonloginEnv" 'alias ll="ls -l"'
     insert '^ *alias la="ls -al"' "" "$path_nonloginEnv" 'alias la="ls -al"'
