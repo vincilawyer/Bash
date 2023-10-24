@@ -12,17 +12,17 @@ Onestep_menu=(
 ############################################################################################################################################################################################
 
 function Onestep_Env {
-    echo -e "\n${BLUE}开始设置环境变量${NC}"
+    echo -e "${BLUE}\n开始设置环境变量${NC}"
     insert 'alias ll="ls -l"' "" "$path_nonloginEnv" 'alias ll="ls -l"'
-    insert 'alias la="ls -al"' "" "$path_nonloginEnv' 'alias la="ls -al"'
-    insert 'alias cls="clear"' "" '$path_nonloginEnv' 'alias cls="clear"'
+    insert 'alias la="ls -al"' "" "$path_nonloginEnv" 'alias la="ls -al"'
+    insert 'alias cls="clear"' "" "$path_nonloginEnv" 'alias cls="clear"'
     loginpagect='
     欢迎进入我的Debian 11 云服务器远程控制系统~
 
     上次登录信息:'
     echo 
     cat > "$path_loginpageEnv" <<< "$loginpagect" && echo -e "${BLUE}登录页面已设置为：$loginpagect${NC}"
-    echo -e "\n${BLUE}已成功修改环境！${NC}"
+    echo -e "${BLUE}\n已成功修改环境！${NC}"
 }
 
 #############################################################################################################################################################################################
