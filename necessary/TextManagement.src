@@ -272,42 +272,26 @@ function inp {
 
 #######  插入文本 ######
 function insert {
-    local argtext="$1"           # 参数内容
-    local config="$2"           # 配置内容
-    local location_string="$3"     #匹配的内容
-    local file="$4"                #文件位置
-    local findloc=0                #文件中是否找到一个带注释符的匹配内容    
-    local lineno=0                 #行号
+    local location_string="$1"     #匹配的内容
+    local inserttext="$2"             #插入内容
+    local file="$3"                #文件位置
+    local comment="${4:#}"             #注释符
+    local lineno=""                 #行号
     local lines=()
-    while IFS= read -r line;do
-         ((lineno++)) #记住行号
-         if [[ $line =~ $location_string ]]; then
-              #如果行首不是注释符
-              if ! [[ $line =~ ^[[:space:]]*# ]]; then
-                  # 插入注释符，并插入新字符串到下一行
-                  sed -i "${lineno}s/^/#该行系由vinci脚本修改，原内容为： /" "$file"
-                  sed -i "${lineno}a\\$config" "$file"
-                  sed -i "${lineno}a\\$argtext" "$file"
-                  return
-                  
-              #如果行首是注释符
-              else
-                  ((findloc==0)) && findloc=$lineno && continue
-                  #如果这不是唯一一行的注释符
-                  findloc=0
-                  break  
-              fi
-         fi
-    done < "$file"    
-    if ! ((findloc==0)); then
-       sed -i "${findloc}s/^/#该行系由vinci脚本修改，原内容为： /" "$file"
-       sed -i "${findloc}a\\$config" "$file"
-       sed -i "${findloc}a\\$argtext" "$file"
-       return
+    lineno="$(cat "$file" | grep -n "$location_string" | cut -d ':' -f1)"
+    if [[ $lineno =~ ^[0-9]+$ ]]; then
+        sed -i "${lineno}s/^/${comment}该行系由${def_name}脚本修改，原内容为：/" "$file"
+        sed -i "${lineno}a\\${inserttext}" "$file"
+        return 0
+    elif [[ "$lineno" == "" ]]
+        echo >> "$file"
+        echo "${comment}该行系由${def_name}脚本插入" >> "$file"
+        echo "$inserttext" >> "$file"
+        return 0
+    else
+        echo -e "${RED}找到多个匹配项，无法完成文本插入！${NC}"
+        return 1
     fi
-    #如果没找到匹配内容或唯一带有注释匹配内容
-    sed -i "${lineno}a\\$config" "$file"
-    sed -i "${lineno}a\\$argtext" "$file"
 }
 
 #######   是否确认框    #######   
