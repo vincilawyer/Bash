@@ -273,7 +273,7 @@ function inp {
 #######  插入文本 ######
 function insert {
     local location_string="$1"     #匹配的内容
-    local comment="${2:#}"         #注释符
+    local comment="${2:-#}"         #注释符
     local file="$3"                #文件位置
     local inserttext1="$4"          #插入内容一
     local inserttext2="$5"          #插入内容二
