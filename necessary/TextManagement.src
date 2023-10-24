@@ -272,6 +272,7 @@ function inp {
 
 #######  插入文本 ######
 function insert {
+    #使用insert插入配置时，插入内容一为具体配置内容，插入内容二为注释说明
     local location_string="$1"     #匹配的内容
     local comment="${2:-#}"         #注释符
     local file="$3"                #文件位置
@@ -282,14 +283,14 @@ function insert {
     lineno="$(cat "$file" | grep -n "$location_string" | cut -d ':' -f1)"
     if [[ $lineno =~ ^[0-9]+$ ]]; then
         sed -i "${lineno}s/^/${comment}该行系由${def_name}脚本修改，原内容为：/" "$file"
-        sed -i "${lineno}a\\${inserttext2}" "$file"
         sed -i "${lineno}a\\${inserttext1}" "$file"
+        [[ -n ${inserttext2} ]] && sed -i "${lineno}a\\${inserttext2}" "$file"
         return 0
     elif [[ "$lineno" == "" ]]; then
         echo >> "$file"
         echo "${comment}该行系由${def_name}脚本插入" >> "$file"
+        [[ -n ${inserttext2} ]] && echo "${inserttext2}" >> "$file"
         echo "${inserttext1}" >> "$file"
-        echo "${inserttext2}" >> "$file"
         return 0
     else
         echo -e "${RED}找到多个匹配项，无法完成文本插入,请检查！${NC}"
