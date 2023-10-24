@@ -283,7 +283,7 @@ function insert {
         sed -i "${lineno}s/^/${comment}该行系由${def_name}脚本修改，原内容为：/" "$file"
         sed -i "${lineno}a\\${inserttext}" "$file"
         return 0
-    elif [[ "$lineno" == "" ]]
+    elif [[ "$lineno" == "" ]]; then
         echo >> "$file"
         echo "${comment}该行系由${def_name}脚本插入" >> "$file"
         echo "$inserttext" >> "$file"
