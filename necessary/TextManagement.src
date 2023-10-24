@@ -292,7 +292,8 @@ function insert {
         echo "${inserttext2}" >> "$file"
         return 0
     else
-        echo -e "${RED}找到多个匹配项，无法完成文本插入！${NC}"
+        echo -e "${RED}找到多个匹配项，无法完成文本插入,请检查！${NC}"
+        wait
         return 1
     fi
 }
