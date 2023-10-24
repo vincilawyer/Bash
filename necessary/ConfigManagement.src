@@ -64,7 +64,6 @@ function update_dat {
     if ! source $configfile_path >/dev/null 2>&1; then   #读取用户数据
         echo "系统无用户数据记录。准备新建用户数据..."
         #配置文件具象化
-                            eval echo "\"$1\"")
         eval configfile_mod="\"$configfile_mod\""
         echo "$configfile_mod" > "$configfile_path"  #写入数据文件
         echo "初始化数据完成"
