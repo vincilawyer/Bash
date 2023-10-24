@@ -88,6 +88,7 @@ while true; do
         wrongtext="$(source "$file_path" 2>&1 >/dev/null)"
         if [[ -n "$wrongtext" ]]; then  
              echo -e "\n${RED}$file_name文件存在语法错误，报错内容为：{RED}"
+             wait
              echo "$wrongtext"
              echo "即将开始重新更新"
              upcode=2
@@ -114,6 +115,7 @@ while true; do
           $file_path "$startcode"
           if [[ "$?" == "2" ]]; then
               echo "$file_name启动脚本存在语法错误，报错内容如上"
+              wait
               echo "即将开始重新更新"
               upcode=2
               wrongtext=""
@@ -132,7 +134,7 @@ done
       local cur_Version="$4"
       local n="$5"
       
-      check_time=66    #检查更新时长
+      check_time=59    #检查更新时长
       tput sc  #保存当前光标位置
       local t=0
       while true; do
