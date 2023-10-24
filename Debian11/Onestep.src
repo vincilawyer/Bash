@@ -61,6 +61,8 @@ inoremap <C-o> <C-o>d0
 inoremap <C-p> <C-o>:if col(".") == 1 <Bar> delete <Bar> else <Bar> s/\%#.*//e <Bar> execute "normal! $" <Bar> endif <CR>''
 "在光标所在行下面插入一行
 inoremap <C-i> <C-o>:normal! $<CR><CR>
+"进入命令行模式（执行后返回插入模式）
+inoremap <C-;> <C-o>:
 '
     cat > "$path_vimEnv" <<< "$vimkey" && echo -e "${BLUE}\n已设置Vim按键映射为：${NC}" && echo "$vimkey"
 
