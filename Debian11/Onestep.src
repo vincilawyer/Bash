@@ -32,22 +32,20 @@ function Onestep_Env {
 autocmd VimEnter * startinsert
 " 保存文件
 inoremap <C-s> <C-o>:w<CR>
-" 退出vim(若未保存,则无法退出)
-inoremap <C-w> <C-o>:q<CR>
 " 退出vimm(若未保存,则提示)
-inoremap <C-q> <C-o>:confirm q<CR>
+inoremap <C-w> <C-o>:confirm q<CR>
 " 撤销上一个动作
 inoremap <C-z> <C-o>:u<CR>
 " 恢复上一个动作
 inoremap <C-r> <C-o>:redo<CR>
 "屏幕向上移动半页
-inoremap <C-u> <C-o><C-u>
+inoremap <C-q> <C-o><C-u>
 "屏幕向下移动半页
-inoremap <C-j> <C-o><C-d>
+inoremap <C-e> <C-o><C-d>
 "光标移动到所在页行首
-inoremap <C-h> <C-o>0
+inoremap <C-a> <C-o>0
 "光标移动到所在页行末
-inoremap <C-k> <C-o>$
+inoremap <C-d> <C-o>$
 "搜索（小写n向下搜索，大写N向上搜索）
 inoremap <C-f> /
 "删除光标所在字符到该列行首的所有数据
