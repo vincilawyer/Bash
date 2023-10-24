@@ -285,12 +285,14 @@ function insert {
         sed -i "${lineno}s/^/${comment}该行系由${def_name}脚本修改，原内容为：/" "$file"
         sed -i "${lineno}a\\${inserttext1}" "$file"
         [[ -n ${inserttext2} ]] && sed -i "${lineno}a\\${inserttext2}" "$file"
+        echo "已在$file文件中插入文本：${inserttext1}"
         return 0
     elif [[ "$lineno" == "" ]]; then
         echo >> "$file"
         echo "${comment}该行系由${def_name}脚本插入" >> "$file"
         [[ -n ${inserttext2} ]] && echo "${inserttext2}" >> "$file"
         echo "${inserttext1}" >> "$file"
+        echo "已在$file文件中末尾插入文本：${inserttext1}"
         return 0
     else
         echo -e "${RED}找到多个匹配项，无法完成文本插入,请检查！${NC}"
