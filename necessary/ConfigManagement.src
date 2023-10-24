@@ -3,18 +3,21 @@
 ############################################################################################################################################################################################
 ##此模块依赖library/text_processing.scr.sh模块，且必须置于其他配置程序前面
 #  个人配置文件说明：
-#1、使用configfile_mod函数添加常量参数，需使用 config_num=\"常量值\" 的格式，若常量值为变量，则格式为 config_num="\"${变量名}\"";
-#2、使用configfile_mod函数添加变量配置参数，使用   $(pz "变量名")    的格式；
-#3、注释符说明：第一个#@后内容为：变量名称；
-#4、第二个注释符若为*，则说明该行为常量参数，不可手动修改；若为#@，内容为：提示备注；
-#5、第三个#@后内容为：匹配规则（有条件规则和比较规则）。1、比较规则：即为正则表达式的变量名（请注意，不是正则表达本身，需要在arg中定义正则表达式），输入结果将与该正则表达式作比较。2、条件规则：为判断new_text变量是否符合规则条件;
-#6、第三个#@后的规则若为 2条件规则 ，则需用"包裹;
-#7、在使用configfile_mod函数添加配置内容时，需注意注释符内容中出现的双引号"、$号都需要用\号前置，防止被转义(生成配置文件后，\号会自动剔除)。
+#1、使用configfile_mod函数添加配置文件内容，添加原理系使用eval函数（具体详见源代码），可视为 配置文件内容="要添加的内容"。故添加配置内容时，需"、$号都需要用\号防止被转义(生成配置文件后，\号会自动剔除)。$未使用转义符号时，则将直接转换变量。
+#2、添加常量参数，需使用 config_num=\"常量值\" 的格式，若常量值为变量，则格式为 config_num=\"${变量名}\"  或 config_num=\"\${变量名}\" ，区别为变量赋值时间，前者在写入配置文件时赋值，后者在调用配置文件时赋值。
+#3、使用configfile_mod函数添加变量配置参数，使用 $(pz "变量名") 的格式；
+#4、注释符说明：第一个#@后内容为：变量名称；
+#5、第二个注释符若为*，则说明该行为常量参数，不可手动修改；若为#@，内容为：提示备注；
+#6、第三个#@后内容为：匹配规则（有条件规则和比较规则）。1、比较规则：即为正则表达式的变量名（请注意，不是正则表达本身，需要在arg中定义正则表达式），输入结果将与该正则表达式作比较。2、条件规则：为判断new_text变量是否符合规则条件;
+#7、第三个#@后的规则若为 2条件规则 ，则需用"包裹并加上转义符\，即\";
 #
 #  应用配置文件修改说明（update_config函数）：
-#1、应用配置文件格式：第一行为配置说明；第二行为具体配置内容
-#2、配置说明注释符以 #￥#@ 开头
-#3、
+#1、应用配置文件格式：第一行为配置说明；第二行为具体配置内容；
+#2、配置说明以#￥#@ 开头，#@作为分隔；
+#3、第一个#@后内容为:配置的名称
+#4、第二个#@后内容为:具体配置的起始定位字符
+#5、第三个#@后内容为:具体配置的结束定位字符
+#6、第四个#@后内容为:个人配置文件中的变量名称
 
 ### 菜单栏
 config_menu=(
@@ -31,34 +34,29 @@ configfile_path="$data_path/$def_name.dat"                                      
 
 ## 配置文件模板头部 ##
 configfile_mod='
-#本文件为"\"${def_name}\"" 脚本个人配置文件
-test12=""
-config_num="\"${#configfile_mod}\""                         #配置模板版本号*              
+#本文件为${def_name}脚本个人配置文件
+test12=\"\"
+config_num=\"${#configfile_mod}\"                         #配置模板版本号*              
 $(pz "Domain")                                          #@一级域名#@不用加www#@domain_regex
 '
 
-#检查配置文件内容 
-function checkdat {
-    echo -e "${BLUE}输出内容为:${NC}"
-    (eval echo "\"$1\"") || echo "配置模板有误! "
-    (eval "$(eval echo "\"$1\"")") && echo -e "${BLUE}试执行无误${NC}" || echo "配置模板有误"
-}
 
 ## 添加配置文件内容 
 function adddat { 
-      local wrongtext=""
-       wrongtext=$((eval echo "\"$1\"") 2>&1 >/dev/null)
-       if [[ -n "$wrongtext" ]]; then
-           echo "添加配置模板错误，错误内容如下，请检查格式！(注意#@后的内容是否使用\符号进行转义)"
-           echo "$wrongtext"
-           quit "配置模板错误，已退出系统！" "${BASH_SOURCE[1]}" "${FUNCNAME[1]}" "${FUNCNAME[2]}"
-       fi 
-       (eval "$(eval echo "\"$1\"")") || quit "添加配置模板错误，请检查格式！" "${BASH_SOURCE[0]}" "${FUNCNAME[0]}" "${FUNCNAME[1]}"
-       configfile_mod+="$1" 
+
+      #对源代码转换文本是否成功检查
+      eval echo "\"$1\"" 1> /dev/null && quit "添加配置模板错误，错误内容如上，请检查格式！(注意#@后的内容是否使用\符号进行转义)\n已退出系统！" "${BASH_SOURCE[1]}" "${FUNCNAME[1]}" "${FUNCNAME[2]}"
+      [[ -z "$(eval echo "\"$1\"")" ]]  && quit "添加配置模板错误，请检查格式！(注意#@后的内容是否使用\符号进行转义)\n已退出系统！" "${BASH_SOURCE[1]}" "${FUNCNAME[1]}" "${FUNCNAME[2]}"
+
+      #对转换文本是否可以运行检查
+      eval "$(eval echo "\"$1\"")" || quit "添加配置模板错误，请检查格式！" "${BASH_SOURCE[0]}" "${FUNCNAME[0]}" "${FUNCNAME[1]}"
+
+      #检查无误后添加配置
+      configfile_mod+="$1" 
 }
 
 function pz { 
-     echo "$1=\"$(eval echo \$"$1")\""      #将参数X变成 X=$X值的的形式
+     echo "$1=\"$(eval echo \$"${1}")\""      #将参数X变成 X=$X值的的形式
 } 
 
 #######   创建\更新用户配置数据模板    #######
@@ -66,14 +64,15 @@ function update_dat {
     if ! source $configfile_path >/dev/null 2>&1; then   #读取用户数据
         echo "系统无用户数据记录。准备新建用户数据..."
         #配置文件具象化
-        eval configfile_mod="\"$configfile_mod\"" || quit "添加配置模板错误，请检查格式！" "${BASH_SOURCE[0]}" "${FUNCNAME[0]}" "${FUNCNAME[1]}"
+                            eval echo "\"$1\"")
+        eval configfile_mod="\"$configfile_mod\""
         echo "$configfile_mod" > "$configfile_path"  #写入数据文件
         echo "初始化数据完成"
         wait
     else
         if ! [[ "$config_num" == "${#configfile_mod}" ]] ; then
            echo "配置文件更新中..."
-           eval config_all="\"$configfile_mod\"" || quit "添加配置模板错误，请检查格式！即将退出" "${BASH_SOURCE[0]}" "${FUNCNAME[0]}" "${FUNCNAME[1]}"
+           eval config_all="\"$configfile_mod\""
            echo "$config_all" > "$configfile_path" #写入数据文件
            echo "更新完成，可在系统设置中修改参数！"
            wait
