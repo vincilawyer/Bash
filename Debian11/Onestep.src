@@ -28,6 +28,9 @@ function Onestep_Env {
 
     echo -e "${BLUE}\n正在设置vim按键映射...${NC}"
     vimkey='
+" 启用颜色模式，并使用pablo颜色主体
+syntax on
+colorscheme pablo
 " 在vim启动时就进入插入模式
 autocmd VimEnter * startinsert
 " 保存文件
