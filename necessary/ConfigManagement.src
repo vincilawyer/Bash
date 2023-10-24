@@ -126,7 +126,7 @@ function set_dat {
 #######  应用配置更新   #######   
 function update_config {
     local configfile="$1" #要修改的配置文件路径
-    local comment="${2:#}" #注释符
+    local comment="${2:-#}" #注释符
     lines=()
     local ct=0      #已修改配置的数量
     local ft=0      #修改失败的数量
