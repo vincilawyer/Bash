@@ -151,7 +151,9 @@ Crontab_menu=(
 ############################################################################################################################################################################################
 path_nonloginEnv="$HOME/.bashrc"
 path_loginpageEnv="/etc/motd"
+path_vimEnv="$HOME/.vimrc"
 Envconfig_menu=(
-    "查看个人non-login环境变量配置(vi $path_nonloginEnv)"         "vi $path_nonloginEnv; continue"
-    "查看开机页面信息(vi $path_loginpageEnv)"                     "vi $path_loginpageEnv; continue"
+    "查看个人non-login环境变量配置(vi $path_nonloginEnv)"         "vim $path_nonloginEnv; continue"
+    "查看开机页面信息(vi $path_loginpageEnv)"                     "vim $path_loginpageEnv; continue"
+    "查看vim配置(vi $path_vimEnv)"                                "vim $path_vimEnv; continue"
     )  
