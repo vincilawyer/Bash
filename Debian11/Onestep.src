@@ -14,9 +14,9 @@ Onestep_menu=(
 function Onestep_Env {
 
     echo -e "${BLUE}\n正在设置环境变量...${NC}"
-    insert 'alias ll="ls -l"' "" "$path_nonloginEnv" 'alias ll="ls -l"'
-    insert 'alias la="ls -al"' "" "$path_nonloginEnv" 'alias la="ls -al"'
-    insert 'alias cls="clear"' "" "$path_nonloginEnv" 'alias cls="clear"'
+    insert '^ *alias ll="ls -l"' "" "$path_nonloginEnv" 'alias ll="ls -l"'
+    insert '^ *alias la="ls -al"' "" "$path_nonloginEnv" 'alias la="ls -al"'
+    insert '^ *alias cls="clear"' "" "$path_nonloginEnv" 'alias cls="clear"'
     source "$path_nonloginEnv" && echo -e "${BLUE}\n已载入新环境变量！${NC}" || echo -e "${RED}\n环境变量载入错误，请检查！${NC}"
 
     echo -e "${BLUE}\n正在设置终端登录显示页面...${NC}"
