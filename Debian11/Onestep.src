@@ -36,8 +36,7 @@ function Onestep_Env {
     echo -e "${BLUE}\n正在设置终端登录显示页面...${NC}"
     loginpagect='
 欢迎进入我的Debian 11 云服务器远程控制系统~
-
-上次登录信息:'
+'
     cat > "$path_loginpageEnv" <<< "$loginpagect" && echo -e "${BLUE}\n已将登录页面设置为：${NC}" && echo "$loginpagect"
 
 
