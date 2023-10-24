@@ -44,8 +44,8 @@ $(pz "Domain")                                          #@一级域名#@不用�
 function adddat { 
 
       #对源代码转换文本是否成功检查
-      eval echo "\"$1\"" 1> /dev/null && quit "添加配置模板错误，错误内容如上，请检查格式！(注意#@后的内容是否使用\符号进行转义)\n已退出系统！" "${BASH_SOURCE[1]}" "${FUNCNAME[1]}" "${FUNCNAME[2]}"
-      [[ -z "$(eval echo "\"$1\"")" ]]  && quit "添加配置模板错误，请检查格式！(注意#@后的内容是否使用\符号进行转义)\n已退出系统！" "${BASH_SOURCE[1]}" "${FUNCNAME[1]}" "${FUNCNAME[2]}"
+      eval echo "\"$1\"" 1> /dev/null || quit '添加配置模板错误，错误内容如上，请检查格式！(注意#@后的内容是否使用\符号进行转义)\n已退出系统！' "${BASH_SOURCE[1]}" "${FUNCNAME[1]}" "${FUNCNAME[2]}"
+      [[ -z "$(eval echo "\"$1\"")" ]]  && quit '添加配置模板错误，请检查格式！(注意#@后的内容是否使用\符号进行转义)\n已退出系统！' "${BASH_SOURCE[1]}" "${FUNCNAME[1]}" "${FUNCNAME[2]}"
 
       #对转换文本是否可以运行检查
       eval "$(eval echo "\"$1\"")" || quit "添加配置模板错误，请检查格式！" "${BASH_SOURCE[0]}" "${FUNCNAME[0]}" "${FUNCNAME[1]}"
