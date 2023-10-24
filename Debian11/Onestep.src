@@ -17,9 +17,9 @@ function Onestep_Env {
     insert 'alias la="ls -al"' "" "$path_nonloginEnv" 'alias la="ls -al"'
     insert 'alias cls="clear"' "" "$path_nonloginEnv" 'alias cls="clear"'
     loginpagect='
-    欢迎进入我的Debian 11 云服务器远程控制系统~
+欢迎进入我的Debian 11 云服务器远程控制系统~
 
-    上次登录信息:'
+上次登录信息:'
     echo 
     cat > "$path_loginpageEnv" <<< "$loginpagect" && echo -e "${BLUE}已将登录页面设置为：${NC}" && echo "$loginpagect"
     echo -e "${BLUE}\n已完成环境部署设置！${NC}"
