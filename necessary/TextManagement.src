@@ -273,20 +273,23 @@ function inp {
 #######  插入文本 ######
 function insert {
     local location_string="$1"     #匹配的内容
-    local inserttext="$2"             #插入内容
+    local comment="${2:#}"         #注释符
     local file="$3"                #文件位置
-    local comment="${4:#}"             #注释符
+    local inserttext1="$4"          #插入内容一
+    local inserttext2="$5"          #插入内容二
     local lineno=""                 #行号
     local lines=()
     lineno="$(cat "$file" | grep -n "$location_string" | cut -d ':' -f1)"
     if [[ $lineno =~ ^[0-9]+$ ]]; then
         sed -i "${lineno}s/^/${comment}该行系由${def_name}脚本修改，原内容为：/" "$file"
-        sed -i "${lineno}a\\${inserttext}" "$file"
+        sed -i "${lineno}a\\${inserttext1}" "$file"
+        sed -i "${lineno}a\\${inserttext2}" "$file"
         return 0
     elif [[ "$lineno" == "" ]]; then
         echo >> "$file"
         echo "${comment}该行系由${def_name}脚本插入" >> "$file"
-        echo "$inserttext" >> "$file"
+        echo "${inserttext2}" >> "$file"
+        echo "${inserttext1}" >> "$file"
         return 0
     else
         echo -e "${RED}找到多个匹配项，无法完成文本插入！${NC}"
