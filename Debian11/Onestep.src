@@ -21,8 +21,8 @@ function Onestep_Env {
 
     上次登录信息:'
     echo 
-    cat > "$path_loginpageEnv" <<< "$loginpagect" && echo -e "${BLUE}登录页面已设置为：$loginpagect${NC}"
-    echo -e "${BLUE}\n已成功修改环境！${NC}"
+    cat > "$path_loginpageEnv" <<< "$loginpagect" && echo -e "${BLUE}已将登录页面设置为：${NC}" && echo "$loginpagect"
+    echo -e "${BLUE}\n已完成环境部署设置！${NC}"
 }
 
 #############################################################################################################################################################################################
