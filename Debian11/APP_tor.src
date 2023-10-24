@@ -35,7 +35,7 @@ function install_Tor {
 
 ##### 初始化tor配置 ######
 function initialize_tor {
-    insert "^ *SocksPort " "" "$path_tor" '#￥#@Tor监听端口#@SocksPort #@ #@Tor_port' "SocksPort ${Tor_port:-50000}"
+    insert "^ *SocksPort " "" "$path_tor" "SocksPort ${Tor_port:-50000}" '#￥#@Tor监听端口#@SocksPort #@ #@Tor_port' 
 }
 
 ###### 设置Tor配置 ######
