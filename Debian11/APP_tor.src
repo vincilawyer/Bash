@@ -13,7 +13,7 @@ $(pz "Tor_port")                                  #@Tor监听端口#@0-65535#@po
 tor_menu=(
     "服务管理器"                 'get_Service_menu "tor"; page "Tor" "${Service_menu[@]}"'
     "安装Tor"                   "install_Tor"
-    "设置Tor配置"                "initialize_tor; cat $path_tor"
+    "设置Tor配置"                "set_tor_config"
     )
 
 ###### 安装Tor的函数 ######
