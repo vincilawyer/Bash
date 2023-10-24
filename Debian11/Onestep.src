@@ -12,16 +12,51 @@ Onestep_menu=(
 ############################################################################################################################################################################################
 
 function Onestep_Env {
-    echo -e "${BLUE}\n开始设置环境变量${NC}"
+
+    echo -e "${BLUE}\n正在设置环境变量...${NC}"
     insert 'alias ll="ls -l"' "" "$path_nonloginEnv" 'alias ll="ls -l"'
     insert 'alias la="ls -al"' "" "$path_nonloginEnv" 'alias la="ls -al"'
     insert 'alias cls="clear"' "" "$path_nonloginEnv" 'alias cls="clear"'
+    source "$path_nonloginEnv" && echo -e "${BLUE}\n已载入新环境变量！${NC}" || echo -e "${RED}\n环境变量载入错误，请检查！${NC}"
+
+    echo -e "${BLUE}\n正在设置终端登录显示页面...${NC}"
     loginpagect='
 欢迎进入我的Debian 11 云服务器远程控制系统~
 
 上次登录信息:'
-    echo 
-    cat > "$path_loginpageEnv" <<< "$loginpagect" && echo -e "${BLUE}已将登录页面设置为：${NC}" && echo "$loginpagect"
+    cat > "$path_loginpageEnv" <<< "$loginpagect" && echo -e "${BLUE}\n已将登录页面设置为：${NC}" && echo "$loginpagect"
+
+    echo -e "${BLUE}\n正在设置vim按键映射...${NC}"
+    vimkey='
+" 在vim启动时就进入插入模式
+autocmd VimEnter * startinsert
+" 保存文件
+inoremap <C-s> <C-o>:w<CR>
+" 退出vim(若未保存,则无法退出)
+inoremap <C-w> <C-o>:q<CR>
+" 退出vimm(若未保存,则提示)
+inoremap <C-q> <C-o>:confirm q<CR>
+" 撤销上一个动作
+inoremap <C-z> <C-o>:u<CR>
+" 恢复上一个动作
+inoremap <C-r> <C-o>:redo<CR>
+"屏幕向上移动半页
+inoremap <C-u> <C-o><C-u>
+"屏幕向下移动半页
+inoremap <C-j> <C-o><C-d>
+"光标移动到所在页行首
+inoremap <C-h> <C-o>0
+"光标移动到所在页行末
+inoremap <C-k> <C-o>$
+"搜索
+inoremap <C-f> /
+"删除光标所在字符到该列行尾的所有数据
+inoremap <C-p> <C-o>d$
+"删除光标所在字符到该列行首的所有数据
+inoremap <C-o> <C-o>d0
+'
+    cat > "$path_vimEnv" <<< "$vimkey" && echo -e "${BLUE}\n已设置Vim按键映射为：${NC}" && echo "$vimkey"
+
     echo -e "${BLUE}\n已完成环境部署设置！${NC}"
 }
 
