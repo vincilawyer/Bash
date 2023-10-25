@@ -216,9 +216,9 @@ while true; do
         local wrongtext=""
         wrongtext="$(source "$path_file" 2>&1 >/dev/null)"
         if [[ -n "$wrongtext" ]]; then  
-             echo -e "\n${RED}$name_file文件存在语法错误，报错内容为：{RED}"
-             wait
+             echo -e "\n${RED}$name_file文件存在语法错误，报错内容为：${NC}"
              echo "$wrongtext"
+             wait
              echo "即将开始重新更新"
              upcode=2
              continue
