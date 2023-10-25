@@ -1,13 +1,12 @@
-#!/bin/bash 1223
+#!/bin/bash
 ############################################################################################################################################################################################
 ##############################################################################   启动程序源代码   ########################################################################################
 ############################################################################################################################################################################################
-#程序组成结构:1、启动程序（即本程序）,用于下载、启动更新update程序和主程序（该两程序及本程序容错率为0）。
-#2、update程序，用于更新、加载配置文件。
-#3、主程序，承担程序功能作用。
+#程序组成结构:1、启动程序（即本程序）,用于下载、更新、启动主程序（本程序容错率为0）。
+#2、主程序，承担程序功能作用。
 #程序启动逻辑：
 #1、判断当前运行的系统环境，并对shell环境、网络环境、依赖软件进行适配；
-#2、载入update程序，在特定条件下对包括启动程序在内的所有程序进行更新，并加载所有配置文件
+#2、在特定条件下对包括主程序在内的所有程序进行更新，并加载所有配置文件
 #3、启动main主程序
 ############################################################################################################################################################################################
 ##############################################################################   shell调整环境   ########################################################################################
@@ -26,22 +25,22 @@ name_sh="vinci"
 startcode="$1"    #更新指令
 
 ####### 定义本脚本名称、应用数据路径 ######
-path_dir="$HOME/myfile/${name_sh}_src"    #应用数据文件夹位置名                     
-path_list="$path_dir/srclist.dat"          #组件清单存放位置
-path_dat="$path_dir/$name_sh.dat"         #配置数据文件路径                                         
-mkdir -p "$data_dir"                       #创建应用数据文件夹                                                  
+path_dir="$HOME/myfile/${name_sh}_src"        #应用数据文件夹位置名                     
+path_list="$path_dir/data/srclist.dat"        #组件清单存放位置
+path_dat="$path_dir/data/$name_sh.dat"        #配置数据文件路径  
+path_log="$path_dir/data/vinci.log"           #日志                                     
+mkdir -p "$data_dir"                          #创建应用数据文件夹                                                  
 
 #### 配置文件、程序网址、路径 ####
 #仓库-下载链接
 link_repositories="https://raw.githubusercontent.com/vincilawyer/My-Shell-Script/main"            
 #仓库-文件信息链接
-link_reposinfo="https://api.github.com/repos/vincilawyer/My-Shell-Script/contents"      
-#update.src文件下载链接及存放位置                               
-path_update="/update.src"                                                
+link_reposinfo="https://api.github.com/repos/vincilawyer/My-Shell-Script/contents"                                
 #main.src文件下载链接及存放位置                                
-path_main="/main.src"                                                    
+path_main="$path_dir/main.src"     
+path_main="$link_repositories/main.src"                                     
 #vinci.sh启动程序下载链接
-link_sh="/vinci.sh" 
+link_sh="$link_repositories/vinci.sh" 
 
 ####### 颜色
 RED='\033[0;31m'
@@ -112,10 +111,14 @@ local funcname2="$4"
    if ((exitnotice == 1)); then
         clear
    elif [ -n "$exitnotice" ]; then
-        echo -e "${RED}出现错误：$exitnotice。错误代码详见以下：${NC}"
-        echo -e "${RED}错误函数为：${FUNCNAME[1]}${NC}"
-        echo -e "${RED}调用函数为：${FUNCNAME[2]}${NC}"
-        echo -e "${RED}错误模块为：${BASH_SOURCE[1]}${NC}"
+        if [ -n "$scrname" ]; then
+            echo -e "${RED}出现错误：$exitnotice。错误代码详见以下：${NC}"
+            echo -e "${RED}错误函数为：${FUNCNAME[1]}${NC}"
+            echo -e "${RED}调用函数为：${FUNCNAME[2]}${NC}"
+            echo -e "${RED}错误模块为：${BASH_SOURCE[1]}${NC}"
+        elif
+            echo -e "${RED}出现错误：$exitnotice。${NC}"
+        fi
    fi            
    echo -e "${GREED}已退出vinci脚本！${NC}"
    exit
@@ -175,56 +178,164 @@ wait
 }
 
 ############################################################################################################################################################################################
-##############################################################################   依赖函数   ########################################################################################
+##################################################################################   更新函数    ###########################################################################################
 ############################################################################################################################################################################################
+function update_load {
+###参数###
+local path_file="$1"                            #为本地文件目录路径
+local link_file="$2"                            #新文件网络url链接
+local name_file="$3"                            #配置文件名称
+local loadcode="$4"                             #加载模式，1为source、2为bash
+local upcode="${5:-0}"                          #更新模式,0为无需更新，1为正常更新，2为报错更新
+local startcode="${5:-0}"                       #更新模式,0为无需更新，1为正常更新,传递给启动程序，使其继续更新
+local initial_name="$6"                         #执行初始化函数名
+local n=0                                       #错误警告更新次数
 
-#######   基础更新   #######   
-function base_load {
+###开始下载比对###
+echo     
+while true; do
+    #如果本地文件不存在
+    if ! [ -e "$path_file" ]; then
+         #下载更新文件
+         echo -n "正在下载$name_file文件..."
+         if ! curl -s -L "$link_file" -o "$path_file"; then 
+              #如果下载失败
+              echo -e "${RED}$name_file文件下载失败，请检查网络！${NC}"
+              echo "Wrong url:$link_file"
+              quit "$name_file文件缺失"
+         fi   
+         echo -ne "${BLUE}已下载完成。${NC}"
+         countdown 1
+    #如果本地文件已存在     
+    else
+         #如果无需更新
+         if ((upcode==0)); then               
+             #如果为主程序，则跳过；其他配置需加载
+             (( loadcode == 2 )) && return 
+         #如果需要更新，则检查更新
+         else
+               echo -ne "\r正在检查$name_file文件更新..."
+               
+               #获取代码
+               if ! code="$(curl -s "$link_file")"; then    
+                    #代码获取失败
+                    echo -e "${RED}$name_file文件更新失败，请检查网络！${NC}"
+                    echo "Wrong url:$link_file"
+                    wait
+               else
+                   #获取旧版本代码
+                   old_code="$(cat "$path_file")"     
+                   #如果两版本一致
+                   if [[ "$code" == "$old_code" ]]; then 
+                         #如果是报错更新，先报错，并继续检测更新
+                         if  (( upcode==2 )); then
+                             (( ++n )) 
+                             warning "$path_file" "$name_file" "$necessary" "$cur_Version" "$n"
+                             continue
+                         fi
+                         #无需更新
+                         echo -e "${BLUE}当前已是最新版V${#old_code}！${NC}"
+                         #如果是启动程序，则无需载入
+                         (( loadcode == 2 )) && return 
+                         
+                    #如果版本不一致,载入新版本
+                    else
+                        echo
+                        (( upcode==2 )) && echo -e "${RED} 当前${RED}$name_file文件存在错误！即将开始更新${NC}" 
+                        echo -e "${RED}$name_file文件当前版本号为：V${#old_code}${NC}"
+                        printf "%s" "$code" > "$path_file" && chmod +x "$path_file"
+                        echo -e "${BLUE}$name_file文件最新版本号为：V${#code}，已完成更新。${NC}"
+                    fi
+                fi
+         fi   #判断更新模式
+   fi  #判断文件存在情况
 
-      #检测代码是在$PATH中直接运行还是通过网络或其他方式启动,非$PATH直接启动则为更新模式
-      [[ "$0" == "$path_sh" ]] || [[ "$ZSH_ARGZERO" == "$path_sh" ]] || startcode=1
-      
-      #更新模式
-     if ((startcode==1)) || ! [ -e "$path_dir/$path_update" ]; then
-         echo
-         echo "正在启动更新检查程序..."
-         #增加时间戳，防止缓存
-         if ! curl "$link_update" -o "$path_update" >/dev/null 2>&1 ; then 
-              echo "更新检查程序下载失败，请检查网络！" 
+###开始载入##
+   #：如果载入模式为source。注：为了防止检验语法时，发生指令滞留，无法退出检测，尽量不要在模块文件中，执行指令。仅定义变量与函数。需要执行的指令，可以定义一个初始化函数来执行
+   if (( loadcode == 1 )); then
+        echo -e -n "${GREEN}正在载入$name_file文件...${NC}"
+        #开始脚本语法检查
+        local wrongtext=""
+        wrongtext="$(source "$path_file" 2>&1 >/dev/null)"
+        if [[ -n "$wrongtext" ]]; then  
+             echo -e "\n${RED}$name_file文件存在语法错误，报错内容为：{RED}"
+             wait
+             echo "$wrongtext"
+             echo "即将开始重新更新"
+             upcode=2
+             continue
+        fi          
+        #如果脚本没有语法错误，则载入
+        source "$path_file"
+        echo -e "${BLUE}载入完成${NC}"
+        #执行初始化函数
+        if [ -n "$initial_name" ]; then
+             echo
+             echo -e "${BLUE}#### 开始初始化$name_file模块${NC}"
+             $initial_name
+             echo
+             echo -e "${BLUE}####  $name_file初始化完成！  ${NC}"
+        fi
+        return
+          
+   #开始载入：启动程序如果有更新，则开始载入在新的shell环境中载入
+   elif (( loadcode == 2 )); then
+          echo "即将重启程序..."
+          #增加执行权限
+          chmod +x "$path_file"
+          $path_file "$startcode"
+          if [[ "$?" == "2" ]]; then
+              echo "$name_file启动脚本存在错误，报错内容如上"
               wait
-              else
-              echo "网络已连接，开始检查..." 
-              fi
-    
-     fi
-
-     #载入更新检查文件，并获取错误输出
-     wrongtext="$(source "$path_update" 2>&1 >/dev/null)"
-     if [ -n "$wrongtext" ]; then 
-          echo "当前更新检查程序缺失或存在语法错误，未能启动主程序，报错内容为：" 
-          echo "$wrongtext"
-          quit
-     else
-          source "$path_update"
-     fi    
-
-     #更新本程序
-     update_load "$path_sh" "$link_def" "$name_sh启动" 2 "$startcode"
-    
-     #更新主程序   
-     update_load "$path_main" "$link_main" "主程序" 1 "$startcode" "main_initial"
-     echo 
-     if (( startcode == 1 )); then echo -n "更新检查完成，即将进入程序..."; countdown 5; fi
-
+              echo "即将开始重新更新"
+              upcode=2
+              wrongtext=""
+              continue
+          fi
+          exit
+   fi
+done      
 }
 
-####### 文件对比   #####
-function filecomp {
-    local localfile="$1"     本地文件路径
-    local compfile="$2"      网络文件链接为文件下载链接或hash值
-    local compmethod="$3"    对比方式，1为sha哈希对比，2为文件直接比较
-    if 
+############################################################################################################################################################################################
+##################################################################################   其他依赖函数    ###########################################################################################
+############################################################################################################################################################################################
+#######   报错提示  ####### 
+ function warning {
+      local file_path="$1"                        
+      local file_name="$2"                
+      local necessary="$3"
+      local cur_Version="$4"
+      local n="$5"
+      
+      check_time=59    #检查更新时长
+      tput sc  #保存当前光标位置
+      local t=0
+      while true; do
+            tput rc  #恢复光标位置
+            tput el  #清除光标后内容
+            t=$((t + 1)); if ((t > $check_time)); then break; fi   #每隔周期检查一次更新情况
+            ti=$((( $((check_time-t)) > 9 )) && echo "$((check_time-t))" || echo "0$((check_time-t))")s
+            [[ "$a" == "true" ]] && b="  正在等待服务器端版本更新，输入任意键退出...   " || b='                                                '
+            [[ "$a" == "true" ]] && a="false" || a="true"
+            echo 
+            echo -e "${RED}########################################################${NC}"
+            echo -e "${RED}########################################################${NC}"
+            echo -e "${RED}####                                                ####${NC}"
+            echo -e "${RED}####    ${RED}$name_file文件错误！正在进行第$n次检查$ti   ${NC}"
+            echo -e "${RED}####                                                ####${NC}"
+            echo -e "${RED}####$b####${NC}"
+            echo -e "${RED}####                                                ####${NC}"
+            echo -e "${RED}########################################################${NC}"
+            echo -e "${RED}########################################################${NC}"
+            read -t 1 -n 1 input  #读取输入，在循环中一次1秒
+            if [[ -n "$input" ]] || [ $? -eq 142 ] ; then
+                echo -e "${RED}已取消继续更新$name_file文件，并退出系统！${NC}"
+                quit
+            fi
+      done
 }
+
 
 #######   倒计时   ####### 
 function countdown {
@@ -259,5 +370,20 @@ fi
 ############################################################################################################################################################################################
 ##############################################################################   开始运行   ########################################################################################
 ############################################################################################################################################################################################
+#######   更新本程序、载入主程序   #######   
+function base_load {
+
+      #检测代码是在$PATH中直接运行还是通过网络或其他方式启动,非$PATH直接启动则为更新模式
+      [[ "$0" == "$path_sh" ]] || [[ "$ZSH_ARGZERO" == "$path_sh" ]] || startcode=1
+
+      #更新本程序
+      update_load "$path_sh" "$link_sh" "$name_sh启动" 2 "$startcode"
+    
+      #更新主程序   
+      update_load "$path_main" "$link_main" "主程序" 1 "$startcode" "main_initial"
+
+      if (( startcode == 1 )); then echo -en "${BLUE}\n更新检查完成，即将进入程序...${NC}"; countdown 5; fi
+
+}
 base_load
 main

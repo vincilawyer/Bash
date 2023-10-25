@@ -1,15 +1,10 @@
+#!/bin/sh
 ############################################################################################################################################################################################
 ##############################################################################   vinci脚本主程序源代码   ########################################################################################
 ############################################################################################################################################################################################
 ####### 参数 ######
 Version=4.00  #版本号 
 Version1="$Version.$(n="$(cat "$path_def")" &&  echo "${#n}")"                         #脚本完整版本号
-
-#github目录清单链接
-link_gitlist="https://api.github.com/repos/vincilawyer/My-Shell-Script/contents"      
-
-#组件清单位置
-path_list="$data_path/srclist.dat"
 
 
 ############################################################################################################################################################################################
@@ -121,9 +116,9 @@ function main_initial {
     #定义获取组件清单函数
     function getsrclist { 
         echo "正在载入/更新$1组件清单..."
-        local getlist=$(curl -s "$link_gitlist"/"$1")
-        [ -z "$(echo "$getlist" | grep "name")" ] && ( echo -e "${RED}$1组件清单不存在(请检查 $link_gitlist/$1 )${NC}"; return )
-        paste <(echo "$getlist" | grep "name" | cut -d '"' -f4) <(echo "$getlist" | grep "download_url" | cut -d '"' -f4) >> "$path_list"
+        local getlist=$(curl -s "$link_reposinfo"/"$1" && quit "组件清单不存在，请检查!($link_reposinfo/$1)" )
+        [ -n $(echo getlist | jq . 2>&1 >/dev/null) ] && quit "组件清单不存在，请检查!($link_reposinfo/$1)"
+        echo "$getlist" | jq '.[] | {name:.name,path:.path,url:.url,download_url:.download_url}' >> "$path_list"
     }
     
     #获取组件清单
@@ -202,16 +197,11 @@ else
 fi
 
 ##############################################################################     更新载入模块   ########################################################################################
-local listline=()
-while IFS= read -r line; do
-    listline+=("$line")
-done < "$path_list"
-for line in "${listline[@]}"; do
-    srcname=""
-    srcname="$(echo "$line" | cut -f1)"
-    [ -z "$srcname" ] && continue
-    update_load "$data_path/$srcname" "$(echo "$line" | cut -f2)" "${srcname}模块" 1 "$startcode" 
-done
+cat "$path_list" | jq -r '.[] | "\(.name) \(.path) \(.download_url)"' | xargs -n 3 update_load_js
+function update_load_js {
+  update_load "$data_path/$2" "$3" "$1模块" 1 "$startcode" 
+}
+
 }
 
 ############################################################################################################################################################################################
