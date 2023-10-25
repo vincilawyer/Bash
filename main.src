@@ -120,7 +120,7 @@ function main_initial {
         local getlist="$(curl -s "$link_reposinfo"/"$1" )"
         [ $? -eq 0 ] || quit "未能获取组件清单，请检查网络!( URL地址：$link_reposinfo/$1 )" 
         echo $getlist | jq . >/dev/null 2>&1 || quit "组件清单不存在，请检查!( URL地址：$link_reposinfo/$1 )"
-        echo "$getlist" | jq '.[] | {name:.name,path:.path,url:.url,download_url:.download_url}' >> "$path_list"
+        echo "$getlist" | jq '[.[] | {name:.name,path:.path,url:.url,download_url:.download_url}]' >> "$path_list"
     }
     
     #获取组件清单
