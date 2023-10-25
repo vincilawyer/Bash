@@ -35,7 +35,7 @@ echo "更新结束"
 #######  检验程序安装情况   ########
 function installed {
     local software_name=$1
-    if which "$software_name" 2>&1 >/dev/null; then
+    if which "$software_name" >/dev/null; then
        echo -e "${GREEN}该程序已经安装，当前版本号为 $($software_name -v 2>&1)${NC}" 
        confirm "是否需要重新安装或更新？" "已取消安装！" && return 0
        return 1
