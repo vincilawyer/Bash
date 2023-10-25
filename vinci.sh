@@ -105,7 +105,7 @@ fi
 ######  退出函数 ######      
 function quit() {
    local exitnotice="$1"
-   if [ exitnotice == "1" ]; then
+   if [[ exitnotice == "1" ]]; then
         clear
    elif [[ -n "$exitnotice" ]]; then
             echo -e "${RED}出现错误：$exitnotice。错误代码详见以下：${NC}"
