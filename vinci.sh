@@ -157,7 +157,7 @@ while true; do
     if ! [ -e "$path_file" ]; then
          #下载更新文件
          echo -n "正在下载$name_file文件..."
-         if ! curl "$link_file" -o "$path_file" 2>&1 >/dev/null ; then 
+         if ! curl -s "$link_file" -o "$path_file" 2>&1 >/dev/null ; then 
               #如果下载失败
               echo -e "${RED}$name_file文件下载失败，请检查网络！（ URL为:$link_file ）${NC}"
               quit "$name_file文件缺失"
