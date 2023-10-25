@@ -22,13 +22,13 @@ fi
 ############################################################################################################################################################################################
 ####### 版本更新相关参数 ######
 Version=2.00 
-def_name="vinci"        
+name_sh="vinci"        
 startcode="$1"    #更新指令
 
 ####### 定义本脚本名称、应用数据路径 ######
-path_dir="$HOME/myfile/${def_name}_src"    #应用数据文件夹位置名                     
+path_dir="$HOME/myfile/${name_sh}_src"    #应用数据文件夹位置名                     
 path_list="$path_dir/srclist.dat"          #组件清单存放位置
-path_dat="$path_dir/$def_name.dat"         #配置数据文件路径                                         
+path_dat="$path_dir/$name_sh.dat"         #配置数据文件路径                                         
 mkdir -p "$data_dir"                       #创建应用数据文件夹                                                  
 
 #### 配置文件、程序网址、路径 ####
@@ -41,7 +41,7 @@ path_update="/update.src"
 #main.src文件下载链接及存放位置                                
 path_main="/main.src"                                                    
 #vinci.sh启动程序下载链接
-link_def="/vinci.sh" 
+link_sh="/vinci.sh" 
 
 ####### 颜色
 RED='\033[0;31m'
@@ -57,7 +57,7 @@ NC='\033[0m'
 clear
 ####### Debian系统启动程序网址、路径 ######
 if uname -a | grep -q 'Debian'; then 
-    path_def="/usr/local/bin/$def_name"   
+    path_sh="/usr/local/bin/$name_sh"   
     
     CURSHELL="bash"
     echo "检测系统为Debian，当前Shell环境为$SHELL，正在配置中..."
@@ -67,7 +67,7 @@ if uname -a | grep -q 'Debian'; then
     
 ####### Android Termius系统启动程序网址、路径 ######
 elif uname -a | grep -q 'Android'; then 
-    path_def="/data/data/com.termux/files/usr/bin/$def_name"
+    path_sh="/data/data/com.termux/files/usr/bin/$name_sh"
     
     CURSHELL="bash"
     echo "检测系统为Android，当前Shell环境为$SHELL，正在配置中..."
@@ -79,7 +79,7 @@ elif uname -a | grep -q 'Android'; then
                                                                 
 ####### Mac系统启动程序网址、路径 ######
 elif uname -a | grep -q 'Darwin'; then 
-    path_def="/usr/local/bin/$def_name"
+    path_sh="/usr/local/bin/$name_sh"
     
     CURSHELL="zsh"
     echo "检测系统为Mac，已切换Shell环境为$(ps -p $$ -o comm=)，正在配置中..."
@@ -179,8 +179,8 @@ wait
 
 function base_load {
 
-      #检测代码是本地启动还是网络或其他异地启动,异地则为更新模式
-      [[ "$0" == "$path_def" ]] || [[ "$ZSH_ARGZERO" == "$path_def" ]] || startcode=1
+      #检测代码是在$PATH中直接运行还是通过网络或其他方式启动,非$PATH直接启动则为更新模式
+      [[ "$0" == "$path_sh" ]] || [[ "$ZSH_ARGZERO" == "$path_sh" ]] || startcode=1
       
       #更新模式
      if ((startcode==1)) || ! [ -e "$path_update" ]; then
@@ -207,7 +207,7 @@ function base_load {
      fi    
 
      #更新本程序
-     update_load "$path_def" "$link_def" "$def_name启动" 2 "$startcode"
+     update_load "$path_sh" "$link_def" "$name_sh启动" 2 "$startcode"
     
      #更新主程序   
      update_load "$path_main" "$link_main" "主程序" 1 "$startcode" "main_initial"
