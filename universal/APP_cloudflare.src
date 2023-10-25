@@ -22,12 +22,7 @@ cf_menu=(
     
 ###### Cf dns配置 ######
 function cfdns {
-    if ! which "jq" >/dev/null 2>&1; then
-      echo "正在安装依赖软件JQ..."
-      apt update
-      apt install jq -y
-      echo "依赖件JQ已安装完成！"
-    fi
+
     while true; do 
     # 获取区域标识符
     zone_identifier=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$Domain" \
