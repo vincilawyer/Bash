@@ -29,7 +29,7 @@ path_dir="$HOME/myfile/${name_sh}_src"        #应用数据文件夹位置名
 path_list="$path_dir/data/srclist.dat"        #组件清单存放位置
 path_dat="$path_dir/data/$name_sh.dat"        #配置数据文件路径  
 path_log="$path_dir/data/vinci.log"           #日志                                     
-mkdir -p "$data_dir"                          #创建应用数据文件夹                                                  
+mkdir -p "$path_dir/data"                     #创建应用数据文件夹                                                  
 
 #### 配置文件、程序网址、路径 ####
 #仓库-下载链接
