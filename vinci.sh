@@ -38,7 +38,7 @@ link_repositories="https://raw.githubusercontent.com/vincilawyer/My-Shell-Script
 link_reposinfo="https://api.github.com/repos/vincilawyer/My-Shell-Script/contents"                                
 #main.src文件下载链接及存放位置                                
 path_main="$path_dir/main.src"     
-path_main="$link_repositories/main.src"                                     
+link_main="$link_repositories/main.src"                                     
 #vinci.sh启动程序下载链接
 link_sh="$link_repositories/vinci.sh" 
 
@@ -105,8 +105,7 @@ fi
 ######  退出函数 ######      
 function quit() {
 local exitnotice="$1"
-
-   if ((exitnotice==1)); then
+   if (( exitnotice==1 )); then
         clear
    elif [[ -n "$exitnotice" ]]; then
             echo -e "${RED}出现错误：$exitnotice。错误代码详见以下：${NC}"
