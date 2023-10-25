@@ -205,7 +205,7 @@ done <<< "$(cat "$path_list" | jq -r '.[] | "\(.name) \(.path) \(.download_url)"
 for line in "${listline[@]}"; do
     local srcname="$(echo "$line" | cut -d ' ' -f1)"
     local srcpath="$(echo "$line" | cut -d ' ' -f2)"
-    local srclink="$(echo "$line" | cut -d ' ' -f2)"
+    local srclink="$(echo "$line" | cut -d ' ' -f3)"
     update_load "$data_path/$srcpath" "$srclink" "$srcname模块" 1 "$startcode" 
 done
 
