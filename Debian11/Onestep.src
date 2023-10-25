@@ -16,7 +16,8 @@ function Onestep_Env {
 #########服务器时间调整
     echo "当前时间状态为："
     timedatectl
-if confirm "${BLUE}\n是否将服务器时间设置为上海时间？${NC}" "已取消服务器时间设置"; then
+    echo
+if confirm "是否将服务器时间设置为上海时间？" "已取消服务器时间设置"; then
     echo -e "${BLUE}正在设置本机时间...${NC}"
     echo "正在备份时间配置文件..."
     cp -i /etc/localtime /etc/localtime.bak
@@ -28,7 +29,8 @@ if confirm "${BLUE}\n是否将服务器时间设置为上海时间？${NC}" "已
 fi
 
 #########环境变量参数调整
-if confirm "${BLUE}\n是否需要调整$path_nonloginEnv环境变量（包括alias指令、终端登录显示页面）？${NC}" "已取消环境变量设置"; then
+    echo
+if confirm "是否需要调整$path_nonloginEnv环境变量（包括alias指令、终端登录显示页面）？" "已取消环境变量设置"; then
     echo -e "${BLUE}\n正在设置环境变量...${NC}"
     insert '^ *alias ll="ls -l"' "" "$path_nonloginEnv" 'alias ll="ls -l"'
     insert '^ *alias la="ls -al"' "" "$path_nonloginEnv" 'alias la="ls -al"'
@@ -45,7 +47,8 @@ fi
 
 
 #########vim配置调整
-if confirm "${BLUE}\n是否需要调整vim配置（包括颜色设置、按键映射、滑鼠功能）？${NC}" "已取消vim配置设置"; then
+    echo
+if confirm "是否需要调整vim配置（包括颜色设置、按键映射、滑鼠功能）？" "已取消vim配置设置"; then
 
     echo -e "${BLUE}\n正在安装滑鼠依赖件gpm...${NC}"
     sudo apt update
