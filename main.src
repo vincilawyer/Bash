@@ -199,7 +199,7 @@ else
 fi
 
 ##############################################################################     更新载入模块   ########################################################################################
-function jstoupdate_loadjs {
+function jstoupdate_load {
   update_load "$data_path/$2" "$3" "$1模块" 1 "$startcode" 
 }
 cat "$path_list" | jq -r '.[] | "\(.name) \(.path) \(.download_url)"' | xargs -n 3 jstoupdate_load
