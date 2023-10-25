@@ -116,7 +116,7 @@ local funcname2="$4"
             echo -e "${RED}错误函数为：${FUNCNAME[1]}${NC}"
             echo -e "${RED}调用函数为：${FUNCNAME[2]}${NC}"
             echo -e "${RED}错误模块为：${BASH_SOURCE[1]}${NC}"
-        elif
+        else
             echo -e "${RED}出现错误：$exitnotice。${NC}"
         fi
    fi            
