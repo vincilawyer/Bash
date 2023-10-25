@@ -119,7 +119,7 @@ function main_initial {
         echo "正在载入/更新$1组件清单..."
         local getlist="$(curl -s "$link_reposinfo"/"$1" )"
         [ $? -eq 0 ] || quit "未能获取组件清单，请检查网络!( URL地址：$link_reposinfo/$1 )" 
-        (echo "$getlist" | jq '[.[] | {name:.name,path:.path,url:.url,download_url:.download_url}]' >> "$path_list") || quit "组件清单不存在，请检查!( URL地址：$link_reposinfo/$1 )"
+        (echo "$getlist" | jq '[.[] | {name:.name,download_url:.download_url}]' >> "$path_list") || quit "组件清单不存在，请检查!( URL地址：$link_reposinfo/$1 )"
     }
     
     #获取组件清单
@@ -201,12 +201,11 @@ fi
 local listline=()
 while IFS= read -r line; do
     listline+=("$line")
-done <<< "$(cat "$path_list" | jq -r '.[] | "\(.name) \(.path) \(.download_url)"')"
+done <<< "$(cat "$path_list" | jq -r '.[] | "\(.name) \(.download_url)"')"
 for line in "${listline[@]}"; do
     local srcname="$(echo "$line" | cut -d ' ' -f1)"
-    local srcpath="$(echo "$line" | cut -d ' ' -f2)"
-    local srclink="$(echo "$line" | cut -d ' ' -f3)"
-    update_load "$path_dir/$srcpath" "$srclink" "$srcname模块" 1 "$startcode" 
+    local srclink="$(echo "$line" | cut -d ' ' -f2)"
+    update_load "$path_dir/$srcname" "$srclink" "$srcname模块" 1 "$startcode" 
 done
 
 }
