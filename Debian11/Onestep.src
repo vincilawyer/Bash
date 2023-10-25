@@ -114,7 +114,7 @@ fi
 function Onestep_V2ray {
     echo -e "${BLUE}即将开始一键部署V2ray服务器${NC}"
     echo
-    echo -e "${BLUE}请到 $data_path 目录中导入个人配置（如需），导入完成后方可继续 ${NC}"
+    echo -e "${BLUE}请到 $path_data 目录中导入个人配置（如需），导入完成后方可继续 ${NC}"
     wait
     echo
     echo -e "${BLUE}开始安装Nginx...${NC}"
