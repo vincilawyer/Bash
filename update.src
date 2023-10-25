@@ -3,29 +3,23 @@
 ############################################################################################################################################################################################
 ####内容说明：检查文件更新，载入并判断是否存在语法错误
 
-####### 颜色
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-NC='\033[0m'
-
-#时间戳，防止缓存
-sjc="?timestamp=$(date +%s)"
-
 #######  更新函数  #######
 function update_load {
-local file_path="$1"                            #为旧脚本目录路径
-local file_link="$2"                            #脚本url链接
-local file_name="$3"                            #配置文件名称
-local loadcode="$4"                             #加载模式，1为source、2为bash
-local upcode="${5:-0}"                          #更新模式,0为无需更新，1为正常更新，2为报错更新
-local startcode="${5:-0}"                       #更新模式,0为无需更新，1为正常更新,传递给启动程序，使其继续更新
-local initial_name="$6"                         #执行初始化函数名
+###参数###
+local file_path="$1"                            #为本地文件目录路径
+local file_link="$2"                            #新文件网络url链接
+local hash_link="$3"                            #新文件哈希信息url链接
+local file_name="$4"                            #配置文件名称
+local loadcode="$5"                             #加载模式，1为source、2为bash
+local upcode="${6:-0}"                          #更新模式,0为无需更新，1为正常更新，2为报错更新
+local startcode="${7:-0}"                       #更新模式,0为无需更新，1为正常更新,传递给启动程序，使其继续更新
+local initial_name="$8"                         #执行初始化函数名
 local n=0                                       #错误警告更新次数
 
+###开始下载比对###
 echo     
 while true; do
-    #如果文件不存在
+    #如果本地文件不存在
     if ! [ -e "$file_path" ]; then
          #下载更新文件
          echo -n "正在下载$file_name文件..."
@@ -37,7 +31,7 @@ while true; do
          fi   
          echo -ne "${BLUE}已下载完成。${NC}"
          countdown 1
-    #如果文件已存在     
+    #如果本地文件已存在     
     else
          #如果无需更新
          if ((upcode==0)); then               
@@ -46,6 +40,7 @@ while true; do
          #如果需要更新，则检查更新
          else
                echo -ne "\r正在检查$file_name文件更新..."
+               
                #获取代码
                if ! code="$(curl -s -H 'Cache-Control: no-cache' "$file_link$sjc")"; then    
                     #代码获取失败
@@ -77,10 +72,11 @@ while true; do
                         echo -e "${BLUE}$file_name文件最新版本号为：V${#code}，已完成更新。${NC}"
                     fi
                 fi
-         fi
-   fi
+         fi   #判断更新模式
+   fi  #判断文件存在情况
 
-   #开始载入：如果载入模式为source。注：为了防止检验语法时，发生指令滞留，无法退出检测，尽量不要在模块文件中，执行指令。仅定义变量与函数。需要执行的指令，可以定义一个初始化函数来执行
+###开始载入##
+   #：如果载入模式为source。注：为了防止检验语法时，发生指令滞留，无法退出检测，尽量不要在模块文件中，执行指令。仅定义变量与函数。需要执行的指令，可以定义一个初始化函数来执行
    if (( loadcode == 1 )); then
         echo -e -n "${GREEN}正在载入$file_name文件...${NC}"
         #开始脚本语法检查
