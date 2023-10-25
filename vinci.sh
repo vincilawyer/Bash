@@ -34,18 +34,21 @@ if uname -a | grep -q 'Debian'; then
     
     CURSHELL="bash"
     echo "检测系统为Debian，当前Shell环境为$SHELL，正在配置中..."
+
+    # 安装依赖件jq
+    which "jq" >/dev/null || (echo "正在安装依赖软件JQ..."; apt update; apt install jq -y; echo "依赖件JQ已安装完成！")
     
-####### Android系统启动程序网址、路径 ######
+####### Android Termius系统启动程序网址、路径 ######
 elif uname -a | grep -q 'Android'; then 
     path_def="/data/data/com.termux/files/usr/bin/$def_name"
     
     CURSHELL="bash"
     echo "检测系统为Android，当前Shell环境为$SHELL，正在配置中..."
-    # 检查安装 ncurses-utils，以支持tput工具
-    if ! command -v tput &> /dev/null; then
-        echo "ncurses-utils未安装. Start installing..."
-        pkg upgrade; pkg update; pkg install ncurses-utils -y
-    fi
+    
+    # 安装依赖件 ncurses-utils，以支持tput工具
+    which "tput" >/dev/null || (echo "正在安装依赖软件ncurses-utils..."; apt update; apt install ncurses-utils -y;echo "依赖件ncurses-utils已安装完成！")
+    # 安装依赖件jq
+    which "jq" >/dev/null || (echo "正在安装依赖软件JQ..."; apt update; apt install jq -y; echo "依赖件JQ已安装完成！")
                                                                 
 ####### Mac系统启动程序网址、路径 ######
 elif uname -a | grep -q 'Darwin'; then 
