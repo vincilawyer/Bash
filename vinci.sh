@@ -111,14 +111,10 @@ local funcname2="$4"
    if ((exitnotice == 1)); then
         clear
    elif [ -n "$exitnotice" ]; then
-        if [ -n "$scrname" ]; then
             echo -e "${RED}出现错误：$exitnotice。错误代码详见以下：${NC}"
             echo -e "${RED}错误函数为：${FUNCNAME[1]}${NC}"
             echo -e "${RED}调用函数为：${FUNCNAME[2]}${NC}"
             echo -e "${RED}错误模块为：${BASH_SOURCE[1]}${NC}"
-        else
-            echo -e "${RED}出现错误：$exitnotice。${NC}"
-        fi
    fi            
    echo -e "${GREED}已退出vinci脚本！${NC}"
    exit
