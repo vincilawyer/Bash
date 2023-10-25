@@ -79,7 +79,7 @@ function update_dat {
 
 #######   修改数据      #######   
 function set_dat { 
-  #如果指定配置，则指定修改
+    #如果指定配置，则指定修改
     if ! [ $# -eq 0 ]; then
          for arg in "$@"; do
              line=$(search "#@" '' "$arg" 1 false false false true "$configfile_path" )            
