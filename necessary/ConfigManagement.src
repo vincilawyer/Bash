@@ -31,7 +31,7 @@ config_menu=(
 
 ## 配置文件模板头部 ##
 configfile_mod='
-#本文件为${def_name}脚本个人配置文件
+#本文件为${def_sh}脚本个人配置文件
 config_num=\"${#configfile_mod}\"                         #配置模板版本号*              
 $(pz "Domain")                                          #@一级域名#@不用加www#@domain_regex
 '

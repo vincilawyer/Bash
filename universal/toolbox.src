@@ -1,3 +1,4 @@
+#!/bin/sh
 Version=1.00  #版本号  
 
 ###### 企业微信消息推送 ######
@@ -12,7 +13,7 @@ curl "$webhook" \
      -d "{
      \"msgtype\": \"text\",
      \"text\": {
-         \"content\": \"【服务器信息】\n$ct\"
+         \"content\": \"【服务器信息$(hostname -I | cut -d ' ' -f1)】\n$ct\"
      }
 }" >/dev/null 2>&1
 }
