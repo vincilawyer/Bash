@@ -104,8 +104,8 @@ fi
 ############################################################################################################################################################################################
 ######  退出函数 ######      
 function quit() {
-local exitnotice="$1"
-   if (( exitnotice==1 )); then
+   local exitnotice="$1"
+   if [ exitnotice == "1" ]; then
         clear
    elif [[ -n "$exitnotice" ]]; then
             echo -e "${RED}出现错误：$exitnotice。错误代码详见以下：${NC}"
@@ -157,9 +157,9 @@ while true; do
     if ! [ -e "$path_file" ]; then
          #下载更新文件
          echo -n "正在下载$name_file文件..."
-         if ! curl -s "$link_file" -o "$path_file"; then 
+         if ! curl "$link_file" -o "$path_file" 2>&1 >/dev/null ; then 
               #如果下载失败
-              echo -e "${RED}$name_file文件下载失败，请检查网络！（URL为:$link_file）${NC}"
+              echo -e "${RED}$name_file文件下载失败，请检查网络！（ URL为:$link_file ）${NC}"
               quit "$name_file文件缺失"
          fi   
          echo -ne "${BLUE}已下载完成。${NC}"
