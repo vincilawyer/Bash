@@ -50,6 +50,8 @@ GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
+###### 其他
+path_vimEnv="$HOME/.vimrc"        #vim配置位置
 
 ############################################################################################################################################################################################
 ##############################################################################   不同系统配置及变量   ########################################################################################
@@ -58,7 +60,9 @@ NC='\033[0m'
 clear
 ####### Debian系统启动程序网址、路径 ######
 if uname -a | grep -q 'Debian'; then 
-    path_sh="/usr/local/bin/$name_sh"   
+    path_sh="/usr/local/bin/$name_sh"       #脚本存放位置
+    path_nonloginEnv="$HOME/.bashrc"        #终端配置位置
+    path_loginpageEnv="/etc/motd"           #登录页面配置位置
     
     CURSHELL="bash"
     echo "检测系统为Debian，当前Shell环境为$SHELL，正在配置中..."
@@ -68,7 +72,8 @@ if uname -a | grep -q 'Debian'; then
     
 ####### Android Termius系统启动程序网址、路径 ######
 elif uname -a | grep -q 'Android'; then 
-    path_sh="/data/data/com.termux/files/usr/bin/$name_sh"
+    path_sh="/data/data/com.termux/files/usr/bin/$name_sh"  #脚本存放位置
+    path_nonloginEnv="$HOME/.bashrc"                        #终端配置位置
     
     CURSHELL="bash"
     echo "检测系统为Android，当前Shell环境为$SHELL，正在配置中..."
@@ -80,7 +85,8 @@ elif uname -a | grep -q 'Android'; then
                                                                 
 ####### Mac系统启动程序网址、路径 ######
 elif uname -a | grep -q 'Darwin'; then 
-    path_sh="/usr/local/bin/$name_sh"
+    path_sh="/usr/local/bin/$name_sh"    #脚本存放位置
+    path_nonloginEnv="$HOME/.zshrc"      #终端配置位置    
     
     CURSHELL="zsh"
     echo "检测系统为Mac，已切换Shell环境为$(ps -p $$ -o comm=)，正在配置中..."
