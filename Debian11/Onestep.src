@@ -68,6 +68,15 @@ colorscheme pablo
 " 在vim启动时就进入插入模式
 autocmd VimEnter * startinsert
 
+"############ visual模式下的按键映射  ############ 
+"删除选中文本
+xnoremap <BS> d
+"复制选中文本
+xnoremap <C-c> y
+"粘贴选中文本
+xnoremap <C-v> p
+
+"############ insert模式下的按键映射  ############ 
 " 保存文件
 inoremap <C-s> <C-o>:w<CR>
 " 退出vimm(若未保存,则提示)
@@ -100,7 +109,8 @@ inoremap <C-p> <C-o>:if col(".") == 1 <Bar> delete <Bar> else <Bar> s/\%#.*//e <
 inoremap <C-i> <C-o>:normal! $<CR><CR>
 "进入命令行模式（执行后返回插入模式）
 inoremap <C-l> <C-o>:
-
+"关闭或开启滑鼠设置
+inoremap <C-n> <C-o>:if col(mouse) == a <Bar> set mouse= <Bar> else <Bar> set mouse=a <Bar> endif <CR>
 '
     cat > "$path_vimEnv" <<< "$vimkey" && echo -e "${BLUE}\n已设置Vim按键映射为：${NC}" && echo "$vimkey"
 fi
