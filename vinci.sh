@@ -29,7 +29,7 @@ path_dir="$HOME/myfile/${name_sh}_src"        #应用数据文件夹位置名
 path_data="$HOME/myfile/data"                   
 path_list="$path_data/srclist.dat"        #组件清单存放位置
 path_dat="$path_data/$name_sh.dat"        #配置数据文件路径  
-path_log="$path_data/vinci.log"           #日志  （日志格式建议 echo -n "[程序名] " ; date +"%m/%d %H:%M" | tr -d '\n' ; echo "$(readlink -f $0)  执行结果如下：" ）         
+path_log="$path_data/vinci.log"           #日志  （日志格式建议 echo -n "[程序名] " ; date +"%m/%d %H:%M" | tr -d '\n' ; echo "任务名 执行结果如下：" ）         
 mkdir -p "$path_dir"                      #创建应用代码文件夹                               
 mkdir -p "$path_data"                     #创建应用数据文件夹                                                   
 
