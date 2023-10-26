@@ -32,6 +32,7 @@ fi
     echo
 if ! confirm "是否需要调整$path_nonloginEnv环境变量（包括alias指令、终端登录显示页面）？" "已取消环境变量设置"; then
     echo -e "${BLUE}\n正在设置环境变量...${NC}"
+    echo -e "\e[5 q"
     insert '^ *alias ll="ls -l"' "" "$path_nonloginEnv" 'alias ll="ls -l"'
     insert '^ *alias la="ls -al"' "" "$path_nonloginEnv" 'alias la="ls -al"'
     insert '^ *alias cls="clear"' "" "$path_nonloginEnv" 'alias cls="clear"'
@@ -49,7 +50,7 @@ fi
 #########vim配置调整
     echo
 if ! confirm "是否需要调整vim配置（包括颜色设置、按键映射、滑鼠功能）？" "已取消vim配置设置"; then
-    if installed "gpm";then
+    if ! installed "gpm";then
         echo -e "${BLUE}\n正在安装滑鼠依赖件gpm...${NC}"
         sudo apt update
         sudo apt install gpm
@@ -78,7 +79,7 @@ xnoremap <C-v> p
 
 "############ insert模式下的按键映射  ############ 
 "粘贴选中文本
-inoremap <C-v> <C-o>p
+inoremap <C-v> <Left><C-o>:normal! p
 " 保存文件
 inoremap <C-s> <C-o>:w<CR>
 " 退出vimm(若未保存,则提示)
