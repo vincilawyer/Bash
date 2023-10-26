@@ -39,7 +39,7 @@ xnoremap <C-v> p
 "粘贴选中文本
 inoremap <C-v> <Left><C-o>:normal! p<CR>
 "选中全文
-inoremap <C-a> <C-o>gg<C-o>vG<Down>
+inoremap <C-a> <C-o>gg<C-o>vG$<Down>
 " 保存文件
 inoremap <C-s> <C-o>:w<CR>
 " 退出vimm(若未保存,则提示)
