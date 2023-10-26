@@ -79,7 +79,7 @@ xnoremap <C-v> p
 
 "############ insert模式下的按键映射  ############ 
 "粘贴选中文本
-inoremap <C-v> <Left><C-o>:normal! p
+inoremap <C-v> <Left><C-o>:normal! p<CR>
 " 保存文件
 inoremap <C-s> <C-o>:w<CR>
 " 退出vimm(若未保存,则提示)
