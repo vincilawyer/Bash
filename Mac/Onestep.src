@@ -24,10 +24,6 @@ if ! confirm "是否需要调整vim配置（包括颜色设置、按键映射、
 " 启动滑鼠控制
 set mouse=a
 
-" 启用颜色模式，并使用pablo颜色主体
-syntax on
-colorscheme pablo
-
 " 在vim启动时就进入插入模式
 autocmd VimEnter * startinsert
 
