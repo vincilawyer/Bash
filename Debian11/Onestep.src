@@ -49,13 +49,13 @@ fi
 #########vim配置调整
     echo
 if ! confirm "是否需要调整vim配置（包括颜色设置、按键映射、滑鼠功能）？" "已取消vim配置设置"; then
-
-    echo -e "${BLUE}\n正在安装滑鼠依赖件gpm...${NC}"
-    sudo apt update
-    sudo apt install gpm
-    sudo systemctl start gpm
-    sudo systemctl enable gpm
-
+    if installed "gpm";then
+        echo -e "${BLUE}\n正在安装滑鼠依赖件gpm...${NC}"
+        sudo apt update
+        sudo apt install gpm
+        sudo systemctl start gpm
+        sudo systemctl enable gpm
+    fi
     echo -e "${BLUE}\n正在设置vim按键映射...${NC}"
     vimkey='
 " 启动滑鼠控制
@@ -77,6 +77,8 @@ xnoremap <C-c> y
 xnoremap <C-v> p
 
 "############ insert模式下的按键映射  ############ 
+"粘贴选中文本
+inoremap <C-v> <C-o>p
 " 保存文件
 inoremap <C-s> <C-o>:w<CR>
 " 退出vimm(若未保存,则提示)
@@ -110,7 +112,8 @@ inoremap <C-i> <C-o>:normal! $<CR><CR>
 "进入命令行模式（执行后返回插入模式）
 inoremap <C-l> <C-o>:
 "关闭或开启滑鼠设置
-inoremap <C-n> <C-o>:if col(mouse) == a <Bar> set mouse= <Bar> else <Bar> set mouse=a <Bar> endif <CR>
+inoremap <C-n> <C-o>:if &mouse == "a" <Bar> set mouse= <Bar> else <Bar> set mouse=a <Bar> endif <CR>
+
 '
     cat > "$path_vimEnv" <<< "$vimkey" && echo -e "${BLUE}\n已设置Vim按键映射为：${NC}" && echo "$vimkey"
 fi
