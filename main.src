@@ -187,6 +187,7 @@ main_menu=(
 system_menu=(
     "更新脚本"                  'startcode=1; base_load; Initial; update_dat; waitcon="false"; return'
     "个人配置设置"               'page "配置设置" "${config_menu[@]}"'
+    "一键设置环境变量"                'Onestep_Env'
     "Mac终端网络代理模式"         'export http_proxy=http://127.0.0.1:1087;export https_proxy=http://127.0.0.1:1087;export ALL_PROXY=socks5://127.0.0.1:1086; echo "已启动终端网络代理！"'
     )  
 
