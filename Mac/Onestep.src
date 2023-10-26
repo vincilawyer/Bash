@@ -1,0 +1,105 @@
+#############################################################################################################################################################################################
+##############################################################################   一键到位  ################################################################################################
+############################################################################################################################################################################################
+Onestep_menu=(
+     "一键设置环境变量"                'Onestep_Env'
+     )  
+#############################################################################################################################################################################################
+##############################################################################   一键设置环境变量  ################################################################################################
+############################################################################################################################################################################################
+
+function Onestep_Env {
+
+#########环境变量参数调整
+    echo
+if ! confirm "是否需要调整$path_nonloginEnv环境变量（包括光标、alias指令、终端登录显示页面）？" "已取消环境变量设置"; then
+    echo -e "${BLUE}\n正在设置环境变量...${NC}"
+    insert '^ *echo -e "\e"' "" "$path_nonloginEnv" 'echo -e "\e[5 q"'  #设置光标
+    insert '^ *alias ll="ls -l"' "" "$path_nonloginEnv" 'alias ll="ls -l"'
+    insert '^ *alias la="ls -al"' "" "$path_nonloginEnv" 'alias la="ls -al"'
+    insert '^ *alias cls="clear"' "" "$path_nonloginEnv" 'alias cls="clear"'
+    source "$path_nonloginEnv" && echo -e "${BLUE}\n已载入新环境变量！${NC}" || echo -e "${RED}\n环境变量载入错误，请检查！${NC}"
+
+    #服务器登录页面显示调整
+    echo -e "${BLUE}\n正在设置终端登录显示页面...${NC}"
+    loginpagect='
+欢迎进入我的MAC终端控制系统~
+'
+    cat > "$path_loginpageEnv" <<< "$loginpagect" && echo -e "${BLUE}\n已将登录页面设置为：${NC}" && echo "$loginpagect"
+fi
+
+
+#########vim配置调整
+    echo
+if ! confirm "是否需要调整vim配置（包括颜色设置、按键映射、滑鼠功能）？" "已取消vim配置设置"; then
+    if ! installed "gpm";then
+        echo -e "${BLUE}\n正在安装滑鼠依赖件gpm...${NC}"
+        sudo apt update
+        sudo apt install gpm
+        sudo systemctl start gpm
+        sudo systemctl enable gpm
+    fi
+    echo -e "${BLUE}\n正在设置vim按键映射...${NC}"
+    vimkey='
+" 启动滑鼠控制
+set mouse=a
+
+" 启用颜色模式，并使用pablo颜色主体
+syntax on
+colorscheme pablo
+
+" 在vim启动时就进入插入模式
+autocmd VimEnter * startinsert
+
+"############ visual模式下的按键映射  ############ 
+"删除选中文本
+xnoremap <BS> d
+"复制选中文本
+xnoremap <C-c> y
+"粘贴选中文本
+xnoremap <C-v> p
+
+"############ insert模式下的按键映射  ############ 
+"粘贴选中文本
+inoremap <C-v> <Left><C-o>:normal! p<CR>
+" 保存文件
+inoremap <C-s> <C-o>:w<CR>
+" 退出vimm(若未保存,则提示)
+inoremap <C-w> <C-o>:confirm q<CR>
+" 撤销上一个动作
+inoremap <C-z> <C-o>:u<CR>
+" 恢复上一个动作
+inoremap <C-r> <C-o>:redo<CR>
+"屏幕向上移动半页
+inoremap <C-q> <C-o><C-u>
+"屏幕向下移动半页
+inoremap <C-e> <C-o><C-d>
+"光标移动到所在页行首
+inoremap <C-a> <C-o>0
+"光标移动到所在页行末
+inoremap <C-d> <C-o>$
+"搜索（小写n向下搜索，大写N向上搜索）
+inoremap <C-f> /
+"删除光标所在字符到该列行首的所有数据
+inoremap <C-o> <C-o>d0
+
+"删除光标所在字符到该列行尾的所有数据(如果光标在行首，则删除整行)
+"解释1：<C-p>为进入一般模式； <C-o>为执行完指令后返回插入模式；:if col(".") == 1 ... endif<CR>''  为要输入的命令。
+"解释2: 其中col(".")为当前光标所在位置；<Bar>为 | 的转义替代；<CR>为输完指令后的回车；'' 为执行完指令不在有其他操作；d为删除光标所在行；s/\%#.*//e <Bar> execute "normal! $" 为删除光标所在位置到行尾的字符
+"解释3：其中s/为进入替换模式；\%#表示当前光标位置；.*是正则表达式，匹配从光标位置开始一直到该行的最后一个字符；//表示替换匹配的内容为空；e表示不抛出错误，即使没有匹配到任何字符也不会出错。
+"解释4： <Bar> execute "normal! $" 表示执行完前一个指令后，将光标移动到行尾;其中<Bar> execute 为if语句中如果执行多个执行，则需要使用  | execute ，且指令用双引号包裹。
+inoremap <C-p> <C-o>:if col(".") == 1 <Bar> delete <Bar> else <Bar> s/\%#.*//e <Bar> execute "normal! $" <Bar> endif <CR>''
+
+"在光标所在行下面插入一行
+inoremap <C-i> <C-o>:normal! $<CR><CR>
+"进入命令行模式（执行后返回插入模式）
+inoremap <C-l> <C-o>:
+"关闭或开启滑鼠设置
+inoremap <C-n> <C-o>:if &mouse == "a" <Bar> set mouse= <Bar> else <Bar> set mouse=a <Bar> endif <CR>
+
+'
+    cat > "$path_vimEnv" <<< "$vimkey" && echo -e "${BLUE}\n已设置Vim按键映射为：${NC}" && echo "$vimkey"
+fi
+
+    echo -e "${BLUE}\n已完成环境部署设置！${NC}"
+}
