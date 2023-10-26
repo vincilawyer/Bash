@@ -19,13 +19,6 @@ fi
 #########vim配置调整
     echo
 if ! confirm "是否需要调整vim配置（包括颜色设置、按键映射、滑鼠功能）？" "已取消vim配置设置"; then
-    if ! installed "gpm";then
-        echo -e "${BLUE}\n正在安装滑鼠依赖件gpm...${NC}"
-        sudo apt update
-        sudo apt install gpm
-        sudo systemctl start gpm
-        sudo systemctl enable gpm
-    fi
     echo -e "${BLUE}\n正在设置vim按键映射...${NC}"
     vimkey='
 " 启动滑鼠控制
