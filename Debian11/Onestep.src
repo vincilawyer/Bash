@@ -30,9 +30,9 @@ fi
 
 #########环境变量参数调整
     echo
-if ! confirm "是否需要调整$path_nonloginEnv环境变量（包括alias指令、终端登录显示页面）？" "已取消环境变量设置"; then
+if ! confirm "是否需要调整$path_nonloginEnv环境变量（包括光标、alias指令、终端登录显示页面）？" "已取消环境变量设置"; then
     echo -e "${BLUE}\n正在设置环境变量...${NC}"
-    echo -e "\e[5 q"
+    echo -e "\e[5 q"  #设置光标
     insert '^ *alias ll="ls -l"' "" "$path_nonloginEnv" 'alias ll="ls -l"'
     insert '^ *alias la="ls -al"' "" "$path_nonloginEnv" 'alias la="ls -al"'
     insert '^ *alias cls="clear"' "" "$path_nonloginEnv" 'alias cls="clear"'
