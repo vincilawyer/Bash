@@ -47,7 +47,7 @@ local config=(
 "onebook"
 )
     set_dat "${config[@]}"
-    echo "请前往 https://rclone.org/onedrive 查看Onedrive配置说明"
+    echo "\n准备设置网盘账户。请前往 https://rclone.org/onedrive 查看Onedrive配置说明"
     wait
     rclone config
 }
