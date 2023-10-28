@@ -1,9 +1,13 @@
 #!/bin/sh
 Version=1.00  #版本号  
+adddat '
+### 微信推送 ###
+$pz("wechatmsg")                   #@微信消息推送接口
+'
 
 ###### 企业微信消息推送 ######
 #webhook参数
-webhook='https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=858f72ca-cdab-4ec6-9257-e82f71b1b455'
+webhook="$wechatmsg"
 function notifier {
 local ct="$1"
 ct="$(echo "$ct" | sed 's/"/\\\"/g')"
