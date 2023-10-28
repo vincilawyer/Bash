@@ -6,15 +6,13 @@
 nginx_menu=(
     "服务管理器"                 'get_Service_menu "nginx"; page "Nginx" "${Service_menu[@]}"'
     "安装Nginx"              "install_Nginx"
-    "设置Nginx配置"           'echo "维护中"'
+    "设置Nginx配置"           'vim $path_nginx_config; continue'
     "查看Nginx日志"            "nano /var/log/nginx/access.log; continue"
     )
     
 ### 路径 ###
-#nginx配置文件网址
-link_nginx_config="https://raw.githubusercontent.com/vincilawyer/Bash/main/nginx/default.conf"
 #nginx配置文件路径 (查看配置：nano /etc/nginx/conf.d/default.conf)                      
-path_nginx_config="/etc/nginx/conf.d/default.conf" 
+path_nginx_config="/etc/nginx/conf.d/nginx.conf" 
 #nginx日志文件路径
 log_nginx="/var/log/nginx/access.log"
 #nginx 80端口默认服务块文件路径
