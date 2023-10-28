@@ -16,7 +16,7 @@ dockerapp_menu=(
 #### 下载镜像
 function pull_container {
     echo "开始下载/更新$1镜像"
-    docker pull "$1"  &&  echo "$1镜像下载/更新完成！"
+    docker pull "$2"  &&  echo "$1镜像下载/更新完成！"
 }
 
 #### 安装\重安装并启动容器
@@ -39,7 +39,7 @@ Pandora_name=\"Pandora\"                          #Chat容器名称*
 '
 ##### 菜单栏 #####
 pandora_menu=(
-    "下载\更新Pandora镜像"                    "pull_container $Pandora_name"
+    "下载\更新Pandora镜像"                    "pull_container $Pandora_name $Pandora_image"
     "安装\重安装并启动Pandora容器"              'restart_container "$Pandora_name"'
     "设置Pandora配置"                         "set_Pandora"
     "暂停Pandora"                            'confirm "是否停止运行Pandora？" "已取消！" || docker stop $Pandora_name'
