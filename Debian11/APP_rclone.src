@@ -2,15 +2,22 @@
 ##############################################################################   Rclone  ################################################################################################
 ############################################################################################################################################################################################
 Version=1.00  #版本号  
+######   参数配置   ######
+adddat '
+##### Cloudflare ######
+$(pz "oneprimary")                              #@Onedrive主账号名称
+$(pz "onesecondary")                            #@Onedrive辅账号名称
+'
 
 ### 菜单栏
 rclone_menu=(
     "安装Rclone"            'echo "开始安装Rclone..." && curl https://rclone.org/install.sh | sudo bash'
-    "Rclone配置"            'echo "请前往 https://rclone.org/onedrive 查看Onedrive配置说明"; wait; rclone config'
+    "Rclone配置"            'set_Rclone'
     "[同步]Onedrive-本地 "          'page "[同步]Onedrive-本地" "${OnedriveLocal_menu[@]}"'
     "[同步]Onedrive-Baidu网盘"    'page "[同步]Onedrive-Baidu网盘" "${OnedriveBaidu_menu[@]}"'
     "Rclone使用指引"         'echo "指令指引";echo "列出文件夹: rclone lsd onedrive:";echo "复制文件：rclone copy";echo "同步文件：rclone sync"'
     )
+
 
 ## 获取网盘文件夹大小
 function get_size {
@@ -24,6 +31,18 @@ function get_size {
     echo "Onedrive $onename 文件夹基本信息如下："
     echo "$onesize"
     notifier "$3\n百度网盘 $bdname 文件夹基本信息如下：\n$baidusize\nOnedrive $onename 文件夹基本信息如下：\n$onesize"
+}
+
+## Rclone配置
+set_Rclone{
+local config=(
+"oneprimary"
+"onesecondary"
+)
+    set_dat "${config[@]}"
+    echo "请前往 https://rclone.org/onedrive 查看Onedrive配置说明"
+    wait
+    rclone config
 }
 
 #############################################################################################################################################################################################
@@ -40,7 +59,7 @@ OnedriveLocal_menu=(
 function localtoone {
    if confirm "是否确认同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
-   rclone sync "$HOME" "onedrive:$onelinux" -P
+   rclone sync "$HOME" "$oneprimary:$onelinux" -P
    echo "同步完成..."
 }
 
@@ -48,7 +67,7 @@ function localtoone {
 function onetolocal {
    if confirm "是否确认同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
-   rclone sync "onedrive:$onelinux" "$HOME" -P
+   rclone sync "$oneprimary:$onelinux" "$HOME" -P
    echo "同步完成..."
 }
 
@@ -75,7 +94,7 @@ function baidutoone {
    if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
    # 更改百度网盘的UA，加速作用。 --header "Referer:"  --header "User-Agent:pan.baidu.com"  。 -P 显示传输进度
-   rclone sync baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onename -P   
+   rclone sync "baidu:$bdname" --header "Referer:"  --header "User-Agent:pan.baidu.com" "$onesecondary:$onename" -P   
    echo "同步完成..."
    get_size "$bdname" "$onename" "百度网盘已同步至onedrive！"
 }
@@ -89,7 +108,7 @@ function onetobaidu {
    get_size "$bdname" "$onename" "网盘文件信息已获取,请返回操作系统确认！"
    if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
-   rclone sync onedrive:$onename baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" -P 
+   rclone sync "$onesecondary:$onename" baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" -P 
    echo "同步完成..."
    get_size "$bdname" "$onename" "onedrive已同步至百度网盘！"
 }
@@ -100,7 +119,7 @@ function baidutoonebook {
    get_size "$bdbook" "$onebook" "网盘文件信息已获取,请返回操作系统确认！"
    if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
-   rclone sync baidu:$bdbook --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onebook -P
+   rclone sync baidu:$bdbook --header "Referer:"  --header "User-Agent:pan.baidu.com" "$onesecondary:$onebook" -P
    echo "同步完成..."
    get_size "$bdbook" "$onebook" "百度网盘书库已同步至onedrive！"
 }
@@ -112,7 +131,7 @@ function onetobaidubook {
    get_size "$bdbook" "$onebook" "网盘文件信息已获取,请返回操作系统确认！"
    if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
-   rclone sync onedrive:$onebook baidu:$bdbook --header "Referer:"  --header "User-Agent:pan.baidu.com" -P
+   rclone sync "$onesecondary:$onebook" baidu:$bdbook --header "Referer:"  --header "User-Agent:pan.baidu.com" -P
    echo "同步完成..."
    get_size "$bdbook" "$onebook" "onedrive书库已同步至百度网盘！"
 }
