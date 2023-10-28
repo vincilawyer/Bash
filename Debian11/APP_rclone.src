@@ -7,12 +7,22 @@ Version=1.00  #版本号
 rclone_menu=(
     "安装Rclone"            'echo "开始安装Rclone..." && curl https://rclone.org/install.sh | sudo bash'
     "Rclone配置"            'rclone config'
-    "[同步]Onedrive-本地 "          ''
+    "[同步]Onedrive-本地 "          'page "[同步]Onedrive-本地" "${OnedriveLocal_menu[@]}"'
     "[同步]Onedrive-Baidu网盘"    'page "[同步]Onedrive-Baidu网盘" "${OnedriveBaidu_menu[@]}"'
     "Rclone使用指引"         'echo "指令指引";echo "列出文件夹: rclone lsd onedrive:";echo "复制文件：rclone copy";echo "同步文件：rclone sync"'
     )
 
-
+#############################################################################################################################################################################################
+##############################################################################  Onedrive-本地  ################################################################################################
+############################################################################################################################################################################################
+### 配置 ####
+onelinux=""     #onedrive linux备份文件
+OnedriveLocal_menu=(
+    "将Baidu网盘书库更新至Onedrive"            'baidutoonebook'
+    "将Onedrive书库更新至Baidu网盘"            'onetobaidubook'
+    "将Baidu网盘指定文件更新至Onedrive"            'baidutoone'
+    "将Onedrive指定文件更新至Baidu网盘"            'onetobaidu'
+)
 
 #############################################################################################################################################################################################
 ##############################################################################   Onedrive-Baidu网盘  ################################################################################################
@@ -36,7 +46,8 @@ function baidutoone {
    get_size "$bdname" "$onename" "网盘文件信息已获取,请返回操作系统确认！"
    if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
    echo "同步中..."
-   rclone sync baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onename -P   #  更改百度网盘的UA，加速作用。 --header "Referer:"  --header "User-Agent:pan.baidu.com"
+   # 更改百度网盘的UA，加速作用。 --header "Referer:"  --header "User-Agent:pan.baidu.com"  。 -P 显示传输进度
+   rclone sync baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" onedrive:$onename -P   
    echo "同步完成..."
    get_size "$bdname" "$onename" "百度网盘已同步至onedrive！"
 }
