@@ -66,7 +66,7 @@ inoremap <C-o> <C-o>d0
 "解释2: 其中col(".")为当前光标所在位置；<Bar>为 | 的转义替代；<CR>为输完指令后的回车；'' 为执行完指令不在有其他操作；d为删除光标所在行；s/\%#.*//e <Bar> execute "normal! $" 为删除光标所在位置到行尾的字符
 "解释3：其中s/为进入替换模式；\%#表示当前光标位置；.*是正则表达式，匹配从光标位置开始一直到该行的最后一个字符；//表示替换匹配的内容为空；e表示不抛出错误，即使没有匹配到任何字符也不会出错。
 "解释4： <Bar> execute "normal! $" 表示执行完前一个指令后，将光标移动到行尾;其中<Bar> execute 为if语句中如果执行多个执行，则需要使用  | execute ，且指令用双引号包裹。
-inoremap <C-p> <C-o>:if col(".") == 1 <Bar> delete <Bar> else <Bar> s/\%#.*//e <Bar> execute "normal! $" <Bar> endif <CR>''
+inoremap <C-p> <C-o>:if col(".") == 1 <Bar> delete <Bar> else <Bar> s/\%#.*//e <Bar> execute "normal! $" <Bar> endif <CR>
 
 "在光标所在行下面插入一行
 inoremap <C-i> <C-o>:normal! $<CR><CR>
