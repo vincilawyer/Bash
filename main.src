@@ -146,9 +146,9 @@ main_menu=(
     "X-ui服务"              'page "X-UI" "${xui_menu[@]}"'
     "Cloudflare服务"        'page "Cloudflare" "${cf_menu[@]}"'
     "Tor服务"               'page "Tor" "${tor_menu[@]}"'
-    "Frp服务"               'page "Frp" "${frp_menu[@]}"'
-    "Alist服务"            'page "Alist" "${alist_menu[@]}"'
     "Rclone服务"            'page "Rclone" "${rclone_menu[@]}"'
+    "Alist服务"            'page "Alist" "${alist_menu[@]}"'
+    "Frp服务"               'page "Frp" "${frp_menu[@]}"'
     )
 
 ##############################################################################    Android系统加载模块及菜单   ########################################################################################
