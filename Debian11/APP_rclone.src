@@ -57,23 +57,15 @@ local config=(
 ############################################################################################################################################################################################
 ### 配置 ####
 OnedriveLocal_menu=(
-    "将Linux个人文件夹更新至Onedrive"            'localtoone'
-    "将Onedrive更新至Linux个人文件夹"            'onetolocal'
+    "将Linux个人文件夹更新至Onedrive"            'localsync "$HOME" "$oneprimary:$onelinux"'
+    "将Onedrive更新至Linux个人文件夹"            'localsync "$oneprimary:$onelinux" "$HOME"'
 )
 
-### 将Linux个人文件夹更新至Onedrive ###
-function localtoone {
-   if confirm "是否确认同步？" "已取消同步！"; then return 0; fi
+### 同步 ###
+function localsync {
+   if confirm "是否将$1同步至$2？" "已取消同步！"; then return 0; fi
    echo "同步中..."
-   rclone sync "$HOME" "$oneprimary:$onelinux" -P
-   echo "同步完成..."
-}
-
-### 将Onedrive更新至Linux个人文件夹 ###
-function onetolocal {
-   if confirm "是否确认同步？" "已取消同步！"; then return 0; fi
-   echo "同步中..."
-   rclone sync "$oneprimary:$onelinux" "$HOME" -P
+   rclone sync "$1" "$2" -P
    echo "同步完成..."
 }
 
