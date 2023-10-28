@@ -42,8 +42,9 @@ pandora_menu=(
     "下载\更新Pandora镜像"                    "pull_container $Pandora_name $Pandora_image"
     "安装\重安装并启动Pandora容器"              'restart_container "$Pandora_name"'
     "设置Pandora配置"                         "set_Pandora"
-    "暂停Pandora"                            'confirm "是否停止运行Pandora？" "已取消！" || docker stop $Pandora_name'
-    "启动Chatgpt"                             "docker start $Pandora_name"
+    "暂停Pandora容器"                            'confirm "是否停止运行Pandora？" "已取消！" || docker stop $Pandora_name'
+    "启动Pandora容器"                             "docker start $Pandora_name"
+    "移除Pandora容器"                            'docker stop "$Pandora_name"; docker rm "$Pandora_name"'
     )                     
 
 ######  运行chatgpt-next-web 镜像 ######
@@ -85,19 +86,15 @@ Chatgpt_name=\"chatgpt\"                                    #Chat容器名称*
 '
 ##### 菜单栏 #####
 gptnext_menu=(
-    "下载\更新Chatgpt"                 "pull_gpt"
-    "启动\重启动Chatgpt"               "docker start $Chatgpt_name"
-    "运行\重运行Chatgpt容器"            "run_gpt"
-    "设置Chatgpt配置"                  "set_gpt"
-    "查看Chatgpt运行状况"               'docker inspect $Chatgpt_name'
-    "停用Chatgpt"                     'confirm "是否停止运行Chatgpt？" "已取消！" || docker stop $Chatgpt_name'
+    "下载\更新Chatgpt"                  "pull_container $Chatgpt_name $Chatgpt_image"
+    "安装\重安装并启动Chatgpt容器"              'restart_container "$Chatgpt_name"'
+    "设置Chatgpt配置"                         "set_gpt"
+    "暂停Chatgpt容器"                            'confirm "是否停止运行Chatgpt？" "已取消！" || docker stop $Chatgpt_name'
+    "启动Chatgpt容器"                             "docker start $Chatgpt_name"
+    "移除Chatgpt容器"                            'docker stop "$Chatgpt_name"; docker rm "$Chatgpt_name"'
     )                     
 
 
-######  下载 chatgpt-next-web 镜像 ######
-function pull_gpt {
-    docker pull yidadaa/chatgpt-next-web
-}
 
 ######  运行chatgpt-next-web 镜像 ######
 function run_gpt {
