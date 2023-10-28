@@ -21,7 +21,7 @@ function pull_container {
 
 #### 安装\重安装并启动容器
 function restart_container {
-     echo "正在开始安装\重安装并启动容器..."
+     echo "正在开始安装\重安装并启动容器...请稍候"
      docker stop "$1" &> /dev/null && echo "已停止旧版本容器运行..."
      docker rm "$1" &> /dev/null && echo "已移除旧版本容器..."
      eval "run_$1" 
