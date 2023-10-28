@@ -5,14 +5,18 @@ Version=1.00  #版本号
 
 ### 菜单栏
 rclone_menu=(
-    "安装Rclone"            'curl https://rclone.org/install.sh | sudo bash'
+    "安装Rclone"            'echo "开始安装Rclone..." && curl https://rclone.org/install.sh | sudo bash'
     "Rclone配置"            'rclone config'
+    "Onedrive-本地"
+    "Onedrive-Baidu网盘"
+    "Rclone使用指引"                       'echo "指令指引";echo "列出文件夹: rclone lsd onedrive:";echo "复制文件：rclone copy";echo "同步文件：rclone sync"'
+    )
+
+
     "将Baidu网盘书库更新至Onedrive"            'baidutoonebook'
     "将Onedrive书库更新至Baidu网盘"            'onetobaidubook'
     "将Baidu网盘指定文件更新至Onedrive"            'baidutoone'
     "将Onedrive指定文件更新至Baidu网盘"            'onetobaidu'
-    "Rclone使用指引"                       'echo "指令指引";echo "列出文件夹: rclone lsd onedrive:";echo "复制文件：rclone copy";echo "同步文件：rclone sync"'
-    )
 ### 配置 ####
 bdbook="共享文件夹/法律电子书（持续更新）"   #百度网盘书库位置
 onebook="法律书库"   #onedrive书库位置
