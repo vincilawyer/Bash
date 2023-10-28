@@ -6,23 +6,51 @@ Version=1.00  #版本号
 ### 菜单栏
 rclone_menu=(
     "安装Rclone"            'echo "开始安装Rclone..." && curl https://rclone.org/install.sh | sudo bash'
-    "Rclone配置"            'rclone config'
+    "Rclone配置"            'echo "请前往 https://rclone.org/onedrive 查看Onedrive配置说明"; wait; rclone config'
     "[同步]Onedrive-本地 "          'page "[同步]Onedrive-本地" "${OnedriveLocal_menu[@]}"'
     "[同步]Onedrive-Baidu网盘"    'page "[同步]Onedrive-Baidu网盘" "${OnedriveBaidu_menu[@]}"'
     "Rclone使用指引"         'echo "指令指引";echo "列出文件夹: rclone lsd onedrive:";echo "复制文件：rclone copy";echo "同步文件：rclone sync"'
     )
 
+## 获取网盘文件夹大小
+function get_size {
+    local bdname=$1
+    local onename=$2
+    echo "正在获取百度网盘及onedrive文件夹基本信息..."
+    baidusize=$(rclone size baidu:"$bdname")
+    onesize=$(rclone size onedrive:"$onename")
+    echo "百度网盘 $bdname 文件夹基本信息如下："
+    echo "$baidusize"
+    echo "Onedrive $onename 文件夹基本信息如下："
+    echo "$onesize"
+    notifier "$3\n百度网盘 $bdname 文件夹基本信息如下：\n$baidusize\nOnedrive $onename 文件夹基本信息如下：\n$onesize"
+}
+
 #############################################################################################################################################################################################
 ##############################################################################  Onedrive-本地  ################################################################################################
 ############################################################################################################################################################################################
 ### 配置 ####
-onelinux=""     #onedrive linux备份文件
+onelinux="04备份/02应用数据/05 Linux/服务器文件 [自同步]"     #onedrive linux备份文件
 OnedriveLocal_menu=(
-    "将Baidu网盘书库更新至Onedrive"            'baidutoonebook'
-    "将Onedrive书库更新至Baidu网盘"            'onetobaidubook'
-    "将Baidu网盘指定文件更新至Onedrive"            'baidutoone'
-    "将Onedrive指定文件更新至Baidu网盘"            'onetobaidu'
+    "将Linux个人文件夹更新至Onedrive"            'localtoone'
+    "将Onedrive更新至Linux个人文件夹"            'onetolocal'
 )
+
+### 将Linux个人文件夹更新至Onedrive ###
+function localtoone {
+   if confirm "是否确认同步？" "已取消同步！"; then return 0; fi
+   echo "同步中..."
+   rclone sync "$HOME" "onedrive:$onelinux" -P
+   echo "同步完成..."
+}
+
+### 将Onedrive更新至Linux个人文件夹 ###
+function onetolocal {
+   if confirm "是否确认同步？" "已取消同步！"; then return 0; fi
+   echo "同步中..."
+   rclone sync "onedrive:$onelinux" "$HOME" -P
+   echo "同步完成..."
+}
 
 #############################################################################################################################################################################################
 ##############################################################################   Onedrive-Baidu网盘  ################################################################################################
@@ -89,17 +117,4 @@ function onetobaidubook {
    get_size "$bdbook" "$onebook" "onedrive书库已同步至百度网盘！"
 }
 
-## 获取网盘文件夹大小
-function get_size {
-    local bdname=$1
-    local onename=$2
-    echo "正在获取百度网盘及onedrive文件夹基本信息..."
-    baidusize=$(rclone size baidu:"$bdname")
-    onesize=$(rclone size onedrive:"$onename")
-    echo "百度网盘 $bdname 文件夹基本信息如下："
-    echo "$baidusize"
-    echo "Onedrive $onename 文件夹基本信息如下："
-    echo "$onesize"
-    notifier "$3\n百度网盘 $bdname 文件夹基本信息如下：\n$baidusize\nOnedrive $onename 文件夹基本信息如下：\n$onesize"
-}
 
