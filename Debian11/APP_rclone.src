@@ -63,7 +63,7 @@ OnedriveLocal_menu=(
 
 ### 同步 ###
 function localsync {
-   if confirm "是否将$1同步至$2？" "已取消同步！"; then return 0; fi
+   if confirm "是否将 $1 同步至 $2 ？" "已取消同步！"; then return 0; fi
    echo "同步中..."
    rclone sync "$1" "$2" -P
    echo "同步完成..."
