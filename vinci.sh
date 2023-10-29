@@ -336,7 +336,7 @@ fi
 #######   等待函数   #######   
 function wait {
     if [[ -z "$1" ]]; then
-        echo "\n请按下任意键继续"
+        echo -e "\n请按下任意键继续"
     else
         echo "请查看wait函数，看看是谁调用的：${FUNCNAME[1]}"
     fi
