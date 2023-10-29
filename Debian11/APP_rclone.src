@@ -34,7 +34,7 @@ function get_size {
     echo "$baidusize"
     echo "Onedrive $onename 文件夹基本信息如下："
     echo "$onesize"
-    notifier "$3\n百度网盘 $bdname 文件夹基本信息如下：\n$baidusize\nOnedrive $onename 文件夹基本信息如下：\n$onesize"
+    wx "$3\n百度网盘 $bdname 文件夹基本信息如下：\n$baidusize\nOnedrive $onename 文件夹基本信息如下：\n$onesize"
 }
 
 ## Rclone配置
