@@ -29,7 +29,7 @@ function rclonesync {
    local downpath="$4"
    local wxtx="${5:-false}"
    local sizemsg=""
-   ( [[ -z "$uppath"]] || [[ -z "$downpath"]] ) && ( echo "同步路径为空，请检查(不接受根目录同步)！"; return ) 
+   ( [[ -z "$uppath" ]] || [[ -z "$downpath" ]] ) && ( echo "同步路径为空，请检查(不接受根目录同步)！"; return ) 
    ( [[ "$upname" =~ "aidu" ]] || [[ "$downname" =~ "aidu" ]] ) && ( echo "正在清除alist文件目录缓存..."; systemctl restart alist; sleep 15 )
    [[ -n "$upname" ]] && upname="$upname:"
    [[ -n "$downname" ]] && downname="$downname:"
