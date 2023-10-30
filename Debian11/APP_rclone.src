@@ -79,7 +79,7 @@ local config=(
 "bdaccount"
 )
     set_dat "${config[@]}"
-    echo "\n准备设置网盘账户。请前往 https://rclone.org/onedrive 查看Onedrive配置说明"
+    echo -e "\n准备设置网盘账户。请前往 https://rclone.org/onedrive 查看Onedrive配置说明"
     wait
     rclone config
 }
