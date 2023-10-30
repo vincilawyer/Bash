@@ -5,46 +5,78 @@ Version=1.00  #版本号
 ######   参数配置   ######
 adddat '
 ##### Rclone ######
-$(pz "oneprimary")                              #@Onedrive主账号名称
-$(pz "onesecondary")                            #@Onedrive辅账号名称
+$(pz "oneaccount")                              #@Onedrive账号名称
 $(pz "onelinux")                                #@Onedrive Linux备份文件夹路径#@无需/开头，例 \"04备份/02应用数据\" #@
-$(pz "bdbook")                                  #@百度网盘书库位置#@无需\"/\"开头，例 \"共享文件夹/法律电子书\" #@
 $(pz "onebook")                                 #@Onedrive书库位置#@无需\"/\"开头，例 \"共享文件夹/法律电子书\" #@
+$(pz "bdaccount")                               #@百度网盘账号名称
+$(pz "bdbook")                                  #@百度网盘书库位置#@无需\"/\"开头，例 \"共享文件夹/法律电子书\" #@
 '
-
 
 ### 菜单栏
 rclone_menu=(
     "安装Rclone"            'echo "开始安装Rclone..." && curl https://rclone.org/install.sh | sudo bash'
     "Rclone配置"            'set_Rclone'
-    "[同步]Onedrive-本地 "          'page "[同步]Onedrive-本地" "${OnedriveLocal_menu[@]}"'
-    "[同步]Onedrive-Baidu网盘"    'page "[同步]Onedrive-Baidu网盘" "${OnedriveBaidu_menu[@]}"'
+    "Onedrive-本地[个人文件夹] "        'page "[同步]Onedrive-本地" "${OnedriveLocal_menu[@]}"'
+    "Onedrive-Baidu网盘[书库]"    'page "[同步]Onedrive-Baidu网盘" "${OnedriveBaidu_menu[@]}"'
     "Rclone使用指引"         'echo "指令指引";echo "列出文件夹: rclone lsd onedrive:";echo "复制文件：rclone copy";echo "同步文件：rclone sync"'
     )
 
+### 同步 ###
+function rclonesync {
+   local upname="$1"
+   local uppath="$2"
+   local downname="$3"
+   local downpath="$4"
+   local wxtx="${5:-false}"
+   local sizemsg=""
+   ( [[ -z "$uppath"]] || [[ -z "$downpath"]] ) && ( echo "同步路径为空，请检查(不接受根目录同步)！"; return ) 
+   ( [[ "$upname" =~ "aidu" ]] || [[ "$downname" =~ "aidu" ]] ) && ( echo "正在清除alist文件目录缓存..."; systemctl restart alist; sleep 15 )
+   [[ -n "$upname" ]] && upname="$upname:"
+   [[ -n "$downname" ]] && downname="$downname:"
+   sizemsg="$upname$uppath 文件夹基本信息如下：\n$(rclone size $upname$uppath)\n$downname$downpath 文件夹基本信息如下：$(rclone size $downname$downpath)"
+   echo -e "$sizemsg"
+   [ "$wxtx" = "true" ] && wx "获取文件夹信息如下，请返回系统查看并继续操作！\n$sizemsg"
+   confirm "是否将 $upname$uppath 同步至 $downname$downpath ？" "已取消同步！" && return 0
+   echo "同步中..."
+   if [[ "$upname" =~ "aidu" ]]; then
+      # 更改百度网盘head头参数，可加速上下载。即 --header "Referer:"  --header "User-Agent:pan.baidu.com"
+      # -P 显示传输进度
+      rclone sync "$upname$uppath" --header "Referer:" --header "User-Agent:pan.baidu.com" "$downname$downpath" -P
+   elif [[ "$downname" =~ "aidu" ]]; then
+      rclone sync "$upname$uppath" "$downname$downpath" --header "Referer:"  --header "User-Agent:pan.baidu.com" -P
+   else
+      rclone sync "$upname$uppath" "$downname$downpath" -P
+   fi
+   echo "同步完成...正在获取文件夹新状态信息"
+   ( [[ "$upname" =~ "aidu" ]] || [[ "$downname" =~ "aidu" ]] ) && ( echo "正在清除alist文件目录缓存..."; systemctl restart alist; sleep 15 )
+   sizemsg="$upname$uppath 文件夹基本信息如下：\n$(rclone size $upname$uppath)\n$downname$downpath 文件夹基本信息如下：$(rclone size $downname$downpath)"
+   echo -e "$sizemsg"
+   [ "$wxtx" = "true" ] && wx "同步完成，文件夹新状态信息如下！\n$sizemsg"
 
-## 获取网盘文件夹大小
-function get_size {
-    local bdname=$1
-    local onename=$2
-    echo "正在获取百度网盘及onedrive文件夹基本信息..."
-    baidusize=$(rclone size baidu:"$bdname")
-    onesize=$(rclone size onedrive:"$onename")
-    echo "百度网盘 $bdname 文件夹基本信息如下："
-    echo "$baidusize"
-    echo "Onedrive $onename 文件夹基本信息如下："
-    echo "$onesize"
-    wx "$3\n百度网盘 $bdname 文件夹基本信息如下：\n$baidusize\nOnedrive $onename 文件夹基本信息如下：\n$onesize"
 }
 
-## Rclone配置
+### Onedrive-本地 ###
+OnedriveLocal_menu=(
+    "将Linux个人文件夹更新至Onedrive"            'rclonesync "" "$HOME" "$oneaccount" "onelinux"'
+    "将Onedrive更新至Linux个人文件夹"            'rclonesync "$oneaccount" "onelinux" "" "$HOME"'
+)
+
+
+### Onedrive-Baidu网盘 ####
+OnedriveBaidu_menu=(
+    "将Baidu网盘书库更新至Onedrive"            'rclonesync "$bdaccount" "$bdbook" "$oneaccount" "onebook"'
+    "将Onedrive书库更新至Baidu网盘"            'rclonesync "$oneaccount" "onebook" "$bdaccount" "$bdbook"'
+)
+
+
+## Rclone配置 ##
 function set_Rclone {
 local config=(
-"oneprimary"
-"onesecondary"
+"oneaccount"
 "onelinux"
 "bdbook"
 "onebook"
+"bdaccount"
 )
     set_dat "${config[@]}"
     echo "\n准备设置网盘账户。请前往 https://rclone.org/onedrive 查看Onedrive配置说明"
@@ -52,84 +84,5 @@ local config=(
     rclone config
 }
 
-#############################################################################################################################################################################################
-##############################################################################  Onedrive-本地  ################################################################################################
-############################################################################################################################################################################################
-### 配置 ####
-OnedriveLocal_menu=(
-    "将Linux个人文件夹更新至Onedrive"            'localsync "$HOME" "$oneprimary:$onelinux"'
-    "将Onedrive更新至Linux个人文件夹"            'localsync "$oneprimary:$onelinux" "$HOME"'
-)
-
-### 同步 ###
-function localsync {
-   if confirm "是否将 $1 同步至 $2 ？" "已取消同步！"; then return 0; fi
-   echo "同步中..."
-   rclone sync "$1" "$2" -P
-   echo "同步完成..."
-}
-
-#############################################################################################################################################################################################
-##############################################################################   Onedrive-Baidu网盘  ################################################################################################
-############################################################################################################################################################################################
-### 配置 ####
-OnedriveBaidu_menu=(
-    "将Baidu网盘书库更新至Onedrive"            'baidutoonebook'
-    "将Onedrive书库更新至Baidu网盘"            'onetobaidubook'
-    "将Baidu网盘指定文件更新至Onedrive"            'baidutoone'
-    "将Onedrive指定文件更新至Baidu网盘"            'onetobaidu'
-)
-
-### 将baidu同步给onedrive ###
-function baidutoone {
-   echo "正在清除alist文件目录缓存..."
-   systemctl restart alist; sleep 15
-   read -p "请输入要同步给Onedrive的Baidu网盘文件夹路径" bdname
-   read -p "请输入Onedrive保存位置路径" onename   
-   get_size "$bdname" "$onename" "网盘文件信息已获取,请返回操作系统确认！"
-   if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
-   echo "同步中..."
-   # 更改百度网盘的UA，加速作用。 --header "Referer:"  --header "User-Agent:pan.baidu.com"  。 -P 显示传输进度
-   rclone sync "baidu:$bdname" --header "Referer:"  --header "User-Agent:pan.baidu.com" "$onesecondary:$onename" -P   
-   echo "同步完成..."
-   get_size "$bdname" "$onename" "百度网盘已同步至onedrive！"
-}
-
-### 将onedrive同步给baidu ###
-function onetobaidu {
-   echo "正在清除alist文件目录缓存..."
-   systemctl restart alist; sleep 15
-   read -p "请输入要同步给Baidu网盘的Onedrive文件夹路径" bdname
-   read -p "请输入Baidu网盘保存位置路径" onename
-   get_size "$bdname" "$onename" "网盘文件信息已获取,请返回操作系统确认！"
-   if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
-   echo "同步中..."
-   rclone sync "$onesecondary:$onename" baidu:$bdname --header "Referer:"  --header "User-Agent:pan.baidu.com" -P 
-   echo "同步完成..."
-   get_size "$bdname" "$onename" "onedrive已同步至百度网盘！"
-}
-### 将baidu书库给onedrive ###
-function baidutoonebook {
-   echo "正在清除alist文件目录缓存..."
-   systemctl restart alist; sleep 15
-   get_size "$bdbook" "$onebook" "网盘文件信息已获取,请返回操作系统确认！"
-   if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
-   echo "同步中..."
-   rclone sync baidu:$bdbook --header "Referer:"  --header "User-Agent:pan.baidu.com" "$onesecondary:$onebook" -P
-   echo "同步完成..."
-   get_size "$bdbook" "$onebook" "百度网盘书库已同步至onedrive！"
-}
-
-### 将onedrive书库给baidu ###
-function onetobaidubook {
-   echo "正在清除alist文件目录缓存..."
-   systemctl restart alist; sleep 15
-   get_size "$bdbook" "$onebook" "网盘文件信息已获取,请返回操作系统确认！"
-   if confirm "是否确认继续同步？" "已取消同步！"; then return 0; fi
-   echo "同步中..."
-   rclone sync "$onesecondary:$onebook" baidu:$bdbook --header "Referer:"  --header "User-Agent:pan.baidu.com" -P
-   echo "同步完成..."
-   get_size "$bdbook" "$onebook" "onedrive书库已同步至百度网盘！"
-}
 
 
