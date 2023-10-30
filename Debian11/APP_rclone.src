@@ -80,7 +80,6 @@ local config=(
 )
     set_dat "${config[@]}"
     echo -e "\n准备设置网盘账户。请前往 https://rclone.org/onedrive 查看Onedrive配置说明"
-    wait
     rclone config
 }
 
