@@ -48,12 +48,12 @@ function rclonesync {
    else
       rclone sync "$upname$uppath" "$downname$downpath" -P
    fi
-   echo "同步完成...正在获取文件夹新状态信息"
+   echo -e "\n同步完成，正在获取文件夹新状态信息...\n"
    ( [[ "$upname" =~ "aidu" ]] || [[ "$downname" =~ "aidu" ]] ) && ( echo "正在清除alist文件目录缓存..."; systemctl restart alist; sleep 15 )
    sizemsg="$upname$uppath 文件夹基本信息如下：\n$(rclone size "$upname$uppath" )\n\n$downname$downpath 文件夹基本信息如下：\n$(rclone size "$downname$downpath" )"
    echo -e "$sizemsg"
    [ "$wxtx" = "true" ] && wx "同步完成，文件夹新状态信息如下！\n$sizemsg"
-
+   return 0
 }
 
 ### Onedrive-本地 ###
