@@ -57,15 +57,15 @@ function rclonesync {
 
 ### Onedrive-本地 ###
 OnedriveLocal_menu=(
-    "将Linux个人文件夹更新至Onedrive"            'rclonesync "" "$HOME" "$oneaccount" "onelinux"'
-    "将Onedrive更新至Linux个人文件夹"            'rclonesync "$oneaccount" "onelinux" "" "$HOME"'
+    "将Linux个人文件夹更新至Onedrive"            'rclonesync "" "$HOME" "$oneaccount" "$onelinux"'
+    "将Onedrive更新至Linux个人文件夹"            'rclonesync "$oneaccount" "$onelinux" "" "$HOME"'
 )
 
 
 ### Onedrive-Baidu网盘 ####
 OnedriveBaidu_menu=(
-    "将Baidu网盘书库更新至Onedrive"            'rclonesync "$bdaccount" "$bdbook" "$oneaccount" "onebook"'
-    "将Onedrive书库更新至Baidu网盘"            'rclonesync "$oneaccount" "onebook" "$bdaccount" "$bdbook"'
+    "将Baidu网盘书库更新至Onedrive"            'rclonesync "$bdaccount" "$bdbook" "$oneaccount" "$onebook"'
+    "将Onedrive书库更新至Baidu网盘"            'rclonesync "$oneaccount" "$onebook" "$bdaccount" "$bdbook"'
 )
 
 
