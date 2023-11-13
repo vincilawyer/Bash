@@ -112,6 +112,7 @@ function run_chatgpt {
     elif (( Proxy_model==2 )); then 
         if docker run -d  --name $Chatgpt_name --restart=always -p $Gpt_port:$Gpt_port \
            -e OPENAI_API_KEY="$Chatgpt_api_key" \
+           -e ENABLE_BALANCE_QUERY=1 \
            -e CODE="$Gpt_code" \
            -e BASE_URL="$BASE_URL" \
            $Chatgpt_image
