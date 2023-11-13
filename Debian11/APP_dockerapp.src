@@ -64,7 +64,8 @@ local conf=(
 )
     set_dat ${conf[@]}
     if confirm "是否启动Chatgpt-Pandora并适用最新配置？" "已取消启动"; then return; fi
-    run_Pandora
+    docker stop $Pandora_name
+    docker start $Pandora_name
 }
 
 #############################################################################################################################################################################################
@@ -135,5 +136,6 @@ local conf=(
 )
     set_dat ${conf[@]}
     if confirm "是否启动Chatgpt并适用最新配置？" "已取消启动"; then return; fi
-    run_gpt
+    docker stop $Chatgpt_name
+    docker start $Chatgpt_name
 }
