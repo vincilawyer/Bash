@@ -25,12 +25,6 @@ function restart {
    systemctl restart "$1" && echo "$1已完成重启！"
 }
 
-###### 重载配置 ######
-function reload {
-   echo "正在重新载入$1配置..."
-   systemctl reload "$1" && echo "已重载$1配置！"
-}
-
 ###### 开机自启动 ######
 function enable {
    systemctl enable "$1" && echo "$1已设置开机自启动！"
