@@ -19,9 +19,9 @@ function install_container {
      local docker_name="$1"
      local docker_image="$2"
      tempfile=$(mktemp)
-     echo "开始下载/更新$docker_image镜像"
+     echo -e "${BLUE}开始下载/更新$docker_image镜像&{NC}"
      docker pull "$docker_image" | tee "$tempfile"
-     ! [[ "$(cat "$tempfile")" =~ "newer" ]] && (echo "$docker_image当前已是最新镜像，无需更新"; return )
+     ! [[ "$(cat "$tempfile")" =~ "newer" ]] && echo "$docker_name应用当前已是最新镜像，无需更新\n" && return 
      echo "开始重装容器...请稍候"
      docker stop "$docker_name" &> /dev/null && echo "已停止旧版本容器运行..."
      docker rm "$docker_name" &> /dev/null && echo "已移除旧版本容器..."
