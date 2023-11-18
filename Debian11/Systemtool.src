@@ -8,7 +8,7 @@ system_menu=(
     "程序管理"                      'page "程 序 管 理" "${Program_menu[@]}"'
     "网络管理"                      'page "网 络 管 理" "${Net_menu[@]}"'
     "环境配置管理"                   'page  "环 境 配 置 管 理" "${Envconfig_menu[@]}"'
-    "查看/设定循环任务(crontab -e)"    'echo -e "注意：\n任务配置中的五个*号分别代表：\n分钟、小时、日期、月份、星期 \n时间配置可以是具体的数字\n如1、5、10\n如1,5,10，表示多个时间点\n如1-5，表示1到5之间的所有值\n任务脚本不可以自定义函数，不可以调用其他脚本。"; wait; crontab -e; continue'
+    "查看/设定循环任务(crontab -e)"    'chmod +x /root/myfile/cron/*.sh; echo -e "注意：\n任务配置中的五个*号分别代表：\n分钟、小时、日期、月份、星期 \n时间配置可以是具体的数字\n如1、5、10\n如1,5,10，表示多个时间点\n如1-5，表示1到5之间的所有值\n任务脚本不可以自定义函数，不可以调用其他脚本。"; wait; crontab -e; continue'
     "查看脚本日志"                     'less +G $path_log; continue' 
     "查看本机系统与核心信息（uname -a）"   "uname -a"
     "一键到位"                         'page "一 键 到 位" "${Onestep_menu[@]}"'
