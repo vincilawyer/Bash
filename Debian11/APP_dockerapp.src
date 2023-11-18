@@ -8,6 +8,7 @@ Version=1.00  #版本号
 dockerapp_menu=(
     "ChatGPT-Pandora(可直接使用Openai账号登录)"        'page "ChatGPT-Pandora" "${pandora_menu[@]}"'
     "ChatGPT-Next-Web(接入Openai Api后使用)"          'page "ChatGPT-Next-Web" "${gptnext_menu[@]}"'
+    "一键安装\更新所有容器镜像"                          'install_container "$Pandora_name" "$Pandora_image"; install_container "$Chatgpt_name" "$Chatgpt_image"'
 )          
 
 #############################################################################################################################################################################################
@@ -17,12 +18,14 @@ dockerapp_menu=(
 function install_container {
      local docker_name="$1"
      local docker_image="$2"
+     tempfile=$(mktemp)
      echo "开始下载/更新$docker_image镜像"
-     docker pull "$docker_image" && echo "$docker_name镜像下载/更新完成！"
-     echo "正在开始安装\重安装并启动容器...请稍候"
+     docker pull "$docker_image" | tee "$tempfile"
+     ! [[ "$(cat "$tempfile")" =~ "newer" ]] && (echo "$docker_image当前已是最新镜像，无需更新"; return )
+     echo "开始重装容器...请稍候"
      docker stop "$docker_name" &> /dev/null && echo "已停止旧版本容器运行..."
      docker rm "$docker_name" &> /dev/null && echo "已移除旧版本容器..."
-     eval "run_$docker_name" 
+     eval "run_$docker_name"  && echo "已启动最新$docker_image容器..."
 }
 
 
@@ -35,6 +38,7 @@ $(pz "Pandora_port")                              #@Chatgpt本地端口#@0-65535
 Pandora_image=\"pengzhile/pandora\"               #Chat镜像名称*
 Pandora_name=\"Pandora\"                          #Chat容器名称*
 '
+
 ##### 菜单栏 #####
 pandora_menu=(
     "安装\更新Pandora"                       'install_container "$Pandora_name" "$Pandora_image"'
