@@ -84,7 +84,7 @@ elif uname -a | grep -q 'Android'; then
     apt update; apt upgrade -y; apt install ncurses-utils -y; echo "系统软件已更新完成并已安装依赖件ncurses-utils！")
     
     # 安装依赖件jq
-    which "jq" >/dev/null || (echo "正在安装依赖软件JQ..."; apt update; apt install jq -y; echo "依赖件JQ已安装完成！")
+    which "jq" >/dev/null || (echo "正在安装依赖软件JQ..."; apt install jq -y; echo "依赖件JQ已安装完成！")
                                                                 
 ####### Mac系统启动程序网址、路径 ######
 elif uname -a | grep -q 'Darwin'; then 
