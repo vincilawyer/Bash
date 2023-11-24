@@ -51,7 +51,7 @@ alias me="
 alias zjme="cls; echo "正在登录远程服务器，请稍候..."; ssh -p 17177 root@45.32.107.56"
 
 '
-    cat > ～/.bashrc <<< "$bashrc" && echo -e "${BLUE}\n已完成环境变量设置${NC}"
+    cat > ~/.bashrc <<< "$bashrc" && echo -e "${BLUE}\n已完成环境变量设置${NC}"
 fi
 
 
