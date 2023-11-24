@@ -165,10 +165,6 @@ main_menu=(
     "Alist服务"            'page "Alist" "${alist_menu[@]}"'
     "Rclone服务"            'page "Rclone" "${rclone_menu[@]}"'
     )
-system_menu=(
-    "更新脚本"                  'startcode=1; base_load; Initial; update_dat; waitcon="false"; return'
-    "个人配置设置"               'page "配置设置" "${config_menu[@]}" continue'
-    )  
 
 ##############################################################################     mac加载模块及菜单   ########################################################################################
 elif uname -a | grep -q 'Darwin'; then 
