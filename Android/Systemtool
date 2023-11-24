@@ -129,5 +129,9 @@ inoremap <C-n> <C-o>:if &mouse == "a" <Bar> set mouse= <Bar> else <Bar> set mous
     cat > "$path_vimEnv" <<< "$vimkey" && echo -e "${BLUE}\n已设置Vim按键映射${NC}"
 fi
 
+    echo "请填入ssh连接私钥！"; wait
+    vim ~/.ssh/id_rsa
+    echo "ssh连接私钥填写完成！"
+
     echo -e "${BLUE}\n已完成环境部署设置！${NC}"
 }
