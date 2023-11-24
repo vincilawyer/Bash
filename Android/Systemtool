@@ -29,9 +29,10 @@ alias py="python3"
 alias vi="vim"
 
 ##################本机特定配置##############
+clear 
 #调整光标
 echo -ne "\e[5 q欢迎进入模拟Linux系统～"
-clear 
+
 
 #设置别称
 
@@ -124,7 +125,7 @@ inoremap <C-n> <C-o>:if &mouse == "a" <Bar> set mouse= <Bar> else <Bar> set mous
 fi
 
     echo "请填入ssh连接私钥！"; wait
-    vim "$Home/.ssh/id_rsa"
+    vim "$HOME/.ssh/id_rsa"
     echo "ssh连接私钥填写完成！"
 
     echo -e "${BLUE}\n已完成环境部署设置！${NC}"
