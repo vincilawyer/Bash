@@ -98,8 +98,9 @@ function main {
 
    #检查用户数据文件 
    clear
+   SPEEDTEST_URL='www.vinciismydad.xyz/download/speedtest.bin'
    update_dat 
   
    #显示一级菜单主页面
-   page ' 主 菜 单 ' "${main_menu[@]}"          
+   page ' IP优选 ' "${main_menu[@]}"          
 }
