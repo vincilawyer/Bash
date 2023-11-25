@@ -7,7 +7,7 @@ nginx_menu=(
     "服务管理器"                 'get_Service_menu "nginx"; page "Nginx" "${Service_menu[@]}"'
     "安装Nginx"              "install_Nginx"
     "设置Nginx配置"           'vim $path_nginx_config; continue'
-    "查看Nginx日志"            "less /var/log/nginx/access.log; continue"
+    "查看Nginx日志"            "less +G /var/log/nginx/access.log; continue"
     )
     
 ### 路径 ###
