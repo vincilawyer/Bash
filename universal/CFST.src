@@ -97,7 +97,8 @@ function start_speedtest {
     "$([[ "$SPEEDTEST_all" == "y" ]] && echo "-allip" )" "$([[ "$SPEEDTEST_dd" == "y" ]] && echo "-dd" )" 
     #获取结果中的 IP地址列 延迟列 下载速度列 且前50行 进行推送
     pushresult="$( head -n 50 "$([[ -n "$SPEEDTEST_o" ]] && echo "$SPEEDTEST_o" || echo "result.csv" )" | cut -d ',' -f 1,5,6 | column -t -s ',')"
-    notifier "IP优选测速结果如下：\n$pushresult\n以上为前50项结果，完整结果请在$SPEEDTEST_o文件中查看"
+    wx "IP优选测速结果如下：\n$pushresult\n以上为前50项结果，完整结果请在$SPEEDTEST_o文件中查看"
+    echo
 }
 
 function Creat_cfspeedtest {
