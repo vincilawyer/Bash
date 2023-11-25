@@ -35,7 +35,7 @@ mkdir -p "$path_dir"                      #创建应用代码文件夹
 mkdir -p "$path_data"                     #创建应用数据文件夹                                                   
 
 #### 配置文件、程序网址、路径 ####
-source $path_dat &> /dev/null 
+[ -z "$mainname" ] && source $path_dat &> /dev/null 
 #主文件名称
 mainname=${mainname:-main}
 #仓库-下载链接
