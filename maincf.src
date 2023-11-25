@@ -5,6 +5,7 @@
 ####### 参数 ######
 Version=4.00  #版本号 
 Version1="$Version.$(n="$(cat "$path_sh")" &&  echo "${#n}")"                         #脚本完整版本号
+SPEEDTEST_URL='www.vinciismydad.xyz/download/speedtest.bin'                           #优选地址
 
 
 ############################################################################################################################################################################################
@@ -97,7 +98,6 @@ function main {
 
    #检查用户数据文件 
    clear
-   SPEEDTEST_URL='www.vinciismydad.xyz/download/speedtest.bin'
    update_dat 
   
    #显示一级菜单主页面
