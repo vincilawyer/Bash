@@ -357,6 +357,16 @@ function wait {
     fi
 }
 
+#######   定义获取组件清单函数   #######   
+function getsrclist { 
+     echo "正在载入/更新$1组件清单..."
+     local getlist="$(curl -s "$link_reposinfo"/"$1" )"
+     [ $? -eq 0 ] || quit "未能获取组件清单，请检查网络!( URL地址：$link_reposinfo/$1 )" 
+     (echo "$getlist" | jq '[.[] | {name:.name,download_url:.download_url}]' >> "$path_list") || \
+     (echo "$getlist" | jq '[{name:.name,download_url:.download_url}]' >> "$path_list") || \
+     quit "组件清单不存在，请检查!( URL地址：$link_reposinfo/$1 )"
+}
+
 ####错误检测(开发过程使用)###
 function check {
     (( ++n ))
