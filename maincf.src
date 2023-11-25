@@ -68,7 +68,13 @@ if uname -a | grep -q 'Android'; then
     #获取专属组件清单
     ((startcode==1)) && getsrclist "universal/CFST.src"
 
-main_menu=("${CFST_menu[@]}")
+main_menu=(
+    "开始CFIP优选"            'start_speedtest'
+    "IP优选配置"              'set_speentest'
+    "查看测速结果"             'column -t -s ',' "$SPEEDTEST_o"'
+    "CFIP配置说明"            'cd "$path_CFST_file"; "$path_CFST_file"/CloudflareST -h '
+    "安装CFIP优选"            "install_CFST"
+     )
 
 ##############################################################################     其他加载模块及菜单   ########################################################################################
 else
