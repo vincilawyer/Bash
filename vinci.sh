@@ -25,8 +25,9 @@ name_sh="vinci"
 startcode="$1"    #更新指令
 
 ####### 定义本脚本名称、应用数据路径 ######
-path_dir="$HOME/myfile/${name_sh}_src"        #应用数据文件夹位置名  
-path_data="$HOME/myfile/data"                   
+path_user="$HOME/myfile"
+path_dir="$path_user/${name_sh}_src"        #应用数据文件夹位置名  
+path_data="$path_user/data"                   
 path_list="$path_data/srclist.dat"        #组件清单存放位置
 path_dat="$path_data/$name_sh.dat"        #配置数据文件路径  
 path_log="$path_data/vinci.log"           #日志  （日志格式建议 echo -n "[程序名] " ; date +"%m/%d %H:%M" | tr -d '\n' ; echo "任务名 执行结果如下：" ）         
