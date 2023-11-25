@@ -87,7 +87,7 @@ elif uname -a | grep -q 'Android'; then
     apt install which ncurses-utils -y; echo "系统软件已更新完成并已安装依赖件Which、ncurses-utils！")
     
     # 安装依赖件jq
-    command -v  >/dev/null || (echo "正在安装依赖软件JQ..."; apt install jq -y; echo "依赖件JQ已安装完成！")
+    command -v "jq" >/dev/null || (echo "正在安装依赖软件JQ..."; apt install jq -y; echo "依赖件JQ已安装完成！")
                                                                 
 ####### Mac系统启动程序网址、路径 ######
 elif uname -a | grep -q 'Darwin'; then 
@@ -361,8 +361,8 @@ function getsrclist {
      echo "正在载入/更新$1组件清单..."
      local getlist="$(curl -s "$link_reposinfo"/"$1" )"
      [ $? -eq 0 ] || quit "未能获取组件清单，请检查网络!( URL地址：$link_reposinfo/$1 )" 
-     (echo "$getlist" | jq '[.[] | {name:.name,download_url:.download_url}]' >> "$path_list") || \
-     (echo "$getlist" | jq '[{name:.name,download_url:.download_url}]' >> "$path_list") || \
+     (echo "$getlist" | jq '[.[] | {name:.name,download_url:.download_url}]' >> "$path_list" 2> /dev/null ) || \
+     (echo "$getlist" | jq '[{name:.name,download_url:.download_url}]' >> "$path_list" 2> /dev/null ) || \
      quit "组件清单不存在，请检查!( URL地址：$link_reposinfo/$1 )"
 }
 
