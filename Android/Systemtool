@@ -26,6 +26,14 @@ alias ll="ls -l"
 alias la="ls -al"
 alias cls="clear"
 alias py="python3"
+alias cd='
+function cdls {
+    cd "$1"
+    echo -ne "\e[38;5;180"
+    [ -n "$(ls)" ] && (echo -e "当前文件夹："; ls ) || echo "当前目录为空" 
+}
+cdls'
+alias up="cd .."
 alias vi="vim"
 
 ##################本机特定配置##############
