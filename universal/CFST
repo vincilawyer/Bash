@@ -1,0 +1,128 @@
+#############################################################################################################################################################################################
+##############################################################################   IP优选模块  ################################################################################################
+############################################################################################################################################################################################
+#配置参数
+path_CFST_file="$path_user/CFST"
+
+adddat '
+##### CFIP优选 ######
+$(pz "SPEEDTEST_URL")                              #@指定CF测速地址#@需要加https前缀#@web_regex
+$(pz "SPEEDTEST_n")                                 #@延迟测速线程#@越多延迟测速越快，性能弱的设备,如路由器请勿太高，默认200，最多1000#@\"[[ \"\$new_text\" =~ ^[0-9]+\$ ]] && (( new_text>0 )) && (( new_text<1000 ))\"
+$(pz "SPEEDTEST_t")                                 #@延迟测速次数#@单个 IP 延迟测速的次数，默认 4 次#@num_regex
+$(pz "SPEEDTEST_dn")                              #@下载测速数量#@延迟测速并排序后，从最低延迟起下载测速的数量，默认 10 个#@num_regex
+$(pz "SPEEDTEST_dt")                              #@下载测速时间#@单个 IP 下载测速最长时间，不能太短，默认 10 秒#@num_regex
+$(pz "SPEEDTEST_tl")                              #@平均延迟上限#@只输出低于指定平均延迟的 IP，各上下限条件可搭配使用，默认 9999 ms#@num_regex
+$(pz "SPEEDTEST_tll")                              #@平均延迟下限#@只输出高于指定平均延迟的 IP，默认 0 ms#@num_regex
+$(pz "SPEEDTEST_tlr")                              #@丢包几率上限#@只输出低于/等于指定丢包率的 IP，范围 0.00~1.00，0 过滤掉任何丢包的 IP，默认 1.00#@\"[[ \"\$new_text\" =~ ^(0(\.[0-9][1-9]?)?|1(\.00?)?)\$ ]]\"
+$(pz "SPEEDTEST_sl")                              #@下载速度下限#@只输出高于指定下载速度的 IP，凑够指定数量 [-dn] 才会停止测速，默认 0.00 MB/s#@num2_regex
+$(pz "SPEEDTEST_p")                              #@显示结果数量#@测速后直接显示指定数量的结果，为 0 时不显示结果直接退出，默认 10 个#@num_regex
+$(pz "SPEEDTEST_dd")                              #@禁用下载测速#@禁用后测速结果会按延迟排序，默认按下载速度排序，默认启用，输入y禁用，输入#启用#@\"[[ \"\$new_text\" == \"y\" ]]\"
+$(pz "SPEEDTEST_f")                              #@IP段数据文件#@如路径含有空格请加上引号；支持其他 CDN IP段，默认 ip.txt
+$(pz "SPEEDTEST_o")                              #@写入结果文件#@如路径含有空格请加上引号；值为空时不写入文件，默认 result.csv
+$(pz "SPEEDTEST_all")                              #@测速范围#@对所有IP，仅支持 IPv4，进行测速，默认每个 /24 段随机测速一个 IP，输入y测试全部,输入#默认范围#@\"[[ \"\$new_text\" == \"y\" ]]\"
+
+'
+
+### 菜单栏  ####
+CFST_menu=(
+    "开始CFIP优选"            'start_speedtest'
+    "IP优选配置"              'set_speentest'
+    "查看测速结果"             'column -t -s ',' "$SPEEDTEST_o"'
+    "CFIP配置说明"            'cd "$path_CFST_file"; "$path_CFST_file"/CloudflareST -h '
+    "创建CF测速文件"           'Creat_cfspeedtest'
+    "安装CFIP优选"            "install_CFST"
+     )
+     
+
+#安装IP优选
+function install_CFST {
+
+    #创建应用文件夹
+    mkdir "$path_CFST_file"
+    echo "已创建 $path_CFST_file 应用文件夹"
+    
+    #下载地址
+    if uname -a | grep -q 'Debian'; then 
+        link_CFST_download="https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.4/CloudflareST_linux_amd64.tar.gz"
+    elif uname -a | grep -q 'Android'; then 
+        link_CFST_download="https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.4/CloudflareST_linux_arm64.tar.gz"
+    elif uname -a | grep -q 'Darwin'; then 
+        link_CFST_download="https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.4/CloudflareST_darwin_amd64.zip"
+    fi
+    echo "开始下载..."
+    curl -L "$link_CFST_download" -o "$path_CFST_file/CFST.tar.gz" || (echo "下载失败了，先翻个墙吧~"; return)
+    echo "开始解压..."
+    tar -zxf "$path_CFST_file/CFST.tar.gz" -C "$path_CFST_file"
+    chmod +x "$path_CFST_file/CloudflareST"
+    rm "$path_CFST_file/CFST.tar.gz"
+cat > "$path_CFST_file/ip.txt" <<EOF
+103.21.244.0/22
+103.22.200.0/22
+103.31.4.0/22
+104.16.0.0/13
+104.24.0.0/14
+108.162.192.0/18
+131.0.72.0/22
+141.101.64.0/18
+162.158.0.0/15
+172.64.0.0/13
+173.245.48.0/20
+188.114.96.0/20
+190.93.240.0/20
+197.234.240.0/22
+198.41.128.0/17 
+EOF
+    echo "安装完成！"
+    
+}
+#开始测速
+function start_speedtest {
+    cd "$path_CFST_file"
+    echo "优选配置如下："
+    echo "$([[ -n "$SPEEDTEST_URL" ]] && echo "-url "$SPEEDTEST_URL"")" "$([[ -n "$SPEEDTEST_n" ]] && echo "-n "$SPEEDTEST_n"")" \
+    "$([[ -n "$SPEEDTEST_t" ]] && echo "-t "$SPEEDTEST_t"")"  "$([[ -n "$SPEEDTEST_dn" ]] && echo "-dn "$SPEEDTEST_dn"")"  \
+    "$([[ -n "$SPEEDTEST_dt" ]] && echo "-dt "$SPEEDTEST_dt"")"   "$([[ -n "$SPEEDTEST_tl" ]] && echo "-tl "$SPEEDTEST_tl"")"  \
+    "$([[ -n "$SPEEDTEST_tll" ]] && echo "-tll "$SPEEDTEST_tll"")"  "$([[ -n "$SPEEDTEST_tlr" ]] && echo "-tlr "$SPEEDTEST_tlr"")" \
+    "$([[ -n "$SPEEDTEST_sl" ]] && echo "-sl "$SPEEDTEST_sl"")"  "$([[ -n "$SPEEDTEST_p" ]] && echo "-p "$SPEEDTEST_p"")"   \
+    "$([[ "$SPEEDTEST_all" == "y" ]] && echo "-allip" )" "$([[ "$SPEEDTEST_dd" == "y" ]] && echo "-dd" )" "$([[ -n "$SPEEDTEST_f" ]] && echo "-f "$SPEEDTEST_f"" )" \
+    "$([[ -n "$SPEEDTEST_o" ]] && echo "-o "$SPEEDTEST_o"" )"
+    echo
+    echo "开始测速，请稍等..."
+    eval $path_CFST_file/CloudflareST "$([[ -n "$SPEEDTEST_URL" ]] && echo "-url "$SPEEDTEST_URL"")" "$([[ -n "$SPEEDTEST_n" ]] && echo "-n "$SPEEDTEST_n"")" \
+    "$([[ -n "$SPEEDTEST_t" ]] && echo "-t "$SPEEDTEST_t"")"  "$([[ -n "$SPEEDTEST_dn" ]] && echo "-dn "$SPEEDTEST_dn"")"  \
+    "$([[ -n "$SPEEDTEST_dt" ]] && echo "-dt "$SPEEDTEST_dt"")"   "$([[ -n "$SPEEDTEST_tl" ]] && echo "-tl "$SPEEDTEST_tl"")"  \
+    "$([[ -n "$SPEEDTEST_tll" ]] && echo "-tll "$SPEEDTEST_tll"")"  "$([[ -n "$SPEEDTEST_tlr" ]] && echo "-tlr "$SPEEDTEST_tlr"")" \
+    "$([[ -n "$SPEEDTEST_sl" ]] && echo "-sl "$SPEEDTEST_sl"")"  "$([[ -n "$SPEEDTEST_p" ]] && echo "-p "$SPEEDTEST_p"")"   \
+    "$([[ -n "$SPEEDTEST_f" ]] && echo "-f "$SPEEDTEST_f"" )"  "$([[ -n "$SPEEDTEST_o" ]] && echo "-o "$SPEEDTEST_o"" )" \
+    "$([[ "$SPEEDTEST_all" == "y" ]] && echo "-allip" )" "$([[ "$SPEEDTEST_dd" == "y" ]] && echo "-dd" )" 
+    #获取结果中的 IP地址列 延迟列 下载速度列 且前50行 进行推送
+    pushresult="$( head -n 50 "$([[ -n "$SPEEDTEST_o" ]] && echo "$SPEEDTEST_o" || echo "result.csv" )" | cut -d ',' -f 1,5,6 | column -t -s ',')"
+    notifier "IP优选测速结果如下：\n$pushresult\n以上为前50项结果，完整结果请在$SPEEDTEST_o文件中查看"
+}
+
+function Creat_cfspeedtest {
+    speedtest_name="speedtest.bin"
+    speedtest_path="/usr/share/nginx/html/$speedtest_name"
+    #创建空白大文件300m
+    dd if=/dev/zero of="$speedtest_path" bs=1M count=0 seek=300 
+    echo "已创建完成，请在中进行nginx配置"
+}
+function set_speentest {
+local config=(
+"SPEEDTEST_URL"                            
+"SPEEDTEST_n"                               
+"SPEEDTEST_t"                                
+"SPEEDTEST_dn"                             
+"SPEEDTEST_dt"                              
+"SPEEDTEST_tl"                              
+"SPEEDTEST_tll"                          
+"SPEEDTEST_tlr"                             
+"SPEEDTEST_sl"                             
+"SPEEDTEST_p"           
+"SPEEDTEST_f"   
+"SPEEDTEST_o"
+"SPEEDTEST_dd"               
+"SPEEDTEST_all"
+)
+    set_dat "${config[@]}"
+}
