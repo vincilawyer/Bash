@@ -83,9 +83,8 @@ elif uname -a | grep -q 'Android'; then
     echo "检测系统为Android，当前Shell环境为$SHELL，正在配置中..."
    
     # 安装依赖件 ncurses-utils，以支持tput工具
-    which "tput" >/dev/null || (echo "正在更新系统软件"; rm -rf $PREFIX/etc/apt/sources.list.d/game.list; \
-    rm -rf $PREFIX/etc/apt/sources.list.d/science.list; echo "deb https://packages.termux.org/apt/termux-main stable main" > $PREFIX/etc/apt/sources.list; \
-    apt update; apt upgrade -y; apt install which ncurses-utils jq -y; echo "系统软件已更新完成并已安装依赖件Which、ncurses-utils、JQ！")
+    which "tput" >/dev/null || (echo "正在更新系统软件"; apt update; apt upgrade -y; \
+    apt install which ncurses-utils jq -y; echo "系统软件已更新完成并已安装依赖件Which、ncurses-utils、JQ！")
     
     # 安装依赖件jq
     #which "jq" >/dev/null || (echo "正在安装依赖软件JQ..."; apt install jq -y; echo "依赖件JQ已安装完成！")
