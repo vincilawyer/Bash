@@ -29,7 +29,7 @@ alias py="python3"
 function cdls {
     cd "$1"
     echo -ne "\e[38;5;180"
-    [ -n "$(ls)" ] && (echo -e " 当前文件夹"; ls ) || echo "当前目录为空" 
+    [ -n "$(ls)" ] && (echo -e ".当前文件夹"; ls ) || echo "当前目录为空" 
 }
 alias cd='cdls'
 alias up="cd .."
