@@ -35,13 +35,16 @@ mkdir -p "$path_dir"                      #创建应用代码文件夹
 mkdir -p "$path_data"                     #创建应用数据文件夹                                                   
 
 #### 配置文件、程序网址、路径 ####
+source $path_dat &> /dev/null 
+#主文件名称
+mainname=${mainname:-main}
 #仓库-下载链接
 link_repositories="https://raw.githubusercontent.com/vincilawyer/My-Shell-Script/main"            
 #仓库-文件信息链接
 link_reposinfo="https://api.github.com/repos/vincilawyer/My-Shell-Script/contents"                                
 #main.src文件下载链接及存放位置                                
-path_main="$path_dir/main.src"     
-link_main="$link_repositories/main.src"                                     
+path_main="$path_dir/$mainname.src"     
+link_main="$link_repositories/$mainname.src"                                     
 #vinci.sh启动程序下载链接
 link_sh="$link_repositories/vinci.sh" 
 
