@@ -69,6 +69,7 @@ function update_dat {
            echo "配置文件更新中..."
            eval config_all="\"$configfile_mod\""
            echo "$config_all" > "$path_dat" #写入数据文件
+           source $path_dat
            echo "更新完成，可在系统设置中修改参数！"
            wait
         fi
