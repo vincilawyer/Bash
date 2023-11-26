@@ -32,7 +32,7 @@ EOF
 
 ###### 页面标题 ######
 function pagetitle {
-    echo "               欢迎进入Vinci服务器管理系统(版本V$Version1)"
+    echo "          欢迎进入Vinci服务器管理系统(版本V$Version1)"
     echo
 }
 ###### 菜单标题 ######
