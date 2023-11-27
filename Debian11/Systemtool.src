@@ -77,6 +77,7 @@ Net_menu=(
     "本机ip信息"               "ipinfo"    
     "查看网络端口监听状况(netstat -tulnp)"            "netstat -tulnp"
     "修改SSH登录端口和登录密码"   "change_ssh_port; change_login_password"
+    "设置SSH登录公钥(vi ~/.ssh/authorized_keys)"            'echo "可使用ssh-keygen -t rsa指令生成SSH 密钥对;\nSSH配置文件中需设置PubkeyAuthentication yes"; wait; vi ~/.ssh/authorized_keys; continue'
      )  
      
 #####防火墙管理#####
