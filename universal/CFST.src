@@ -29,7 +29,7 @@ CFST_menu=(
     "IP优选配置"              'set_speentest'
     "查看测速结果"             'column -t -s ',' "$SPEEDTEST_o"'
     "CFIP配置说明"            'cd "$path_CFST_file"; "$path_CFST_file"/CloudflareST -h '
-    "更新CFIP总列表"             'curl -s https://api.cloudflare.com/client/v4/ips | jq -r '.result.ipv4_cidrs[] > $path_CFST_file/ip.txt'
+    "更新CFIP总列表"             'curl -s https://api.cloudflare.com/client/v4/ips | jq -r '.result.ipv4_cidrs[] > $path_CFST_file/ip.txt && echo "已更新CFIP总列表，请到 $path_CFST_file/ip.txt 查看"'
     "安装CFIP优选"            "install_CFST"
     "(服务器)创建CF测速文件"           'Creat_cfspeedtest'
      )
