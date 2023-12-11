@@ -51,7 +51,7 @@ pandora_menu=(
 ######  运行chatgpt-next-web 镜像 ######
 function run_Pandora {
         if docker run -d --net=bridge\
-        -p "$Pandora_port":"$Pandora_port" \
+        -p 8181:"$Pandora_port" \
         --name $Pandora_name \
         --restart=always \
         $Pandora_image
