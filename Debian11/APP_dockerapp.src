@@ -44,7 +44,7 @@ pandora_menu=(
     "安装\更新Pandora"                       'install_container "$Pandora_name" "$Pandora_image"'
     "设置Pandora配置"                         "set_$Pandora_name"
     "暂停Pandora容器"                            'confirm "是否停止运行$Pandora_name？" "已取消！" || docker stop $Pandora_name'
-    "启动Pandora容器"                             "docker start $Pandora_name"
+    "重启Pandora容器"                             "docker stop $Pandora_name;docker start $Pandora_name"
     "移除Pandora容器"                            'docker stop "$Pandora_name"; docker rm "$Pandora_name"'
     )                     
 
@@ -52,9 +52,9 @@ pandora_menu=(
 function run_Pandora {
 
      if docker run -d --restart always --name "$Pandora_name" --net=bridge \
-    -p 8181:8181 \
-    -v /root/myfile/Pandora/data:/data \
-    -v /root/myfile/Pandora/sessions:/root/.cache/PandoraNext \
+    -p $Pandora_port:$Pandora_port \
+    -v $path_user/conf/Pandora/data:/data \
+    -v $path_user/conf/Pandora/sessions:/root/.cache/PandoraNext \
     $Pandora_image
         then
             echo "Chatgpt PANDOR安装并启动成功！"
@@ -93,7 +93,7 @@ gptnext_menu=(
     "安装\更新ChatGPT-Next-Web"                          'install_container "$Chatgpt_name" "$Chatgpt_image"'
     "设置ChatGPT-Next-Web配置"                            "set_$Chatgpt_name"
     "暂停ChatGPT-Next-Web容器"                            'confirm "是否停止运行$Chatgpt_name？" "已取消！" || docker stop $Chatgpt_name'
-    "启动ChatGPT-Next-Web容器"                             "docker start $Chatgpt_name"
+    "重启ChatGPT-Next-Web容器"                             "docker stop $Chatgpt_name;docker start $Chatgpt_name"
     "移除ChatGPT-Next-Web容器"                            'docker stop "$Chatgpt_name"; docker rm "$Chatgpt_name"'
     )                     
 
