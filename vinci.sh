@@ -29,7 +29,7 @@ path_user="$HOME/myfile"
 path_dir="$path_user/support/${name_sh}_src"        #应用数据文件夹位置名  
 path_data="$path_user/data"               
 path_list="$path_data/srclist.dat"        #组件清单存放位置
-path_config="$path_user/confighub/configlibrary"    #配置文件夹
+path_config="$path_user/config/direct"    #配置文件夹
 path_conf="$path_config/$name_sh.conf"       #配置数据文件路径  
 path_log="$path_user/log/vinci.log"       #日志  （日志格式建议 echo -n "[程序名] " ; date +"%m/%d %H:%M" | tr -d '\n' ; echo "任务名 执行结果如下：" ）         
 mkdir -p "$path_dir"                      #创建应用代码文件夹                               
