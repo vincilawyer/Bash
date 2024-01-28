@@ -23,9 +23,7 @@
 ### 菜单栏
 config_menu=(
     "修改全部配置参数"          "set_dat"
-    "查看/编辑参数文件"         'vim "$path_dat"; continue'
-    "备份个人配置文件"          'confirm "是否备份个人配置文件，并覆盖原有备份？" "已取消备份配置" || ( cp "$path_dat" "$path_dat.bak"; echo "已备份个人配置" )'
-    "恢复个人配置文件"          'confirm "是否恢复个人配置文件，并覆盖现有配置？" "已取消恢复配置" || ( cp "$path_dat.bak" "$path_dat"; echo "已恢复备份配置" )'
+    "查看/编辑参数文件"         'vim "$path_conf"; continue'
 )
 
 
@@ -58,19 +56,19 @@ function pz {
 
 #######   创建\更新用户配置数据模板    #######
 function update_dat { 
-    if ! source $path_dat >/dev/null 2>&1; then   #读取用户数据
+    if ! source $path_conf >/dev/null 2>&1; then   #读取用户数据
         echo "系统无用户数据记录。准备新建用户数据..."
         #配置文件具象化
         eval configfile_mod="\"$configfile_mod\""
-        echo "$configfile_mod" > "$path_dat"  #写入数据文件
+        echo "$configfile_mod" > "$path_conf"  #写入数据文件
         echo "初始化数据完成"
         wait
     else
         if ! [[ "$config_num" == "${#configfile_mod}" ]] ; then
            echo "配置文件更新中..."
            eval config_all="\"$configfile_mod\""
-           echo "$config_all" > "$path_dat" #写入数据文件
-           source $path_dat
+           echo "$config_all" > "$path_conf" #写入数据文件
+           source $path_conf
            echo "更新完成，可在系统设置中修改参数！"
            wait
         fi
@@ -82,7 +80,7 @@ function set_dat {
     #如果指定配置，则指定修改
     if ! [ $# -eq 0 ]; then
          for arg in "$@"; do
-             line=$(search "#@" '' "$arg" 1 false false false true "$path_dat" )            
+             line=$(search "#@" '' "$arg" 1 false false false true "$path_conf" )            
              [[ "$CURSHELL" == *"bash"* ]] && IFS=$'\n' readarray -t a <<< $(echo "$line" | sed 's/#@/\n/g') # IFS不可以处理两个字符的分隔符，所以将 #@ 替换为换行符，并用IFS分隔。这里的IFS不在while循环中执行，所以用readarray -t a 会一行一行地读取输入，并将每行数据保存为数组 a 的一个元素。-t 选项会移除每行数据末尾的换行符。空行也会被读取，并作为数组的一个元素。
              [[ "$CURSHELL" == *"zsh"* ]] && IFS=$'\n' mapfile -t a <<< $(echo "$line" | sed 's/#@/\n/g') 
              rule="$(echo -e "${a[2]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"   #去除规则前后的空格
@@ -92,7 +90,7 @@ function set_dat {
              elif ! [[ "${rule:0:1}" == '"' && "${rule: -1}" == '"' ]]; then   
                  rule="${!rule}" 
              fi 
-             settext "\"" "\"" "$arg" 1 true false false true "$path_dat" "${a[0]}" "${a[1]}" 1 "$rule" 
+             settext "\"" "\"" "$arg" 1 true false false true "$path_conf" "${a[0]}" "${a[1]}" 1 "$rule" 
          done         
     else
     
@@ -101,7 +99,7 @@ function set_dat {
     while IFS= read -r line; do   # IFS用于指定分隔符，IFS= read -r line 的含义是：在没有任何字段分隔符的情况下（即将IFS设置为空），读取一整行内容并赋值给变量line。与下面的IFS不同，这个命令在一个 while 循环中执行，每次循环都会读取 line1 中的一行，直到 line1 中的所有行都被读取完毕。
          if [[ ! $line =~ "=" ]] || [[ $line =~ ^([[:space:]]*[#]+|[#]+) ]] || [[ $line =~ \*([[:space:]]*|$) ]] ; then continue ; fi  #跳过#开头和*结尾的行
          lines+=("$line")    #将每行文本转化为数组     
-    done < "$path_dat"
+    done < "$path_conf"
     
     # 因为在上面含有IFS= read的循环中，没法再次read到用户的输入数据，因此在循环外处理数据
     for line in "${lines[@]}"; do   
@@ -115,10 +113,10 @@ function set_dat {
          elif ! [[ "${rule:0:1}" == '"' && "${rule: -1}" == '"' ]]; then   #判断rule是正则表达式变量名还是条件语句,如果是正则表达式变量名则转换为条件语句
              rule=${!rule}   
          fi
-         settext "${b[0]}=\"" '"' "" 1 true false false true "$path_dat" "${a[1]}" "${a[2]}" 1 "$rule" 
+         settext "${b[0]}=\"" '"' "" 1 true false false true "$path_conf" "${a[1]}" "${a[2]}" 1 "$rule" 
     done
     fi
-    source "$path_dat"   #重新载入数据
+    source "$path_conf"   #重新载入数据
     echo
     echo "已修改配置完毕！"
 }

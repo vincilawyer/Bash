@@ -53,8 +53,8 @@ function run_Pandora {
 
      if docker run -d --restart always --name "$Pandora_name" --net=bridge \
     -p $Pandora_port:$Pandora_port \
-    -v $path_user/ConfigHub/ConfigLibrary/Pandora/Pandora/data:/data \
-    -v $path_user/ConfigHub/ConfigLibrary/Pandora/sessions:/root/.cache/PandoraNext \
+    -v $path_user/confighub/configlibrary/Pandora/data:/data \
+    -v $path_user/confighub/configlibrary/Pandora/sessions:/root/.cache/PandoraNext \
     $Pandora_image
         then
             echo "Chatgpt PANDOR安装并启动成功！"
