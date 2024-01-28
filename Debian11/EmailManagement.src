@@ -30,7 +30,7 @@ function install_RainLoop {
 
    if [ -e /var/www/html/rainloop/indx.php ]; then
       echo "RainLoop已安装在/var/www/html/rainloop中，无需重复安装！"
-   elif
+   else
       echo "开始安装RainLoop"
       wget http://www.rainloop.net/repository/webmail/rainloop-latest.zip
       unzip rainloop-latest.zip -d /var/www/html/rainloop
