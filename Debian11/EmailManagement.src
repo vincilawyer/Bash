@@ -4,6 +4,7 @@
 
 email_menu=(
     "安装fetchmail邮件下载器及依赖件"       'install_fetchmail'
+    "安装RainLoop web邮件客户端及依赖件"       'install_RainLoop'
     )    
 
 
@@ -18,3 +19,30 @@ function install_fetchmail {
    fi
 }
 
+function install_RainLoop {
+
+   if ! command -v php > /dev/null ; then
+      echo "开始安装Php及Php-fpm 包"
+      sudo apt install php-fpm php-cli php-json php-curl php-xml php-mbstring
+      sudo systemctl status php7.4-fpm
+      
+   fi
+
+   if [ -e /var/www/html/rainloop/indx.php ]; then
+      echo "RainLoop已安装在/var/www/html/rainloop中，无需重复安装！"
+   elif
+      echo "开始安装RainLoop"
+      wget http://www.rainloop.net/repository/webmail/rainloop-latest.zip
+      unzip rainloop-latest.zip -d /var/www/html/rainloop
+      rm rainloop-latest.zip
+      chown -R www-data:www-data /var/www/html/rainloop
+      find /var/www/html/rainloop -type d -exec chmod 755 {} \;
+      find /var/www/html/rainloop -type f -exec chmod 644 {} \;
+      sudo systemctl restart nginx
+   fi
+
+   echo "RainLoop 安装完成，请自行配置Nginx。并在http://mail.yourdomain.com/?admin中，进行管理。默认的管理员用户名是admin，密码是12345"
+
+
+
+}
