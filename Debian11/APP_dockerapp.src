@@ -155,8 +155,8 @@ local conf=(
 wechatbot_menu=(
     "安装\更新wechatbot"                          'install_container "wxbot" "dannicool/docker-wechatbot-webhook"'
     "暂停wechatbot容器"                            'confirm "是否停止运行wxbot？" "已取消！" || docker stop wxbot'
-    "重启wechatbot容器"                             "docker stop wxbot;docker start wxbot"
-    "移除wechatbot容器"                            'docker stop wxbot"; docker rm wxbot'
+    "重启wechatbot容器"                             'docker stop "wxbot";docker start "wxbot"'
+    "移除wechatbot容器"                            'docker stop "wxbot"; docker rm "wxbot"'
     )                     
 
 
