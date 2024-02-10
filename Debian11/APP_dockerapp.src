@@ -8,7 +8,8 @@ Version=1.00  #版本号
 dockerapp_menu=(
     "ChatGPT-Pandora(可直接使用Openai账号登录)"        'page "ChatGPT-Pandora" "${pandora_menu[@]}"'
     "ChatGPT-Next-Web(接入Openai Api后使用)"          'page "ChatGPT-Next-Web" "${gptnext_menu[@]}"'
-    "一键安装\更新所有容器镜像"                          'install_container "$Pandora_name" "$Pandora_image"; install_container "$Chatgpt_name" "$Chatgpt_image"'
+    "wechatbot"                                     'page "wechatbot" "${wechatbot_menu[@]}"'  
+    "一键安装\更新所有容器镜像"                          'install_container "$Pandora_name" "$Pandora_image"; install_container "$Chatgpt_name" "$Chatgpt_image"; install_container "wxbot" "dannicool/docker-wechatbot-webhook"'
 )          
 
 #############################################################################################################################################################################################
@@ -145,4 +146,32 @@ local conf=(
     if confirm "是否启动Chatgpt并适用最新配置？" "已取消启动"; then return; fi
     docker stop "$Chatgpt_name" && echo "已停止运行容器"
     docker start "$Chatgpt_name" && echo "已重新启动容器"
+}
+#############################################################################################################################################################################################
+##############################################################################   wechatbot Docker  ################################################################################################
+############################################################################################################################################################################################
+
+##### 菜单栏 #####
+wechatbot_menu=(
+    "安装\更新wechatbot"                          'install_container "wxbot" "dannicool/docker-wechatbot-webhook"'
+    "暂停wechatbot容器"                            'confirm "是否停止运行wxbot？" "已取消！" || docker stop wxbot'
+    "重启wechatbot容器"                             "docker stop wxbot;docker start wxbot"
+    "移除wechatbot容器"                            'docker stop wxbot"; docker rm wxbot'
+    )                     
+
+
+
+######  运行wxbot= ######
+function run_wxbot {
+    docker stop wxbot >/dev/null 2>&1 && echo "正在重置wxbot容器..."
+    docker rm wxbot >/dev/null 2>&1
+    if docker run -d --name "wxbot" --network="host" --restart=always -p 3001:3001 \
+    -v ~/myfile/log/wxBot_logs:/app/log \
+    -e RECVD_MSG_API="http://127.0.0.1:12315/wxreceive" \
+    -e LOGIN_API_TOKEN="mNUHlI0cqsXy" \
+    dannicool/docker-wechatbot-webhook; then
+        echo "Chatgpt启动成功！登录指令：docker logs -f $name"
+    else 
+        echo "启动失败，请重新设置参数配置"
+    fi  
 }
