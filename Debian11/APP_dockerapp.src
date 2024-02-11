@@ -171,7 +171,7 @@ function run_wxbot {
     -e RECVD_MSG_API="http://127.0.0.1:12315/wxreceive" \
     -e LOGIN_API_TOKEN="mNUHlI0cqsXy" \
     dannicool/docker-wechatbot-webhook; then
-        echo "Chatgpt启动成功！登录指令：docker logs -f $name"
+        echo "Chatgpt启动成功！登录指令：docker logs -f wxbot"
     else 
         echo "启动失败，请重新设置参数配置"
     fi  
