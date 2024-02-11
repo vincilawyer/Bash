@@ -164,9 +164,10 @@ wechatbot_menu=(
 ######  运行wxbot= ######
 function run_wxbot {
     docker stop wxbot >/dev/null 2>&1 && echo "正在重置wxbot容器..."
+    mkdir ~/myfile/log/wx &> /dev/null
     docker rm wxbot >/dev/null 2>&1
     if docker run -d --name "wxbot" --network="host" --restart=always -p 3001:3001 \
-    -v ~/myfile/log/wxBot_logs:/app/log \
+    -v ~/myfile/log/wx/wxBot_logs:/app/log \
     -e RECVD_MSG_API="http://127.0.0.1:12315/wxreceive" \
     -e LOGIN_API_TOKEN="mNUHlI0cqsXy" \
     dannicool/docker-wechatbot-webhook; then
