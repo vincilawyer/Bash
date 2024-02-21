@@ -42,6 +42,7 @@ function install_Frp {
         mv $(echo $file_name | sed 's/.tar.gz//')/frps /usr/bin/
         mkdir -p $path_frp_config
         mv "$(echo $file_name | sed 's/.tar.gz//')/frps.ini" $path_frp_config
+ls
         rm -r "$(echo $file_name | sed 's/.tar.gz//')"
         # 注意文件中的路径
         cat > /usr/lib/systemd/system/frps.service <<EOF
