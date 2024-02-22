@@ -33,7 +33,7 @@ path_config="$path_user/config/direct"    #配置文件夹
 path_conf="$path_config/$name_sh.conf"       #配置数据文件路径  
 path_logdir="$path_user/log"
 path_log="$path_logdir/$name_sh.log"       #日志  （日志格式建议 echo -n "[程序名] " ; date +"%m/%d %H:%M" | tr -d '\n' ; echo "任务名 执行结果如下：" ）         
-path_cron="$path_user/tool/cron"
+path_cron="$path_user/tool/02 Cron任务工具"
 mkdir -p "$path_dir"                      #创建应用代码文件夹                               
 mkdir -p "$path_data"                     #创建应用数据文件夹   
 mkdir -p "$path_config"              
