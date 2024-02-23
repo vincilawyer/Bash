@@ -29,51 +29,30 @@ function install_container {
      eval "run_$docker_name"  && echo -e "${BLUE}已启动最新$docker_image容器!${NC}"
 }
 
-
 #############################################################################################################################################################################################
-##############################################################################   Pandora—Docker  ################################################################################################
+##############################################################################   LobeChat ################################################################################################
 ############################################################################################################################################################################################
-adddat '
-#####ChatGPT-Pandora ######
-$(pz "Pandora_port")                              #@Chatgpt本地端口#@0-65535#@port_regex 
-Pandora_image=\"pengzhile/pandora-next\"               #Chat镜像名称*
-Pandora_name=\"Pandora\"                          #Chat容器名称*
-'
-
 ##### 菜单栏 #####
-pandora_menu=(
-    "安装\更新Pandora"                       'install_container "$Pandora_name" "$Pandora_image"'
-    "设置Pandora配置"                         "set_$Pandora_name"
-    "暂停Pandora容器"                            'confirm "是否停止运行$Pandora_name？" "已取消！" || docker stop $Pandora_name'
-    "重启Pandora容器"                             "docker stop $Pandora_name;docker start $Pandora_name"
-    "移除Pandora容器"                            'docker stop "$Pandora_name"; docker rm "$Pandora_name"'
-    )                     
+gptnext_menu=(
+    "安装\更新LobeChat"                          'install_container "LobeChat" "lobehub/lobe-chat"'
+    "暂停LobeChat容器"                            'confirm "是否停止运行LobeChat？" "已取消！" || docker stop LobeChat'
+    "重启LobeChat容器"                             "docker stop LobeChat;docker start LobeChat"
+    "移除LobeChat容器"                            'docker stop LobeChat; docker rm LobeChat'
+    )    
 
-######  运行chatgpt-next-web 镜像 ######
-function run_Pandora {
+function run_LobeChat {
+    if docker run -d --name LobeChat -p 8181:3210 \
+    -e OPENAI_API_KEY=sk-pk6AZ7KswzTtWkBA8248AdA1C28e44E4838a3c899b633b28 \
+    -e ACCESS_CODE=griffin \
+    -e OPENAI_PROXY_URL=https://40-3.chatgptsb.net/v1 \
+    lobehub/lobe-chat \
+    ; then
+        echo "应用启动成功！"
+    else 
+        echo "应用启动失败，请重新设置参数配置"
+    fi  
+    }
 
-     if docker run -d --restart always --name "$Pandora_name" --net=bridge \
-    -p $Pandora_port:$Pandora_port \
-    -v $path_user/config/direct/Pandora/data:/data \
-    -v $path_user/config/direct/Pandora/sessions:/root/.cache/PandoraNext \
-    $Pandora_image
-        then
-            echo "Chatgpt PANDOR安装并启动成功！"
-        else 
-            echo "启动失败，请重新设置参数配置"
-        fi  
-}
-
-######  设置chatgpt配置 ######
-function set_Pandora {
-local conf=(
-"Pandora_port"
-)
-    set_dat ${conf[@]}
-    if confirm "是否启动Chatgpt-Pandora并适用最新配置？" "已取消启动"; then return; fi
-    docker stop "$Pandora_name" && echo "已停止运行容器"
-    docker start "$Pandora_name"  && echo "已重新启动容器"
-}
 
 #############################################################################################################################################################################################
 ##############################################################################   ChatGPT-Next-Web Docker  ################################################################################################
