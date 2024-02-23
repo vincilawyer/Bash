@@ -6,10 +6,9 @@ Version=1.00  #版本号
 
 ##### 菜单栏 #####
 dockerapp_menu=(
-    "ChatGPT-Pandora(可直接使用Openai账号登录)"        'page "ChatGPT-Pandora" "${pandora_menu[@]}"'
-    "ChatGPT-Next-Web(接入Openai Api后使用)"          'page "ChatGPT-Next-Web" "${gptnext_menu[@]}"'
-    "wechatbot"                                     'page "wechatbot" "${wechatbot_menu[@]}"'  
-    "一键安装\更新所有容器镜像"                          'install_container "$Pandora_name" "$Pandora_image"; install_container "$Chatgpt_name" "$Chatgpt_image"; install_container "wxbot" "dannicool/docker-wechatbot-webhook"'
+    "LobeChat"                                     'page "LobeChat" "${LobeChat_menu[@]}"'
+    "ChatGPT-Next-Web"          'page "ChatGPT-Next-Web" "${gptnext_menu[@]}"'
+    "Wechatbot"                                     'page "wechatbot" "${wechatbot_menu[@]}"'  
 )          
 
 #############################################################################################################################################################################################
@@ -33,7 +32,7 @@ function install_container {
 ##############################################################################   LobeChat ################################################################################################
 ############################################################################################################################################################################################
 ##### 菜单栏 #####
-gptnext_menu=(
+LobeChat_menu=(
     "安装\更新LobeChat"                          'install_container "LobeChat" "lobehub/lobe-chat"'
     "暂停LobeChat容器"                            'confirm "是否停止运行LobeChat？" "已取消！" || docker stop LobeChat'
     "重启LobeChat容器"                             "docker stop LobeChat;docker start LobeChat"
@@ -142,9 +141,7 @@ wechatbot_menu=(
 
 ######  运行wxbot= ######
 function run_wxbot {
-    docker stop wxbot >/dev/null 2>&1 && echo "正在重置wxbot容器..."
     mkdir ~/myfile/log/wx &> /dev/null
-    docker rm wxbot >/dev/null 2>&1
     if docker run -d --name "wxbot" --network="host" --restart=always -p 3001:3001 \
     -v ~/myfile/log/wx/wxBot_logs:/app/log \
     -e RECVD_MSG_API="http://127.0.0.1:12315/wxreceive" \
