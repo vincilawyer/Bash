@@ -78,7 +78,7 @@ if uname -a | grep -q 'Debian'; then
     echo "检测系统为Debian，当前Shell环境为$SHELL，正在配置中..."
 
     # 安装依赖件jq
-    which "jq" >/dev/null || (echo "正在安装依赖软件JQ..."; apt update; apt install jq -y; echo "依赖件JQ已安装完成！")
+    which "jq" >/dev/null || (echo "正在安装依赖软件JQ...";sudo apt update;sudo apt install jq -y; echo "依赖件JQ已安装完成！")
     
 ####### Android Termius系统启动程序网址、路径 ######
 elif uname -a | grep -q 'Android'; then 
