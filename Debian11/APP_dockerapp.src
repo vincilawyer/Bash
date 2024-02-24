@@ -41,7 +41,7 @@ LobeChat_menu=(
 
 function run_LobeChat {
     if docker run -d --name LobeChat -p 8181:3210 \
-    -e OPENAI_PROXY_URL=https://40.chatgptsb.net\
+    -e OPENAI_PROXY_URL=https://40.chatgptsb.net/v1 \
     lobehub/lobe-chat \
     ; then
         echo "应用启动成功！"
@@ -80,8 +80,6 @@ gptnext_menu=(
 function run_chatgpt {
     if (( Proxy_model==1 )); then 
         if docker run -d --name $Chatgpt_name --restart=always -p $Gpt_port:$Gpt_port \
-           -e OPENAI_API_KEY="$Chatgpt_api_key" \
-           -e CODE="$Gpt_code" \
            --net=host \
            -e PROXY_URL="$PROXY_URL" \
            $Chatgpt_image
@@ -92,9 +90,7 @@ function run_chatgpt {
        fi  
     elif (( Proxy_model==2 )); then 
         if docker run -d  --name $Chatgpt_name --restart=always -p $Gpt_port:$Gpt_port \
-           -e OPENAI_API_KEY="$Chatgpt_api_key" \
            -e ENABLE_BALANCE_QUERY=1 \
-           -e CODE="$Gpt_code" \
            -e BASE_URL="$BASE_URL" \
            $Chatgpt_image
        then
