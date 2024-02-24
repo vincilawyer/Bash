@@ -41,8 +41,8 @@ LobeChat_menu=(
 
 function run_LobeChat {
     if docker run -d --name LobeChat -p 8181:3210 \
-    -e OPENAI_API_KEY=sk-pk6AZ7KswzTtWkBA8248AdA1C28e44E4838a3c899b633b28 \
-    -e ACCESS_CODE=griffin \
+    -e OPENAI_API_KEY=sk-xZwMoABXIPadou9B329bE15425A0495b92C9Fb3107E35734 \
+    -e ACCESS_CODE=griffin12315 \
     -e OPENAI_PROXY_URL=https://40-3.chatgptsb.net/v1 \
     lobehub/lobe-chat \
     ; then
