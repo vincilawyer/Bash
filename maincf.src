@@ -5,7 +5,7 @@
 ####### 参数 ######
 Version=4.00  #版本号 
 Version1="$Version.$(n="$(cat "$path_sh")" &&  echo "${#n}")"                         #脚本完整版本号
-SPEEDTEST_URL='https://www.vinciismydad.xyz/download/speedtest.bin'                           #优选地址
+SPEEDTEST_URL='https://www.hiworld.life/download/speedtest.bin'                           #优选地址
 
 
 ############################################################################################################################################################################################
